@@ -8,6 +8,7 @@ Documento de trabajo para el equipo: qué **ya está cerrado**, qué **falta dec
 - [Stack tecnológico y herramientas](./Stack_Tecnologico_y_Herramientas.md)
 - [Funcionalidades por actor](./Funcionalidades_por_Actor.md)
 - [Índice de ADR](./ADR_Indice.md) (decisiones ya aceptadas)
+- [Bitácora LOG.md](./LOG.md)
 
 **Cómo usar este documento:** marcar `[x]` cuando el equipo cierre cada ítem y anotar la decisión en la columna o en una nota al pie. No hace falta decidir todo al inicio; varias cosas se resuelven en la unidad correspondiente del cronograma.
 
@@ -20,7 +21,8 @@ Documento de trabajo para el equipo: qué **ya está cerrado**, qué **falta dec
 | Arquitectura | Monolito modular |
 | Frontend web | React + TypeScript — **multi-rol (A1, A2, A3, A4)** |
 | Canal principal | **Web** para todos los roles, incluido cliente externo |
-| App móvil | **Diferida** a Unidad VI; baja prioridad; no condiciona M1–M5 |
+| App móvil | **Diferida** a Unidad VI; baja prioridad para el MVP web; stack = **React Native** (acuerdo 2026-08-26) |
+| Offline (alcance) | RNF-01 aplica al **control de acceso en sede** desde el diseño; no se limita a “mostrar QR en el celular” |
 | Backend API | NestJS + TypeScript |
 | Base de datos | PostgreSQL |
 | Control de versiones | GitHub |
@@ -47,7 +49,7 @@ Documento de trabajo para el equipo: qué **ya está cerrado**, qué **falta dec
 - [ ] Convención de ramas (`feature/...`, `fix/...`, solo `main`)
 - [ ] Quién hace merge a `main` y si hace falta revisión de PR
 - [ ] Formato de commits (mensaje libre o tipo `feat:`, `fix:`)
-- [ ] Dónde vive la bitácora `LOG.md` (raíz o `documentacion/`)
+- [x] Bitácora `LOG.md` vive en `documentacion/` (ver [LOG.md](./LOG.md))
 
 ### 2.3 Cuentas y accesos
 
@@ -93,9 +95,9 @@ Estas no son “librerías”, pero hay que **acordar el enfoque** cuando se imp
 | Tema | Pregunta a resolver | Cuándo |
 |------|---------------------|--------|
 | Concurrencia de canchas (RN-02) | ¿Transacción + unique constraint? ¿Lock? | Al implementar reservas |
-| Socio en una sola sede (RN-01) | ¿Estado “dentro de sede” en BD? ¿Timeout de salida? | Al implementar acceso |
+| Socio en una sola sede (RN-01) | ¿Estado “dentro de sede” en BD? ¿Timeout de salida? ¿Cómo se comporta en offline? (ver §8) | Al implementar acceso |
 | Mora (RN-03) | ¿El backend bloquea descuento o solo avisa? | Al implementar precios/pagos |
-| QR dinámico (RF-04) | ¿Se genera en backend? ¿También se muestra en web del socio? | Al implementar acceso (web primero) |
+| QR dinámico (RF-04) | ¿TOTP por socio (ver §8.3)? ¿También se muestra en web? ¿Cómo se valida sin API? | Al implementar acceso |
 | Lista de espera (RF-08) | ¿Notificación por email, in-app, o solo log en demo? | Al aplicar Observer |
 | Pasarela mock (RF-13) | ¿Endpoint propio que simula MercadoPago? ¿Respuestas fijas? | Semana 4+ |
 | PDF de comprobante (RF-14) | ¿Librería (p. ej. PDFKit) y dónde se guarda el archivo? | Al implementar pagos |
@@ -170,16 +172,19 @@ Definir **nombres** de variables; los valores viven solo en Vercel / Render / lo
 
 ## 6. App móvil (Unidad VI) — diferida y de baja prioridad
 
-**Cerrado a nivel de alcance:** no se trabaja móvil hasta el final del curso. No bloquea ni redefine el proyecto web.
+**Cerrado a nivel de alcance de canal:** el MVP de M1–M5 sigue siendo **web**. La app móvil no es el canal principal.
 
-Pendiente solo al llegar a Semanas 13–14:
+**Cerrado (2026-08-26):** stack móvil = **React Native**.
 
-- [ ] **React Native vs Flutter** (si se entrega algo móvil)
-- [ ] Persistencia offline del QR (AsyncStorage, SQLite, etc.)
+Pendiente solo al llegar a Semanas 13–14 (lado **socio** — distinto del offline de sede; ver §8):
+
+- [x] Framework: React Native
+- [ ] Guardar el **seed TOTP** del socio en el dispositivo y generar el QR dinámico (ver §8.3)
 - [ ] Cómo se entrega el instalable (APK para Android es lo más habitual)
-- [ ] ¿Expo (si React Native) para acelerar el setup?
+- [ ] ¿Expo para acelerar el setup?
 
-**Cuándo:** Semanas 13–14 — sin anticipar esfuerzo relevante antes.
+**Cuándo (app socio):** Semanas 13–14.  
+**Importante:** el offline de **check-in en sucursal (RNF-01)** no espera a Unidad VI; ver sección 8.
 
 ---
 
@@ -195,17 +200,97 @@ Pendiente solo al llegar a Semanas 13–14:
 
 ---
 
-## 8. Offline y disponibilidad (RNF-01)
+## 8. Offline y disponibilidad (RNF-01) — a definir en arquitectura (no solo Unidad VI)
 
-Hasta Unidad VI el sistema asume **conectividad** (web + API + Supabase).
+### 8.1 Corrección respecto al C4 / docs anteriores
 
-Alcance diferido:
+El enunciado marca el offline como **requisito crítico**:
 
-- [x] Offline **no** es prioridad del MVP web
-- [ ] En Unidad VI: ¿offline solo cache del QR en app móvil?
-- [ ] ¿La pantalla del recepcionista queda siempre online (fuera de offline)?
+- Control de acceso (QR de socio) debe funcionar si falla internet.
+- **RNF-01:** 99.5% — los **tornos / control de acceso** deben operar aunque falle la conexión principal.
 
-**Nota:** documentar este alcance evita sorpresas en la defensa.
+En el C4 y el stack se había dejado el offline casi solo en la **app móvil (Unidad VI)**. Eso es **insuficiente**: RNF-01 apunta al **acceso en sede**, no solo a “mostrar el QR en el celular”.
+
+Hay **dos offlines distintos**:
+
+| Lado | Qué debe funcionar sin internet | Prioridad |
+|------|----------------------------------|-----------|
+| **Sede (A3 / tornos / recepción)** | Validar ingreso y registrar check-in | **Alta — RNF-01** (diseño desde Unidad I / M2) |
+| **Socio (app móvil)** | Mostrar QR aunque no haya red | Media — entregable Unidad VI |
+
+El resto del sistema (reservas de canchas, clases, pagos, reportes, alta de sedes) **no** se pide offline → sigue online-first.
+
+### 8.2 Enfoque de infraestructura por sede (a confirmar)
+
+Patrón de **nodo de borde por sede**:
+
+1. Cada sucursal mantiene material local para validar acceso (ver §8.3).
+2. Con internet caída, la sede **sigue validando** ingresos y **guarda check-ins en cola local**.
+3. Al volver la conectividad, **sincroniza** esos check-ins hacia la BD en la nube (API / PostgreSQL).
+
+- [ ] ¿Aceptamos cache/cola local + sync como base operativa de RNF-01?
+- [ ] ¿Dónde vive el nodo local? (app de recepción instalada en sede, servicio local, PWA, etc.)
+- [ ] ¿Formato de la cola de check-ins? (entrada/salida, `sedeId`, timestamp, `socioId`, estado sync)
+
+### 8.3 Opción candidata: QR dinámico tipo Authenticator (TOTP) — validación local
+
+**Propuesta del equipo (2026-08-27, a confirmar):** cada socio tiene un **seed (secreto)** como en Google Authenticator. Un algoritmo dependiente del tiempo (TOTP / RFC 6238) genera un valor que cambia cada período (p. ej. 30 s o 60 s). El check-in usa ese código junto con datos de identificación (p. ej. `socioId`; el nombre solo para mostrar en UI, **no** como factor de seguridad).
+
+#### Flujo propuesto
+
+1. Al activar la membresía, el backend genera un `seed`, lo guarda (cifrado) y lo entrega a la app del socio.
+2. La app del socio genera el QR cada período: payload con `socioId` + código TOTP (y opcionalmente nombre para display).
+3. Cada sede, cuando hay red, baja un **paquete de acceso**: `{ socioId, seed (protegido), estado membresía, vigenteHasta, … }`.
+4. **Offline:** recepción/torno escanea → recalcula TOTP con el seed local y el reloj → acepta/rechaza → registra check-in en cola local.
+5. **Online:** sync de check-ins + refresh del paquete (revocaciones, vencidos).
+
+#### Viabilidad
+
+| Aspecto | Evaluación |
+|---------|------------|
+| Encaje con RF-04 (QR que cambia / evita captura) | Alto — caducidad natural del código |
+| Encaje con RNF-01 (acceso sin internet) | Alto — la sede valida **sin** llamar a la API |
+| Madurez técnica | Alta — estándar TOTP; librerías en Node / React Native |
+| Alcance de “auth local” | Solo **check-in**; login web JWT y el resto del sistema siguen online |
+
+#### Riesgos / decisiones abiertas
+
+| Tema | Pregunta |
+|------|----------|
+| Período TOTP | ¿30 s o 60 s? ¿Ventana de aceptación ±1 período por desfase de reloj? |
+| Contenido del QR | ¿Solo `socioId` + TOTP? ¿Payload firmado adicional? |
+| Distribución de seeds a sedes | ¿Cómo se replican de forma segura? ¿Cifrado en reposo en el dispositivo de sede? |
+| Revocación / mora (RN-03) | Offline puede aceptar un socio recién vencido hasta el próximo sync → ¿TTL de cache? ¿Lista de revocados? |
+| RN-01 (una sola sede) | TOTP **no** lo resuelve solo; ¿consistencia eventual al sincronizar, documentada como limitación? |
+| Emisión del seed | ¿Solo en app móvil o también en web del socio (Unidad IV) para demos tempranas? |
+
+#### Checklist de cierre
+
+- [ ] ¿Adoptamos TOTP por socio como mecanismo de QR dinámico (RF-04) + validación local (RNF-01)?
+- [ ] Período y ventana de reloj
+- [ ] Qué viaja en el QR vs qué se muestra en pantalla
+- [ ] Política de sync / TTL / revocados
+- [ ] Si se confirma: redactar ADR (p. ej. “Acceso offline con TOTP y nodo por sede”)
+
+### 8.4 Qué NO hace falta offline
+
+Explicitar para la defensa y para no overengineerar:
+
+- [x] Reservas de canchas → online
+- [x] Clases / lista de espera → online
+- [x] Pagos / pasarela → online
+- [x] Reportes de gerente / alta de sedes y precios → online
+- [x] Login web multi-rol (JWT) → online (no es el mismo problema que el check-in TOTP)
+
+### 8.5 Impacto en documentación y C4
+
+Cuando se cierre el enfoque:
+
+- [ ] Actualizar [C4_Arquitectura_FitZone.md](./C4_Arquitectura_FitZone.md): contenedor/componente de **acceso offline por sede** + generación TOTP
+- [ ] Revisar [Stack_Tecnologico_y_Herramientas.md](./Stack_Tecnologico_y_Herramientas.md) y ADR-003 (hoy dicen que RNF-01 se resuelve en Unidad VI)
+- [ ] Anotar la decisión en [LOG.md](./LOG.md) y, si aplica, un ADR nuevo
+
+**Cuándo:** cerrar el **enfoque** en Semanas 1–2 (arquitectura); implementación al trabajar M2 (acceso); QR en celular del socio en Unidad VI (React Native).
 
 ---
 
@@ -221,11 +306,11 @@ Además del código, el plan pide:
 | Frontend documentado | P3 | repo `frontend/` |
 | Pipeline CI + cobertura | P4 | `.github/` + reporte |
 | APK/IPA con QR offline | P4 | entrega Unidad VI |
-| `LOG.md` por integrante | Todos | acordar ubicación |
+| `LOG.md` del equipo | Todos | `documentacion/LOG.md` |
 | Demo Day (guion 15 min) | Todos | Semana 16 |
 
-- [ ] Plantilla de `LOG.md`
-- [ ] Checklist del Demo Day (flujo web: alta → pago → reserva; QR en web y/o móvil VI)
+- [ ] Plantilla de `LOG.md` por integrante (si la cátedra pide bitácora individual además de la grupal)
+- [ ] Checklist del Demo Day (flujo web: alta → pago → reserva; QR; demo de acceso offline si está listo)
 
 ---
 
@@ -234,13 +319,15 @@ Además del código, el plan pide:
 Orden práctico si hoy “no sabemos cómo se va a hacer todo”:
 
 1. **Ya:** monorepo vs multirepo, cuentas GitHub/Vercel/Render/Supabase, responsables P1–P4.
-2. **Semana 3:** ORM, scaffolding NestJS, Swagger, `.env` de ejemplo.
-3. **Semana 4:** primeras entidades + seed de sedes/usuarios.
-4. **Semana 8:** estilos y Atomic Design en React.
-5. **Semana 9–10:** estado global e integración real con la API.
-6. **Semana 11–12:** tests y CI.
-7. **Semana 13–14:** móvil solo si hace falta el entregable de Unidad VI (bajo esfuerzo relativo).
-8. **Cuando toque cada módulo:** concurrencia, mora, pasarela mock, PDF, notificaciones.
+2. **Ya / Semanas 1–2:** enfoque RNF-01 (nodo por sede + TOTP + cola de check-ins + sync); actualizar C4.
+3. **Semana 3:** ORM, scaffolding NestJS, Swagger, `.env` de ejemplo.
+4. **Semana 4:** primeras entidades + seed de sedes/usuarios.
+5. **Al implementar M2:** validación QR/TOTP (online + offline), RN-01 eventual, aforo local.
+6. **Semana 8:** estilos y Atomic Design en React.
+7. **Semana 9–10:** estado global e integración real con la API.
+8. **Semana 11–12:** tests y CI.
+9. **Semana 13–14:** app React Native (seed TOTP + QR del socio visible offline).
+10. **Cuando toque cada módulo:** concurrencia, mora, pasarela mock, PDF, notificaciones.
 
 ---
 
