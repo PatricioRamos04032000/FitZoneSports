@@ -2,10 +2,12 @@
 
 Propuesta de arquitectura con el modelo **C4** (Context, Containers, Components). Sirve como base del entregable de **Unidad I** (diagramas C4 + ADR).
 
-**Estado:** borrador de equipo · sujeto a revisión grupal (Semana 1–2)  
-**Arquitectura:** monolito modular  
+**Estado:** actualizado tras feedback docente 2026-08-28 · revisión grupal pendiente  
+**Arquitectura:** monolito modular Nest como **BFF**  
 **Canal principal:** aplicación **web multi-rol** (A1–A4)  
-**Móvil:** diferido a Unidad VI (bajo prioridad hasta el final del curso)  
+**Móvil:** React Native · diferido a Unidad VI  
+**Datos:** PostgreSQL en Supabase vía **API de Supabase** (sin ORM)  
+**Auth:** Supabase Auth vía pasarela Nest  
 **Stack de referencia:** [Stack tecnológico y herramientas](./Stack_Tecnologico_y_Herramientas.md)  
 **Decisiones formales:** [Índice de ADR](./ADR_Indice.md)
 
@@ -103,9 +105,10 @@ flowchart TB
 | Contenedor | Tecnología | Hosting | Prioridad | Responsabilidad |
 |------------|------------|---------|-----------|-----------------|
 | Frontend Web | React + TypeScript | Vercel | **Alta (camino crítico)** | UI multi-rol: A1, A2, A3 y A4 |
-| Backend API | NestJS (monolito modular) | Render | **Alta** | Reglas de negocio, REST, auth JWT, Swagger |
-| Base de datos | PostgreSQL | Supabase | **Alta** | Persistencia transaccional |
-| App Móvil Socio | React Native o Flutter *(TBD)* | APK demo | **Baja — Unidad VI** | QR dinámico offline (RNF-01); no bloquea el resto |
+| Backend API | NestJS (monolito modular) · BFF | Render | **Alta** | Reglas de negocio, REST, pasarela a Supabase Auth, Swagger |
+| Persistencia | PostgreSQL vía **Supabase API** | Supabase | **Alta** | Tablas de dominio; Nest usa cliente SDK (no ORM) |
+| Identidad | Supabase Auth | Supabase | **Alta** | Login/tokens; solo a través de Nest (BFF) |
+| App Móvil Socio | React Native | APK demo | **Baja — Unidad VI** | QR dinámico / seed TOTP; no bloquea el resto |
 
 **Fuera de contenedores de runtime pero parte del ecosistema de desarrollo:** GitHub (código + CI).
 
@@ -122,9 +125,9 @@ flowchart TB
 
     subgraph fitzone [FitZone Sports]
         WEB[Frontend Web multi-rol<br/>React · Vercel]
-        API[Backend API<br/>NestJS · Render]
-        DB[(PostgreSQL<br/>Supabase)]
-        MOB[App Móvil<br/>Unidad VI · diferida]
+        API[Backend API BFF<br/>NestJS · Render]
+        DB[(Supabase<br/>PostgreSQL + Auth)]
+        MOB[App Móvil<br/>Unidad VI · React Native]
     end
 
     PAY[Pasarela pago mock]
@@ -135,7 +138,8 @@ flowchart TB
     A4 --> WEB
 
     WEB -->|HTTPS REST JSON| API
-    API -->|SQL / transacciones| DB
+    API -->|Supabase Auth| DB
+    API -->|Supabase API<br/>cliente SDK| DB
     API -->|Token de pago| PAY
     MOB -.->|Futuro: misma API| API
 ```
@@ -144,22 +148,23 @@ flowchart TB
 
 | Flujo | Origen → Destino | Notas |
 |-------|------------------|-------|
-| Login / roles | Web → API → DB | JWT; guards por rol (A1–A4) |
-| Reserva de cancha (socio o externo) | Web → API → DB | Transacción; evita sobreventa (RN-02) |
-| Precio dinámico | API (Strategy) | Socio −15%, externo tarifa plena, pico 19–21 hs |
-| Pago | API → Pasarela mock → API guarda token → DB | Sin datos de tarjeta (RNF-02) |
-| Validación de acceso / aforo | Web (A3) → API → DB | Membresía activa; RN-01 |
-| QR del socio | Web (A1); móvil en Unidad VI | Generación/validación vía API |
-| Lista de espera | API (Observer) | Notifica al liberar cupo |
-| Nueva sede | Web (A4) → API → DB | Sin redeploy (RNF-04) |
+| Login / roles | Web → Nest BFF → Supabase Auth (+ perfil/rol en tablas) | Front no llama Supabase directo; guards A1–A4 en Nest |
+| Reserva de cancha (socio o externo) | Web → Nest → Supabase API | Evitar sobreventa (RN-02); preferir RPC/transacción SQL si hace falta |
+| Precio dinámico | Nest (Strategy) | Socio −15%, externo tarifa plena, pico 19–21 hs |
+| Pago | Nest → Pasarela mock → Nest → Supabase API | Sin datos de tarjeta (RNF-02) |
+| Validación de acceso / aforo | Web (A3) → Nest → Supabase API | Membresía activa; RN-01 |
+| QR del socio | Web (A1); móvil en Unidad VI | TOTP / generación; ver Decisiones pendientes §8 |
+| Lista de espera | Nest (Observer) | Notifica al liberar cupo |
+| Nueva sede | Web (A4) → Nest → Supabase API | Sin redeploy (RNF-04) |
 
 ### Decisiones de contenedores (resumen)
 
-- **Un solo backend:** monolito modular (no microservicios), para ACID en reservas y equipo de 4.
-- **Una sola BD relacional:** PostgreSQL compartida; sedes como datos, no como servicios.
-- **Web first multi-rol:** React cubre A1–A4; es el canal de desarrollo, integración y Demo Day del núcleo funcional.
-- **Móvil diferido:** Unidad VI, alcance acotado (p. ej. QR offline); no condiciona arquitectura ni prioridades de M1–M5.
-- **Hosting:** Vercel (front) · Render (API) · Supabase (BD).
+- **Un solo backend:** monolito modular Nest (no microservicios), como **BFF**.
+- **Persistencia:** PostgreSQL en Supabase; acceso por **API de Supabase** (no ORM).
+- **Auth:** Supabase Auth vía pasarela Nest.
+- **Web first multi-rol:** React cubre A1–A4.
+- **Móvil diferido:** React Native en Unidad VI.
+- **Hosting:** Vercel (front) · Render (API) · Supabase (BD + Auth).
 
 ---
 
@@ -171,14 +176,14 @@ Propuesta de módulos internos del monolito. Cada módulo agrupa controllers, se
 
 | Componente | Módulo funcional | Responsabilidad |
 |------------|------------------|-----------------|
-| Auth / Seguridad | transversal | Login, JWT, guards por rol (A1–A4) |
+| Auth / Seguridad | transversal | BFF: pasarela Supabase Auth, JWT, guards por rol (A1–A4) |
 | Usuarios y Membresías | M1 | Perfiles, planes, estados Activo/Vencido/Suspendido |
 | Gimnasio y Acceso | M2 | Validación QR, presencia en sede, aforo |
 | Clases Grupales | M3 | Agenda, cupos, lista de espera (Observer) |
 | Canchas Deportivas | M4 | Recursos, grilla, mantenimiento, precios (Strategy) |
 | Pagos y Facturación | M5 | Mock pasarela, tokens, PDF comprobante |
 | Sedes / Configuración | transversal / A4 | Alta de sedes, parámetros globales |
-| Capa Repository | transversal | Acceso a datos desacoplado (patrón Repository) |
+| Capa Repository | transversal | Acceso a datos vía **cliente Supabase API** (sin ORM) |
 
 ### Diagrama — Components (Backend)
 
@@ -237,7 +242,7 @@ flowchart LR
     GH[GitHub] --> Vercel
     GH --> Render
     Vercel[Vercel<br/>React multi-rol] -->|REST| Render[Render<br/>NestJS]
-    Render -->|SQL| Supa[Supabase<br/>PostgreSQL]
+    Render -->|Supabase Auth + API| Supa[Supabase<br/>PostgreSQL + Auth]
 ```
 
 | Entorno | Front | API | BD |
@@ -281,7 +286,9 @@ El offline **no** es prioridad hasta Unidad VI. Detalle en [Decisiones pendiente
 2. Diseñar pantallas web por rol (A1–A4) en Unidad IV.
 3. Revisar ADR ya redactados — [Índice de ADR](./ADR_Indice.md).
 4. Exportar diagramas a imagen/PDF si la entrega lo pide en ese formato.
-5. Recién en Semanas 13–14: elegir React Native vs Flutter y acotar el entregable móvil.
+5. ~~React Native vs Flutter~~ — **cerrado:** React Native.
+6. Actualizar alcance offline (RNF-01 sede + TOTP) según [Decisiones pendientes §8](./Decisiones_Pendientes_y_Cosas_a_Definir.md).
+7. Exportar diagramas a imagen/PDF si la entrega lo pide.
 
 ---
 

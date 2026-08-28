@@ -34,7 +34,7 @@ El equipo necesita un stack coherente con el monolito modular, Swagger (Unidad I
 - **Lenguaje común:** TypeScript en front y back.
 - **App móvil:** **diferida a Unidad VI**, prioridad baja; React Native vs Flutter se cierra recién entonces. No forma parte del MVP de M1–M5 ni del Demo Day del núcleo web.
 
-Autenticación prevista: **JWT** + guards por rol en NestJS (incluyendo rol de cliente externo). Estilos, estado global y ORM quedan como decisiones de implementación.
+Autenticación prevista: **BFF en NestJS** + **Supabase Auth** (Nest como pasarela; roles A1–A4 y guards en Nest). Acceso a datos: **API de Supabase** desde Nest (**decisión de equipo**; sin ORM). Estilos y estado global quedan como decisiones de implementación.
 
 ## Alternativas consideradas
 
@@ -75,7 +75,7 @@ Autenticación prevista: **JWT** + guards por rol en NestJS (incluyendo rol de c
 
 No forman parte de este ADR; se registrarán al cerrarse:
 
-- ORM: TypeORM vs Prisma  
+- Acceso a datos: API de Supabase (cliente en Nest)  
 - Estado React: Zustand vs Redux Toolkit vs Context  
 - Estilos: Tailwind vs CSS Modules u otro  
 - Framework móvil: React Native vs Flutter (**solo Unidad VI**)

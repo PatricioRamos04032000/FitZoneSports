@@ -26,8 +26,8 @@ Se necesita un motor con transacciones robustas, esquema estructurado y migracio
 
 Usar **PostgreSQL** como único almacén primario de datos de negocio.
 
-- Acceso desde el monolito NestJS vía ORM (TypeORM o Prisma; decisión de implementación pendiente).
-- En desarrollo/demo, PostgreSQL administrado mediante **Supabase** (ver ADR-004), sin reemplazar la lógica de negocio por features BaaS.
+- Acceso desde el monolito NestJS vía la **API de Supabase** (cliente SDK / PostgREST). ORM (TypeORM/Prisma) **descartado** (decisión de equipo, feedback docente 2026-08-28).
+- En desarrollo/demo, PostgreSQL administrado mediante **Supabase** (ver ADR-004): Auth + API de datos; la lógica de negocio (M1–M5) permanece en Nest.
 
 ## Alternativas consideradas
 

@@ -28,8 +28,10 @@ Documento de trabajo para el equipo: qué **ya está cerrado**, qué **falta dec
 | Control de versiones | GitHub |
 | Hosting frontend | Vercel |
 | Hosting backend | Render |
-| Hosting BD | Supabase (solo como PostgreSQL; la lógica va en NestJS) |
-| Patrones a aplicar | Strategy (precios), Observer (lista de espera), Repository (datos) |
+| Hosting BD / Auth | **Supabase:** PostgreSQL + **Supabase Auth** (identidad/login). Nest **no** reemplaza Supabase Auth con auth casera |
+| Autenticación | **BFF en NestJS:** el frontend habla solo con Nest; el módulo Auth de Nest actúa como **pasarela** hacia Supabase Auth (login, tokens). Roles/guards de dominio (A1–A4) en Nest |
+| Acceso a datos (Supabase) | **API de Supabase** (cliente/SDK desde Nest). Decisión de equipo: **mantener API**; ORM (TypeORM/Prisma) descartado |
+| Patrones a aplicar | Strategy (precios), Observer (lista de espera), Repository (datos). **Circuit Breaker** mencionado por el docente (ver §3.6) |
 
 ---
 
@@ -63,22 +65,56 @@ Documento de trabajo para el equipo: qué **ya está cerrado**, qué **falta dec
 
 ## 3. Backend (NestJS) — qué falta definir
 
-### 3.1 ORM (acceso a la base de datos)
+### 3.1 Acceso a datos en Supabase
 
-- [ ] **TypeORM vs Prisma**
-  - Ambos sirven con NestJS + PostgreSQL.
-  - TypeORM: muy usado en ejemplos NestJS; entities “clásicas”.
-  - Prisma: schema declarativo y tipado fuerte; curva distinta.
-  - **Cuándo:** Semana 3 (scaffolding).
-  - **Importante:** elegir uno y no mezclar.
+**Cerrado por feedback del docente (2026-08-28):**
+
+El docente planteó **dos opciones** para persistir/consultar datos en Supabase:
+
+| Opción | Descripción |
+|--------|-------------|
+| **A — ORM + entidades** | Nest se conecta a PostgreSQL vía `DATABASE_URL` con TypeORM/Prisma; mapeo de entidades y migraciones en el repo. |
+| **B — API de Supabase** | Nest usa el **cliente/SDK de Supabase** (REST/PostgREST) para leer/escribir tablas; sin ORM clásico sobre la conexión directa. |
+
+**Recomendación del docente:** opción **B — API de Supabase**.  
+**Decisión del equipo:** **mantener API de Supabase** (opción B). Opción A (ORM) descartada.
+
+- [x] Adoptar **API de Supabase** como forma principal de acceso a datos desde Nest.
+- [x] **No** usar ORM con mapeo de entidades (TypeORM/Prisma) como camino principal sobre `DATABASE_URL`.
+- [x] El patrón **Repository** sigue aplicando: los repositorios en Nest encapsulan las llamadas al cliente Supabase; la lógica de negocio no queda en el front.
+
+**Flujo de datos:** `React → Nest (BFF) → Supabase API` (tablas de dominio) y `Nest → Supabase Auth` (identidad).
+
+Pendiente de detalle de implementación:
+
+- [ ] Cliente en Nest: `@supabase/supabase-js` con `SUPABASE_URL` + `SUPABASE_SERVICE_ROLE_KEY` (solo backend; nunca en el front)
+- [ ] Esquema SQL / migraciones: ¿Supabase SQL editor + scripts versionados en el repo?
+- [ ] Cómo modelar transacciones ACID (RN-02 reservas) vía API vs funciones SQL/RPC en Supabase
+- [ ] Tipado de respuestas (interfaces/DTOs en Nest aunque no haya ORM)
+- [ ] Row Level Security (RLS): ¿políticas en Supabase además de guards en Nest?
+
+**Nota:** TypeORM vs Prisma queda **descartado** como decisión principal; si hace falta SQL puntual (seed, admin), evaluar scripts o RPC, no un ORM completo en runtime.
 
 ### 3.2 Autenticación y roles
 
-- [ ] Login: email/DNI + contraseña, o solo email
-- [ ] Roles exactos en el sistema (mapear a A1–A4)
-- [ ] Tokens JWT: duración de sesión y renovación
+**Cerrado por feedback del docente (2026-08-28) — patrón BFF + Supabase Auth:**
+
+- [x] Usar **Supabase Auth** para identidad (registro, login, emisión/validación de tokens de sesión).
+- [x] **NestJS como BFF (Backend for Frontend):** el frontend (web / luego móvil) **no** llama directo a Supabase Auth; habla **solo** con la API Nest.
+- [x] El **módulo Auth de Nest** actúa como **pasarela** hacia Supabase Auth: recibe credenciales del cliente, delega login/signup/refresh a Supabase, devuelve al front el contrato unificado de la API.
+- [x] **Roles de dominio (A1–A4)** y guards de endpoints de negocio viven en Nest (mapeo usuario Supabase ↔ rol FitZone en PostgreSQL).
+- [x] La **lógica de negocio** (M1–M5) sigue en Nest; Supabase Auth no reemplaza el monolito.
+
+**Flujo resumido:** `React → Nest (BFF) → Supabase Auth` (identidad) y `Nest → Supabase API` (datos de dominio).
+
+Pendiente de detalle de implementación:
+
+- [ ] Login: email/DNI + contraseña vía endpoint Nest que delega en Supabase Auth
+- [ ] Roles exactos en el sistema (mapear a A1–A4) — ¿tabla `perfiles` / `user_roles` en PostgreSQL?
+- [ ] Validación del JWT de Supabase en Nest (guard) antes de cada request protegido
 - [ ] Qué endpoints son públicos y cuáles requieren rol
 - [ ] Cómo se registra el primer gerente / seed de datos de demo
+- [x] Documentar BFF en C4: `Frontend → Nest BFF → Supabase Auth` + `Nest → Supabase API`
 
 ### 3.3 Módulos y orden de implementación
 
@@ -107,6 +143,40 @@ Estas no son “librerías”, pero hay que **acordar el enfoque** cuando se imp
 - [ ] Swagger activado desde el inicio (entregable Unidad II)
 - [ ] Convención de URLs (`/api/v1/...` o similar)
 - [ ] Formato de errores JSON unificado
+
+### 3.6 Resiliencia — Circuit Breaker (mencionado por el docente, 2026-08-28)
+
+**Contexto:** con Nest como **BFF** hacia **Supabase Auth** y **Supabase API**, un fallo o lentitud prolongada de Supabase podría propagarse a toda la API (timeouts, hilos bloqueados, cascada de errores). El docente mencionó el patrón **Circuit Breaker** como mecanismo de resiliencia.
+
+**Qué es (resumen):** patrón que **corta temporalmente** las llamadas a un servicio externo cuando detecta muchos fallos seguidos, para no seguir martillándolo ni colgar Nest. Luego **reintenta** de forma controlada.
+
+| Estado | Comportamiento |
+|--------|----------------|
+| **Closed** | Llamadas normales a Supabase (Auth / API). |
+| **Open** | Tras N fallos: Nest **no** llama a Supabase; responde rápido (ej. 503) o fallback acordado. |
+| **Half-open** | Tras un timeout: deja pasar pocas llamadas de prueba; si OK → Closed; si fallan → Open. |
+
+**Dónde aplicaría en FitZone:**
+
+- Cliente Supabase (lectura/escritura de tablas).
+- Pasarela hacia Supabase Auth (login / refresh), si aplica.
+- Opcionalmente: pasarela de pago mock (RF-13), si se considera servicio externo inestable.
+
+**No confundir con:**
+
+- **Offline de sede (RNF-01 / TOTP):** problema de conectividad en el torno; el Circuit Breaker protege Nest cuando Supabase falla en la nube.
+- **Retry simple:** reintentar siempre; el breaker **deja de llamar** cuando ya no tiene sentido.
+
+**Pendiente (a definir al integrar Supabase en Unidad II+):**
+
+- [ ] ¿Adoptamos Circuit Breaker en el cliente Supabase del BFF?
+- [ ] Umbrales: cantidad de fallos, timeout por llamada, tiempo en estado Open.
+- [ ] Respuesta al frontend cuando el circuito está abierto (mensaje claro vs error genérico).
+- [ ] Librería en Node/Nest (ej. `opossum`, `cockatiel`) o implementación mínima propia.
+- [ ] ¿Combinar con timeouts y retries limitados antes de abrir el circuito?
+- [ ] Documentar en C4 / ADR si se implementa (patrón de resiliencia del BFF).
+
+**Cuándo:** no bloquea el scaffolding inicial; evaluar al tener llamadas reales a Supabase desde Nest (Semanas 3–4 en adelante).
 
 ---
 
@@ -158,10 +228,11 @@ Definir **nombres** de variables; los valores viven solo en Vercel / Render / lo
 
 **Backend (Render / local):**
 
-- [ ] `DATABASE_URL`
-- [ ] `JWT_SECRET`
+- [ ] `SUPABASE_URL`
+- [ ] `SUPABASE_SERVICE_ROLE_KEY` (solo backend; nunca en el frontend)
+- [ ] `DATABASE_URL` (opcional: scripts SQL / migraciones / admin; no como acceso principal en runtime)
+- [ ] URL del frontend para CORS (`CORS_ORIGIN`)
 - [ ] `PORT`
-- [ ] `CORS_ORIGIN` (URL del front en Vercel)
 - [ ] `NODE_ENV`
 
 **Frontend (Vercel / local):**
@@ -320,7 +391,7 @@ Orden práctico si hoy “no sabemos cómo se va a hacer todo”:
 
 1. **Ya:** monorepo vs multirepo, cuentas GitHub/Vercel/Render/Supabase, responsables P1–P4.
 2. **Ya / Semanas 1–2:** enfoque RNF-01 (nodo por sede + TOTP + cola de check-ins + sync); actualizar C4.
-3. **Semana 3:** ORM, scaffolding NestJS, Swagger, `.env` de ejemplo.
+3. **Semana 3:** cliente Supabase en Nest, esquema SQL, scaffolding NestJS, Swagger, `.env` de ejemplo.
 4. **Semana 4:** primeras entidades + seed de sedes/usuarios.
 5. **Al implementar M2:** validación QR/TOTP (online + offline), RN-01 eventual, aforo local.
 6. **Semana 8:** estilos y Atomic Design en React.

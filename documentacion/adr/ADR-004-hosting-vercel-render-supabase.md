@@ -29,8 +29,13 @@ Además del control de versiones en **GitHub**, el equipo necesita entornos de *
 | Frontend | **Vercel** | Deploy del React; previews por PR |
 | Backend | **Render** | Web Service NestJS |
 | Base de datos | **Supabase** | PostgreSQL administrado |
+| Autenticación | **Supabase Auth** (vía Nest BFF) | Identidad y tokens; el front no llama Supabase directo |
 
-**Límite de alcance de Supabase:** se usa como **host de PostgreSQL** (connection string). La lógica de negocio, auth de dominio y patrones GoF viven en **NestJS**, no se reemplazan por Supabase Auth/Realtime como backend principal.
+**Límite de alcance de Supabase:** PostgreSQL para datos de dominio + **Supabase Auth** para identidad. La lógica de negocio (M1–M5) y los guards por rol de FitZone (A1–A4) viven en **NestJS**, no se reemplaza el monolito por un BaaS.
+
+**Auth y patrón BFF (docente, 2026-08-28):** el frontend consume la API Nest como **Backend for Frontend**. El módulo Auth de Nest actúa como **pasarela** hacia **Supabase Auth** (login, signup, refresh); Nest valida el JWT y aplica autorización de dominio. El cliente **no** integra el SDK de Supabase Auth directamente.
+
+**Acceso a datos (docente 2026-08-28 + decisión de equipo):** Nest accede a las tablas de dominio mediante la **API de Supabase** (cliente SDK). Se **mantiene** este enfoque; ORM con entidades sobre `DATABASE_URL` queda descartado. La lógica de negocio y el patrón Repository viven en Nest; los repositorios encapsulan llamadas al cliente Supabase.
 
 Desarrollo local: Nest y React en `localhost`; BD preferentemente el mismo proyecto Supabase de desarrollo (PostgreSQL local/Docker opcional más adelante).
 

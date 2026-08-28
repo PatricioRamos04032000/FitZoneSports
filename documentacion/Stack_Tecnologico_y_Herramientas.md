@@ -41,7 +41,7 @@ flowchart LR
 
     Web --> Vercel
     Vercel -->|HTTPS / REST| Render
-    Render -->|SQL| Supabase
+    Render -->|Supabase Auth + API| Supabase
     Mobile -.->|Diferido| Render
 ```
 
@@ -95,9 +95,9 @@ flowchart LR
 | Lenguaje | TypeScript |
 | Estilo arquitectónico | Monolito modular: módulos por dominio (usuarios, gimnasio, clases, canchas, pagos) |
 | API | REST + documentación **Swagger/OpenAPI** (entregable Unidad II) |
-| ORM | TypeORM o Prisma (a confirmar al iniciar scaffolding — Semana 3) |
+| Acceso a datos | **API de Supabase** (`@supabase/supabase-js` desde Nest). Decisión de equipo: **mantener API**; ORM descartado |
 | Validación | class-validator + class-transformer (convención NestJS) |
-| Autenticación | JWT + guards por rol (socio, externo, recepcionista, gerente) |
+| Autenticación | **BFF en NestJS** + **Supabase Auth** (feedback docente 2026-08-28): front → Nest → Supabase Auth; roles A1–A4 en Nest |
 | Patrones GoF | Strategy (precios), Observer (lista de espera), Repository (acceso a datos) |
 
 ### Módulos backend alineados al dominio
@@ -127,16 +127,20 @@ flowchart LR
 | Motor | **PostgreSQL** |
 | Proveedor | **Supabase** (PostgreSQL administrado + panel web + backups) |
 | Esquema | Relacional normalizado; sedes, usuarios, membresías, reservas, pagos |
-| Migraciones | Versionadas en el repositorio (TypeORM migrations o Prisma migrate) |
+| Acceso desde Nest | **API de Supabase** (cliente SDK / PostgREST), no ORM con entidades sobre conexión directa |
+| Migraciones / DDL | Scripts SQL en Supabase (editor o archivos versionados en repo) |
 | Índices | Sobre consultas de disponibilidad de canchas (RNF-03) |
 | Concurrencia | Transacciones y locks optimistas/pesimistas en reservas (RN-02) |
 
 ### Uso de Supabase en el proyecto
 
 - Instancia PostgreSQL compartida por el equipo
+- **Supabase Auth** para identidad (login, registro, JWT de sesión)
+- **Supabase API** (cliente desde Nest) para CRUD de tablas de dominio — decisión de equipo (mantener API; ORM descartado)
 - Consola web para inspección de datos en desarrollo
-- Conexión desde NestJS vía cadena estándar `DATABASE_URL`
-- **No** se utilizarán funcionalidades de Supabase Auth ni Realtime como reemplazo del backend NestJS; la lógica de negocio permanece en la API
+- Variables backend: `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY` (o anon key según diseño); **no** exponer service role al frontend
+- **No** se usa Realtime ni se mueve la lógica de negocio (M1–M5) fuera de NestJS
+- Patrón **BFF (2026-08-28):** React habla solo con Nest; Nest es **pasarela** hacia Supabase Auth y consume Supabase API para datos
 
 ---
 
@@ -246,7 +250,8 @@ Detalle ampliado (opciones, cuándo decidir y checklists): [Decisiones pendiente
 
 | Tema | Responsable sugerido | Plazo (cronograma) |
 |------|---------------------|-------------------|
-| ORM: TypeORM vs Prisma | P2 (Backend) | Semana 3 |
+| ORM: TypeORM vs Prisma | ~~P2~~ | **Descartado** — equipo mantiene Supabase API |
+| Cliente Supabase en Nest + esquema SQL | P2 (Backend) | Semana 3 |
 | Librería de estado en React | P3 (Frontend) | Semana 9 |
 | Framework móvil: React Native vs Flutter | P4 (Mobile/DevOps) | Semana 13 |
 | Solución de estilos (Tailwind, CSS Modules, etc.) | P3 | Semana 8 |
