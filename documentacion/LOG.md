@@ -5,6 +5,22 @@ Cada entrada puede vincular commits del repositorio cuando corresponda.
 
 ---
 
+## 2026-08-31 — ADR dedicados: auth BFF y API Supabase sin ORM
+
+**Tipo:** documentación / ADR  
+**Participantes:** equipo (vía asistente de documentación)
+
+### Cambios
+
+- Creado [ADR-005](./adr/ADR-005-bff-supabase-auth.md) — BFF en NestJS + Supabase Auth (pasarela; roles A1–A4 en Nest).
+- Creado [ADR-006](./adr/ADR-006-supabase-api-sin-orm.md) — acceso a datos vía API de Supabase; ORM descartado.
+- Corregido [ADR-003](./adr/ADR-003-stack-nestjs-react.md): auth/datos referenciados a ADR-005/006; eliminado “acceso a datos” de decisiones hijas abiertas.
+- Actualizados [ADR_Indice](./ADR_Indice.md), [ADR-002](./adr/ADR-002-postgresql.md), [ADR-004](./adr/ADR-004-hosting-vercel-render-supabase.md) y [Decisiones pendientes](./Decisiones_Pendientes_y_Cosas_a_Definir.md) con enlaces cruzados.
+- Reformateados [ADR-001](./adr/ADR-001-monolito-modular.md) a [ADR-004](./adr/ADR-004-hosting-vercel-render-supabase.md) con la plantilla de cátedra (Contexto → Decisión → Consecuencias → Alternativas).
+- Actualizado [ADR_Indice](./ADR_Indice.md): plantilla genérica de cátedra + ejemplo TiendaYa (pasarela de pago); ADR-001 a ADR-006 alineados al formato (Contexto neutral, `Estado:` / `Fecha:` sin negrita).
+
+---
+
 ## 2026-08-28 — Exposición de avance al docente
 
 **Tipo:** revisión / feedback docente  
@@ -39,7 +55,9 @@ Se corrigió una interpretación errónea en docs previos: el docente **no** pid
 
 ### Documentos relacionados
 
-- [`Decisiones_Pendientes_y_Cosas_a_Definir.md`](./Decisiones_Pendientes_y_Cosas_a_Definir.md) (§3.2)
+- [`Decisiones_Pendientes_y_Cosas_a_Definir.md`](./Decisiones_Pendientes_y_Cosas_a_Definir.md) (§3.1, §3.2)
+- [`adr/ADR-005-bff-supabase-auth.md`](./adr/ADR-005-bff-supabase-auth.md)
+- [`adr/ADR-006-supabase-api-sin-orm.md`](./adr/ADR-006-supabase-api-sin-orm.md)
 - [`adr/ADR-004-hosting-vercel-render-supabase.md`](./adr/ADR-004-hosting-vercel-render-supabase.md)
 - [`Stack_Tecnologico_y_Herramientas.md`](./Stack_Tecnologico_y_Herramientas.md)
 

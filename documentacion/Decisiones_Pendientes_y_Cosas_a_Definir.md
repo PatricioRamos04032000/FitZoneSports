@@ -67,7 +67,7 @@ Documento de trabajo para el equipo: qué **ya está cerrado**, qué **falta dec
 
 ### 3.1 Acceso a datos en Supabase
 
-**Cerrado por feedback del docente (2026-08-28):**
+**Cerrado** — formalizado en [ADR-006](./adr/ADR-006-supabase-api-sin-orm.md) (feedback del docente 2026-08-28):
 
 El docente planteó **dos opciones** para persistir/consultar datos en Supabase:
 
@@ -97,7 +97,7 @@ Pendiente de detalle de implementación:
 
 ### 3.2 Autenticación y roles
 
-**Cerrado por feedback del docente (2026-08-28) — patrón BFF + Supabase Auth:**
+**Cerrado** — formalizado en [ADR-005](./adr/ADR-005-bff-supabase-auth.md) (feedback del docente 2026-08-28 — patrón BFF + Supabase Auth):
 
 - [x] Usar **Supabase Auth** para identidad (registro, login, emisión/validación de tokens de sesión).
 - [x] **NestJS como BFF (Backend for Frontend):** el frontend (web / luego móvil) **no** llama directo a Supabase Auth; habla **solo** con la API Nest.
@@ -131,7 +131,7 @@ Estas no son “librerías”, pero hay que **acordar el enfoque** cuando se imp
 | Tema | Pregunta a resolver | Cuándo |
 |------|---------------------|--------|
 | Concurrencia de canchas (RN-02) | ¿Transacción + unique constraint? ¿Lock? | Al implementar reservas |
-| Socio en una sola sede (RN-01) | ¿Estado “dentro de sede” en BD? ¿Timeout de salida? ¿Cómo se comporta en offline? (ver §8) | Al implementar acceso |
+| Socio en una sola sede (RN-01) | ¿Lógica Nest, unique en BD, o híbrido? ¿Timeout de salida? ¿Offline? → propuesta para reunión: [Propuesta_RN01_Presencia_Una_Sede.md](./Propuesta_RN01_Presencia_Una_Sede.md) | Próxima reunión / al implementar acceso |
 | Mora (RN-03) | ¿El backend bloquea descuento o solo avisa? | Al implementar precios/pagos |
 | QR dinámico (RF-04) | ¿TOTP por socio (ver §8.3)? ¿También se muestra en web? ¿Cómo se valida sin API? | Al implementar acceso |
 | Lista de espera (RF-08) | ¿Notificación por email, in-app, o solo log en demo? | Al aplicar Observer |
