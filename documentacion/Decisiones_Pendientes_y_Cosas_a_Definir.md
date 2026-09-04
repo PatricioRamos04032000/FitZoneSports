@@ -357,9 +357,9 @@ Explicitar para la defensa y para no overengineerar:
 
 Cuando se cierre el enfoque:
 
-- [ ] Actualizar [C4_Arquitectura_FitZone.md](./C4_Arquitectura_FitZone.md): contenedor/componente de **acceso offline por sede** + generación TOTP
-- [ ] Revisar [Stack_Tecnologico_y_Herramientas.md](./Stack_Tecnologico_y_Herramientas.md) y ADR-003 (hoy dicen que RNF-01 se resuelve en Unidad VI)
-- [ ] Anotar la decisión en [LOG.md](./LOG.md) y, si aplica, un ADR nuevo
+- [x] Actualizar [C4_Arquitectura_FitZone.md](./C4_Arquitectura_FitZone.md): alcance offline **sede vs móvil** (2026-09-04); diagrama TOTP/nodo pendiente de validación docente
+- [ ] Revisar [Stack_Tecnologico_y_Herramientas.md](./Stack_Tecnologico_y_Herramientas.md) (aún puede decir que RNF-01 se resuelve solo en Unidad VI)
+- [ ] Anotar la decisión en [LOG.md](./LOG.md) y, si aplica, un ADR nuevo (tras validar con el docente)
 
 **Cuándo:** cerrar el **enfoque** en Semanas 1–2 (arquitectura); implementación al trabajar M2 (acceso); QR en celular del socio en Unidad VI (React Native).
 

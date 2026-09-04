@@ -45,7 +45,7 @@ Lo que cada integrante **está trabajando ahora** (post reunión 2026-09-02), no
 
 | Integrante | Rol | ID | Trabajo actual | Estado |
 |------------|-----|----|----------------|--------|
-| Patricio Ramos | P1 | S1-T09 / S1-T01 | Actualizar C4 (BFF, Auth/API Supabase, offline) y base del PDF Unidad I | En desarrollo |
+| Patricio Ramos | P1 | S1-T01 / S1-T11 | Revisión C4 residual + PDF cuando corresponda (S1-T09 Finalizado 2026-09-04) | En desarrollo |
 | Bruno Conti | P2 | S1-T02 | Revisar ADR-001…006 (formato cátedra + hallazgos) | En desarrollo |
 | Lucas Coquet | P3 | S1-T03 (+ S2-T01) | Revisar funcionalidades por actor / stack; crear cuenta Supabase | En desarrollo |
 | Matias Goncevat | P4 | S1-T04 | Revisar decisiones pendientes (§1–§3) y anotar hallazgos | En desarrollo |

@@ -138,7 +138,7 @@
 - [x] Completar nombres P1–P4 en [Plan_Trabajo_2_Semanas.md](./Plan_Trabajo_2_Semanas.md)
 - [x] Estados de tareas: Por hacer / En desarrollo / Finalizado + sección *Trabajo en curso*
 - [ ] Lista de preguntas al docente (sección 3.1) para la próxima exposición
-- [ ] Actualizar C4 (BFF, API Supabase, nota offline pendiente de validación docente)
+- [x] Actualizar C4 (BFF, API Supabase, nota offline sede vs móvil — 2026-09-04)
 
 ---
 

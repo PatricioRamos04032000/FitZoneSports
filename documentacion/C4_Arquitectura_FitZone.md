@@ -1,13 +1,13 @@
 # Modelado C4 — FitZone Sports (propuesta)
 
-Propuesta de arquitectura con el modelo **C4** (Context, Containers, Components). Sirve como base del entregable de **Unidad I** (diagramas C4 + ADR).
+Propuesta de arquitectura con el modelo **C4** (Context, Containers, Components). Documento **vivo** hasta el cierre del curso (C4 + ADR se entregan con la demo; ver [LOG 2026-09-04](./LOG.md)).
 
-**Estado:** actualizado tras feedback docente 2026-08-28 · revisión grupal pendiente  
-**Arquitectura:** monolito modular Nest
+**Estado:** actualizado 2026-09-04 (offline sede; feedback 2026-08-28; reunión 2026-09-02)  
+**Arquitectura:** monolito modular Nest  
 **Canal principal:** aplicación **web multi-rol** (A1–A4)  
 **Móvil:** React Native · diferido a Unidad VI  
-**Datos:** PostgreSQL en Supabase vía **API de Supabase** (sin ORM)  
-**Auth:** Supabase Auth vía pasarela Nest  
+**Datos:** PostgreSQL en Supabase vía **API de Supabase** (sin ORM) — [ADR-006](./adr/ADR-006-supabase-api-sin-orm.md)  
+**Auth:** Supabase Auth vía pasarela Nest (BFF) — [ADR-005](./adr/ADR-005-bff-supabase-auth.md)  
 **Stack de referencia:** [Stack tecnológico y herramientas](./Stack_Tecnologico_y_Herramientas.md)  
 **Decisiones formales:** [Índice de ADR](./ADR_Indice.md)
 
@@ -240,9 +240,10 @@ flowchart TB
         REPO[Capa Repository]
     end
 
-    DB[(PostgreSQL)]
+    DB[(Supabase<br/>PostgreSQL + Auth)]
     PAY[Pasarela mock]
 
+    AUTH -->|Supabase Auth| DB
     AUTH --> USR
     ACC --> USR
     CLS --> USR
@@ -259,7 +260,7 @@ flowchart TB
     CAN --> REPO
     PAG --> REPO
     SED --> REPO
-    REPO --> DB
+    REPO -->|Supabase API| DB
     PAG --> PAY
 ```
 
@@ -274,7 +275,7 @@ flowchart TB
 | -------------- | ------------------------ | ------------------------------------------------------------- |
 | **Strategy**   | Canchas / precios        | `StandardPricing`, `MemberDiscountPricing`, `PeakHourPricing` |
 | **Observer**   | Clases / lista de espera | Notificar al liberar cupo                                     |
-| **Repository** | Capa de datos            | Desacoplar servicios de PostgreSQL                            |
+| **Repository** | Capa de datos            | Desacoplar servicios del cliente **Supabase API** (sin ORM) |
 
 
 ---
@@ -308,16 +309,25 @@ flowchart LR
 
 ## 5. Alcance offline (RNF-01) en el modelo
 
+Hay **dos offlines distintos** (acordado en documentación; enfoque técnico a validar con el docente):
 
-| Contenedor            | Comportamiento propuesto                                       |
-| --------------------- | -------------------------------------------------------------- |
-| Frontend Web          | Requiere conectividad; es el canal principal del curso         |
-| Backend               | Requiere conectividad                                          |
-| App Móvil (Unidad VI) | Único lugar previsto para cache local del QR / offline acotado |
-| BD                    | Centralizada en Supabase                                       |
+| Lado | Qué debe funcionar sin internet | Prioridad | Contenedor C4 |
+|------|----------------------------------|-----------|---------------|
+| **Sede (A3 / recepción / tornos)** | Validar ingreso y registrar check-in | **Alta — RNF-01** | Web de recepción + material local por sede (propuesto) |
+| **Socio (app móvil)** | Mostrar QR dinámico sin red | Media — Unidad VI | App Móvil React Native |
 
+| Contenedor | Comportamiento propuesto |
+|------------|--------------------------|
+| Frontend Web (resto de roles / flujos) | Online-first (reservas, pagos, reportes, login JWT) |
+| Backend Nest | Online; requiere conectividad hacia Supabase |
+| Acceso en sede (RNF-01) | Con red caída: validación **local** + **cola de check-ins**; al volver internet → sync a Nest / Supabase |
+| App Móvil (Unidad VI) | Cache del **seed / QR** del socio (no sustituye el offline de sede) |
+| BD (Supabase) | Centralizada en la nube; la sede no escribe ahí mientras está offline |
 
-El offline **no** es prioridad hasta Unidad VI. Detalle en [Decisiones pendientes](./Decisiones_Pendientes_y_Cosas_a_Definir.md).
+**Enfoque candidato (pendiente de validación docente):** nodo por sede + paquete de acceso + QR dinámico tipo **TOTP** + cola + sync. Detalle en [Decisiones pendientes §8](./Decisiones_Pendientes_y_Cosas_a_Definir.md) y [Acta 2026-09-02](./Acta_Reunion_2026-09-02_Semana1.md).  
+**RN-01 offline:** consistencia eventual al sincronizar (TOTP solo no garantiza “una sede a la vez”).
+
+Reservas, clases, pagos y reportes **no** se piden offline.
 
 ---
 
@@ -330,10 +340,10 @@ El offline **no** es prioridad hasta Unidad VI. Detalle en [Decisiones pendiente
 | -------------------------------- | ---------------------------------------------- |
 | Actores A1–A4 vía web            | Context + Container Frontend Web               |
 | RF-01…RF-14 (módulos M1–M5)      | Components del backend + pantallas web por rol |
-| RN-01 (una sede a la vez)        | Component Acceso + DB                          |
-| RN-02 (sin sobreventa)           | Component Canchas + PostgreSQL transaccional   |
+| RN-01 (una sede a la vez)        | Component Acceso + DB (online); eventual en offline |
+| RN-02 (sin sobreventa)           | Component Canchas + PostgreSQL / Supabase API  |
 | RN-03 (mora)                     | Membresías + Strategy de precios               |
-| RNF-01 (offline)                 | Contenedor móvil diferido (Unidad VI)          |
+| RNF-01 (offline acceso)          | **Sede** (check-in local + cola); móvil solo QR del socio (Unidad VI) |
 | RNF-02 (sin tarjeta local)       | Container API ↔ Pasarela mock                  |
 | RNF-04 (nueva sede sin downtime) | Component Sedes + datos en DB                  |
 
@@ -347,10 +357,11 @@ El offline **no** es prioridad hasta Unidad VI. Detalle en [Decisiones pendiente
 1. ~~Confirmar canal web vs móvil para A1/A2~~ — **cerrado:** web multi-rol; móvil en Unidad VI.
 2. Diseñar pantallas web por rol (A1–A4) en Unidad IV.
 3. Revisar ADR ya redactados — [Índice de ADR](./ADR_Indice.md).
-4. Exportar diagramas a imagen/PDF si la entrega lo pide en ese formato.
-5. ~~React Native vs Flutter~~ — **cerrado:** React Native.
-6. Actualizar alcance offline (RNF-01 sede + TOTP) según [Decisiones pendientes §8](./Decisiones_Pendientes_y_Cosas_a_Definir.md).
-7. Exportar diagramas a imagen/PDF si la entrega lo pide.
+4. ~~React Native vs Flutter~~ — **cerrado:** React Native.
+5. ~~Actualizar alcance offline (RNF-01 sede vs móvil)~~ — **hecho 2026-09-04** (§5); falta validar TOTP/nodo con el docente y, si se adopta, dibujar diagrama D5 + ADR.
+6. Al implementar M2: diagrama de acceso offline sede (si el docente valida el enfoque).
+7. A medida que se desarrolle: ir sumando **ER** y **diagrama de clases** al paquete de arquitectura (entrega formal al cierre).
+8. Exportar diagramas a imagen/PDF cuando se arme el entregable final.
 
 ---
 

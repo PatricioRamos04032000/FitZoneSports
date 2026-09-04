@@ -39,7 +39,7 @@ Actualizado tras la reunión del **2026-09-02**. Refleja lo que cada integrante 
 
 | Integrante | Rol | Tarea en curso (ID) | Qué está haciendo | Estado |
 |------------|-----|---------------------|-------------------|--------|
-| Patricio Ramos | P1 | S1-T09 (+ S1-T01) | Actualizar C4 (BFF, Supabase Auth/API, nota offline) y preparar base del PDF Unidad I | En desarrollo |
+| Patricio Ramos | P1 | S1-T01 / S1-T11 | Revisión C4 residual + PDF cuando corresponda (S1-T09 Finalizado) | En desarrollo |
 | Bruno Conti | P2 | S1-T02 | Revisar ADR existentes (formato cátedra + coherencia) y anotar hallazgos | En desarrollo |
 | Lucas Coquet | P3 | S1-T03 | Revisar `Funcionalidades_por_Actor.md` y stack; crear cuenta Supabase (S2-T01) en paralelo cuando pueda | En desarrollo |
 | Matias Goncevat | P4 | S1-T04 | Revisar `Decisiones_Pendientes_y_Cosas_a_Definir.md` (§1–§3) y anotar hallazgos | En desarrollo |
@@ -112,7 +112,7 @@ React → Nest (BFF) → Supabase Auth
 | S1-T06 | Registrar acuerdos de la reunión en `LOG.md` (+ acta) | Patricio Ramos | P1 | 0,5 h | Finalizado |
 | S1-T07 | Completar tabla de integrantes (nombres + roles P1–P4) en este plan y en README | Matias Goncevat | P4 | 0,5 h | Finalizado |
 | S1-T08 | Decidir monorepo, convención de ramas/PRs; crear carpetas `frontend/`, `backend/` | Matias Goncevat | P4 | 1 h | Por hacer |
-| S1-T09 | Actualizar C4: BFF, Supabase Auth, Supabase API, offline sede (si falta algo) | Patricio Ramos | P1 | 1,5 h | En desarrollo |
+| S1-T09 | Actualizar C4: BFF, Supabase Auth, Supabase API, offline sede (si falta algo) | Patricio Ramos | P1 | 1,5 h | Finalizado |
 | S1-T10 | Redactar o actualizar ADR pendiente (ej. acceso offline TOTP) si el equipo lo requiere | Patricio Ramos | P1 | 1 h | Por hacer |
 | S1-T11 | Exportar diagramas C4 y compilar **PDF Unidad I** (C4 + índice ADR) | Patricio Ramos | P1 | 1,5 h | Por hacer |
 | S1-T12 | Borrador esquema SQL inicial: `sedes`, usuarios/perfiles, membresías (para Semana 2) | Bruno Conti | P2 | 2 h | Por hacer |
@@ -126,7 +126,7 @@ React → Nest (BFF) → Supabase Auth
 
 | Integrante | Tareas | En desarrollo ahora | Total estimado | ¿≤ 4 h? |
 |------------|--------|---------------------|----------------|---------|
-| **P1** Patricio | S1-T01, S1-T05, S1-T06, S1-T09, S1-T10, S1-T11 | S1-T01, S1-T09 | **5,5 h** | Ajustar¹ |
+| **P1** Patricio | S1-T01, S1-T05, S1-T06, S1-T09✓, S1-T10, S1-T11 | S1-T01 | **5,5 h** | Ajustar¹ |
 | **P2** Bruno | S1-T02, S1-T12, S1-T17, S1-T05 | S1-T02 | **4 h** | ✓ |
 | **P3** Lucas | S1-T03, S1-T13, S1-T16, S1-T05 | S1-T03 | **4 h** | ✓ |
 | **P4** Matias | S1-T04, S1-T07, S1-T08, S1-T14, S1-T15, S1-T05 | S1-T04 | **5 h** | Ajustar¹ |
@@ -203,7 +203,7 @@ Con eso P2 baja a **5 h** y P1/P4 suben — repartir en pair programming si hace
 
 | Semana | ID tareas | En desarrollo ahora | Total |
 |--------|-----------|--------------------|-------|
-| 1 | S1-T01, S1-T05✓, S1-T06✓, S1-T09, S1-T10, S1-T11 | S1-T01, S1-T09 | 5,5 h |
+| 1 | S1-T01, S1-T05✓, S1-T06✓, S1-T09✓, S1-T10, S1-T11 | S1-T01 | 5,5 h |
 | 2 | S2-T07, S2-T08, S2-T13, S2-T16 | — | 3,5 h |
 | **Total 2 semanas** | | | **9 h** |
 
