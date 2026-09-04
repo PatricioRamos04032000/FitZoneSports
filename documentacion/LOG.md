@@ -3,6 +3,106 @@
 Registro de actividades, decisiones y estado del proyecto.  
 Cada entrada puede vincular commits del repositorio cuando corresponda.
 
+**Estados de tarea (alineados al plan):** `Por hacer` · `En desarrollo` · `Finalizado`  
+**Plan vivo:** [Plan_Trabajo_2_Semanas.md](./Plan_Trabajo_2_Semanas.md) → sección *Trabajo en curso (ahora)*
+
+---
+
+## 2026-09-04 — Aclaración docente: entrega C4 + ADR y desarrollo
+
+**Tipo:** feedback / aclaración docente  
+**Registrado por:** Patricio Ramos (tras consulta al profesor)  
+**Unidad / semana:** Unidad I en curso · aplicable a planes futuros
+
+### Aclaración
+
+El **modelo C4** y el documento **ADR** se entregan **al final del curso**, junto con la **demostración (Demo Day)**.  
+No es obligatorio terminar C4 + ADR **antes** de empezar a desarrollar. El avance se irá **revisando periódicamente**.
+
+A medida que el equipo desarrolla, debe **seguir actualizando el modelo**, incorporando (entre otras cosas):
+
+- diagrama **relacional / ER**
+- diagrama de **clases**
+- y demás vistas que surjan de la implementación
+
+### Consecuencia para el equipo (planes futuros)
+
+- El [Plan de trabajo 2 semanas](./Plan_Trabajo_2_Semanas.md) **no se modifica** por esta aclaración (queda como estuvo).
+- De ahora en más, en **nuevos planes** y en el trabajo diario: **desarrollar en paralelo** a la documentación de arquitectura; no bloquear código por un PDF temprano de C4+ADR.
+- C4 y ADR se tratan como **documentación viva** hasta el cierre; ER y clases se agregan cuando el código los justifique.
+- Para revisiones parciales del docente: mostrar avance (repo + docs actualizados), no un entregable PDF cerrado de Unidad I.
+
+### Relacionado
+
+- Pregunta abierta en reunión 2026-09-02 (¿PDF Unidad I incluye ER/clases?) → queda respondida en el sentido de que **van entrando al paquete de arquitectura a lo largo del curso**, con entrega formal al final.
+- [Acta_Reunion_2026-09-02_Semana1.md](./Acta_Reunion_2026-09-02_Semana1.md) · [Propuesta_Inventario_Diagramas.md](./Propuesta_Inventario_Diagramas.md)
+
+---
+
+## Trabajo en curso (snapshot 2026-09-04)
+
+Lo que cada integrante **está trabajando ahora** (post reunión 2026-09-02), no el backlog completo.
+
+| Integrante | Rol | ID | Trabajo actual | Estado |
+|------------|-----|----|----------------|--------|
+| Patricio Ramos | P1 | S1-T09 / S1-T01 | Actualizar C4 (BFF, Auth/API Supabase, offline) y base del PDF Unidad I | En desarrollo |
+| Bruno Conti | P2 | S1-T02 | Revisar ADR-001…006 (formato cátedra + hallazgos) | En desarrollo |
+| Lucas Coquet | P3 | S1-T03 (+ S2-T01) | Revisar funcionalidades por actor / stack; crear cuenta Supabase | En desarrollo |
+| Matias Goncevat | P4 | S1-T04 | Revisar decisiones pendientes (§1–§3) y anotar hallazgos | En desarrollo |
+
+**Finalizado reciente:** S1-T05 (reunión), S1-T06 (acta + LOG), S1-T07 (nombres P1–P4 en el plan).
+
+Al cambiar de tarea: actualizar esta tabla **y** el estado en el plan (`Por hacer` → `En desarrollo` → `Finalizado`).
+
+---
+
+## 2026-09-02 — Reunión Semana 1 (puntos 1 → 2.E)
+
+**Tipo:** reunión de equipo  
+**Participantes:** Patricio Ramos, Bruno Conti, Lucas Coquet, Matias Goncevat  
+**Unidad / semana:** Unidad I · Semana 1 (S1-T05)
+
+### Contexto
+
+Reunión grupal siguiendo la agenda de cierre de decisiones (ratificación §1 y puntos 2.A–2.E). Fuentes: notas Gemini + transcripción en `documentacion/`.
+
+### Acuerdos principales
+
+- Ratificados: monolito modular; Nest + React + TS + Supabase; BFF Auth; API Supabase sin ORM; web multi-rol; móvil React Native (Unidad VI).
+- **Monorepo** (`frontend/`, `backend/`); rama `desarrollo` para código; branches por tarea (ej. `S1-T03`).
+- Roles: **P1** Patricio · **P2** Bruno · **P3** Lucas · **P4** Matias.
+- Supabase: cuenta a cargo de **Lucas**; secrets fuera del repo (Discord/Drive + `.env` local).
+- Usuarios: tabla **perfiles** con campo de **rol** simple; sedes demo **2–3**.
+- PDF Unidad I: C4 + ADR (Patricio); revisión cruzada Bruno + Lucas.
+
+### Compromisos inmediatos (trabajo en curso tras la reunión)
+
+| Integrante | Empezar con | Estado al 2026-09-04 |
+|------------|-------------|----------------------|
+| Patricio | Registrar acuerdos → luego C4 / PDF | S1-T06 Finalizado; S1-T09 En desarrollo |
+| Bruno | Revisar ADRs | S1-T02 En desarrollo |
+| Lucas | Revisar funcionalidades por actor + Supabase | S1-T03 / S2-T01 En desarrollo |
+| Matias | Revisar decisiones pendientes | S1-T04 En desarrollo |
+
+### Pendiente / consultar al docente
+
+- Offline (nodo sede + TOTP + cola): validar enfoque.
+- RN-01: checkout vs timeout; doble turno; ADR-007 aún no cerrado.
+- Aforo: hard limit vs indicador; interacción gimnasio/clases/canchas.
+- ¿PDF Unidad I incluye ER y diagrama de clases?
+- Migraciones SQL: ¿requisito temprano?
+- Fecha de reunión con representante de grupo.
+
+### Documentos relacionados
+
+- [`Acta_Reunion_2026-09-02_Semana1.md`](./Acta_Reunion_2026-09-02_Semana1.md)
+- [`Decisiones_Pendientes_y_Cosas_a_Definir.md`](./Decisiones_Pendientes_y_Cosas_a_Definir.md)
+- [`Plan_Trabajo_2_Semanas.md`](./Plan_Trabajo_2_Semanas.md)
+
+### Commits vinculados
+
+_Pendiente de commit al cerrar la documentación de esta sesión._
+
 ---
 
 ## 2026-08-31 — ADR dedicados: auth BFF y API Supabase sin ORM

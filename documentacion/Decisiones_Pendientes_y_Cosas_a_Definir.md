@@ -39,27 +39,25 @@ Documento de trabajo para el equipo: qué **ya está cerrado**, qué **falta dec
 
 ### 2.1 Estructura del repositorio
 
-- [ ] **¿Un solo repo (monorepo) o dos/tres repos?**
-  - **Monorepo:** carpetas `frontend/`, `backend/`, `documentacion/` en el mismo GitHub.
-  - **Multirepo:** un repo para front, otro para back.
-  - **Sugerencia:** monorepo (más simple para 4 personas y un Demo Day).
-  - **Cuándo:** Semana 1–2, antes del scaffolding.
+- [x] **¿Un solo repo (monorepo) o dos/tres repos?** — **Cerrado 2026-09-02:** monorepo con `frontend/`, `backend/`, `documentacion/`.
+  - **Multirepo:** descartado por simplicidad para 4 personas y Demo Day.
+  - Ver [Acta reunión 2026-09-02](./Acta_Reunion_2026-09-02_Semana1.md).
 
 ### 2.2 Nombres y convenciones
 
-- [ ] Nombre del repositorio en GitHub
-- [ ] Convención de ramas (`feature/...`, `fix/...`, solo `main`)
-- [ ] Quién hace merge a `main` y si hace falta revisión de PR
-- [ ] Formato de commits (mensaje libre o tipo `feat:`, `fix:`)
+- [x] Nombre del repositorio en GitHub — `FitZoneSports` (ya existente)
+- [x] Convención de ramas — **Cerrado 2026-09-02:** `master`/`main` para documentación; rama **`desarrollo`** para código; feature branches con ID de tarea (ej. `S1-T03`)
+- [ ] Quién hace merge a `main`/`desarrollo` y si hace falta revisión de PR (detalle operativo pendiente)
+- [x] Formato de commits — descripción clara del cambio (trazable con ID de tarea en la rama)
 - [x] Bitácora `LOG.md` vive en `documentacion/` (ver [LOG.md](./LOG.md))
 
 ### 2.3 Cuentas y accesos
 
-- [ ] Organización o cuenta GitHub del equipo
-- [ ] Quién crea y administra el proyecto en Vercel
-- [ ] Quién crea y administra el servicio en Render
-- [ ] Quién crea el proyecto en Supabase y comparte la URL de conexión (sin subir secretos al repo)
-- [ ] Cómo se comparten secrets (mensaje privado / gestor de passwords; **nunca** en commits)
+- [x] Organización o cuenta GitHub del equipo — Patricio administra el repo por ahora
+- [ ] Quién crea y administra el proyecto en Vercel — Patricio cuando haga falta (aún sin deploy)
+- [ ] Quién crea y administra el servicio en Render — Patricio cuando haga falta
+- [x] Quién crea el proyecto en Supabase — **Lucas Coquet** (inicializa y da permisos al resto)
+- [x] Cómo se comparten secrets — `.env` local; Discord / Drive; **nunca** en commits (acuerdo 2026-09-02)
 
 ---
 
@@ -110,7 +108,7 @@ Pendiente de detalle de implementación:
 Pendiente de detalle de implementación:
 
 - [ ] Login: email/DNI + contraseña vía endpoint Nest que delega en Supabase Auth
-- [ ] Roles exactos en el sistema (mapear a A1–A4) — ¿tabla `perfiles` / `user_roles` en PostgreSQL?
+- [x] Roles exactos en el sistema (mapear a A1–A4) — **Cerrado 2026-09-02:** tabla `perfiles` (o equivalente) con **campo de rol** simple; privilegios en Nest/API (sin tabla compleja de permisos)
 - [ ] Validación del JWT de Supabase en Nest (guard) antes de cada request protegido
 - [ ] Qué endpoints son públicos y cuáles requieren rol
 - [ ] Cómo se registra el primer gerente / seed de datos de demo
@@ -131,7 +129,7 @@ Estas no son “librerías”, pero hay que **acordar el enfoque** cuando se imp
 | Tema | Pregunta a resolver | Cuándo |
 |------|---------------------|--------|
 | Concurrencia de canchas (RN-02) | ¿Transacción + unique constraint? ¿Lock? | Al implementar reservas |
-| Socio en una sola sede (RN-01) | ¿Lógica Nest, unique en BD, o híbrido? ¿Timeout de salida? ¿Offline? → propuesta para reunión: [Propuesta_RN01_Presencia_Una_Sede.md](./Propuesta_RN01_Presencia_Una_Sede.md) | Próxima reunión / al implementar acceso |
+| Socio en una sola sede (RN-01) | Orientación 2026-09-02: **híbrido** (Nest + BD). Pendiente cerrar: checkout vs timeout; doble turno; conflicto offline. **Consultar docente.** → [Propuesta RN-01](./Propuesta_RN01_Presencia_Una_Sede.md) · [Acta](./Acta_Reunion_2026-09-02_Semana1.md) | Tras consulta docente / al implementar acceso |
 | Mora (RN-03) | ¿El backend bloquea descuento o solo avisa? | Al implementar precios/pagos |
 | QR dinámico (RF-04) | ¿TOTP por socio (ver §8.3)? ¿También se muestra en web? ¿Cómo se valida sin API? | Al implementar acceso |
 | Lista de espera (RF-08) | ¿Notificación por email, in-app, o solo log en demo? | Al aplicar Observer |
@@ -211,13 +209,13 @@ Estas no son “librerías”, pero hay que **acordar el enfoque** cuando se imp
 
 ### 5.1 Entornos
 
-- [ ] ¿Un solo proyecto Supabase para todo el cuatrimestre, o `dev` + `prod`?
+- [x] ¿Un solo proyecto Supabase para todo el cuatrimestre, o `dev` + `prod`? — **Cerrado 2026-09-02:** un entorno de **desarrollo/prueba** para el cuatrimestre; prod separado opcional más adelante
 - [ ] ¿PostgreSQL local opcional (Docker) además de Supabase?
-- [ ] Migraciones: quién las escribe y en qué rama se aplican
+- [ ] Migraciones: scripts SQL versionados en el repo — **consultar docente** si es requisito temprano (reunión 2026-09-02)
 
 ### 5.2 Datos de prueba
 
-- [ ] Cantidad de sedes de demo (ej. 3 en lugar de 25 reales)
+- [x] Cantidad de sedes de demo — **2 o 3** (acuerdo 2026-09-02; no 25)
 - [ ] Usuarios seed: 1 gerente, 1 recepcionista, 2 socios, 1 externo
 - [ ] Canchas y clases de ejemplo por sede
 - [ ] Script o comando para cargar datos (`npm run seed`)
@@ -299,7 +297,9 @@ Patrón de **nodo de borde por sede**:
 2. Con internet caída, la sede **sigue validando** ingresos y **guarda check-ins en cola local**.
 3. Al volver la conectividad, **sincroniza** esos check-ins hacia la BD en la nube (API / PostgreSQL).
 
-- [ ] ¿Aceptamos cache/cola local + sync como base operativa de RNF-01?
+**Estado 2026-09-02:** el equipo ve el enfoque como **plausible**, pero **no lo cierra formalmente** hasta validarlo con el docente (ver [Acta](./Acta_Reunion_2026-09-02_Semana1.md) Q2).
+
+- [ ] ¿Aceptamos cache/cola local + sync como base operativa de RNF-01? — pendiente validación docente
 - [ ] ¿Dónde vive el nodo local? (app de recepción instalada en sede, servicio local, PWA, etc.)
 - [ ] ¿Formato de la cola de check-ins? (entrada/salida, `sedeId`, timestamp, `socioId`, estado sync)
 
@@ -337,9 +337,9 @@ Patrón de **nodo de borde por sede**:
 
 #### Checklist de cierre
 
-- [ ] ¿Adoptamos TOTP por socio como mecanismo de QR dinámico (RF-04) + validación local (RNF-01)?
+- [ ] ¿Adoptamos TOTP por socio como mecanismo de QR dinámico (RF-04) + validación local (RNF-01)? — **2026-09-02:** orientación favorable; **consultar docente** antes de ADR
 - [ ] Período y ventana de reloj
-- [ ] Qué viaja en el QR vs qué se muestra en pantalla
+- [ ] Qué viaja en el QR vs qué se muestra en pantalla — orientación: QR en **móvil** (Unidad VI); poco sentido en web para demos
 - [ ] Política de sync / TTL / revocados
 - [ ] Si se confirma: redactar ADR (p. ej. “Acceso offline con TOTP y nodo por sede”)
 
