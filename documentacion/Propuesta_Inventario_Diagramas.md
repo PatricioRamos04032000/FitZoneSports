@@ -79,11 +79,12 @@ Entregable: **PDF con diagramas C4 + documento ADR** ([Trabajo Integrador § Ent
 
 | Pregunta | Respuesta |
 |----------|-----------|
-| ¿Obligatorio en PDF Unidad I? | **No** |
-| ¿Conviene hacerlo? | **Sí**, pero en **Semanas 3–4** (Unidad II), cuando definan tablas en Supabase |
-| Alcance sugerido | Tablas mínimas: `sedes`, `usuarios`/`perfiles`, `membresias`, `check_ins`/`presencias`, `canchas`, `reservas_cancha`, `clases`, `inscripciones_clase`, `pagos` |
-| Dónde guardarlo | `documentacion/` o `backend/docs/` cuando exista el repo |
-| Entregable asociado | Unidad II — backend + Swagger (25%); el ER **apoya** el diseño, no sustituye Swagger |
+| ¿Obligatorio en PDF temprano? | **No** — se entrega con el paquete de arquitectura al **cierre** (aclaración docente 2026-09-04) |
+| ¿Conviene hacerlo ya? | **Sí**, en paralelo al desarrollo |
+| Propuesta actual | [Propuesta_ER_FitZone.md](./Propuesta_ER_FitZone.md) — Fase A (`sedes`, `perfiles`, `membresias`) + visión M1–M5 |
+| Alcance sugerido | Ampliar por módulo; constraints RN-01 / RN-02 documentados en la propuesta |
+| Dónde | `documentacion/Propuesta_ER_FitZone.md` → luego scripts SQL / Supabase |
+| Entregable asociado | Apoya Unidad II (esquema) y el modelo final C4+ADR+ER+clases |
 
 ### 4.2 Diagrama de clases (UML)
 

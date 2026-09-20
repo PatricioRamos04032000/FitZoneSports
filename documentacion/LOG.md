@@ -35,7 +35,7 @@ A medida que el equipo desarrolla, debe **seguir actualizando el modelo**, incor
 ### Relacionado
 
 - Pregunta abierta en reunión 2026-09-02 (¿PDF Unidad I incluye ER/clases?) → queda respondida en el sentido de que **van entrando al paquete de arquitectura a lo largo del curso**, con entrega formal al final.
-- [Acta_Reunion_2026-09-02_Semana1.md](./Acta_Reunion_2026-09-02_Semana1.md) · [Propuesta_Inventario_Diagramas.md](./Propuesta_Inventario_Diagramas.md)
+- [Acta_Reunion_2026-09-02_Semana1.md](./Acta_Reunion_2026-09-02_Semana1.md) · [Propuesta_Inventario_Diagramas.md](./Propuesta_Inventario_Diagramas.md) · [Propuesta_ER_FitZone.md](./Propuesta_ER_FitZone.md) (borrador ER Fase A + visión completa, 2026-09-04)
 
 ---
 
