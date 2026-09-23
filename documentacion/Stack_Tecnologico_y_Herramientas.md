@@ -98,7 +98,7 @@ flowchart LR
 | Acceso a datos | **API de Supabase** (`@supabase/supabase-js` desde Nest). Decisión de equipo: **mantener API**; ORM descartado |
 | Validación | class-validator + class-transformer (convención NestJS) |
 | Autenticación | **BFF en NestJS** + **Supabase Auth** (feedback docente 2026-08-28): front → Nest → Supabase Auth; roles A1–A4 en Nest |
-| Patrones GoF | Strategy (precios), Observer (lista de espera), Repository (acceso a datos) |
+| Patrones de diseño | Strategy (precios), Observer (lista de espera), Repository (acceso a datos) |
 
 ### Módulos backend alineados al dominio
 
