@@ -3,17 +3,18 @@ import { ConfigModule } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { SupabaseModule } from './supabase/supabase.module';
+import { AuthModule } from './auth/auth.module';
+import { HealthModule } from './health/health.module';
+import { SedesModule } from './sedes/sedes.module'; // <-- Agregado
 
 @Module({
   imports: [
-    ConfigModule.forRoot({ isGlobal: true}),
+    ConfigModule.forRoot({ isGlobal: true }),
     SupabaseModule,
+    HealthModule,
+    AuthModule,
+    SedesModule, // <-- Agregado
   ],
-import { AuthModule } from './auth/auth.module';
-import { HealthModule } from './health/health.module';
-
-@Module({
-  imports: [ConfigModule.forRoot({ isGlobal: true }), HealthModule, AuthModule],
   controllers: [AppController],
   providers: [AppService],
 })
