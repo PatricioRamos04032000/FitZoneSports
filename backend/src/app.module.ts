@@ -9,6 +9,11 @@ import { SupabaseModule } from './supabase/supabase.module';
     ConfigModule.forRoot({ isGlobal: true}),
     SupabaseModule,
   ],
+import { AuthModule } from './auth/auth.module';
+import { HealthModule } from './health/health.module';
+
+@Module({
+  imports: [ConfigModule.forRoot({ isGlobal: true }), HealthModule, AuthModule],
   controllers: [AppController],
   providers: [AppService],
 })

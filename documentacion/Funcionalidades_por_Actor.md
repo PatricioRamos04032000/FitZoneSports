@@ -29,12 +29,10 @@ Usuario con membresía vigente (estado **Activo**). Puede operar en todas las se
 | Membresía | Ver plan (Mensual / Trimestral / Anual), estado y renovar (automática simulada o manual vía pasarela) |
 | Acceso multi-sede | Ingresar a cualquier sede de la cadena con la misma membresía |
 | QR dinámico | Generar/mostrar QR de ingreso que rota cada minuto (RF-04) |
-| Gimnasio | Validar ingreso a sede mediante QR (membresía activa) |
 | Clases grupales | Reservar clases hasta 48 hs antes; cancelar sin penalidad hasta 2 hs antes (RF-07) |
 | Lista de espera | Enlistarse si la clase está llena y recibir notificación al liberarse un cupo (RF-08) |
 | Canchas | Consultar grilla de disponibilidad y reservar turnos (RF-10) |
 | Descuento 15% | Pagar canchas con precio de socio (`MemberDiscountPricing`) (RF-11) |
-| Horario pico | Aplicar el recargo 19:00–21:00 sobre el precio de socio (si corresponde) |
 | Pagos | Pagar membresía y reservas vía pasarela simulada; obtener comprobante PDF (RF-13, RF-14) |
 
 ### Restringido
@@ -97,7 +95,7 @@ Opera el día a día de **su sucursal**: valida accesos y resuelve incidencias l
 | Precios globales | No define precios de canchas ni políticas de descuento a nivel cadena |
 | Reportes consolidados | No visualiza reportes globales entre todas las sedes (rol de Gerente Central) |
 | Membresías globales | No redefine planes ni política comercial central |
-| QR ajeno / offline de negocio | No puede ignorar RN-01 (un usuario en dos sedes) ni RN-03 (mora) al validar beneficios |
+|Reglas de acceso| No puede ignorar RN-01 (un usuario no puede estar en dos sedes simultáneamente) ni RN-03 (un miembro con membresía vencida no accede a beneficios de socio) |
 
 ---
 
@@ -123,7 +121,6 @@ Administrador global de la cadena: configuración comercial, sedes y visión con
 | Como usuario final “socio” | No es el rol destinado a reservar para beneficio personal vía app de socio |
 | Datos de tarjeta | No almacena ni consulta PAN/CVV; solo tokens de pasarela (RNF-02) |
 | Sobreventa | No puede forzar doble reserva de la misma cancha/horario (RN-02 / ACID) |
-| Disponibilidad offline de tornos | La disponibilidad 99.5% del control de acceso (RNF-01) es requisito del sistema, no una “excepción” de negocio del gerente |
 
 ---
 
@@ -140,7 +137,7 @@ Aplica cuando el socio pasa de **Activo** a **Vencido** (o equivalente de mora).
 
 ### Queda restringido
 
-- Reservar **clases grupales** (ni cupo ni lista de espera con beneficio de socio).
+- Reservar **clases grupales** e ingresar a la lista de espera mientras la membresía se encuentre vencida.
 - Reservar / pagar canchas con el **descuento del 15%**.
 - Usar beneficios exclusivos de membresía vigente (p. ej. ingreso a gimnasio como socio activo vía QR, según validación de membresía activa en RF-04).
 
