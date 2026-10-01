@@ -3,8 +3,8 @@
 **Proyecto:** FitZone Sports · Programación V · UNER  
 **Equipo:** 4 integrantes  
 **Dedicación mínima:** 4 h/semana por integrante → **16 h/semana de equipo** (~32 h en 2 semanas)  
-**Fecha de elaboración:** 2026-08-28  
-**Última actualización de estados:** 2026-09-04  
+**Fecha de elaboración:** 2026-09-29  
+**Última actualización de estados:** 2026-10-01  
 **Unidad en curso:** I (Arquitectura) → transición a II (Frameworks)
 
 **Referencias:** [Trabajo Integrador](./Trabajo_Integrador_FitZone_Sports.md) · [Decisiones pendientes](./Decisiones_Pendientes_y_Cosas_a_Definir.md) · [LOG](./LOG.md) · [Acta 2026-09-02](./Acta_Reunion_2026-09-02_Semana1.md)
@@ -33,7 +33,7 @@
 --------------------------------------------------------------------------------
 
 #### Trabajo en curso (ahora)
-Actualizado tras la jornada del **2026-10-01**. Refleja lo que cada integrante **está trabajando**, no solo el backlog asignado.
+Actualizado tras la jornada del **2026-09-29**. Refleja lo que cada integrante **está trabajando**, no solo el backlog asignado.
 
 | Integrante | Rol | Tarea en curso (ID) | Qué está haciendo | Estado |
 | ------ | ------ | ------ | ------ | ------ |
