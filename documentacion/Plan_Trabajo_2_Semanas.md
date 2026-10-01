@@ -5,7 +5,7 @@
 **Dedicación mínima:** 4 h/semana por integrante → **16 h/semana de equipo** (~32 h en 2 semanas)  
 **Fecha de elaboración:** 2026-09-29  
 **Última actualización de estados:** 2026-10-01  
-**Unidad en curso:** I (Arquitectura) → transición a II (Frameworks)
+**Unidad en curso:** II (Frameworks) → transición a III (Patrones)
 
 **Referencias:** [Trabajo Integrador](./Trabajo_Integrador_FitZone_Sports.md) · [Decisiones pendientes](./Decisiones_Pendientes_y_Cosas_a_Definir.md) · [LOG](./LOG.md) · [Acta 2026-09-02](./Acta_Reunion_2026-09-02_Semana1.md)
 
