@@ -132,7 +132,7 @@ Estas no son “librerías”, pero hay que **acordar el enfoque** cuando se imp
 | Socio en una sola sede (RN-01) | Orientación 2026-09-02: **híbrido** (Nest + BD). Pendiente cerrar: checkout vs timeout; doble turno; conflicto offline. **Consultar docente.** → [Propuesta RN-01](./Propuesta_RN01_Presencia_Una_Sede.md) · [Acta](./Acta_Reunion_2026-09-02_Semana1.md) | Tras consulta docente / al implementar acceso |
 | Mora (RN-03) | ¿El backend bloquea descuento o solo avisa? | Al implementar precios/pagos |
 | QR dinámico (RF-04) | ¿TOTP por socio (ver §8.3)? ¿También se muestra en web? ¿Cómo se valida sin API? | Al implementar acceso |
-| Lista de espera (RF-08) | ¿Notificación por email, in-app, o solo log en demo? | Al aplicar Observer |
+| Lista de espera (RF-08) | **Resuelto (2026-10-06):** in-app + log; email simulado si el socio lo activa en su perfil. Ver [Diseño Observer](./Diseno_Observer_S4-T02_Notificaciones.md) | Al aplicar Observer |
 | Pasarela mock (RF-13) | ¿Endpoint propio que simula MercadoPago? ¿Respuestas fijas? | Semana 4+ |
 | PDF de comprobante (RF-14) | ¿Librería (p. ej. PDFKit) y dónde se guarda el archivo? | Al implementar pagos |
 
