@@ -4,7 +4,7 @@
 **Equipo:** 4 integrantes  
 **Dedicación mínima:** 4 h/semana por integrante → **16 h/semana de equipo** (~32 h en 2 semanas)  
 **Fecha de elaboración:** 2026-09-29  
-**Última actualización de estados:** 2026-10-01  
+**Última actualización de estados:** 2026-10-05  
 **Unidad en curso:** II (Frameworks) → transición a III (Patrones)
 
 **Referencias:** [Trabajo Integrador](./Trabajo_Integrador_FitZone_Sports.md) · [Decisiones pendientes](./Decisiones_Pendientes_y_Cosas_a_Definir.md) · [LOG](./LOG.md) · [Acta 2026-09-02](./Acta_Reunion_2026-09-02_Semana1.md)
@@ -33,11 +33,11 @@
 --------------------------------------------------------------------------------
 
 #### Trabajo en curso (ahora)
-Actualizado tras la jornada del **2026-09-29**. Refleja lo que cada integrante **está trabajando**, no solo el backlog asignado.
+Actualizado el **2026-10-05**. Refleja lo que cada integrante **está trabajando**, no solo el backlog asignado.
 
 | Integrante | Rol | Tarea en curso (ID) | Qué está haciendo | Estado |
 | ------ | ------ | ------ | ------ | ------ |
-| Patricio Ramos | P1 | S3-T06 | Definir Diagrama ER y modelo SQL de base de datos | En desarrollo |
+| Patricio Ramos | P1 | S3-T09 | Reunión de seguimiento y redacción del LOG | Por hacer |
 | Bruno Conti | P2 | S3-T10 | Configurar cliente separado de Supabase para Auth y arreglar POST /login | En desarrollo |
 | Lucas Coquet | P3 | S3-T05 | Conectar formulario de login React con API NestJS | Por hacer |
 | Matias Goncevat | P4 | S3-T02 | Revisar integración de PRs y preparar E2E inicial (baja temporal) | Por hacer |
@@ -46,6 +46,10 @@ Actualizado tras la jornada del **2026-09-29**. Refleja lo que cada integrante *
 
 | ID | Tarea | Quién | Estado |
 | ------ | ------ | ------ | ------ |
+| S3-T06 | Diseño de DB para Membresías y Clases: migración ejecutada en Supabase y seed de prueba ([diseño](./Diseno_BD_S3-T06_Membresias_Clases.md)) | Patricio (P1) | Finalizado |
+| S3-T11 | Plantilla del patrón Repository y refactor de `GET /sedes` ([guía](./Guia_Patron_Repository.md)) | Patricio (P1) | Finalizado |
+| S3-T01 | Swagger, prueba manual de endpoints contra Supabase y CORS (`CORS_ORIGIN`) | Patricio (P1) | Finalizado |
+| S2-T13 | Swagger: documentar login, health y sedes | Patricio (P1) | Finalizado |
 | S2-T06 | AuthModule BFF (pasarela Supabase Auth) y tests unitarios a verde | Bruno (P2) | Finalizado |
 | S3-T08 | Crear backend/.env.example y actualizar README.md (Reasignado a P2) | Bruno (P2) | Finalizado |
 
@@ -81,10 +85,10 @@ React → Nest (BFF) → Supabase Auth
 
 | Entregable | Estado |
 | --- | --- |
-| Esquema ER SQL cerrado para Membresías y Clases | En desarrollo |
-| Plantilla base del patrón Repository (sobre Sedes) | Por hacer |
+| Esquema ER SQL cerrado para Membresías y Clases | Finalizado |
+| Plantilla base del patrón Repository (sobre Sedes) | Finalizado |
 | Frontend conectado al Backend (Login funcionando E2E) | Por hacer |
-| Swagger y CORS configurados en el backend | Por hacer |
+| Swagger y CORS configurados en el backend | Finalizado |
 
 ##### Objetivos generales → tareas
 
@@ -101,20 +105,20 @@ React → Nest (BFF) → Supabase Auth
 | ID | Tarea | Asignado | Rol | Duración | Estado |
 | --- | --- | --- | --- | --- | --- |
 | S3-T10 |  Separar cliente de Supabase para login + arreglar tests y `POST /login` | Bruno Conti | P2 | 2 h | En desarrollo |
-| S3-T06 |  Diseño de DB (ER y SQL) para Membresías, Clases, Cupos y Perfiles | Patricio Ramos | P1 | 2.5 h | En desarrollo |
-| S3-T01 | Integrar Swagger, probar endpoints manualmente (S3-T02 reasignado) y setup CORS | Patricio Ramos | P1 | 2 h | Por hacer |
-| S3-T11 | Definir plantilla Patrón Repository y refactorizar `GET /sedes` como ejemplo | Patricio Ramos | P1 | 1 h | Por hacer |
+| S3-T06 |  Diseño de DB (ER y SQL) para Membresías, Clases, Cupos y Perfiles | Patricio Ramos | P1 | 2.5 h | Finalizado |
+| S3-T01 | Integrar Swagger, probar endpoints manualmente (S3-T02 reasignado) y setup CORS | Patricio Ramos | P1 | 2 h | Finalizado |
+| S3-T11 | Definir plantilla Patrón Repository y refactorizar `GET /sedes` como ejemplo | Patricio Ramos | P1 | 1 h | Finalizado |
 | S3-T05 | React: Conectar form de login con POST /auth/login (Depende de S3-T10) | Lucas Coquet | P3 | 2 h | Por hacer |
 | S3-T07 | React: Pantalla "Mi Perfil" (Depende de S3-T06 tabla `perfiles`) | Lucas Coquet | P3 | 2 h | Por hacer |
-| S3-T03 | Módulo Membresías (M1) (En Pausa - Esperando S3-T06 y S3-T11) | Bruno Conti | P2 | 2 h | Por hacer |
-| S3-T04 | Módulo Clases (M3) (En Pausa - Esperando S3-T06 y S3-T11) | Bruno Conti | P2 | 2 h | Por hacer |
+| S3-T03 | Módulo Membresías (M1) (Desbloqueada: S3-T06 y S3-T11 finalizadas) | Bruno Conti | P2 | 2 h | Por hacer |
+| S3-T04 | Módulo Clases (M3) (Desbloqueada: S3-T06 y S3-T11 finalizadas) | Bruno Conti | P2 | 2 h | Por hacer |
 | S3-T09 | Reunión de seguimiento. P1 redacta el LOG.md | Equipo | Todos | 0.5 h | Por hacer |
 
 ##### Carga por integrante — Semana 3
 
 | Integrante | Tareas | En desarrollo ahora | Total estimado | ¿≤ 4 h? |
 | --- | --- | --- | --- | --- |
-| **P1** Patricio | S3-T06, S3-T01, S3-T11, S3-T09 | S3-T06 | **6 h** | Ajustar* |
+| **P1** Patricio | S3-T06✓, S3-T01✓, S3-T11✓, S3-T09 | — | **6 h** | Ajustar* |
 | **P2** Bruno | S3-T10, S3-T03, S3-T04, S3-T09 | S3-T10 | **6.5 h** | Ajustar* |
 | **P3** Lucas | S3-T05, S3-T07, S3-T09 | — | **4.5 h** | ✓ |
 | **P4** Matias | S3-T02 (En revisión/E2E manual asíncrono) | — | **1.5 h** | *(Baja)* |
@@ -177,7 +181,7 @@ React → Nest (BFF) → Supabase Auth
 
 | Semana | ID tareas | En desarrollo ahora | Total |
 | --- | --- | --- | --- |
-| 3 | S3-T06, S3-T01, S3-T11, S3-T09 | S3-T06 | 6 h |
+| 3 | S3-T06✓, S3-T01✓, S3-T11✓, S3-T09 | — | 6 h |
 | 4 | S4-T09, S4-T02, S4-T05, S4-T08 | — | 6 h |
 | **Total 2 semanas** |  |  | **12 h** |
 
@@ -225,7 +229,7 @@ React → Nest (BFF) → Supabase Auth
 1. Recorrer tabla de tareas y actualizar **Estado** (Por hacer / En desarrollo / Finalizado).
 2. Actualizar la sección **Trabajo en curso (ahora)** — una tarea “en desarrollo” por persona como mínimo.
 3. Verificar carga por integrante (¿alguien bloqueado o sobrecargado?).
-4. Actualizar [LOG.md](https://www.google.com/search?q=./LOG.md).
+4. Actualizar [LOG.md](./LOG.md).
 5. Definir top 3 tareas de la semana siguiente.
 
 ##### Plantilla LOG
