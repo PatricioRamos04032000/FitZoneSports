@@ -78,12 +78,18 @@ create table public.configuracion_pico (
 
 **API (propuesta):** `GET /sedes/:id/configuracion-pico` (público, para mostrar en la grilla qué turnos tienen recargo) y `PUT /sedes/:id/configuracion-pico` (solo gerente).
 
-**A definir — alcance del gerente:** la consigna define al gerente como administrador **global** (A4), pero los perfiles tienen `sede_home_id`.
+**Alcance del gerente (Decidido por P1, 2026-10-06):** cada sede tiene **un gerente**, y un mismo gerente puede estar a cargo de **varias sedes**. El gerente edita la configuración pico **solo de las sedes a su cargo**; para otra sede, `PUT` responde 403.
 
-| Opción | Descripción |
-|--------|-------------|
-| a | El gerente edita **solo su sede** (`sede_home_id`) |
-| b | El gerente edita **cualquier sede** (coincide con A4) |
+- **Diferencia con la consigna:** A4 describe un gerente global. Por ahora el gerente es por sede; un rol global se puede agregar más adelante sin cambiar este esquema.
+- **Base de datos (propuesta):** `perfiles.sede_home_id` no alcanza (es una sola sede). Se agrega `sedes.gerente_id`:
+
+```sql
+alter table public.sedes
+  add column gerente_id uuid references public.perfiles (id);
+create index sedes_gerente on public.sedes (gerente_id);
+```
+
+  Nest valida que el perfil tenga rol `gerente` al asignarlo, y en cada `PUT` que `sedes.gerente_id` sea el usuario del token.
 
 ### P4 — Socio en horario pico: ¿se combinan descuento y recargo?
 
