@@ -1,13 +1,18 @@
 import { Injectable } from '@nestjs/common';
-import { LugarLiberadoEvent, mensajeLugarLiberado } from '../lugar-liberado.event';
+import { OnEvent } from '@nestjs/event-emitter';
+import {
+  LUGAR_LIBERADO,
+  type LugarLiberadoEvent,
+  mensajeLugarLiberado,
+} from '../lugar-liberado.event';
 import { NotificacionesRepository } from '../notificaciones.repository';
-import { Observer } from '../observer';
 
 /** Guarda la notificación para que el socio la vea en la web. */
 @Injectable()
-export class InAppObserver implements Observer<LugarLiberadoEvent> {
+export class InAppObserver {
   constructor(private readonly notificaciones: NotificacionesRepository) {}
 
+  @OnEvent(LUGAR_LIBERADO, { async: true })
   async update(evento: LugarLiberadoEvent): Promise<void> {
     await this.notificaciones.crear({
       perfil_id: evento.perfilId,

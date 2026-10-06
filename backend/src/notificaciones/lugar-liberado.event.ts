@@ -1,3 +1,6 @@
+/** Usar siempre la constante: un nombre mal escrito compila igual y nadie recibe el evento. */
+export const LUGAR_LIBERADO = 'lista-espera.lugar-liberado';
+
 export interface LugarLiberadoEvent {
   esperaId: string;
   perfilId: string;

@@ -1,6 +1,6 @@
-import { Module, OnModuleInit } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { AuthModule } from '../auth/auth.module';
-import { ListaEsperaSubject } from './lista-espera.subject';
+import { ListaEsperaPublisher } from './lista-espera.publisher';
 import { NotificacionesController } from './notificaciones.controller';
 import { NotificacionesRepository } from './notificaciones.repository';
 import { NotificacionesService } from './notificaciones.service';
@@ -9,12 +9,12 @@ import { InAppObserver } from './observers/in-app.observer';
 import { LogObserver } from './observers/log.observer';
 import { PreferenciasRepository } from './preferencias.repository';
 
-/** Exporta `ListaEsperaSubject` para que Clases publique los lugares liberados. */
+/** Exporta `ListaEsperaPublisher` para que Clases publique los lugares liberados. */
 @Module({
   imports: [AuthModule],
   controllers: [NotificacionesController],
   providers: [
-    ListaEsperaSubject,
+    ListaEsperaPublisher,
     InAppObserver,
     LogObserver,
     EmailSimuladoObserver,
@@ -22,19 +22,6 @@ import { PreferenciasRepository } from './preferencias.repository';
     PreferenciasRepository,
     NotificacionesService,
   ],
-  exports: [ListaEsperaSubject],
+  exports: [ListaEsperaPublisher],
 })
-export class NotificacionesModule implements OnModuleInit {
-  constructor(
-    private readonly listaEspera: ListaEsperaSubject,
-    private readonly inApp: InAppObserver,
-    private readonly log: LogObserver,
-    private readonly emailSimulado: EmailSimuladoObserver,
-  ) {}
-
-  onModuleInit(): void {
-    this.listaEspera.attach(this.inApp);
-    this.listaEspera.attach(this.log);
-    this.listaEspera.attach(this.emailSimulado);
-  }
-}
+export class NotificacionesModule {}
