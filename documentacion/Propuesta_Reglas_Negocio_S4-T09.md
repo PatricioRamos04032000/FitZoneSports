@@ -89,7 +89,7 @@ create table public.configuracion_pico (
 
 | Opción | Descripción |
 |--------|-------------|
-| **a (R)** | **Se combinan**: base × (1 + recargo de la sede) × 0,85. Las estrategias se encadenan: cada una recibe el precio de la anterior |
+| **a (R)** | **Se combinan**: base × (1 + recargo de la sede) × (1 − descuento de socio). Las estrategias se encadenan: cada una recibe el precio de la anterior |
 | b | Se aplica solo una (la más favorable al cliente) |
 | c | En pico no hay descuento |
 
@@ -114,17 +114,38 @@ Esto cierra la pregunta pendiente "Mora (RN-03): ¿bloquea descuento o solo avis
 
 **R:** al peso entero (`Math.round`) después de aplicar todas las reglas.
 
-### P8 — Dónde vive cada parámetro
+### P8 — Dónde vive cada parámetro (Decidido por P1, 2026-10-06)
 
-| Parámetro | Dónde |
-|-----------|-------|
-| Precio base | `canchas.precio_hora` (P1) |
-| Recargo, horario y días pico | `configuracion_pico` por sede (P3) |
-| Descuento de socio (15%) | Constante en Nest (`DESCUENTO_SOCIO = 0.15`): lo fija la consigna para toda la cadena |
+| Parámetro | Dónde | Quién lo edita |
+|-----------|-------|----------------|
+| Precio base | `canchas.precio_hora` (P1) | Gerente |
+| Recargo, horario y días pico | `configuracion_pico`, una fila por sede (P3) | Gerente |
+| Descuento de socio | `configuracion_cadena`, **un único valor para toda la cadena** | Gerente |
+
+**Descuento de socio configurable para toda la cadena:**
+
+- **Valor por defecto:** 15% (RF-11). Validación: entre 0 y 100; 0 = sin descuento.
+- **Un solo valor para todas las sedes:** el socio accede a todas las sedes (A1) y el gerente es administrador global (A4), así que el socio paga el mismo descuento en cualquier sede.
+- **Cambios:** solo afectan reservas nuevas (P6).
+- Lo que **no** cambia: quién tiene derecho al descuento (socio con membresía activa, P5 / RN-03).
+
+**Base de datos (propuesta):** tabla de una sola fila para los parámetros de toda la cadena, donde se pueden sumar otros más adelante:
+
+```sql
+create table public.configuracion_cadena (
+  id boolean primary key default true check (id), -- garantiza una sola fila
+  descuento_socio_pct numeric(5, 2) not null default 15
+    check (descuento_socio_pct between 0 and 100),
+  updated_at timestamptz not null default now()
+);
+insert into public.configuracion_cadena default values;
+```
+
+**API (propuesta):** `GET /configuracion/descuento-socio` (público, para mostrar el precio de socio en la grilla) y `PUT /configuracion/descuento-socio` (solo gerente).
 
 ### Ejemplos (base $20.000)
 
-Sede con configuración por defecto (20%, 19:00–21:00, todos los días):
+Con el descuento de socio por defecto (15%) y una sede con configuración pico por defecto (20%, 19:00–21:00, todos los días):
 
 | Cliente | Turno | Cálculo | Precio |
 |---------|-------|---------|--------|
@@ -141,6 +162,13 @@ Sede configurada con 30%, 18:00–22:00, lunes a viernes:
 | Externo | martes 18:00 | 20.000 × 1,30 | **$26.000** |
 | Externo | martes 22:00 | fuera del horario | **$20.000** |
 | Socio activo | martes 21:00 | 20.000 × 1,30 × 0,85 | **$22.100** |
+
+Si el gerente cambia el descuento de socio a 10% (misma sede):
+
+| Cliente | Turno | Cálculo | Precio |
+|---------|-------|---------|--------|
+| Socio activo | martes 17:00 | 20.000 × 0,90 | **$18.000** |
+| Socio activo | martes 21:00 | 20.000 × 1,30 × 0,90 | **$23.400** |
 | Externo | sábado 19:00 | sábado no aplica | **$20.000** |
 
 Estos casos sirven directamente como tests de S4-T01.
@@ -152,12 +180,12 @@ interface PricingStrategy {
   aplica(ctx: ContextoPrecio): boolean;
   calcular(precio: number, ctx: ContextoPrecio): number;
 }
-// ContextoPrecio: { precioBase, inicio, esSocioActivo, pico: ConfiguracionPico }
+// ContextoPrecio: { precioBase, inicio, esSocioActivo, descuentoSocioPct, pico: ConfiguracionPico }
 // ConfiguracionPico: { recargoPct, desde, hasta, dias } (de la sede de la cancha)
 // StandardPricing      -> siempre aplica, devuelve precioBase
 // PeakHourPricing      -> aplica si el día de inicio está en pico.dias y la hora
 //                         de inicio está en [desde, hasta); precio * (1 + recargoPct / 100)
-// MemberDiscountPricing-> aplica si esSocioActivo, precio * 0.85
+// MemberDiscountPricing-> aplica si esSocioActivo, precio * (1 - descuentoSocioPct / 100)
 ```
 
 ---
@@ -177,5 +205,5 @@ interface PricingStrategy {
 
 1. Marcar cada punto como **Decidido** en este documento.
 2. Bruno arranca S4-T06 (tablas `canchas` con `precio_hora`, `reservas_cancha` con `precio` y `configuracion_pico`) y S4-T01 con los ejemplos de las tablas como tests.
-3. Asignar los endpoints de configuración pico (`GET`/`PUT /sedes/:id/configuracion-pico`) y su pantalla para el gerente: no estaban en el plan.
+3. Asignar los endpoints de configuración (`/sedes/:id/configuracion-pico` y `/configuracion/descuento-socio`) y su pantalla para el gerente: no estaban en el plan.
 4. Actualizar [Decisiones pendientes](./Decisiones_Pendientes_y_Cosas_a_Definir.md) (Mora RN-03).
