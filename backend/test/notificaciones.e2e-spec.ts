@@ -4,7 +4,7 @@ import request from 'supertest';
 import { App } from 'supertest/types';
 import { AppModule } from './../src/app.module';
 import { SUPABASE_JWKS } from './../src/auth/supabase-jwt.service';
-import { ListaEsperaSubject } from './../src/notificaciones/lista-espera.subject';
+import { ListaEsperaPublisher } from './../src/notificaciones/lista-espera.publisher';
 import { NotificacionesRepository } from './../src/notificaciones/notificaciones.repository';
 import { PreferenciasRepository } from './../src/notificaciones/preferencias.repository';
 import { createTestSigner, type TestSigner } from './support/supabase-jwt';
@@ -100,13 +100,16 @@ describe('Notificaciones (e2e)', () => {
     });
   });
 
-  it('al liberarse un lugar, los observadores suscriptos guardan la notificación in-app', async () => {
+  it('al liberarse un lugar, los observadores registrados con @OnEvent guardan la notificación in-app', async () => {
     preferencias.findByPerfil.mockResolvedValue({ notificar_por_email: false });
 
-    await app.get(ListaEsperaSubject).notificarLugaresLiberados(
+    app.get(ListaEsperaPublisher).notificarLugaresLiberados(
       { id: 'c1', tipo: 'Spinning', inicio: '2026-10-07T21:00:00Z' },
       [{ id: 'e1', perfil_id: PERFIL_ID, vence_en: '2026-10-07T19:30:00Z' }],
     );
+    for (let i = 0; i < 10; i++) {
+      await new Promise((resolve) => setImmediate(resolve));
+    }
 
     expect(notificaciones.crear).toHaveBeenCalledWith(
       expect.objectContaining({ perfil_id: PERFIL_ID, tipo: 'lugar_liberado' }),
