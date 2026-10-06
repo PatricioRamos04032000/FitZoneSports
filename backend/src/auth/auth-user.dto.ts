@@ -1,4 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { ROLES_USUARIO, type RolUsuario } from './rol-usuario';
 
 export class AuthUserDto {
   @ApiProperty({
@@ -15,4 +16,14 @@ export class AuthUserDto {
     description: 'Rol de Supabase Auth, no el rol de la aplicación',
   })
   role: string;
+}
+
+export class MeResponseDto extends AuthUserDto {
+  @ApiProperty({
+    enum: ROLES_USUARIO,
+    nullable: true,
+    example: 'socio',
+    description: 'Rol de FitZone (perfiles.rol). null si el usuario todavía no tiene perfil',
+  })
+  rol: RolUsuario | null;
 }
