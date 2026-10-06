@@ -76,11 +76,11 @@ create table public.configuracion_pico (
 );
 ```
 
-**API (propuesta):** `GET /sedes/:id/configuracion-pico` (público, para mostrar en la grilla qué turnos tienen recargo) y `PUT /sedes/:id/configuracion-pico` (solo gerente).
+**API (propuesta):** `GET /sedes/:id/configuracion-pico` (público, para mostrar en la grilla qué turnos tienen recargo) y `PUT /sedes/:id/configuracion-pico` (solo el gerente de esa sede).
 
 **Alcance del gerente (Decidido por P1, 2026-10-06):** cada sede tiene **un gerente**, y un mismo gerente puede estar a cargo de **varias sedes**. El gerente edita la configuración pico **solo de las sedes a su cargo**; para otra sede, `PUT` responde 403.
 
-- **Diferencia con la consigna:** A4 describe un gerente global. Por ahora el gerente es por sede; un rol global se puede agregar más adelante sin cambiar este esquema.
+- **Diferencia con la consigna:** A4 describe un gerente global. Acá el gerente es por sede, y lo global queda en el rol nuevo `administrador` (ver P8).
 - **Base de datos (propuesta):** `perfiles.sede_home_id` no alcanza (es una sola sede). Se agrega `sedes.gerente_id`:
 
 ```sql
@@ -124,14 +124,15 @@ Esto cierra la pregunta pendiente "Mora (RN-03): ¿bloquea descuento o solo avis
 
 | Parámetro | Dónde | Quién lo edita |
 |-----------|-------|----------------|
-| Precio base | `canchas.precio_hora` (P1) | Gerente |
-| Recargo, horario y días pico | `configuracion_pico`, una fila por sede (P3) | Gerente |
-| Descuento de socio | `configuracion_cadena`, **un único valor para toda la cadena** | Gerente |
+| Precio base | `canchas.precio_hora` (P1) | Gerente de la sede |
+| Recargo, horario y días pico | `configuracion_pico`, una fila por sede (P3) | Gerente de la sede |
+| Descuento de socio | `configuracion_cadena`, **un único valor para toda la cadena** | **Administrador** de la cadena (rol nuevo) |
 
 **Descuento de socio configurable para toda la cadena:**
 
 - **Valor por defecto:** 15% (RF-11). Validación: entre 0 y 100; 0 = sin descuento.
-- **Un solo valor para todas las sedes:** el socio accede a todas las sedes (A1) y el gerente es administrador global (A4), así que el socio paga el mismo descuento en cualquier sede.
+- **Un solo valor para todas las sedes:** el socio accede a todas las sedes (A1), así que paga el mismo descuento en cualquier sede.
+- **Quién lo edita:** como los gerentes son por sede (P3), se agrega el rol `administrador` para lo que afecta a toda la cadena. Un gerente que intente cambiarlo recibe 403.
 - **Cambios:** solo afectan reservas nuevas (P6).
 - Lo que **no** cambia: quién tiene derecho al descuento (socio con membresía activa, P5 / RN-03).
 
@@ -145,9 +146,16 @@ create table public.configuracion_cadena (
   updated_at timestamptz not null default now()
 );
 insert into public.configuracion_cadena default values;
+
+-- Rol para lo que afecta a toda la cadena
+alter type public.rol_usuario add value 'administrador';
 ```
 
-**API (propuesta):** `GET /configuracion/descuento-socio` (público, para mostrar el precio de socio en la grilla) y `PUT /configuracion/descuento-socio` (solo gerente).
+**Rol `administrador` (Decidido por P1, 2026-10-06):** toma la parte global de A4 que el gerente por sede ya no cubre. Por ahora edita el descuento de socio.
+
+**Sugerencia, a confirmar:** que también cree sedes, asigne su gerente (`sedes.gerente_id`) y vea los reportes consolidados, que son las otras funciones globales de A4.
+
+**API (propuesta):** `GET /configuracion/descuento-socio` (público, para mostrar el precio de socio en la grilla) y `PUT /configuracion/descuento-socio` (solo administrador).
 
 ### Ejemplos (base $20.000)
 
