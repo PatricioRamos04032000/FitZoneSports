@@ -50,7 +50,7 @@ RF-11 fija el horario pico en 19:00–21:00; P3 lo toma como valor por defecto y
 
 ### P3 — Recargo de horario pico: configurable por sede (Decidido por P1, 2026-10-06)
 
-**Cada sede tiene su propia configuración de horario pico, y la edita el gerente.** Se configuran tres cosas:
+**Cada sede tiene su propia configuración de horario pico, y la edita el Administrador de Sede (A3).** Se configuran tres cosas:
 
 | Dato | Ejemplo | Validación |
 |------|---------|------------|
@@ -76,20 +76,33 @@ create table public.configuracion_pico (
 );
 ```
 
-**API (propuesta):** `GET /sedes/:id/configuracion-pico` (público, para mostrar en la grilla qué turnos tienen recargo) y `PUT /sedes/:id/configuracion-pico` (solo el gerente de esa sede).
+**API (propuesta):** `GET /sedes/:id/configuracion-pico` (público, para mostrar en la grilla qué turnos tienen recargo) y `PUT /sedes/:id/configuracion-pico` (solo un administrador de esa sede).
 
-**Alcance del gerente (Decidido por P1, 2026-10-06):** cada sede tiene **un gerente**, y un mismo gerente puede estar a cargo de **varias sedes**. El gerente edita la configuración pico **solo de las sedes a su cargo**; para otra sede, `PUT` responde 403.
+**Quién la edita (Decidido por P1, 2026-10-06): el Administrador de Sede (A3).** Los roles siguen la consigna:
 
-- **Diferencia con la consigna:** A4 describe un gerente global. Acá el gerente es por sede, y lo global queda en el rol nuevo `administrador` (ver P8).
-- **Base de datos (propuesta):** `perfiles.sede_home_id` no alcanza (es una sola sede). Se agrega `sedes.gerente_id`:
+| Rol (consigna) | Rol en la base | Alcance |
+|----------------|----------------|---------|
+| A3 — Recepcionista / Admin. de Sede | `admin_sede` (hoy `recepcionista`, se renombra) | Las sedes que tiene asignadas: una o varias |
+| A4 — Gerente Central | `gerente` | Toda la cadena |
+
+- El administrador de sede edita la configuración pico **solo de las sedes asignadas**; para otra sede, `PUT` responde 403.
+- Un mismo administrador puede tener **varias sedes**, y una sede puede tener **más de un administrador** (p. ej. turnos de recepción).
+- El Gerente Central **no** edita la configuración pico de las sedes.
+
+**Base de datos (propuesta):** `perfiles.sede_home_id` no alcanza (es una sola sede). Se agrega una tabla de asignación:
 
 ```sql
-alter table public.sedes
-  add column gerente_id uuid references public.perfiles (id);
-create index sedes_gerente on public.sedes (gerente_id);
+-- A3: la consigna une recepcionista y administrador de sede en un solo actor
+alter type public.rol_usuario rename value 'recepcionista' to 'admin_sede';
+
+create table public.admins_sede (
+  perfil_id uuid not null references public.perfiles (id) on delete cascade,
+  sede_id uuid not null references public.sedes (id) on delete cascade,
+  primary key (perfil_id, sede_id)
+);
 ```
 
-  Nest valida que el perfil tenga rol `gerente` al asignarlo, y en cada `PUT` que `sedes.gerente_id` sea el usuario del token.
+Nest valida que el perfil tenga rol `admin_sede` al asignarlo, y en cada `PUT` que exista la fila `(usuario del token, sede)`.
 
 ### P4 — Socio en horario pico: ¿se combinan descuento y recargo?
 
@@ -124,15 +137,15 @@ Esto cierra la pregunta pendiente "Mora (RN-03): ¿bloquea descuento o solo avis
 
 | Parámetro | Dónde | Quién lo edita |
 |-----------|-------|----------------|
-| Precio base | `canchas.precio_hora` (P1) | Gerente de la sede |
-| Recargo, horario y días pico | `configuracion_pico`, una fila por sede (P3) | Gerente de la sede |
-| Descuento de socio | `configuracion_cadena`, **un único valor para toda la cadena** | **Administrador** de la cadena (rol nuevo) |
+| Precio base | `canchas.precio_hora` (P1) | Gerente Central (A4: "define precios") |
+| Recargo, horario y días pico | `configuracion_pico`, una fila por sede (P3) | Administrador de esa sede (A3) |
+| Descuento de socio | `configuracion_cadena`, **un único valor para toda la cadena** | Gerente Central (A4) |
 
 **Descuento de socio configurable para toda la cadena:**
 
 - **Valor por defecto:** 15% (RF-11). Validación: entre 0 y 100; 0 = sin descuento.
 - **Un solo valor para todas las sedes:** el socio accede a todas las sedes (A1), así que paga el mismo descuento en cualquier sede.
-- **Quién lo edita:** como los gerentes son por sede (P3), se agrega el rol `administrador` para lo que afecta a toda la cadena. Un gerente que intente cambiarlo recibe 403.
+- **Quién lo edita:** el Gerente Central (`gerente`), que es el administrador global de la consigna (A4). Otro rol que intente cambiarlo recibe 403.
 - **Cambios:** solo afectan reservas nuevas (P6).
 - Lo que **no** cambia: quién tiene derecho al descuento (socio con membresía activa, P5 / RN-03).
 
@@ -146,16 +159,11 @@ create table public.configuracion_cadena (
   updated_at timestamptz not null default now()
 );
 insert into public.configuracion_cadena default values;
-
--- Rol para lo que afecta a toda la cadena
-alter type public.rol_usuario add value 'administrador';
 ```
 
-**Rol `administrador` (Decidido por P1, 2026-10-06):** toma la parte global de A4 que el gerente por sede ya no cubre. Por ahora edita el descuento de socio.
+**API (propuesta):** `GET /configuracion/descuento-socio` (público, para mostrar el precio de socio en la grilla) y `PUT /configuracion/descuento-socio` (solo Gerente Central).
 
-**Sugerencia, a confirmar:** que también cree sedes, asigne su gerente (`sedes.gerente_id`) y vea los reportes consolidados, que son las otras funciones globales de A4.
-
-**API (propuesta):** `GET /configuracion/descuento-socio` (público, para mostrar el precio de socio en la grilla) y `PUT /configuracion/descuento-socio` (solo administrador).
+**Sugerencia, a confirmar:** que el Gerente Central sea también quien asigna los administradores de cada sede (`admins_sede`), junto con sus otras funciones de A4 (crear sedes, reportes consolidados).
 
 ### Ejemplos (base $20.000)
 
@@ -177,7 +185,7 @@ Sede configurada con 30%, 18:00–22:00, lunes a viernes:
 | Externo | martes 22:00 | fuera del horario | **$20.000** |
 | Socio activo | martes 21:00 | 20.000 × 1,30 × 0,85 | **$22.100** |
 
-Si el gerente cambia el descuento de socio a 10% (misma sede):
+Si el Gerente Central cambia el descuento de socio a 10% (misma sede):
 
 | Cliente | Turno | Cálculo | Precio |
 |---------|-------|---------|--------|
@@ -219,5 +227,6 @@ interface PricingStrategy {
 
 1. Marcar cada punto como **Decidido** en este documento.
 2. Bruno arranca S4-T06 (tablas `canchas` con `precio_hora`, `reservas_cancha` con `precio` y `configuracion_pico`) y S4-T01 con los ejemplos de las tablas como tests.
-3. Asignar los endpoints de configuración (`/sedes/:id/configuracion-pico` y `/configuracion/descuento-socio`) y su pantalla para el gerente: no estaban en el plan.
-4. Actualizar [Decisiones pendientes](./Decisiones_Pendientes_y_Cosas_a_Definir.md) (Mora RN-03).
+3. Asignar los endpoints de configuración (`/sedes/:id/configuracion-pico` y `/configuracion/descuento-socio`) y sus pantallas para el Administrador de Sede y el Gerente Central: no estaban en el plan.
+4. Si se aprueba el renombre `recepcionista` → `admin_sede`, actualizar las menciones en la documentación (Funcionalidades por actor, C4, Propuesta ER, Diseño BD S3-T06). Ningún código del backend usa ese valor.
+5. Actualizar [Decisiones pendientes](./Decisiones_Pendientes_y_Cosas_a_Definir.md) (Mora RN-03).
