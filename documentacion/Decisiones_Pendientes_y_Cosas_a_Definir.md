@@ -226,11 +226,11 @@ Definir **nombres** de variables; los valores viven solo en Vercel / Render / lo
 
 **Backend (Render / local):**
 
-- [ ] `SUPABASE_URL`
-- [ ] `SUPABASE_SERVICE_ROLE_KEY` (solo backend; nunca en el frontend)
+- [x] `SUPABASE_URL`
+- [x] `SUPABASE_SERVICE_ROLE_KEY` (solo backend; nunca en el frontend)
 - [ ] `DATABASE_URL` (opcional: scripts SQL / migraciones / admin; no como acceso principal en runtime)
-- [ ] URL del frontend para CORS (`CORS_ORIGIN`)
-- [ ] `PORT`
+- [x] URL del frontend para CORS (`CORS_ORIGIN`, separados por coma; por defecto `http://localhost:5173`). Falta el valor de producción: la URL de Vercel
+- [x] `PORT`
 - [ ] `NODE_ENV`
 
 **Frontend (Vercel / local):**
