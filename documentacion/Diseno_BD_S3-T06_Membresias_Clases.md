@@ -1,6 +1,6 @@
 # Diseño de base de datos — Membresías, Clases, Cupos y Perfiles (S3-T06)
 
-**Estado:** decisiones cerradas (salvo D5). Migración probada en PostgreSQL local; **pendiente de ejecutar en Supabase.**  
+**Estado:** decisiones cerradas (salvo D5). Migración probada en PostgreSQL local y **ejecutada en Supabase el 2026-10-05**, con seed cargado.  
 **Fecha:** 2026-10-05  
 **Tarea:** S3-T06 (bloquea S3-T03 Membresías, S3-T04 Clases y S3-T07 Mi Perfil)  
 **Migración:** [`supabase/migrations/20261005220000_membresias_clases.sql`](../supabase/migrations/20261005220000_membresias_clases.sql)  
@@ -186,7 +186,18 @@ La migración se probó en un PostgreSQL 18 local, sobre una réplica de la Fase
 
 ---
 
-## 7. Pendientes
+## 7. Datos de prueba en Supabase (seed 2026-10-05)
+
+| Dato | Detalle |
+|------|---------|
+| Socio | Usuario de prueba de Auth, perfil `socio` (DNI 30000001) |
+| Gerente | `gerente@fitzone.com`, perfil `gerente`, sede FitZone Central. Contraseña: pedirla a P1 (no va en el repo) |
+| Membresías del socio | Mensual `vencido` (septiembre) y mensual `activo` (2026-10-01 a 2026-10-31) |
+| Clases | Spinning (Central, 07/10 18 h, **capacidad 1** para probar lista de espera), Yoga (Central, 08/10 9 h, 15), Funcional (Norte, 07/10 19 h, 10) |
+
+---
+
+## 8. Pendientes
 
 | Tema | Responsable sugerido |
 |------|----------------------|
@@ -197,12 +208,10 @@ La migración se probó en un PostgreSQL 18 local, sobre una réplica de la Fase
 
 ---
 
-## 8. Próximos pasos
+## 9. Próximos pasos
 
-1. Ejecutar la migración en Supabase (SQL Editor).
-2. Cargar el seed: perfil para el usuario de prueba, un gerente, una membresía activa y algunas clases (una con capacidad 1 para probar la lista de espera).
-3. Actualizar la [Propuesta ER](./Propuesta_ER_FitZone.md) con el diagrama final.
-4. Avisar a Bruno (S3-T03, S3-T04) y a Lucas (S3-T07) que pueden arrancar.
+1. Avisar a Bruno (S3-T03, S3-T04) y a Lucas (S3-T07) que pueden arrancar.
+2. Resolver los pendientes de la sección 8.
 
 ---
 
