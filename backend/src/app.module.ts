@@ -6,6 +6,7 @@ import { SupabaseModule } from './supabase/supabase.module';
 import { AuthModule } from './auth/auth.module';
 import { HealthModule } from './health/health.module';
 import { SedesModule } from './sedes/sedes.module'; // <-- Agregado
+import { NotificacionesModule } from './notificaciones/notificaciones.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { SedesModule } from './sedes/sedes.module'; // <-- Agregado
     HealthModule,
     AuthModule,
     SedesModule, // <-- Agregado
+    NotificacionesModule,
   ],
   controllers: [AppController],
   providers: [AppService],
