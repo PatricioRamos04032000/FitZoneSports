@@ -1,6 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Sede } from './sede.model';
 
-export class SedeDto {
+export class SedeDto implements Sede {
   @ApiProperty({ format: 'uuid', example: '42363e91-8c03-4d52-b160-5c1345be8656' })
   id: string;
 

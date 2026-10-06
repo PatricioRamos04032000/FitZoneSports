@@ -1,21 +1,12 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
-import { SupabaseService } from '../supabase/supabase.service';
+import { Injectable } from '@nestjs/common';
+import { Sede } from './sede.model';
+import { SedesRepository } from './sedes.repository';
 
 @Injectable()
 export class SedesService {
-  
-  constructor(private readonly supabase: SupabaseService) {}
+  constructor(private readonly sedesRepository: SedesRepository) {}
 
-  async findAll() {
-    // esto hace un SELECT * FROM sedes usando la API de Supabase
-    const { data, error } = await this.supabase.getClient()
-      .from('sedes')
-      .select('*');
-
-    if (error) {
-      throw new InternalServerErrorException('Error al obtener las sedes desde Supabase');
-    }
-
-    return data;
+  findAll(): Promise<Sede[]> {
+    return this.sedesRepository.findAll();
   }
 }
