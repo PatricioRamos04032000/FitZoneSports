@@ -6,7 +6,7 @@ export class AuthService {
   constructor(private readonly supabase: SupabaseService) {}
 
   async login(email: string, password: string) {
-    const { data, error } = await this.supabase.getClient().auth.signInWithPassword({
+    const { data, error } = await this.supabase.createAuthClient().auth.signInWithPassword({
       email,
       password,
     });
