@@ -20,6 +20,8 @@ Cada punto tiene opciones y una recomendación (**R**). En la reunión se marca 
 | Dos reservas de la misma cancha y horario: solo una tiene éxito | RN-02 |
 | El gerente define precios y políticas | A4 |
 
+RF-11 fija el horario pico en 19:00–21:00; P3 lo toma como valor por defecto y permite que cada sede lo cambie.
+
 **Eventos del Observer:** ya decidido en S4-T02 (solo "lugar liberado"; in-app + log + email simulado opcional). Ver [Diseño Observer](./Diseno_Observer_S4-T02_Notificaciones.md).
 
 ---
@@ -46,19 +48,48 @@ Cada punto tiene opciones y una recomendación (**R**). En la reunión se marca 
 
 **R:** (a). La grilla y la regla anti doble reserva (RN-02) quedan simples: `unique (cancha_id, inicio)`.
 
-### P3 — Recargo de horario pico
+### P3 — Recargo de horario pico: configurable por sede (Decidido por P1, 2026-10-06)
 
-| Tema | Opciones | R |
-|------|----------|---|
-| Porcentaje | +10% · **+20%** · +30% | **+20%** |
-| Qué turnos | **Los que empiezan a las 19:00 y 20:00** (hora Argentina) | idem |
-| Qué días | **Todos** · solo lunes a viernes | **Todos** (más simple; se puede cambiar después) |
+**Cada sede tiene su propia configuración de horario pico, y la edita el gerente.** Se configuran tres cosas:
+
+| Dato | Ejemplo | Validación |
+|------|---------|------------|
+| Porcentaje de recargo | 20 | Entre 0 y 100. 0 = sin recargo |
+| Horario pico | desde 19:00 hasta 21:00 | Horas en punto (los turnos son de 60 min, P2); `desde` < `hasta` |
+| Días en que aplica | lunes a viernes | Lista de días (1 = lunes … 7 = domingo). Vacía = sin recargo |
+
+- **Qué turnos pagan recargo:** los que **empiezan** dentro del horario, en hora Argentina. Con 19:00–21:00: los de las 19 y las 20.
+- **Valores por defecto** al crear una sede: 20%, 19:00–21:00, todos los días (lo que pide RF-11).
+- **Cambios:** solo afectan reservas nuevas; las ya hechas mantienen su precio (P6).
+
+**Base de datos (propuesta):** tabla `configuracion_pico` con una fila por sede:
+
+```sql
+create table public.configuracion_pico (
+  sede_id uuid primary key references public.sedes (id) on delete cascade,
+  recargo_pct numeric(5, 2) not null default 20 check (recargo_pct between 0 and 100),
+  desde time not null default '19:00',
+  hasta time not null default '21:00',
+  dias smallint[] not null default '{1,2,3,4,5,6,7}',
+  updated_at timestamptz not null default now(),
+  constraint configuracion_pico_horario check (desde < hasta)
+);
+```
+
+**API (propuesta):** `GET /sedes/:id/configuracion-pico` (público, para mostrar en la grilla qué turnos tienen recargo) y `PUT /sedes/:id/configuracion-pico` (solo gerente).
+
+**A definir — alcance del gerente:** la consigna define al gerente como administrador **global** (A4), pero los perfiles tienen `sede_home_id`.
+
+| Opción | Descripción |
+|--------|-------------|
+| a | El gerente edita **solo su sede** (`sede_home_id`) |
+| b | El gerente edita **cualquier sede** (coincide con A4) |
 
 ### P4 — Socio en horario pico: ¿se combinan descuento y recargo?
 
 | Opción | Descripción |
 |--------|-------------|
-| **a (R)** | **Se combinan**: base × 1,20 × 0,85. Las estrategias se encadenan: cada una recibe el precio de la anterior |
+| **a (R)** | **Se combinan**: base × (1 + recargo de la sede) × 0,85. Las estrategias se encadenan: cada una recibe el precio de la anterior |
 | b | Se aplica solo una (la más favorable al cliente) |
 | c | En pico no hay descuento |
 
@@ -83,16 +114,17 @@ Esto cierra la pregunta pendiente "Mora (RN-03): ¿bloquea descuento o solo avis
 
 **R:** al peso entero (`Math.round`) después de aplicar todas las reglas.
 
-### P8 — Dónde viven los porcentajes y el horario pico
+### P8 — Dónde vive cada parámetro
 
-| Opción | Descripción |
-|--------|-------------|
-| **a (R)** | Constantes en Nest (`DESCUENTO_SOCIO = 0.15`, `RECARGO_PICO = 0.20`, `PICO = 19–21`) |
-| b | Tabla `politicas_precio` editable por el gerente |
-
-**R:** (a) por ahora: el gerente ya controla el precio base (P1). Pasar a (b) es agregar una tabla y que las estrategias lean de ahí, sin cambiar su interfaz.
+| Parámetro | Dónde |
+|-----------|-------|
+| Precio base | `canchas.precio_hora` (P1) |
+| Recargo, horario y días pico | `configuracion_pico` por sede (P3) |
+| Descuento de socio (15%) | Constante en Nest (`DESCUENTO_SOCIO = 0.15`): lo fija la consigna para toda la cadena |
 
 ### Ejemplos (base $20.000)
+
+Sede con configuración por defecto (20%, 19:00–21:00, todos los días):
 
 | Cliente | Turno | Cálculo | Precio |
 |---------|-------|---------|--------|
@@ -101,6 +133,15 @@ Esto cierra la pregunta pendiente "Mora (RN-03): ¿bloquea descuento o solo avis
 | Socio activo | 17:00 | 20.000 × 0,85 | **$17.000** |
 | Socio activo | 20:00 | 20.000 × 1,20 × 0,85 | **$20.400** |
 | Socio vencido | 19:00 | igual que externo | **$24.000** |
+
+Sede configurada con 30%, 18:00–22:00, lunes a viernes:
+
+| Cliente | Turno | Cálculo | Precio |
+|---------|-------|---------|--------|
+| Externo | martes 18:00 | 20.000 × 1,30 | **$26.000** |
+| Externo | martes 22:00 | fuera del horario | **$20.000** |
+| Socio activo | martes 21:00 | 20.000 × 1,30 × 0,85 | **$22.100** |
+| Externo | sábado 19:00 | sábado no aplica | **$20.000** |
 
 Estos casos sirven directamente como tests de S4-T01.
 
@@ -111,9 +152,11 @@ interface PricingStrategy {
   aplica(ctx: ContextoPrecio): boolean;
   calcular(precio: number, ctx: ContextoPrecio): number;
 }
-// ContextoPrecio: { precioBase, inicio, esSocioActivo }
+// ContextoPrecio: { precioBase, inicio, esSocioActivo, pico: ConfiguracionPico }
+// ConfiguracionPico: { recargoPct, desde, hasta, dias } (de la sede de la cancha)
 // StandardPricing      -> siempre aplica, devuelve precioBase
-// PeakHourPricing      -> aplica si inicio es 19:00 o 20:00, precio * 1.20
+// PeakHourPricing      -> aplica si el día de inicio está en pico.dias y la hora
+//                         de inicio está en [desde, hasta); precio * (1 + recargoPct / 100)
 // MemberDiscountPricing-> aplica si esSocioActivo, precio * 0.85
 ```
 
@@ -133,5 +176,6 @@ interface PricingStrategy {
 ## 4. Después de la reunión
 
 1. Marcar cada punto como **Decidido** en este documento.
-2. Bruno arranca S4-T06 (tabla `canchas` con `precio_hora`, `reservas_cancha` con `precio`) y S4-T01 con los ejemplos de la tabla como tests.
-3. Actualizar [Decisiones pendientes](./Decisiones_Pendientes_y_Cosas_a_Definir.md) (Mora RN-03).
+2. Bruno arranca S4-T06 (tablas `canchas` con `precio_hora`, `reservas_cancha` con `precio` y `configuracion_pico`) y S4-T01 con los ejemplos de las tablas como tests.
+3. Asignar los endpoints de configuración pico (`GET`/`PUT /sedes/:id/configuracion-pico`) y su pantalla para el gerente: no estaban en el plan.
+4. Actualizar [Decisiones pendientes](./Decisiones_Pendientes_y_Cosas_a_Definir.md) (Mora RN-03).
