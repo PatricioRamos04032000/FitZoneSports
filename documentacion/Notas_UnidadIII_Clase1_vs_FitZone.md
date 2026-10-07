@@ -10,9 +10,9 @@
 
 | Tema | Qué dice el profesor | Impacto en FitZone |
 |------|----------------------|--------------------|
-| **Observer a mano** | En "Cuándo NO usar un patrón" pone como ejemplo "un Observer a mano habiendo eventos de dominio" en el framework. Contrapregunta: "¿qué me da mi versión que no me da la del framework?" (diap. 46) | Es lo que hicimos en S4-T02 al elegir interfaces propias frente a `@nestjs/event-emitter`. La justificación tiene que responder esa pregunta |
+| **Observer a mano** | En "Cuándo NO usar un patrón" pone como ejemplo "un Observer a mano habiendo eventos de dominio" en el framework. Contrapregunta: "¿qué me da mi versión que no me da la del framework?" (diap. 46) | **Resuelto:** la primera versión de S4-T02 tenía interfaces propias; se migró a `@nestjs/event-emitter` y la justificación explica por qué |
 | **Strategy o Decorator** para el precio (RF-11) | Si las reglas son excluyentes, es Strategy. Si se **acumulan** sobre el mismo precio (descuento + recargo + IVA), en rigor es una cadena de decoradores. Acepta cualquiera de los dos nombres si la justificación lo explica (diap. 26 y 35) | Nuestro diseño (S4-T09, P4) combina descuento y recargo: hay que decirlo explícitamente en la sección Strategy |
-| **Tres decisiones obligatorias del Observer** | Las pide "sí o sí" en el Trabajo Integrador (diap. 37): (1) ¿antes o después del commit?; (2) ¿mismo hilo u otro?; (3) ¿qué pasa si el proceso se cae entre el commit y el aviso? (bandeja de salida) | La justificación cubre en parte la (1) y no las otras dos |
+| **Tres decisiones obligatorias del Observer** | Las pide "sí o sí" en el Trabajo Integrador (diap. 37): (1) ¿antes o después del commit?; (2) ¿mismo hilo u otro?; (3) ¿qué pasa si el proceso se cae entre el commit y el aviso? (bandeja de salida) | **Resuelto:** la justificación (sección Observer) y el diseño de S4-T02 responden las tres |
 
 ---
 

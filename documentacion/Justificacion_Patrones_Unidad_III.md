@@ -119,12 +119,14 @@ El equipo decidió avisar por varios canales: in-app siempre, log, y email simul
 
 Observer define una relación uno a muchos: cuando el **sujeto** cambia de estado, avisa a todos sus **observadores** sin conocer qué hace cada uno. Clases solo publica "se liberó un lugar"; los canales se suscriben.
 
+NestJS ya trae este mecanismo: **`@nestjs/event-emitter`**, el equivalente al `ApplicationEventPublisher` de Spring que usa la clase como ejemplo de Observer (diapositiva 36). Lo usamos en lugar de escribir el patrón a mano.
+
 ### Alternativas descartadas
 
 | Alternativa | Por qué no |
 |-------------|------------|
 | Llamar a cada canal desde `ClasesService` | Acoplamiento descripto arriba |
-| `@nestjs/event-emitter` | Implementa la misma idea, pero el patrón queda oculto en la librería. Preferimos interfaces propias para que cada pieza del patrón se vea en el código |
+| Observer GoF escrito a mano (interfaces propias `Subject` / `Observer`) | Fue la **primera versión**. Se reemplazó porque la clase marca como mala práctica "un Observer a mano habiendo eventos de dominio" en el framework (diapositiva 46): la versión propia no aportaba nada que la librería no diera, y obligaba a suscribir los observadores a mano |
 | Trigger en la base que inserte la notificación | Sirve para in-app, pero no para log ni email, y saca lógica de negocio del backend |
 | Cola de mensajes (Redis, RabbitMQ) | Sobredimensionado para el alcance del proyecto |
 
@@ -132,69 +134,76 @@ Observer define una relación uno a muchos: cuando el **sujeto** cambia de estad
 
 ```mermaid
 classDiagram
-    class Subject~E~ {
-        <<interface>>
-        +attach(observer)
-        +detach(observer)
-        +notify(evento)
+    class EventEmitter2 {
+        <<@nestjs/event-emitter>>
+        +emit(nombre, evento)
     }
-    class Observer~E~ {
-        <<interface>>
-        +update(evento)
-    }
-    class ListaEsperaSubject {
-        -observers: Set
+    class ListaEsperaPublisher {
         +notificarLugaresLiberados(clase, esperas)
     }
-    class InAppObserver
-    class LogObserver
-    class EmailSimuladoObserver
-    class NotificacionesModule {
-        +onModuleInit()
+    class InAppObserver {
+        +update(evento) «@OnEvent»
+    }
+    class LogObserver {
+        +update(evento) «@OnEvent»
+    }
+    class EmailSimuladoObserver {
+        +update(evento) «@OnEvent»
+    }
+    class ClasesService {
+        <<S3-T04>>
     }
 
-    Subject <|.. ListaEsperaSubject
-    Observer <|.. InAppObserver
-    Observer <|.. LogObserver
-    Observer <|.. EmailSimuladoObserver
-    ListaEsperaSubject o-- Observer : notifica a
-    NotificacionesModule ..> ListaEsperaSubject : attach
+    ClasesService --> ListaEsperaPublisher : publica lugar liberado
+    ListaEsperaPublisher --> EventEmitter2 : emit(LUGAR_LIBERADO)
+    EventEmitter2 ..> InAppObserver : notifica
+    EventEmitter2 ..> LogObserver : notifica
+    EventEmitter2 ..> EmailSimuladoObserver : notifica
     InAppObserver --> NotificacionesRepository
     EmailSimuladoObserver --> PreferenciasRepository
 ```
 
-| Rol GoF | Clase |
-|---------|-------|
-| Subject | `Subject<E>` (interfaz) |
-| ConcreteSubject | `ListaEsperaSubject` |
-| Observer | `Observer<E>` (interfaz) |
+| Rol GoF | En el código |
+|---------|--------------|
+| Subject / ConcreteSubject (lista de observadores y `notify`) | `EventEmitter2`, provisto por la librería |
+| `attach` | El decorador `@OnEvent(LUGAR_LIBERADO)`: la librería registra el método al arrancar la app |
+| `notify` | `ListaEsperaPublisher.notificarLugaresLiberados()`, que hace un `emit` por cada espera |
 | ConcreteObserver | `InAppObserver`, `LogObserver`, `EmailSimuladoObserver` |
-| Estado notificado | `LugarLiberadoEvent` (espera, socio, plazo, clase) |
+| Estado notificado | `LugarLiberadoEvent` (espera, socio, plazo, clase), publicado con el nombre `LUGAR_LIBERADO` |
 
-- La suscripción (`attach`) se hace en `NotificacionesModule.onModuleInit()`.
 - La base decide **a quién** notificar: las funciones `cancelar_inscripcion` y `procesar_lista_espera` devuelven las esperas que pasaron a `notificado`. El backend decide **cómo**: eso es el Observer.
-- `notify` usa `Promise.allSettled`: si un observador falla, los demás se ejecutan igual, el error queda en el log y la cancelación no se revierte.
+- El nombre del evento es la constante `LUGAR_LIBERADO`: un texto mal escrito compila igual y nadie recibe el evento.
+
+### Decisiones de la diapositiva 37
+
+| Decisión | Qué hacemos |
+|----------|-------------|
+| ¿Antes o después del commit? | **Después.** El evento se publica cuando la función SQL ya terminó, así que nunca se avisa de un lugar que no quedó reservado. |
+| ¿Mismo hilo o asíncrono? | **Asíncrono** (`@OnEvent(..., { async: true })`). `notificarLugaresLiberados` vuelve enseguida: la respuesta al socio que canceló no espera a Supabase ni al email. |
+| ¿Qué pasa si se cae a mitad? | **Se acepta perder el aviso** (sin outbox, fuera de alcance). El lugar igual queda reservado en `lista_espera`; si el socio no confirma, vence el plazo y pasa al siguiente. Si un observador falla, la librería registra el error (`suppressErrors`, activo por defecto) y los demás se ejecutan igual. |
 
 ### Dónde está
 
-- `backend/src/notificaciones/`: `observer.ts`, `lista-espera.subject.ts`, `lugar-liberado.event.ts`, `observers/`, `notificaciones.module.ts`
+- `backend/src/notificaciones/`: `lista-espera.publisher.ts`, `lugar-liberado.event.ts`, `observers/`, `notificaciones.module.ts`
+- `EventEmitterModule.forRoot()` en `backend/src/app.module.ts`
 - Diseño completo e integración con Clases: [Diseno_Observer_S4-T02_Notificaciones.md](./Diseno_Observer_S4-T02_Notificaciones.md)
 
 ### Consecuencias
 
 | Positivas | Negativas |
 |-----------|-----------|
-| Agregar un canal = un observador nuevo + `attach`; Clases no cambia (principio abierto/cerrado) | El orden entre observadores no está garantizado |
-| Clases no depende de notificaciones ni de preferencias | El flujo es menos directo de seguir: hay que mirar qué está suscripto |
+| Agregar un canal = una clase nueva con `@OnEvent`; ni el publicador ni Clases cambian (principio abierto/cerrado) | El orden entre observadores no está garantizado |
+| Clases no depende de notificaciones ni de preferencias, ni de una lista de observadores | El flujo es menos directo de seguir: hay que buscar quién escucha `LUGAR_LIBERADO` |
 | Un canal que falla no afecta a los demás ni a la operación de negocio | Una falla de notificación queda solo en el log (no hay reintentos) |
-| Cada observador se prueba por separado | |
+| Código de infraestructura mantenido por NestJS, no por el equipo | El evento se identifica con un texto: el compilador no detecta un nombre mal escrito (se mitiga con la constante) |
+| Cada observador se prueba por separado | Los tests tienen que esperar a que terminen los observadores asíncronos |
 
 ### Cómo se prueba
 
-- `lista-espera.subject.spec.ts`: notifica a todos los suscriptos, no notifica a un desuscripto, un observador que falla no frena a los demás.
+- `lista-espera.publisher.spec.ts`: con la librería real, cada espera llega como evento a los tres observadores; si uno falla, los demás se ejecutan, el error queda en el log y el publicador no falla.
 - `observers/observers.spec.ts`: in-app guarda la notificación con los datos para confirmar; el email simulado respeta la preferencia del perfil.
-- `test/notificaciones.e2e-spec.ts`: en la app real, los tres observadores quedan suscriptos y guardan la notificación.
-- Prueba de punta a punta contra Supabase (2026-10-06): clase llena, lista de espera, cancelación, notificación in-app y por email simulado, y confirmación del lugar.
+- `test/notificaciones.e2e-spec.ts`: en la app completa, los observadores registrados con `@OnEvent` guardan la notificación.
+- Prueba de punta a punta contra Supabase (2026-10-06, con la primera versión): clase llena, lista de espera, cancelación, notificación in-app y por email simulado, y confirmación del lugar.
 
 ---
 
