@@ -6,8 +6,10 @@ import { AppService } from './app.service';
 import { SupabaseModule } from './supabase/supabase.module';
 import { AuthModule } from './auth/auth.module';
 import { HealthModule } from './health/health.module';
-import { SedesModule } from './sedes/sedes.module'; // <-- Agregado
+import { SedesModule } from './sedes/sedes.module';
 import { NotificacionesModule } from './notificaciones/notificaciones.module';
+import { MembresiasModule } from './membresias/membresias.module'; 
+import { ClasesModule } from './clases/clases.module';
 
 @Module({
   imports: [
@@ -16,8 +18,10 @@ import { NotificacionesModule } from './notificaciones/notificaciones.module';
     SupabaseModule,
     HealthModule,
     AuthModule,
-    SedesModule, // <-- Agregado
+    SedesModule, 
     NotificacionesModule,
+    MembresiasModule,
+    ClasesModule,
   ],
   controllers: [AppController],
   providers: [AppService],
