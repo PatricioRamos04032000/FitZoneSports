@@ -206,3 +206,19 @@ _Sin commits asociados a esta entrada._
 ---
 
 *FitZone Sports · Programación V · UNER*
+
+
+### Trabajo en curso — snapshot 2026-10-08
+
+Estado actual de las tareas de cada integrante, considerando el avance de la Semana 3 y la preparación de las tareas siguientes.
+
+Integrante	Rol	Trabajo actual	Estado
+Patricio Ramos (P1)	Arquitecto / Backend Lead	Seguimiento y coordinación del avance del backend, revisión de las tareas de la semana y organización de los próximos trabajos.	En desarrollo
+Bruno Conti (P2)	Backend Developer	Trabajo sobre autenticación en NestJS, separación del cliente de Supabase para Auth y ajustes del endpoint POST /login y sus pruebas.	En desarrollo
+Lucas Coquet (P3)	Frontend Developer	Desarrollo e integración del frontend con el backend. React ya cuenta con pantallas y rutas funcionando; se continúa preparando la conexión con los endpoints de NestJS, especialmente para Login y las próximas vistas.	En desarrollo
+Matias Goncevat (P4)	QA / DevOps / Mobile	Preparación de pruebas de integración y E2E, revisión de los avances del backend/frontend y colaboración en la validación de las funcionalidades desarrolladas.	En desarrollo
+
+### Objetivo conjunto inmediato
+Consolidar la comunicación entre React → NestJS → Supabase, dejando operativos los endpoints necesarios del backend y avanzando en su consumo desde el frontend.
+
+Una vez estabilizada esta integración, el equipo continúa con las funcionalidades previstas para la siguiente etapa, principalmente Canchas, estado global en React y patrones Strategy/Observer.
