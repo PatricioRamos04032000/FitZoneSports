@@ -1,0 +1,744 @@
+Estamos grabando.
+Voy a poner por un lado el navegador.
+Para ver el trelo.
+Bueno, retomemos ahora con qué está cada uno y con qué está frenado.
+Y qué es lo que queda para seguir.
+Brunito, ¿con qué estás?
+Yo ahora tengo que empezar con lo de la semana 4.
+Lo de la semana 3 eran los módulos de clases y de membresías.
+Bien.
+Que eso ya está.
+Que eso ya está.
+¿Qué acá viendo en el trelo?
+Creo que lo primero es...
+Tienes...
+La API del módulo de clases.
+S4, T6 y Taría.
+Bueno, eso es revisión cruzada.
+La voy a ir viendo ahora en la semana.
+Pero estaría con esas dos tareas yo ahora.
+Bueno, a ver dónde está Brunito.
+Acá.
+Entra el jandecín.
+Y ahí está el desarrollo, por lo menos para ver.
+Entonces, Bruno estaría con S4, T01.
+¿Alguna duda, un contratiempo que tuviste con las tareas anteriores?
+El módulo de clases, eso bastante sencillo.
+Salió dentro de todo.
+Ningún problema por ahora.
+Bien.
+Y creo que esas dos tareas creo que no me traba.
+Creo que no depende de ninguna otra, me parece.
+Bien.
+Ah, me acordé.
+Te dejé...
+Ahí me acuer...
+Cuando me bajé los cambios del front.
+Hice...
+¿Este era?
+Sí, esto.
+Se llama correcciones ST4ST...
+O sea, es S3.
+T03, T04.
+Algo que detectó el IDE.
+¿Viste?
+De cositas para...
+Va, corregir.
+Porque, yo qué sé.
+Implementar TES o...
+Implementar...
+Cositas chiquititas como Wards y cositas así.
+Que se agregaron.
+Y es como para mantener el...
+Las prácticas, yo qué sé.
+Las...
+Las cosas que tenemos disponibles.
+Para nosotros aplicar, yo qué sé.
+Un endpoint que pide token.
+El socio sale del body o del URL, no del token.
+Se puede cancelar la inscripción de otro.
+Para ir viendo de punto en punto.
+Sí.
+Total.
+Si hay dudas de esto.
+De si va o no.
+Hay mucho hecho con IA.
+Sí hay cosas buenas que están implementadas.
+Y por ahí capaz ni siquiera es necesario agregar.
+Si no son necesarias.
+No.
+Entonces...
+Bueno este también
+Este está importante
+Para tu te voy a consultar
+Sí, sí
+Vi que en el repo de git
+Hay como 25
+Ramas del proyecto
+Ah sí, por lo menos
+Una por tarea
+Y después fui agregando
+Ramas que no tenían tarea asociada
+De correcciones
+Y
+Vuelvo a ese, de documentación
+Ok
+Y después se va a merchear todo eso
+Sí, ya está todo mercheado
+O sea, todas las cosas
+Que vamos haciendo
+Cuando terminas la tarea
+La mercheas directo a desarrollo
+Y cada uno
+Cuando desarrolla asegúrese nomás
+De actualizar la rama
+Y cuando le envíe
+Nada que no dé
+Que no dé ningún
+Ningún conflicto
+Al merchear a desarrollo
+La parte
+Master sería todavía
+No se le subió nada
+Sí, no se pudo eso
+Así que bueno
+Con lo que tenemos ahora es suficiente
+Para que cada uno pruebe en su local
+El proyecto
+Bueno, cosas así
+Eso nomás
+Bruno
+De localizar
+Por lo menos lo que saltó
+Al momento de ver los cambios
+De esas tareas en particular
+Mati
+¿Con qué estás?
+¿Con qué estabas?
+Estás
+Estarás
+Yo lo último que había tocado
+Había sido jugarme
+Esa actividad que está en desarrollo
+Que es el readme.md
+Declarar red
+Poder.em
+Levantar el bug
+Y el front local
+Que de hecho
+Si es por tarea
+Yo ya lo hice
+Que fue probar todo
+Y ver cómo andaba el proyecto
+Bien
+Lo único que no logré levantar
+Fue la parte del front
+Que lo único que me levantó
+Fue nomás una pantalla de
+Que era que decía
+No me conocía si era Tavis Creed
+O React
+Algo así que me levantaba nomás
+Pero es la pantalla de bienvenida del
+Del frango que se estaba utilizando
+Ah ok
+Si habrá hecho una arquitectura
+Va lo habrá creado
+Básicamente
+Ahora creo que hay una pantalla de perfiles
+Y otra de inicio
+Si tengo que descargarme de vuelta el repo
+Y probarlo porque como te digo
+Después nunca más entré
+Ok
+Nada
+Igual
+No es que
+Estoy pensando
+Hay una parte que es probar el proyecto
+Obviamente
+Probar hacer un login y toda la boludez
+Como una prueba
+Del camino feliz
+Pero lo que interpreto acá es
+El readme
+Debería explicar
+Los pasos a seguir de cómo
+Levantar el proyecto
+Algo así
+Con lo que hubieras pasado acá por
+Por Discord
+Más o menos
+Sí
+No me acuerdo ahora
+A ver
+Están notas
+No sabía un mensaje
+No sé si era en general era
+Ya te digo
+General
+Eso es una corrección
+Y esto es
+Programación
+Notas y recursos
+Bien notas y recursos
+Archivo local
+Project
+Ah sí
+En parte sí
+Porque eso tiene credenciales
+Pero eso
+Es eso en particular
+O sea las llaves
+Las credenciales son
+Las claves
+Las claves
+Las claves
+Las claves
+Las claves
+Las claves privadas
+Las que nunca se suben
+Sí
+Al repo
+Sí sí sí
+No, no subí nada más
+Aparte de eso
+Pero es básicamente
+Decir che
+Este es el proyecto
+Para tenerlo en local
+No sé
+Tenés que correr este comando en consola
+Y ya está
+Y ya lo podés usar
+Algo así
+No creo que necesite tanto porque es
+Hay mucho
+Mucho motor automático de dependencias
+Que te descarga todo al toque
+Pero bueno
+Creo que es eso
+O sea
+No sólo probarlo
+Sino también dejar documentado
+En cómo levantarlo
+Ok ahí entendí
+Bien
+Bueno
+Y después de eso
+Continuarías
+Con alguna de estas
+Son viejas ya estas
+Completar tabla de integrante
+Esto ya lo podemos dar
+Por completado
+Y bueno
+Vamos a ver
+Vamos a ver
+Vamos a ver
+Vamos a ver
+Vamos a ver
+Vamos a ver
+Vamos a ver
+Vamos a ver
+Vamos a ver
+Completado
+Checklist de cuenta
+Supabay ya está
+GitHub ya está
+Versily Rendered
+No sé
+Todavía
+O sea me voy a encargar yo
+Yo qué sé
+Es decir
+Se encarga Patricio
+Pero
+Esto es más organización de nosotros
+O sea
+Después cuando lo necesitemos
+Y necesitemos ponerlo
+La versión final
+En
+Que esté disponible en el navegador
+De cualquier lugar
+Sería no sólo en el entorno de prueba
+Ok
+Bien
+Redactar un example
+Sin valores secretos
+Creo que esto ya más o menos está
+Esto ya está hecho en el proyecto
+También
+Muchas cositas ya se pueden dar por terminadas
+Creo que ya está Supabay
+Se ha debilitado el out
+También creo que ya estaba hecho
+Sí, sí, sí
+Porque ya se pudieron hacer pruebas
+La recién cruzada dijo Bruno
+Que la SIL la va a ver
+Prueba manual
+Acá está
+Prueba manual
+Ok
+Ok
+Ok
+Ok
+Ok
+Ok
+Ok
+Ok
+Ok
+Ok
+Ok
+Ok
+Prueba manual
+Acá está
+Prueba manual
+Login
+Con más listar sedes
+Anotar los resultados
+Supongo que anotar lo que se vio
+O algún tipo de corrección
+De que no funciona
+O funciona
+En un log.md
+Que eso ya existe
+Log.md
+Ok
+Y después ya saltamos a las reuniones
+De seguimiento
+Que estamos haciendo
+Esto es la demo
+No creo que lleguemos a hacer una demo
+Como tal
+Pero
+Vamos a ver
+Esto es el
+La demo
+No creo que lleguemos
+A hacer una demo como tal
+Sino que la tenemos aquí
+con que lo pruebe vos que se vea y que esté después cada uno va a estar trabajando en
+en cosas de backend y frontend para ir probando por sí solo
+esto no lucas setup inicial de testing hay algo ya hecho
+12 a ver qué te que te puede decirle ahí es y ya está así que falta
+de seguir relleno y utilizar para uno sí que yo voy a utilizar para empezar con el proyecto
+digamos porque a ver no sé si la verdad si no hay un curso anti gravity puede ser un
+compañero desarrollado con anti gravity
+lo difícil de desarrollar con una guía genérica o sea que vos le tengas que pasar los dos cómo
+se llaman los archivos porque no tienen acceso a estar realizando si no vas a tener que ver de cómo
+integrar en yo que sé en un visual estudio en visar estudio una guía ya sea por extensiones
+o cosas así que votan
+que vos le puedas, o sea que ella tenga acceso al proyecto y que pueda hacer cambios sobre ese proyecto.
+Bien.
+Si no se hace muy difícil.
+O bueno, lo normal.
+Pero yo hace rato que no toco código.
+Bueno, así que hay muchas tareas que básicamente solo es fijarse si ya están hechas.
+Y darlas por terminado.
+Ya estaría.
+Eso.
+Yo estoy con esto.
+Justificación de patrones.
+Había armado ya una documentación.
+No solo documentación, sino ver qué patrones implementamos.
+No sé si pudieron estar en la última clase.
+Pero el profesor...
+El profesor hizo como un recorrido de los patrones que a él más le parecían que podían llegar a estar en el proyecto.
+Que eran como ocho, no sé cuántos.
+Eso está acá en la documentación del proyecto.
+Veamos dónde está.
+A ver, unidad.
+Unidad.
+Está.
+Reunión.
+Propuesta.
+Reglas.
+Diagrama.
+Panorama.
+Notas.
+Logo.
+Justificación de patrones.
+Creo que esto es.
+Justificación de patrones y diseño.
+Esto lo hice el 6.
+Estructura.
+Observer.
+Observer.
+Diseño.
+Membresía.
+Cosas pendientes.
+Viejos.
+No, sí, debe ser eso nomás.
+Esto para ir viendo, o sea, repito, el documento lo tengo que confeccionar yo.
+Tenemos que ver nomás qué patrones vamos a usar y después hay que encargarse de ver
+de cómo se justifica.
+¿Verdad?
+Y se hacen, no me acuerdo si eran solo ADRs o algún tipo de documentación en particular.
+De implementación de patrones.
+No sé, nos da tiempo, hasta las 11 tienen tiempo.
+Sí.
+¿Pero no?
+Sí, sí, sí.
+Para ir leyendo un poco nomás esto.
+¿Qué es esto?
+¿Qué es esto?
+¿Qué es esto?
+¿Qué es esto?
+¿Qué es esto?
+¿Qué es esto?
+¿Qué es esto?
+¿Qué es esto?
+¿Qué es esto?
+Y luego la otra parte, la otra parte, la otra parte.
+Justificación de patrones de diseño.
+Justificación de patrones de diseño.
+Hoy en día hay solo dos, tres, ¿no?
+Tres.
+Bueno, y hay otros patrones así en general.
+Eh...
+Por lo menos hay tres que ya están implementados.
+Uno que está diseñado sería.
+Y después tengo que ver cómo se pueden implementar los otros o no.
+Si los necesitamos o no.
+A los que dio la última clase y los que todavía falta por ver.
+Primero, el patrón repository acceso a datos.
+El problema es el backend ley escribe en su pabéis.
+Con el cliente su pabéis JS.
+Sin un ORM.
+ORM era objeto relación modelo relación objeto.
+Modelo relacional objeto.
+Si cada servicio usa el cliente directamente.
+La lógica de negocio queda mezclada con detalles de post rest.
+Que esto era la API.
+A ver.
+Sí, acá.
+Post rest.
+Nombre de tablas y formato de errores.
+Cada servicio maneja los errores de su pabéis de su manera.
+Antes del refactor.
+Cedes convertía en un 500 genérico y se perdía la causa real.
+Supongo que del error de la base que venía de la base.
+Paratest.
+Tiene un servicio.
+Hay que simular la API encadenada.
+El cliente cambiar el motor o el cliente obliga a tocar toda la lógica de negocio.
+Porque repository repository pone una capa que se comporta como una colección de objetos de dominio final.
+Fainvalen de crear marcar leída y oculta cómo se obtienen los servicios dependen de esa capa.
+No de su pabéis.
+Sí.
+Sí.
+Sí.
+Sí.
+Sí.
+Sí.
+Sí.
+Sí.
+Sí.
+Sí.
+Sí.
+Sí.
+Sí.
+Sí.
+Sí.
+Sí.
+Sí.
+Sí.
+Sí.
+Sí.
+Sí.
+Sí.
+Sí.
+Sí.
+Sí.
+Sí.
+Sí.
+Sí.
+Sí.
+Sí.
+Sí.
+Síí.
+Sí.
+Sí.
+Sí.
+Sí.
+De ну es uno de los il 33 petrones en todo viene de pat� l1 la p Gobjin arqu lady
+tenectur y de de la c teeuc le incluye una línea tres y lo pide en la con de.
+Otras alternativas fueron cliente en sus países en cada servicio con un problema alา
+decrito de arriba y no r a me es desen 노de lo Swan es el net Master Dearp向ulo,
+32 00 AM,
+19 00 AM,
+ida But I 45344 zalacista un werden места que la ciudad de ese despasido osar rada
+pi-guarante a la esclava de eso poniendo que deja que la Platz 6 y ahora son los resto
+su base y un repositorio por tablas sin una base común
+se repite mucho el manejo de errores y el logueo o el guardado
+la auditoría de cada uno
+bueno acá hay una estructura básica de cómo se hizo a nosotros el repositorio y
+todavía quedan varias repositorios por hacer
+acá va a haber uno por cada módulo
+y qué más bueno dónde está consecuencias
+cómo se prueba
+creo que era repositorio observer strategy era estos tres ya los
+mencionaba el integrador
+como que
+como que
+los implementamos sería
+y ya están dos ya están implementados
+observer lista de espera de clases
+dice problema si una clase está llena el socio se anota
+en una lista de espera y cuando se libera un lugar se le notifica la
+decisión agrega que una decisión de 7 agrega que el socio tiene un plazo para
+confirmar
+sin una inscripción automática ya que el aviso es indispensable
+el equipo decidió avisar por varios canales inapp siempre un blog email
+simulado si el socio lo activo si el módulo de clases llama a cada canal
+canales dependería de notificaciones preferencias de perfil email blog que no
+son responsabilidad de esa de ese módulo
+agregar un canal push email real obligaría a modificar el módulo de clases
+un canal que falla su papel no responde al guardar una notificación podría romper
+la cancelación que se liberó el lugar
+porque observer observer de final relación uno a muchos cuando el sujeto
+cambia de estado avisa a todos sus observadores sin conocer qué hace cada
+uno
+la clase solo publica se libera un lugar y los canales se suscriben
+nesca y es trae este mecanismo con una librería llamada event emiten el
+equivalente a un publisher o esto del observer de spring que usa la clase como
+ejemplo de observer lo usamos en lugar de escribir el patrón a mano esto lo
+había consultado al profe
+la última clase que hay librerías que ya hacen se comportan como el patrón
+que debemos implementar y la pregunta siempre que hay que responder es si nosotros usamos la
+librería o usamos el patrón mejor dicho porque usaríamos el patrón por encima de librería
+sólo si nosotros necesitamos algo que no puede resolvernos la librería en este caso
+nos resuelve con implementar la librería ya nos resuelve lo que necesitamos
+bueno un par de alternativas descartadas como la estructura actual
+que tenemos varios observers un email una notificación en app
+y después un log en general sería para ir registrando la base de datos las notificaciones
+la lista de espera hace emite y luego el emitter notifica cada uno de estos
+bueno no no es muy complicado
+después tendría que armar para cada uno de los que faltan porque deberíamos implementarlos eso
+eso debo yo
+el mismo hilo asincrónico que pasa si se cae a mitad
+donde está implementado consecuencias positivas y negativas
+como se prueba lo mismo
+este strategy todavía no está puesto se desarrolla en el s4 t9
+ese no me acuerdo si era lucas o bruno lo que lo tenía
+sé que definirlo todavía canchas negocio de canchas y event observer en general
+bruno para teobas
+uno completa la sesión donde está y cómo se prueba al integrarla
+strategy problema el precio de una cancha es el precio estándar con descuentos de socio y recargo
+de horario pico eso es lo que puede existir un descuento para un socio y un recargo cuando tenés
+un horario bajo no querés reservar en horario pico que en este caso es como una pequeña franja horaria
+haría nomás de dos horitas a la semana
+el descuento es 15 por ciento por defecto de futuro
+con final cliente central para toda la cadena
+el recargo el horario los días pico los configura se pueden configurar por cada sede
+un socio con cuota vencida para como un externo o sea sin descuentos sin sin descuentos básicamente papan en fratriebenos que ya tienen ya en cien horas,팔 avete · r
+un socio con cuota vencida como una externo sá sin descuentos sin descuentos en total al caérsel al
+como un externo sea sin descuentos sin sin descuento pou decreto abi
+es unلا la información delء roles apply por conseguir que media qualche,
+collective NDF peroniz Ri generates el sistema de deficiency de석 exhaust o supermercant
+descuento. Y un descuento y un recargo se combinan.
+Resolverlo con condicionales en el servicio de reservas, if es socio, if es hora pico,
+concentra todas las reglas en un método que crece con cada regla nueva. Cuando es feriado,
+si agregamos promociones, es difícil de testear por partes. Strategy encapsula cada algoritmo
+de cálculo en una clase con una interfaz común y el contexto los usa sin conocer sus detalles.
+La consigna pide explícitamente un standard pricing, un member discount, un peak hour.
+Como las reglas se combinan, el servicio de precios no elige una estrategia,
+aplica en orden todas las que corresponden y cada una recibe el precio que dejó la
+anterior.
+Alternativas descartadas, condicionales, por qué no, el descrito arriba por el if.
+Elegir una sola estrategia por reserva, pero no se permitiría combinar un descuento con un recargo.
+Y el precio calculado en la base de datos. Las reglas quedarían fuera del backend y del
+patrón pedido.
+Nada, y acá está todo el patrón pedido.
+Solo diseñado, todavía no está implementado.
+Pero seguramente lo vas a ver ahora dentro de poco, Bruno, que va a tener que ver eso de canchas.
+Impresionante todo lo que hizo la guía.
+Está bastante bien masticada esta guía.
+Igual, mientras más info tenga, más contexto tenga.
+Yo le cargué.
+Las clases o por lo menos.
+Sí, vi que entró un par de horas para las presentaciones.
+Sí, sí.
+Por ejemplo, lo último que estuve viendo, que eso es lo que estaba.
+Tengo que cargarle la última, última clase, la del jueves pasado.
+Esa para ver bien todos los casos, todos los.
+Patrones que mencionó el profe y ver cómo se aplica en alguna parte del sistema.
+Porque algunos no tengo idea cómo se aplican.
+O para qué nos serviría.
+Eso lo que.
+Bueno, acá también un caso de prueba.
+Con cada tipo de cliente, la hora de cada uno y cómo va variando el precio.
+Teóricamente, si funciona bien.
+Bueno, y acá están otros patrones que esto los menciona, pero las clases viejas.
+La clase importante creo que fue la clase de la semana pasada.
+Que mencionaba bien inyección de dependencia, cadena de guardia, decorador.
+Nada.
+Todavía falta implementar esto de estrategia.
+Hay que ver un par de patrones más.
+Si usted por las dudas tienen gana.
+De.
+Ver la clase anterior donde habló de los patrones.
+Y eso es lo que se llama.
+El concepto de factory patrones de.
+Este y no sé qué más.
+Suma mucho para no tener sólo una visión.
+Ves y nada.
+Ver qué aplicamos y dónde lo aplicamos.
+Qué es lo importante o qué?
+No aplicamos porque no es necesario.
+Porque no?
+Solo lo usamos en esa parte cita.
+Y después no lo.
+Y cosas así.
+Bueno.
+Aparte de eso.
+Nada.
+Correcciones.
+Mati te dejé un.
+La documentación estructural.
+Vaquen.
+Bien.
+Resumen carpetas, capas, módulos.
+Eh?
+Eh?
+Las apis.
+Cómo se llama cada api.
+Eh?
+Configuración.
+A esto te puede servir para el punto M.
+Sí, yo.
+Igualmente ahora me conseguí una una IA estilo cursor.
+Compran más gratuito, digamos para.
+Cargar otro proyecto y empezar a revisarlo.
+Bien.
+Y el panorama.
+Esto también.
+La arquitectura.
+Dice que está hecho, pero en realidad esto tendremos que ir actualizándolo por cada.
+Por cada.
+Cosa que estamos agregando en el C4 y los ADR es ATR.
+La base de datos todavía faltan tablas de cosas de los módulos que todavía no hicimos.
+El vaquen todavía.
+Bueno, faltan los módulos, faltan módulos.
+Eh?
+De notificaciones.
+Una versión de membresías.
+Patrones hay que ver todavía.
+Ya hay patrones implementados, pero hay que ver qué más patrones se pueden usar.
+El front en el lo más.
+Pelado que tenemos un 5 por ciento, o sea, sólo tenemos cuatro pantallas.
+Y por lo menos cada api debería tener.
+Su pantalla.
+Para hacer todo eso, no de.
+Listar.
+Ver tus.
+Ver tu reserva de cancha, ver las canchas, ver notificaciones y cosas así.
+Los test no me preocuparía tanto porque los test por lo menos las partes del.
+Cómo es esto?
+Del.
+De las ramas que están saliendo ahora están saliendo con test.
+Los los agentes de IA normalmente te saben hacer test sencillos si se los pedís.
+Pero.
+Si.
+Test unitarios y.
+12 de backend.
+Tendríamos que ver la segunda parte.
+Desde fronten.
+Y nada móvil.
+Api no nos vamos a.
+No, no vamos a calentarnos en eso.
+Si todavía no terminamos.
+Ni el ni la aplicación normal de escritorio.
+Bien.
+Corregir seguridad, clases, membresías.
+Y.
+Y.
+Y.
+Y.
+Y.
+Y.
+Y.
+Y.
+Y.
+Y.
+Y.
+Y.
+Y.
+Y.
+Y.
+Y.
+Y.
+Y.
+AMA.
+AMA.
+Y.
+Y.
+Y.
+Sí."
+Bueno estamos para acabar.
+Bueno ya están obligados a configurar sus pagamentos."
+Pero, claro que staring down realmente hace falta el fascín.
+Entonces tenemos que ver para primera cuenta cómo van a hacerlo los temas.
+Y luego por último.
+¿Cómo vamos?
+Bueno los temas no estamos gobernados así así.
+Así.
+Aquí te moments dando un poco el objetivo de ver que estáada el tema ahí.
+No logro cubrir la cara.
+cuidemos a los jóvenes a veces después de las Birds of Heels.
+semana. Bueno, justito, voy a pasar
+este vídeo y a ver si puedo pasar también una
+transcripción o un resumen para Lucas porque se tiene que encargar de lo que
+tiene el log. El log está pelado, esto debería estar más lleno con más
+reuniones, pero bueno si no pudimos, no pudimos.
+Daría.
+Recuerden cuando trabajen en una tarea y toda la bola, cuando hagan el
+el push a la rama de desarrollo dejar un lindo comentario, como descriptivo,
+de qué es...
+se hizo básicamente. No tiene que ser un párrafo largo, tiene
+que ser una oración de dos renglones.
+Nada más. Si no, no pone cualquier huevada en el comentario, digamos. ¿Por qué le digo?
+Porque si después el profe quiere un detalle de qué hizo cada uno, podemos
+intentar agarrar cada uno de esos comentarios que hizo cada uno en sus
+ramas y llenar un documento.
+¿Por qué? Porque si después el profe quiere un detalle de qué hizo cada uno, podemos intentar agarrar cada uno de esos comentarios que hizo cada uno en sus ramas y llenar un documento.
+Que diga, ah mira, Mati hizo tal tal tal tal tal y tal cosa.
+¿Viste? Bruno hizo tal tal tal tal tal cosa.
+Y así. Nada.
+Tareas por ahora.
+No queda mucho, o sea, quedan tareas.
+Quedan pocas tareas y después ya tenemos que ver qué se hace con la siguiente semana.
+No queda mucho, o sea, quedan tareas. Quedan pocas tareas y después ya tenemos que ver qué se hace con la siguiente semana.
+No queda mucho, o sea, quedan tareas. Quedan pocas tareas y después ya tenemos que ver qué se hace con la siguiente semana.
+Pero eso ya supongo que o lo va a hacer Lucas o te va a tocar a vos, Mati.
+Bueno.
+Pero bueno, ya tiene bastante contexto.
+Ahí ya hay bastante documentación que dice qué es lo que falta y qué es lo que se podría seguir.
+Bueno, nada, eso.
+Tareas... Government.
+Em... Ehhh...
+Tareas-Gente.
+Eléctrico- Dae Arri.
+Tareas- Muy bien.
+Eléctrico- gambling.
+Tareas- Algo...
+Tareas- Algo les llamó la atención.
+Algo les gustó...
+Algo les gustó... No les gustó...
+Tareas- Oó...
+Tareas- Para mí que meента de sentar a repasar un poco la teoría.
+Obviamente para mí me queda un par de cosas inconclusas, pero soy
+Yo nomás que no me puse a leer la teoría.
+Tampoco estuve en las clases.
+Ehhh...
+Tareas- Ok.
+Sí, sí, sí, todavía hay tiempo, despacio nomás y se ponen a ver la teoría, lo que menos idea tengan o por lo menos pidan que le expliquen.
+Sí, sí.
+Bruno, ¿taríamos?
+Sí, por mí, ninguna duda por ahora.
+Bien, recuerden, tenemos Discord, tenemos Whatsapp y cualquier cosita se avisa nomás y se intenta resolver en el momento.
+Bien, listo.
+Listo gente, me voy a cortar.
