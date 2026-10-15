@@ -208,6 +208,55 @@ _Sin commits asociados a esta entrada._
 *FitZone Sports · Programación V · UNER*
 
 
+---
+
+## 2026-10-15 — Prueba manual E2E: Login + Listar Sedes
+
+**Tipo:** prueba manual E2E  
+**Registrado por:** Cline (agente IA)  
+**Entorno:** Backend en `http://localhost:3000` (NestJS + Supabase)
+
+### Resumen
+
+Se ejecutó una prueba manual E2E completa sobre la API del backend:
+
+| Paso | Endpoint | Método | Código | Resultado |
+|------|----------|--------|--------|-----------|
+| 1 | `/auth/login` | POST | 200 OK | ✅ Login exitoso con `prueba@fitzone.com` |
+| 2 | `/sedes` | GET | 200 OK | ✅ Respuesta `[]` (sin sedes registradas) |
+
+### Detalle — Paso 1: Login
+
+**Request:** `POST /auth/login`  
+**Body:** `{ "email": "prueba@fitzone.com", "password": "pruebafitzone" }`  
+
+**Respuesta (200 OK):**
+- `access_token`: JWT ES256 válido emitido por Supabase Auth
+- `user.id`: `bd4e7632-ab28-4ed0-9034-dc8f3307e544`
+- `user.email`: `prueba@fitzone.com`
+- `user.role`: `authenticated`
+
+### Detalle — Paso 2: Listar sedes
+
+**Request:** `GET /sedes` (público, sin autenticación)  
+
+**Respuesta (200 OK):**
+- Body: `[]` (array vacío)
+
+### Observaciones
+
+- El backend está operativo y respondiendo correctamente.
+- El endpoint de login funciona y emite un JWT válido de Supabase Auth.
+- El endpoint `/sedes` responde 200 pero devuelve un array vacío, lo que indica que no hay sedes registradas en la base de datos de Supabase conectada.
+- El usuario de prueba existe en Supabase Authentication con email verificado.
+
+### Archivos relacionados
+
+- `backend/src/auth/auth.controller.ts` — Endpoint POST /auth/login
+- `backend/src/sedes/sedes.controller.ts` — Endpoint GET /sedes
+- `backend/.env` — Variables de entorno (SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY)
+
+
 ### Trabajo en curso — snapshot 2026-10-08
 
 Estado actual de las tareas de cada integrante, considerando el avance de la Semana 3 y la preparación de las tareas siguientes.

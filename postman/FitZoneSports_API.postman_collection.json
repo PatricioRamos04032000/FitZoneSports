@@ -1,0 +1,41 @@
+{
+  "info": {
+    "name": "FitZone Sports - API E2E Tests",
+    "description": "Colección de Postman para pruebas End-to-End de la API FitZone Sports. Incluye endpoints de autenticación, sedes, clases, membresías y notificaciones.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_postman_id": "fitzone-api-e2e-001"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "{{baseUrl}}",
+      "type": "string"
+    },
+    {
+      "key": "authToken",
+      "value": "{{authToken}}",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Health",
+      "item": [
+        {
+          "name": "GET /health - Verificar estado de la API",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/health",
+              "host": ["{{baseUrl}}"],
+              "path": ["health"]
+            },
+            "description": "Endpoint público que verifica que la API esté levantada y funcionando"
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}
