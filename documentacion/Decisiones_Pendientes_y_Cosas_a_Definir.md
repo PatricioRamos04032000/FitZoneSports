@@ -87,7 +87,7 @@ Pendiente de detalle de implementación:
 
 - [ ] Cliente en Nest: `@supabase/supabase-js` con `SUPABASE_URL` + `SUPABASE_SERVICE_ROLE_KEY` (solo backend; nunca en el front)
 - [ ] Esquema SQL / migraciones: ¿Supabase SQL editor + scripts versionados en el repo?
-- [ ] Cómo modelar transacciones ACID (RN-02 reservas) vía API vs funciones SQL/RPC en Supabase
+- [x] Cómo modelar transacciones ACID (RN-02 reservas) vía API vs funciones SQL/RPC en Supabase — **2026-10-15:** función SQL con `FOR UPDATE` + `UNIQUE (cancha_id, inicio)`, llamada por RPC (igual que `inscribir_en_clase`)
 - [ ] Tipado de respuestas (interfaces/DTOs en Nest aunque no haya ORM)
 - [ ] Row Level Security (RLS): ¿políticas en Supabase además de guards en Nest?
 
@@ -128,11 +128,12 @@ Estas no son “librerías”, pero hay que **acordar el enfoque** cuando se imp
 
 | Tema | Pregunta a resolver | Cuándo |
 |------|---------------------|--------|
-| Concurrencia de canchas (RN-02) | ¿Transacción + unique constraint? ¿Lock? | Al implementar reservas |
+| Concurrencia de canchas (RN-02) | **Decidido (2026-10-15):** igual que las clases. Índice `UNIQUE (cancha_id, inicio)` en reservas confirmadas **y** función SQL que bloquea la cancha (`FOR UPDATE`) antes de insertar. Nest llama por RPC. Ver [S4-T09](./Propuesta_Reglas_Negocio_S4-T09.md) (P2) | Al implementar M4 |
 | Socio en una sola sede (RN-01) | Orientación 2026-09-02: **híbrido** (Nest + BD). Pendiente cerrar: checkout vs timeout; doble turno; conflicto offline. **Consultar docente.** → [Propuesta RN-01](./Propuesta_RN01_Presencia_Una_Sede.md) · [Acta](./Acta_Reunion_2026-09-02_Semana1.md) | Tras consulta docente / al implementar acceso |
 | Mora (RN-03) | ¿El backend bloquea descuento o solo avisa? | Al implementar precios/pagos |
 | QR dinámico (RF-04) | ¿TOTP por socio (ver §8.3)? ¿También se muestra en web? ¿Cómo se valida sin API? | Al implementar acceso |
-| Lista de espera (RF-08) | **Resuelto (2026-10-06):** in-app + log; email simulado si el socio lo activa en su perfil. Ver [Diseño Observer](./Diseno_Observer_S4-T02_Notificaciones.md) | Al aplicar Observer |
+| Lista de espera (RF-08) — canales | **Resuelto (2026-10-06):** in-app + log; email simulado si el socio lo activa en su perfil. Ver [Diseño Observer](./Diseno_Observer_S4-T02_Notificaciones.md) | — |
+| Lista de espera — avance automático del plazo | **Problema abierto (2026-10-15):** no hay timer/job; el vencimiento solo se procesa si alguien vuelve a llamar a `procesar_lista_espera`. En la realidad la lista se estanca. Ver [Problema_Lista_Espera_Sin_Timer](./Problema_Lista_Espera_Sin_Timer.md) | Después / al cerrar M3 |
 | Pasarela mock (RF-13) | ¿Endpoint propio que simula MercadoPago? ¿Respuestas fijas? | Semana 4+ |
 | PDF de comprobante (RF-14) | ¿Librería (p. ej. PDFKit) y dónde se guarda el archivo? | Al implementar pagos |
 
@@ -143,6 +144,8 @@ Estas no son “librerías”, pero hay que **acordar el enfoque** cuando se imp
 - [ ] Formato de errores JSON unificado
 
 ### 3.6 Resiliencia — Circuit Breaker (mencionado por el docente, 2026-08-28)
+
+**Decidido (2026-10-15):** se usa en M5, solo alrededor de MercadoPago (`AdaptadorMercadoPago` / `PasarelaPago`). No se usa sobre Supabase ni sobre el simulacro. El reintento (Decorator, anotado) va antes de abrir el circuito. Detalle en la [justificación §15](./Justificacion_Patrones_Unidad_III.md). Umbrales al implementar.
 
 **Contexto:** con Nest como **BFF** hacia **Supabase Auth** y **Supabase API**, un fallo o lentitud prolongada de Supabase podría propagarse a toda la API (timeouts, hilos bloqueados, cascada de errores). El docente mencionó el patrón **Circuit Breaker** como mecanismo de resiliencia.
 
@@ -165,9 +168,9 @@ Estas no son “librerías”, pero hay que **acordar el enfoque** cuando se imp
 - **Offline de sede (RNF-01 / TOTP):** problema de conectividad en el torno; el Circuit Breaker protege Nest cuando Supabase falla en la nube.
 - **Retry simple:** reintentar siempre; el breaker **deja de llamar** cuando ya no tiene sentido.
 
-**Pendiente (a definir al integrar Supabase en Unidad II+):**
+**Pendiente al implementar M5** (la adopción ya está decidida; faltan los números):
 
-- [ ] ¿Adoptamos Circuit Breaker en el cliente Supabase del BFF?
+- [x] ¿Adoptamos Circuit Breaker en el cliente Supabase del BFF? — **No.** Solo MercadoPago (2026-10-15)
 - [ ] Umbrales: cantidad de fallos, timeout por llamada, tiempo en estado Open.
 - [ ] Respuesta al frontend cuando el circuito está abierto (mensaje claro vs error genérico).
 - [ ] Librería en Node/Nest (ej. `opossum`, `cockatiel`) o implementación mínima propia.
