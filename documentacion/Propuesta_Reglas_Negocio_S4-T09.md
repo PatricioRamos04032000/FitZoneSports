@@ -46,7 +46,12 @@ RF-11 fija el horario pico en 19:00–21:00; P3 lo toma como valor por defecto y
 | b | 60 min fútbol 5 y 90 min paddle |
 | c | Duración libre elegida por el usuario |
 
-**R:** (a). La grilla y la regla anti doble reserva (RN-02) quedan simples: `unique (cancha_id, inicio)`.
+**R:** (a). La grilla queda en horas en punto.
+
+**RN-02 (decidido por P1, 2026-10-15):** sin sobreventa, con las dos cosas que ya usa clases:
+
+1. Índice `UNIQUE (cancha_id, inicio)` donde la reserva está confirmada. El segundo insert del mismo turno falla aunque el lock se saltee.
+2. Función SQL (estilo `inscribir_en_clase`) que hace `SELECT … FROM canchas WHERE id = … FOR UPDATE`, comprueba que el turno no esté tomado ni en mantenimiento, e inserta. Nest la llama por RPC; no hace “leo disponibilidad y después inserto”.
 
 ### P3 — Recargo de horario pico: configurable por sede (Decidido por P1, 2026-10-06)
 
