@@ -4,7 +4,7 @@
 **Equipo:** 4 integrantes  
 **Dedicación mínima:** 4 h/semana por integrante → **16 h/semana de equipo** (~32 h en 2 semanas)  
 **Fecha de elaboración:** 2026-09-29  
-**Última actualización de estados:** 2026-10-05  
+**Última actualización de estados:** 2026-10-21  
 **Unidad en curso:** II (Frameworks) → transición a III (Patrones)
 
 **Referencias:** [Trabajo Integrador](./Trabajo_Integrador_FitZone_Sports.md) · [Decisiones pendientes](./Decisiones_Pendientes_y_Cosas_a_Definir.md) · [LOG](./LOG.md) · [Acta 2026-09-02](./Acta_Reunion_2026-09-02_Semana1.md)
@@ -33,12 +33,12 @@
 --------------------------------------------------------------------------------
 
 #### Trabajo en curso (ahora)
-Actualizado el **2026-10-05**. Refleja lo que cada integrante **está trabajando**, no solo el backlog asignado.
+Actualizado el **2026-10-21**. Refleja lo que cada integrante **está trabajando**, no solo el backlog asignado.
 
 | Integrante | Rol | Tarea en curso (ID) | Qué está haciendo | Estado |
 | ------ | ------ | ------ | ------ | ------ |
 | Patricio Ramos | P1 | S3-T09 | Reunión de seguimiento y redacción del LOG | Por hacer |
-| Bruno Conti | P2 | S3-T10 | Configurar cliente separado de Supabase para Auth y arreglar POST /login | En desarrollo |
+| Bruno Conti | P2 | S4-T08 | S3 completada (S3-T10, S3-T03, S3-T04) y S4-T06 / S4-T01 finalizadas | Por hacer |
 | Lucas Coquet | P3 | S3-T05 | Conectar formulario de login React con API NestJS | Por hacer |
 | Matias Goncevat | P4 | S3-T02 | Revisar integración de PRs y preparar E2E inicial (baja temporal) | Por hacer |
 
@@ -46,6 +46,11 @@ Actualizado el **2026-10-05**. Refleja lo que cada integrante **está trabajando
 
 | ID | Tarea | Quién | Estado |
 | ------ | ------ | ------ | ------ |
+| S4-T01 | Implementar Patrón Strategy para cálculo de precios/recargos de canchas (`PreciosModule`) | Bruno (P2) | Finalizado |
+| S4-T06 | Preparar Módulo Canchas (M4) API REST para consumir en React | Bruno (P2) | Finalizado |
+| S3-T04 | Módulo Clases (M3) con patrón Repository | Bruno (P2) | Finalizado |
+| S3-T03 | Módulo Membresías (M1) con patrón Repository | Bruno (P2) | Finalizado |
+| S3-T10 | Separar cliente de Supabase para login + arreglar tests y `POST /login` | Bruno (P2) | Finalizado |
 | S3-T06 | Diseño de DB para Membresías y Clases: migración ejecutada en Supabase y seed de prueba ([diseño](./Diseno_BD_S3-T06_Membresias_Clases.md)) | Patricio (P1) | Finalizado |
 | S3-T11 | Plantilla del patrón Repository y refactor de `GET /sedes` ([guía](./Guia_Patron_Repository.md)) | Patricio (P1) | Finalizado |
 | S3-T01 | Swagger, prueba manual de endpoints contra Supabase y CORS (`CORS_ORIGIN`) | Patricio (P1) | Finalizado |
@@ -104,14 +109,14 @@ React → Nest (BFF) → Supabase Auth
 
 | ID | Tarea | Asignado | Rol | Duración | Estado |
 | --- | --- | --- | --- | --- | --- |
-| S3-T10 |  Separar cliente de Supabase para login + arreglar tests y `POST /login` | Bruno Conti | P2 | 2 h | En desarrollo |
+| S3-T10 |  Separar cliente de Supabase para login + arreglar tests y `POST /login` | Bruno Conti | P2 | 2 h | Finalizado |
 | S3-T06 |  Diseño de DB (ER y SQL) para Membresías, Clases, Cupos y Perfiles | Patricio Ramos | P1 | 2.5 h | Finalizado |
 | S3-T01 | Integrar Swagger, probar endpoints manualmente (S3-T02 reasignado) y setup CORS | Patricio Ramos | P1 | 2 h | Finalizado |
 | S3-T11 | Definir plantilla Patrón Repository y refactorizar `GET /sedes` como ejemplo | Patricio Ramos | P1 | 1 h | Finalizado |
 | S3-T05 | React: Conectar form de login con POST /auth/login (Depende de S3-T10) | Lucas Coquet | P3 | 2 h | Por hacer |
 | S3-T07 | React: Pantalla "Mi Perfil" (Depende de S3-T06 tabla `perfiles`) | Lucas Coquet | P3 | 2 h | Por hacer |
-| S3-T03 | Módulo Membresías (M1) (Desbloqueada: S3-T06 y S3-T11 finalizadas) | Bruno Conti | P2 | 2 h | Por hacer |
-| S3-T04 | Módulo Clases (M3) (Desbloqueada: S3-T06 y S3-T11 finalizadas) | Bruno Conti | P2 | 2 h | Por hacer |
+| S3-T03 | Módulo Membresías (M1) (Desbloqueada: S3-T06 y S3-T11 finalizadas) | Bruno Conti | P2 | 2 h | Finalizado |
+| S3-T04 | Módulo Clases (M3) (Desbloqueada: S3-T06 y S3-T11 finalizadas) | Bruno Conti | P2 | 2 h | Finalizado |
 | S3-T09 | Reunión de seguimiento. P1 redacta el LOG.md | Equipo | Todos | 0.5 h | Por hacer |
 
 ##### Carga por integrante — Semana 3
@@ -119,7 +124,7 @@ React → Nest (BFF) → Supabase Auth
 | Integrante | Tareas | En desarrollo ahora | Total estimado | ¿≤ 4 h? |
 | --- | --- | --- | --- | --- |
 | **P1** Patricio | S3-T06✓, S3-T01✓, S3-T11✓, S3-T09 | — | **6 h** | Ajustar* |
-| **P2** Bruno | S3-T10, S3-T03, S3-T04, S3-T09 | S3-T10 | **6.5 h** | Ajustar* |
+| **P2** Bruno | S3-T10✓, S3-T03✓, S3-T04✓, S3-T09 | — | **6.5 h** | Ajustar* |
 | **P3** Lucas | S3-T05, S3-T07, S3-T09 | — | **4.5 h** | ✓ |
 | **P4** Matias | S3-T02 (En revisión/E2E manual asíncrono) | — | **1.5 h** | *(Baja)* |
 
@@ -135,7 +140,7 @@ React → Nest (BFF) → Supabase Auth
 
 | Entregable | Estado |
 | --- | --- |
-| Código backend aplicando Patrones Strategy/Observer | Por hacer |
+| Código backend aplicando Patrones Strategy/Observer | Finalizado |
 | Justificación técnica de patrones (Documentación) | Por hacer |
 | UI React: Dashboard y grilla de canchas | Por hacer |
 
@@ -154,9 +159,9 @@ React → Nest (BFF) → Supabase Auth
 
 | ID | Tarea | Asignado | Rol | Duración | Estado |
 | --- | --- | --- | --- | --- | --- |
-| S4-T06 | Preparar Módulo Canchas (M4) API REST para consumir en React | Bruno Conti | P2 | 2.5 h | Por hacer |
+| S4-T06 | Preparar Módulo Canchas (M4) API REST para consumir en React | Bruno Conti | P2 | 2.5 h | Finalizado |
 | S4-T09 | **(Bloqueante)** Definir reglas de negocio (precio/recargo canchas y eventos observer) | Equipo | Todos | 1 h | Por hacer |
-| S4-T01 | Implementar Patrón Strategy para cálculo de precios/recargos de canchas | Bruno Conti | P2 | 2 h | Por hacer |
+| S4-T01 | Implementar Patrón Strategy para cálculo de precios/recargos de canchas | Bruno Conti | P2 | 2 h | Finalizado |
 | S4-T02 | Implementar Patrón Observer para notificaciones | Patricio Ramos | P1 | 2.5 h | Por hacer |
 | S4-T03 | React: Pantalla de Canchas (M4) con selector de horarios y sedes | Lucas Coquet | P3 | 3 h | Por hacer |
 | S4-T04 | React: Setup de estado global básico (Zustand o Context) | Lucas Coquet | P3 | 1.5 h | Por hacer |
@@ -169,7 +174,7 @@ React → Nest (BFF) → Supabase Auth
 | Integrante | Tareas | En desarrollo ahora | Total estimado | ¿≤ 4 h? |
 | --- | --- | --- | --- | --- |
 | **P1** Patricio | S4-T09, S4-T02, S4-T05, S4-T08 | — | **6 h** | Ajustar |
-| **P2** Bruno | S4-T06, S4-T09, S4-T01, S4-T08 | — | **6.5 h** | Ajustar |
+| **P2** Bruno | S4-T06✓, S4-T09, S4-T01✓, S4-T08 | — | **6.5 h** | Ajustar |
 | **P3** Lucas | S4-T09, S4-T03, S4-T04, S4-T08 | — | **6.5 h** | Ajustar |
 | **P4** Matias | S4-T09, S4-T07, S4-T08 | — | **5 h** | Ajustar |
 
@@ -189,8 +194,8 @@ React → Nest (BFF) → Supabase Auth
 
 | Semana | ID tareas | En desarrollo ahora | Total |
 | --- | --- | --- | --- |
-| 3 | S3-T10, S3-T03, S3-T04, S3-T09 | S3-T10 | 6.5 h |
-| 4 | S4-T06, S4-T09, S4-T01, S4-T08 | — | 6.5 h |
+| 3 | S3-T10✓, S3-T03✓, S3-T04✓, S3-T09 | — | 6.5 h |
+| 4 | S4-T06✓, S4-T09, S4-T01✓, S4-T08 | — | 6.5 h |
 | **Total 2 semanas** |  |  | **13 h** |
 
 ##### P3 — Lucas Coquet (Frontend Developer)

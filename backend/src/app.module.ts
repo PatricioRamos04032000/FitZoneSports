@@ -8,8 +8,9 @@ import { AuthModule } from './auth/auth.module';
 import { HealthModule } from './health/health.module';
 import { SedesModule } from './sedes/sedes.module';
 import { NotificacionesModule } from './notificaciones/notificaciones.module';
-import { MembresiasModule } from './membresias/membresias.module'; 
+import { MembresiasModule } from './membresias/membresias.module';
 import { ClasesModule } from './clases/clases.module';
+import { PreciosModule } from './canchas/precios/precios.module';
 
 @Module({
   imports: [
@@ -18,10 +19,11 @@ import { ClasesModule } from './clases/clases.module';
     SupabaseModule,
     HealthModule,
     AuthModule,
-    SedesModule, 
+    SedesModule,
     NotificacionesModule,
     MembresiasModule,
     ClasesModule,
+    PreciosModule,
   ],
   controllers: [AppController],
   providers: [AppService],
