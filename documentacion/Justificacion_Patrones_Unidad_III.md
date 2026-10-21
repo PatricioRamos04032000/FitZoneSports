@@ -1,4 +1,4 @@
-# Justificación de patrones de diseño — Unidad III (S4-T05)
+﻿# Justificación de patrones de diseño — Unidad III (S4-T05)
 
 **Proyecto:** FitZone Sports · Programación V · UNER  
 **Responsable:** Patricio Ramos (P1)  
@@ -9,7 +9,7 @@
 |--------|-------|-----------|--------|
 | [Repository](#1-repository--acceso-a-datos) | Toda la capa de datos del backend | ADR-006 | **Implementado** (S3-T11) |
 | [Observer](#2-observer--lista-de-espera-de-clases) | Clases / lista de espera | RF-08 | **Implementado** (S4-T02) |
-| [Strategy](#3-strategy--precio-de-canchas) | Canchas / precios | RF-11, RN-03 | **Diseñado**, implementación en S4-T01 |
+| [Strategy](#3-strategy--precio-de-canchas) | Canchas / precios | RF-11, RN-03 | **Implementado** (S4-T01) |
 | [Factory Method](#4-factory-method--descartado) | Candidato del docente (canales de aviso) | — | **Descartado** (2026-10-15) |
 | [State](#5-state--ciclo-de-la-reserva-de-cancha) | Reserva de cancha | RF-10, RF-12, RF-13 | **Diseñado** (2026-10-15); código con M4/M5 |
 | [Chain of Responsibility](#6-chain-of-responsibility--descartado) | Candidato del docente (aprobaciones / validaciones) | — | **Descartado** (2026-10-15); los guards cubren el corte en cadena |
@@ -235,11 +235,9 @@ classDiagram
 
 ## 3. Strategy — Precio de canchas
 
-> **Estado:** diseño acordado en [S4-T09](./Propuesta_Reglas_Negocio_S4-T09.md). Implementación a cargo de Bruno Conti en S4-T01. Completar la sección "Dónde está" y "Cómo se prueba" al integrarla.
-
 ### Problema
 
-RF-11: el precio de una cancha es el precio estándar, con **descuento de socio** y **recargo en horario pico**. Según S4-T09:
+RF-11: el precio de una cancha es el precio estándar, con **descuento de socio** y **recargo en horario pico**. Según [S4-T09](./Propuesta_Reglas_Negocio_S4-T09.md):
 
 - El descuento de socio (15% por defecto) lo configura el Gerente Central para toda la cadena.
 - El recargo, el horario y los días pico los configura cada sede.
@@ -248,11 +246,11 @@ RF-11: el precio de una cancha es el precio estándar, con **descuento de socio*
 
 Resolverlo con condicionales en el servicio de reservas (`if (esSocio) … if (esPico) …`) concentra todas las reglas en un método que crece con cada regla nueva (p. ej. feriados o promociones) y es difícil de testear por partes.
 
-### Por qué Strategy
+### Por qué Strategy (y su relación con Decorator)
 
 Strategy encapsula cada algoritmo de cálculo en una clase con una interfaz común (`PricingStrategy`), y el contexto los usa sin conocer sus detalles. La consigna lo pide explícitamente: `StandardPricing`, `MemberDiscountPricing` y `PeakHourPricing`.
 
-Como las reglas se combinan (P4), el servicio de precios no elige **una** estrategia: aplica en orden **todas las que corresponden**, y cada una recibe el precio que dejó la anterior.
+Como las reglas se combinan (P4), el servicio de precios no elige **una** estrategia excluyente: aplica en orden **todas las que corresponden** (`filter` + `reduce`), y cada una recibe el precio que dejó la anterior. Tal como se vio en la Clase 1 de la Unidad III (diapositivas 26 y 35), cuando las reglas se acumulan sobre el mismo precio, la estructura funciona conceptualmente como una cadena de modificadores (**Decorator**) armada por el contenedor de inyección de dependencias (`PRICING_STRATEGIES` con `useFactory`).
 
 ### Aclaración: no es el Strategy de “elegir una”
 
@@ -275,12 +273,13 @@ No anidamos decoradores GoF (`new Recargo(new Descuento(base))`). El mismo efect
 | Elegir una sola estrategia por reserva | No permite combinar descuento y recargo (P4) |
 | Precio calculado en SQL | Las reglas de negocio quedarían fuera del backend y del patrón pedido |
 
-### Estructura (propuesta)
+### Estructura
 
 ```mermaid
 classDiagram
     class PricingStrategy {
         <<interface>>
+        +nombre: string
         +aplica(ctx) boolean
         +calcular(precio, ctx) number
     }
@@ -312,15 +311,28 @@ classDiagram
 | ConcreteStrategy | `StandardPricing`, `PeakHourPricing`, `MemberDiscountPricing` |
 | Context | `PreciosService` |
 
-### Consecuencias esperadas
+### Dónde está
+
+- Interfaz y tipos del contexto: `backend/src/canchas/precios/pricing.strategy.ts`
+- Estrategias concretas:
+  - `backend/src/canchas/precios/strategies/standard-pricing.strategy.ts` (`StandardPricing`)
+  - `backend/src/canchas/precios/strategies/peak-hour-pricing.strategy.ts` (`PeakHourPricing`)
+  - `backend/src/canchas/precios/strategies/member-discount-pricing.strategy.ts` (`MemberDiscountPricing`)
+- Contexto y módulo NestJS: `backend/src/canchas/precios/precios.service.ts`, `backend/src/canchas/precios/precios.module.ts`
+
+### Consecuencias
 
 | Positivas | Negativas |
 |-----------|-----------|
-| Una regla nueva (p. ej. feriados) es una clase nueva, sin tocar las demás | Más clases que un método con condicionales |
+| Una regla nueva (p. ej. feriados) es una clase nueva, sin tocar las demás (principio abierto/cerrado) | Más clases que un método con condicionales |
 | Cada regla se prueba sola con los casos de S4-T09 | El orden de aplicación importa si se suman reglas no multiplicativas |
-| Los parámetros (porcentajes, horarios) vienen de la base, no del código | |
+| Los parámetros (porcentajes, horarios) vienen de la base, no del código | En NestJS hay que declarar el token de colección (`PRICING_STRATEGIES`) con `useFactory` |
 
-### Casos de prueba acordados (base $20.000, valores por defecto)
+### Cómo se prueba
+
+- `backend/src/canchas/precios/precios.service.spec.ts`:
+  - Pruebas unitarias aisladas de `StandardPricing`, `PeakHourPricing` (límites de franja `[desde, hasta)` y días de la semana en hora Argentina) y `MemberDiscountPricing` (socio activo vs. cuota vencida RN-03).
+  - Pruebas integradas con `PreciosModule` verificando las tres tablas de casos acordadas en [S4-T09](./Propuesta_Reglas_Negocio_S4-T09.md) (base $20.000 con valores por defecto, sede con pico personalizado 30% lun–vie 18–22 hs, cambio de descuento de cadena a 10%) y el redondeo al peso entero (`Math.round`, P7):
 
 | Cliente | Turno | Precio |
 |---------|-------|--------|
