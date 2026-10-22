@@ -32,11 +32,13 @@ RF-11 fija el horario pico en 19:00–21:00; P3 lo toma como valor por defecto y
 
 | Opción | Descripción |
 |--------|-------------|
-| **a (R)** | Columna `precio_hora` en `canchas`. El gerente lo carga al dar de alta la cancha y lo puede editar |
+| **a (R)** | Columna `precio_hora` en `canchas`. Se carga al dar de alta la cancha y se puede editar después |
 | b | Tabla `tarifas` por sede y tipo de cancha |
 | c | Constante en el código por tipo de cancha |
 
-**R:** (a). Es lo que pide RF-09, permite precios distintos por sede sin otra tabla, y el gerente lo maneja sin redeploy.
+**R:** (a). Es lo que pide RF-09, permite precios distintos por sede sin otra tabla, y se cambia sin redeploy.
+
+**Quién lo edita (Decidido por P1, 2026-10-21):** el Gerente Central (`gerente`) y el recepcionista de esa sede (`admin_sede`, hoy `recepcionista`). El recepcionista edita el precio de las canchas de las sedes que tiene asignadas; en otra sede la API responde 403. El gerente edita el precio de cualquier sede.
 
 ### P2 — Duración del turno
 
@@ -55,7 +57,7 @@ RF-11 fija el horario pico en 19:00–21:00; P3 lo toma como valor por defecto y
 
 ### P3 — Recargo de horario pico: configurable por sede (Decidido por P1, 2026-10-06)
 
-**Cada sede tiene su propia configuración de horario pico, y la edita el Administrador de Sede (A3).** Se configuran tres cosas:
+**Cada sede tiene su propia configuración de horario pico. La editan el Administrador de Sede (A3) de esa sede y el Gerente Central (A4).** Se configuran tres cosas:
 
 | Dato | Ejemplo | Validación |
 |------|---------|------------|
@@ -81,7 +83,7 @@ create table public.configuracion_pico (
 );
 ```
 
-**API (propuesta):** `GET /sedes/:id/configuracion-pico` (público, para mostrar en la grilla qué turnos tienen recargo) y `PUT /sedes/:id/configuracion-pico` (solo un administrador de esa sede).
+**API (propuesta):** `GET /sedes/:id/configuracion-pico` (público, para mostrar en la grilla qué turnos tienen recargo) y `PUT /sedes/:id/configuracion-pico` (un administrador de esa sede, o el Gerente Central).
 
 **Quién la edita (Decidido por P1, 2026-10-06): el Administrador de Sede (A3).** Los roles siguen la consigna:
 
@@ -92,7 +94,7 @@ create table public.configuracion_pico (
 
 - El administrador de sede edita la configuración pico **solo de las sedes asignadas**; para otra sede, `PUT` responde 403.
 - Un mismo administrador puede tener **varias sedes**, y una sede puede tener **más de un administrador** (p. ej. turnos de recepción).
-- El Gerente Central **no** edita la configuración pico de las sedes.
+- El Gerente Central **también** edita el horario pico (recargo, franja y días) de cualquier sede (Decidido por P1, 2026-10-21).
 
 **Base de datos (propuesta):** `perfiles.sede_home_id` no alcanza (es una sola sede). Se agrega una tabla de asignación:
 
@@ -107,7 +109,7 @@ create table public.admins_sede (
 );
 ```
 
-Nest valida que el perfil tenga rol `admin_sede` al asignarlo, y en cada `PUT` que exista la fila `(usuario del token, sede)`.
+Nest valida que el perfil tenga rol `admin_sede` al asignarlo. En cada `PUT` acepta al Gerente Central, o al recepcionista si existe la fila `(usuario del token, sede)`.
 
 ### P4 — Socio en horario pico: ¿se combinan descuento y recargo?
 
@@ -134,6 +136,8 @@ Esto cierra la pregunta pendiente "Mora (RN-03): ¿bloquea descuento o solo avis
 
 **R:** (a). El comprobante PDF (RF-14) usa ese monto.
 
+**Horizonte de reserva (Decidido por P1, 2026-10-21):** se puede reservar una cancha hasta **1 mes calendario** hacia adelante. El inicio del turno no puede quedar después de la misma fecha del mes siguiente, contada desde el momento de la reserva. Más allá de ese plazo, la reserva se rechaza. El precio se calcula y se guarda en ese momento (opción a).
+
 ### P7 — Redondeo
 
 **R:** al peso entero (`Math.round`) después de aplicar todas las reglas.
@@ -142,9 +146,10 @@ Esto cierra la pregunta pendiente "Mora (RN-03): ¿bloquea descuento o solo avis
 
 | Parámetro | Dónde | Quién lo edita |
 |-----------|-------|----------------|
-| Precio base | `canchas.precio_hora` (P1) | Gerente Central (A4: "define precios") |
-| Recargo, horario y días pico | `configuracion_pico`, una fila por sede (P3) | Administrador de esa sede (A3) |
+| Precio base | `canchas.precio_hora` (P1) | Gerente Central y recepcionista de esa sede (Decidido 2026-10-21) |
+| Recargo, horario y días pico | `configuracion_pico`, una fila por sede (P3) | Administrador de esa sede (A3) y Gerente Central (A4) (Decidido 2026-10-21) |
 | Descuento de socio | `configuracion_cadena`, **un único valor para toda la cadena** | Gerente Central (A4) |
+| Horizonte máximo de reserva | 1 mes calendario, fijo (P6) | No se edita |
 
 **Descuento de socio configurable para toda la cadena:**
 
@@ -223,7 +228,7 @@ interface PricingStrategy {
 |----|------|----------|---|
 | Q1 | Plazo para confirmar un lugar de la lista de espera (D7) | 15 min · **30 min** · 2 h | **30 min**, y si la clase empieza antes, el plazo termina 1 h antes del inicio |
 | Q2 | Penalidad por cancelación tardía de clase (D6, menos de 2 h) | Ninguna, solo registro · **3 tardías en 30 días bloquean reservar clases 7 días** · cobro | **Solo registro por ahora**; la regla de bloqueo queda para cuando haya reportes |
-| Q3 | Ventana de reserva de clases "hasta 48 hs antes" (D5) | Se puede reservar desde 48 h antes · se puede reservar hasta 48 h antes del inicio | **Consultar al docente.** Mientras: abre 48 h antes y cierra al inicio |
+| Q3 | Ventana de reserva de clases "hasta 48 hs antes" (D5) | Se puede reservar desde 48 h antes · se puede reservar hasta 48 h antes del inicio | **Decidido (2026-10-21):** se reserva hasta 48 h antes del inicio. Con menos de 48 h, no. No es "abre 48 h antes" |
 | Q4 | Precios reales de los planes (hoy de ejemplo: 25.000 / 67.500 / 240.000) | Mantener · definir otros | Mantener para la demo |
 
 ---
@@ -232,6 +237,6 @@ interface PricingStrategy {
 
 1. Marcar cada punto como **Decidido** en este documento.
 2. Bruno arranca S4-T06 (tablas `canchas` con `precio_hora`, `reservas_cancha` con `precio` y `configuracion_pico`) y S4-T01 con los ejemplos de las tablas como tests.
-3. Asignar los endpoints de configuración (`/sedes/:id/configuracion-pico` y `/configuracion/descuento-socio`) y sus pantallas para el Administrador de Sede y el Gerente Central: no estaban en el plan.
+3. Asignar los endpoints de configuración (`/sedes/:id/configuracion-pico` y `/configuracion/descuento-socio`), la edición de `precio_hora` y sus pantallas. El precio de la cancha y el horario pico los editan el recepcionista de esa sede y el Gerente Central; el descuento de socio, solo el Gerente Central. No estaban en el plan.
 4. Si se aprueba el renombre `recepcionista` → `admin_sede`, actualizar las menciones en la documentación (Funcionalidades por actor, C4, Propuesta ER, Diseño BD S3-T06). Ningún código del backend usa ese valor.
 5. Actualizar [Decisiones pendientes](./Decisiones_Pendientes_y_Cosas_a_Definir.md) (Mora RN-03).
