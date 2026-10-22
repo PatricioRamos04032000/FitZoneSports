@@ -271,3 +271,57 @@ Matias Goncevat (P4)	QA / DevOps / Mobile	Preparación de pruebas de integració
 Consolidar la comunicación entre React → NestJS → Supabase, dejando operativos los endpoints necesarios del backend y avanzando en su consumo desde el frontend.
 
 Una vez estabilizada esta integración, el equipo continúa con las funcionalidades previstas para la siguiente etapa, principalmente Canchas, estado global en React y patrones Strategy/Observer.
+
+---
+
+## 2026-10-21 — Reunión de seguimiento y reglas de Canchas
+
+**Tipo:** reunión de equipo
+**Participantes:** Patricio Ramos (P1), Bruno Conti (P2), Lucas Coquet (P3), Matias Goncevat (P4)
+**Referencia:** [Acta_Reunion_2026-10-21_Seguimiento.md](./Acta_Reunion_2026-10-21_Seguimiento.md)
+
+### Avances y trabajo en curso
+
+| Integrante | Finalizado / estado actual |
+| --- | --- |
+| **Bruno (P2)** | **Finalizado:** S4-T01, Strategy de precios. **En desarrollo:** S4-T06, API REST del módulo Canchas; la API sigue pendiente y las reglas acordadas en esta reunión sirven de guía. |
+| **Lucas (P3)** | **Finalizado:** prototipos de Login, Mi Perfil y Canchas con datos fijos. **En desarrollo:** S3-T05, conectar Login con `POST /auth/login`. Mi Perfil aún muestra datos de prueba; Canchas espera la API. No se identificó una tarea de backend para el endpoint de perfil. |
+| **Matias (P4)** | **Finalizado:** nombres y roles del equipo incorporados al README. **En desarrollo:** checklist de cuentas de GitHub, Supabase y Vercel; falta confirmar quién administra cada cuenta. Luego prepara el próximo plan y actualiza este LOG. |
+| **Patricio (P1)** | **Finalizado:** S4-T05, justificación de patrones. **En desarrollo:** actualización del plan de dos semanas para compartir con el docente. |
+
+### Decisiones de negocio: Canchas (S4-T09)
+
+La propuesta de reglas quedó en la rama `S4-T09` (commit `9fb6aa7`), todavía **sin merge a `desarrollo`** al momento de la reunión. Se acordó:
+
+- El precio base se guarda por cancha (`precio_hora`). Lo editan el gerente central y el administrador/recepcionista de la sede correspondiente.
+- Los turnos duran 60 minutos y comienzan en hora en punto.
+- Para evitar sobreventa, la reserva debe validarse e insertarse en una función SQL con bloqueo de la cancha y un índice único por cancha e inicio; Nest la invocará por RPC.
+- El horario pico es configurable por sede (por defecto: 20 %, de 19:00 a 21:00, todos los días). Lo editan el administrador de esa sede y el gerente central.
+- Recargo de pico y descuento de socio se acumulan sobre el precio anterior. El descuento se aplica si la membresía está vigente el día del turno; si no, se permite reservar a tarifa externa y se informa al usuario.
+- El precio y su detalle se fijan al reservar. El horizonte máximo de reserva es de un mes calendario.
+- El redondeo acordado es **hacia arriba al peso entero**; la propuesta todavía dice `Math.round` y debe alinearse.
+- El descuento de socio es único para toda la cadena (15 % por defecto) y solo lo modifica el gerente central. El gerente central también asigna administradores de sede.
+
+No se decidió crear una tabla de tipos de cancha con tarifas estándar. Tampoco se reabrieron en esta reunión las decisiones sobre plazo de lista de espera, penalidad de cancelación de clases, ventana de 48 horas ni precios de planes.
+
+### Otros acuerdos y pendientes
+
+- Mientras no exista una API, el frontend puede continuar con datos de prueba; después debe reemplazar esa fuente por el endpoint real.
+- Lucas prioriza que las pantallas funcionen; responsive, Figma y librería de componentes quedan para una decisión del equipo.
+- El plan actualizado se enviará al docente como seguimiento del grupo.
+- Queda pendiente ordenar la documentación principal antes de presentarla; no se asignó responsable.
+- Las tareas relacionadas con la reunión deben reflejar los estados reales: S4-T06 pendiente/en desarrollo, S4-T01 finalizada, S4-T05 finalizada, S4-T09 decidido pendiente de merge y S4-T02 ya implementada.
+
+### Próximos pasos
+
+1. Continuar S4-T06 tomando S4-T09 como especificación y verificar la integración de la rama de reglas.
+2. Probar el login desde React y quitar el uso de datos de prueba cuando estén disponibles las APIs correspondientes.
+3. Definir y asignar el endpoint de perfil necesario para conectar Mi Perfil.
+4. Preparar el próximo plan de trabajo y registrar allí responsables, estados y bloqueos.
+5. Corregir la propuesta de redondeo para que coincida con la decisión de redondear hacia arriba.
+
+### Documentos relacionados
+
+- [Plan_Trabajo_2_Semanas.md](./Plan_Trabajo_2_Semanas.md)
+- [Propuesta_Reglas_Negocio_S4-T09.md](./Propuesta_Reglas_Negocio_S4-T09.md)
+- [Decisiones_Pendientes_y_Cosas_a_Definir.md](./Decisiones_Pendientes_y_Cosas_a_Definir.md)

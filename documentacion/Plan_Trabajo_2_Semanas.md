@@ -2,268 +2,130 @@
 
 **Proyecto:** FitZone Sports · Programación V · UNER  
 **Equipo:** 4 integrantes  
-**Dedicación mínima:** 4 h/semana por integrante → **16 h/semana de equipo** (~32 h en 2 semanas)  
-**Fecha de elaboración:** 2026-09-29  
-**Última actualización de estados:** 2026-10-21  
-**Unidad en curso:** II (Frameworks) → transición a III (Patrones)
+**Período de referencia:** 2026-10-22 al 2026-11-05
+**Última actualización:** 2026-10-22
+**Unidad en curso:** III (Patrones), con integración del frontend y avance de módulos de negocio
 
-**Referencias:** [Trabajo Integrador](./Trabajo_Integrador_FitZone_Sports.md) · [Decisiones pendientes](./Decisiones_Pendientes_y_Cosas_a_Definir.md) · [LOG](./LOG.md) · [Acta 2026-09-02](./Acta_Reunion_2026-09-02_Semana1.md)
+**Referencias:** [Trabajo Integrador](./Trabajo_Integrador_FitZone_Sports.md) · [Acta 2026-10-21](./Acta_Reunion_2026-10-21_Seguimiento.md) · [Decisiones pendientes](./Decisiones_Pendientes_y_Cosas_a_Definir.md) · [Correcciones de Membresías y Clases](./Correcciones_S3-T03_S3-T04_Membresias_Clases.md) · [LOG](./LOG.md)
 
-**Cómo leer este documento**
+## Cómo leer este plan
 
-- Cada **objetivo general** agrupa varias **tareas concretas** (ID `S1-Txx` / `S2-Txx`).
-- Cada tarea tiene **asignado**, **duración** y **estado**.
-- **Estado** (obligatorio, no usar solo checkbox):
-  - **Por hacer** — asignada, aún no empezada
-  - **En desarrollo** — el integrante la está trabajando **ahora**
-  - **Finalizado** — completada
-- La sección **Trabajo en curso (ahora)** resume qué hace cada uno hoy (puede diferir de “todas las asignadas”).
-- Al pie de cada semana: **resumen de carga** por integrante (debe rondar **4 h** c/u).
+- **Finalizado:** el trabajo indicado está implementado o la decisión/reunión ya ocurrió.
+- **En desarrollo:** hay trabajo activo confirmado; puede estar bloqueado por otra tarea.
+- **Por hacer:** no hay evidencia de que haya comenzado o falta terminarlo.
+- Las tareas S4-T10 en adelante se agregan para registrar brechas que siguen visibles en el código, aunque algunos hitos relacionados ya se hayan dado por cerrados en la reunión.
+- Las estimaciones y asignaciones de las tareas nuevas quedan sujetas a confirmación del equipo.
 
----
+## Integrantes
 
-#### Integrantes
-| Rol | Código | Nombre | GitHub / contacto |
-| ------ | ------ | ------ | ------ |
-| Arquitecto / Backend Lead | **P1** | Patricio Ramos | |
-| Backend Developer | **P2** | Bruno Conti | |
-| Frontend Developer | **P3** | Lucas Coquet | |
-| QA / DevOps / Mobile | **P4** | Matias Goncevat | |
+| Rol | Código | Nombre |
+| --- | --- | --- |
+| Arquitecto / Backend Lead | **P1** | Patricio Ramos |
+| Backend Developer | **P2** | Bruno Conti |
+| Frontend Developer | **P3** | Lucas Coquet |
+| QA / DevOps / Mobile | **P4** | Matias Goncevat |
 
---------------------------------------------------------------------------------
+## Estado general al 2026-10-22
 
-#### Trabajo en curso (ahora)
-Actualizado el **2026-10-21**. Refleja lo que cada integrante **está trabajando**, no solo el backlog asignado.
-
-| Integrante | Rol | Tarea en curso (ID) | Qué está haciendo | Estado |
-| ------ | ------ | ------ | ------ | ------ |
-| Patricio Ramos | P1 | S3-T09 | Reunión de seguimiento y redacción del LOG | Por hacer |
-| Bruno Conti | P2 | S4-T08 | S3 completada (S3-T10, S3-T03, S3-T04) y S4-T06 / S4-T01 finalizadas | Por hacer |
-| Lucas Coquet | P3 | S3-T05 | Conectar formulario de login React con API NestJS | Por hacer |
-| Matias Goncevat | P4 | S3-T02 | Revisar integración de PRs y preparar E2E inicial (baja temporal) | Por hacer |
-
-**Recién finalizado:**
-
-| ID | Tarea | Quién | Estado |
-| ------ | ------ | ------ | ------ |
-| S4-T01 | Implementar Patrón Strategy para cálculo de precios/recargos de canchas (`PreciosModule`) | Bruno (P2) | Finalizado |
-| S4-T06 | Preparar Módulo Canchas (M4) API REST para consumir en React | Bruno (P2) | Finalizado |
-| S3-T04 | Módulo Clases (M3) con patrón Repository | Bruno (P2) | Finalizado |
-| S3-T03 | Módulo Membresías (M1) con patrón Repository | Bruno (P2) | Finalizado |
-| S3-T10 | Separar cliente de Supabase para login + arreglar tests y `POST /login` | Bruno (P2) | Finalizado |
-| S3-T06 | Diseño de DB para Membresías y Clases: migración ejecutada en Supabase y seed de prueba ([diseño](./Diseno_BD_S3-T06_Membresias_Clases.md)) | Patricio (P1) | Finalizado |
-| S3-T11 | Plantilla del patrón Repository y refactor de `GET /sedes` ([guía](./Guia_Patron_Repository.md)) | Patricio (P1) | Finalizado |
-| S3-T01 | Swagger, prueba manual de endpoints contra Supabase y CORS (`CORS_ORIGIN`) | Patricio (P1) | Finalizado |
-| S2-T13 | Swagger: documentar login, health y sedes | Patricio (P1) | Finalizado |
-| S2-T06 | AuthModule BFF (pasarela Supabase Auth) y tests unitarios a verde | Bruno (P2) | Finalizado |
-| S3-T08 | Crear backend/.env.example y actualizar README.md (Reasignado a P2) | Bruno (P2) | Finalizado |
-
---------------------------------------------------------------------------------
-
-#### Capacidad y contexto
-| Dato | Valor |
-| ------ | ------ |
-| Horas mínimas por persona / semana | 4 h |
-| Horas mínimas de equipo / semana | 16 h |
-| Entregable Unidad II (25%) | Repositorio con backend funcional + Swagger |
-| Estado previo | Scaffolding de Nest y React listos; BFF y Supabase API conectados. |
-
-##### Resumen ejecutivo (para el docente)
-**Semana 3:** Unidad II — Ordenamiento de API Auth, configuración CORS, definición de ER SQL (bloqueante para módulos) e integración de Front con Back.
-**Semana 4:** Transición a Unidad III — Desarrollo Módulos Core (Membresías, Clases) y refactorización con patrones de diseño (Strategy, Observer).
-**Fuera de alcance:** App móvil React Native, integraciones de pago reales (pasarelas mock), Testing CI/CD avanzado.
-
-##### Arquitectura de referencia
-```text
-React → Nest (BFF) → Supabase Auth
-                 ↘ Supabase API (Patrón Repository)
-
-```
-
----
-
-#### Semana 3 — API REST Core e Integración
-
-**Objetivo general:** Completar las bases bloqueantes del backend (Auth, CORS, DB) y conectar exitosamente el login desde el frontend.
-
-**Entregables de la semana**
-
-| Entregable | Estado |
+| Área | Estado real observado |
 | --- | --- |
-| Esquema ER SQL cerrado para Membresías y Clases | Finalizado |
-| Plantilla base del patrón Repository (sobre Sedes) | Finalizado |
-| Frontend conectado al Backend (Login funcionando E2E) | Por hacer |
-| Swagger y CORS configurados en el backend | Finalizado |
+| Arquitectura y decisiones | C4 y ADRs documentados. En la reunión del 21/10 se acordaron las reglas principales de canchas; falta asegurar que la propuesta y los cambios derivados queden integrados en la rama de trabajo. |
+| Backend base | NestJS, BFF de autenticación, verificación JWT, guards de roles, Swagger, CORS, health y acceso a Supabase mediante Repository implementados. |
+| Sedes y notificaciones | `GET /sedes` y endpoints de notificaciones implementados. El Observer y su publisher existen, pero Clases todavía no publica el evento al cancelar/procesar la lista de espera. |
+| Membresías y clases | Hay módulos, repositorios y lógica inicial, además de migración SQL para membresías/clases. Los endpoints de Clases y Membresías aún no aplican los controles de autenticación, autorización y pertenencia previstos en [Correcciones S3-T03 / S3-T04](./Correcciones_S3-T03_S3-T04_Membresias_Clases.md). |
+| Canchas | Está implementado el cálculo de precios con Strategy. No existe todavía el módulo/API REST de canchas ni sus tablas y reservas en las migraciones del repositorio; por eso la integración de la pantalla está bloqueada. |
+| Frontend | Existen prototipos estáticos para Inicio, Login, Perfil y Canchas. Login aún no llama al backend; Mi Perfil y Canchas muestran datos de prueba. No hay cliente API, sesión global ni rutas protegidas. |
+| Pruebas y entrega | Hay pruebas unitarias y e2e del backend, pruebas SQL de membresías/clases y colección Postman. No se observan tests de frontend, pipeline CI, Docker ni configuración de despliegue en el repositorio. |
 
-##### Objetivos generales → tareas
+> La Fase A del esquema (tablas `sedes`, `perfiles` y base de `membresias`) no tiene una migración versionada en el repositorio; la migración disponible cubre planes de membresía, clases, inscripciones y lista de espera.
 
-| Objetivo | Tareas vinculadas |
-| --- | --- |
-| O1 — Cierre Auth y tests unitarios | S3-T10, S3-T05 |
-| O2 — DB y Patrón Repository | S3-T06, S3-T11 |
-| O3 — Swagger y CORS | S3-T01 |
-| O4 — Frontend post-login | S3-T07 |
+## Trabajo en curso confirmado en la reunión del 2026-10-21
 
-##### Tabla de tareas — Semana 3
+| Integrante | Tarea | Trabajo / estado |
+| --- | --- | --- |
+| Patricio Ramos (P1) | Actualización del plan y documentación de seguimiento | **En desarrollo** según el compromiso de actualizar el plan para el docente. La justificación de patrones ya se dio por finalizada. |
+| Bruno Conti (P2) | S4-T06 — API REST de Canchas | **En desarrollo.** Es la tarea actual; la API todavía no está presente en el código. |
+| Lucas Coquet (P3) | S3-T05 — Conectar Login con `POST /auth/login` | **En desarrollo.** La página existe, pero el formulario todavía no está integrado y actualmente imprime credenciales en consola; hay que quitar ese comportamiento. |
+| Matias Goncevat (P4) | Checklist de cuentas (GitHub, Supabase y Vercel) | **En desarrollo**, según el acta. Después debe preparar el plan siguiente y actualizar el LOG. |
 
+## Hitos finalizados
 
-| ID | Tarea | Asignado | Rol | Duración | Estado |
-| --- | --- | --- | --- | --- | --- |
-| S3-T10 |  Separar cliente de Supabase para login + arreglar tests y `POST /login` | Bruno Conti | P2 | 2 h | Finalizado |
-| S3-T06 |  Diseño de DB (ER y SQL) para Membresías, Clases, Cupos y Perfiles | Patricio Ramos | P1 | 2.5 h | Finalizado |
-| S3-T01 | Integrar Swagger, probar endpoints manualmente (S3-T02 reasignado) y setup CORS | Patricio Ramos | P1 | 2 h | Finalizado |
-| S3-T11 | Definir plantilla Patrón Repository y refactorizar `GET /sedes` como ejemplo | Patricio Ramos | P1 | 1 h | Finalizado |
-| S3-T05 | React: Conectar form de login con POST /auth/login (Depende de S3-T10) | Lucas Coquet | P3 | 2 h | Por hacer |
-| S3-T07 | React: Pantalla "Mi Perfil" (Depende de S3-T06 tabla `perfiles`) | Lucas Coquet | P3 | 2 h | Por hacer |
-| S3-T03 | Módulo Membresías (M1) (Desbloqueada: S3-T06 y S3-T11 finalizadas) | Bruno Conti | P2 | 2 h | Finalizado |
-| S3-T04 | Módulo Clases (M3) (Desbloqueada: S3-T06 y S3-T11 finalizadas) | Bruno Conti | P2 | 2 h | Finalizado |
-| S3-T09 | Reunión de seguimiento. P1 redacta el LOG.md | Equipo | Todos | 0.5 h | Por hacer |
+| ID | Tarea / resultado | Evidencia o alcance |
+| --- | --- | --- |
+| S2-T06 | AuthModule BFF hacia Supabase Auth | Login y validación de JWT implementados. |
+| S2-T13 | Swagger para login, health y sedes | Configuración disponible en `/api/docs`. |
+| S3-T01 | Swagger, CORS y pruebas manuales de endpoints | Configuración presente en el backend. |
+| S3-T03 | Módulo inicial de Membresías | Controller, service y repository implementados; requiere completar seguridad y validaciones. |
+| S3-T04 | Módulo inicial de Clases | Consulta de clases, inscripción y cancelación implementadas; requiere completar controles y el flujo Observer. |
+| S3-T06 | Diseño SQL de Membresías y Clases | Migración disponible para planes, clases, inscripciones y lista de espera. |
+| S3-T08 | `.env.example` y documentación de arranque | Plantilla de entorno incluida en el backend. |
+| S3-T10 | Separación del cliente Supabase de login | Cliente de autenticación separado del cliente compartido. |
+| S3-T11 | Patrón Repository y refactor de Sedes | Repositorio base y repositorio de Sedes implementados. |
+| S3-T07 | Prototipo de Mi Perfil | Pantalla creada con datos fijos; la conexión a datos reales queda pendiente en S4-T11/S4-T12. |
+| S4-T01 | Strategy de precios | `StandardPricing`, `PeakHourPricing`, `MemberDiscountPricing` y `PreciosService` implementados. Falta usarlos desde la reserva real de cancha. |
+| S4-T02 | Observer de notificaciones | Publisher, evento y observadores implementados. Falta conectar el publisher con los casos de uso de Clases (S4-T14). |
+| S4-T03 | Prototipo de pantalla Canchas | Pantalla estática creada; conexión con API pendiente de S4-T13. |
+| S4-T05 | Justificación de patrones | Patricio la dio por finalizada en la reunión del 21/10. |
+| S4-T07 | Colección inicial de Postman | La colección y el entorno están versionados en `postman/`; habrá que ampliarlos para las nuevas APIs. |
+| S4-T09 | Reglas de negocio de canchas | Decisiones principales tomadas en la reunión del 21/10 y registradas en el acta/propuesta. Revisar e integrar cualquier cambio documental o de código pendiente, incluido el redondeo hacia arriba. |
+| S3-T09 | Reunión de seguimiento del equipo | Realizada el 21/10; acta disponible. |
 
-##### Carga por integrante — Semana 3
+## Plan de trabajo para las próximas dos semanas
 
-| Integrante | Tareas | En desarrollo ahora | Total estimado | ¿≤ 4 h? |
+### Prioridad 1 — desbloquear operaciones y corregir seguridad
+
+| ID | Tarea | Responsable propuesto | Estado | Dependencias / criterio de cierre |
 | --- | --- | --- | --- | --- |
-| **P1** Patricio | S3-T06✓, S3-T01✓, S3-T11✓, S3-T09 | — | **6 h** | Ajustar* |
-| **P2** Bruno | S3-T10✓, S3-T03✓, S3-T04✓, S3-T09 | — | **6.5 h** | Ajustar* |
-| **P3** Lucas | S3-T05, S3-T07, S3-T09 | — | **4.5 h** | ✓ |
-| **P4** Matias | S3-T02 (En revisión/E2E manual asíncrono) | — | **1.5 h** | *(Baja)* |
+| S4-T06 | Implementar la API REST de Canchas: esquema/migración, repositorio, servicio y endpoints de disponibilidad y reserva; aplicar reglas acordadas para turnos, mantenimiento y concurrencia. | Bruno (P2) | **En desarrollo** | Reglas de S4-T09. Cierra cuando los endpoints y persistencia puedan probarse sin datos ficticios y sin sobreventa. |
+| S4-T10 | Asegurar Membresías y Clases: guards y roles, identidad del socio tomada del JWT, control de pertenencia al cancelar, fecha de clase consultada desde la base y DTO/validación para altas de membresía. | Backend (P2; confirmar con el equipo) | **Por hacer** | No requiere esperar a S4-T06. Usar como guía los puntos de prioridad alta de [Correcciones S3-T03 / S3-T04](./Correcciones_S3-T03_S3-T04_Membresias_Clases.md). |
+| S4-T11 | Crear endpoint de perfil propio (`GET /perfiles/me`) y conectar Mi Perfil a datos reales. | Backend P2 + Frontend P3 (asignación a confirmar) | **Por hacer** | El endpoint no existe; no exponer un perfil arbitrario indicado por el cliente. |
+| S3-T05 | Conectar el formulario de Login con `POST /auth/login`, manejar errores y sesión, y eliminar cualquier impresión de contraseña/token en consola. | Lucas (P3) | **En desarrollo** | Backend de autenticación ya disponible. Cierra con prueba real de login y respuesta de credenciales inválidas. |
 
-**Ajuste sugerido: La carga de P1 y P2 subió temporalmente por la reasignación de tareas críticas de P4. Si P1 y P2 no llegan a terminar S3-T03 y S3-T04, se patean sin problema a la Semana 4.*
+### Prioridad 2 — completar los flujos de usuario
 
----
-
-#### Semana 4 — Patrones de Diseño (GoF) y UI Avanzada
-
-**Objetivo general:** Iniciar Unidad III refactorizando la lógica de negocio con patrones GoF y avanzar en las vistas de React.
-
-**Entregables de la semana**
-
-| Entregable | Estado |
-| --- | --- |
-| Código backend aplicando Patrones Strategy/Observer | Finalizado |
-| Justificación técnica de patrones (Documentación) | Por hacer |
-| UI React: Dashboard y grilla de canchas | Por hacer |
-
-##### Objetivos generales → tareas
-
-| Objetivo | Tareas vinculadas |
-| --- | --- |
-| O5 — Desarrollo REST Canchas | S4-T06 |
-| O6 — Refactorización GoF | S4-T01, S4-T02 |
-| O7 — Desarrollo Frontend (Atomic Design) | S4-T03, S4-T04 |
-| O8 — DevOps Temprano | S4-T07 |
-
-##### Tabla de tareas — Semana 4
-
-*(S4-T06 y definición de negocio movidas como bloqueantes para el Strategy S4-T01)*
-
-| ID | Tarea | Asignado | Rol | Duración | Estado |
-| --- | --- | --- | --- | --- | --- |
-| S4-T06 | Preparar Módulo Canchas (M4) API REST para consumir en React | Bruno Conti | P2 | 2.5 h | Finalizado |
-| S4-T09 | **(Bloqueante)** Definir reglas de negocio (precio/recargo canchas y eventos observer) | Equipo | Todos | 1 h | Por hacer |
-| S4-T01 | Implementar Patrón Strategy para cálculo de precios/recargos de canchas | Bruno Conti | P2 | 2 h | Finalizado |
-| S4-T02 | Implementar Patrón Observer para notificaciones | Patricio Ramos | P1 | 2.5 h | Por hacer |
-| S4-T03 | React: Pantalla de Canchas (M4) con selector de horarios y sedes | Lucas Coquet | P3 | 3 h | Por hacer |
-| S4-T04 | React: Setup de estado global básico (Zustand o Context) | Lucas Coquet | P3 | 1.5 h | Por hacer |
-| S4-T05 | Redactar justificación de patrones aplicados (Documento Unidad III) | Patricio Ramos | P1 | 1.5 h | Por hacer |
-| S4-T07 | Setup inicial de testing E2E (Postman collection) para la API | Matias Goncevat | P4 | 3 h | Por hacer |
-| S4-T08 | Reunión de cierre Semana 4 (Demo técnica interna) | Equipo | Todos | 1 h c/u | Por hacer |
-
-##### Carga por integrante — Semana 4
-
-| Integrante | Tareas | En desarrollo ahora | Total estimado | ¿≤ 4 h? |
+| ID | Tarea | Responsable propuesto | Estado | Dependencias / criterio de cierre |
 | --- | --- | --- | --- | --- |
-| **P1** Patricio | S4-T09, S4-T02, S4-T05, S4-T08 | — | **6 h** | Ajustar |
-| **P2** Bruno | S4-T06✓, S4-T09, S4-T01✓, S4-T08 | — | **6.5 h** | Ajustar |
-| **P3** Lucas | S4-T09, S4-T03, S4-T04, S4-T08 | — | **6.5 h** | Ajustar |
-| **P4** Matias | S4-T09, S4-T07, S4-T08 | — | **5 h** | Ajustar |
+| S4-T12 | Crear cliente de API del frontend y estado de sesión (token/usuario/rol); proteger las rutas que requieran autenticación. | Lucas (P3) | **Por hacer** | S3-T05. Mantener al frontend comunicándose con Nest, no directamente con Supabase Auth. |
+| S4-T13 | Conectar la pantalla de Canchas a disponibilidad y reserva reales; mostrar precio calculado, reglas aplicadas y resultado de reserva. | Lucas (P3) | **Por hacer** | Bloqueada por S4-T06 y por el cliente API de S4-T12. |
+| S4-T14 | Integrar el Observer con la cancelación/procesamiento de lista de espera y probar el aviso in-app. Revisar también confirmación y expiración del lugar notificado. | Backend (P2; confirmar con el equipo) | **Por hacer** | El publisher y los observers ya existen, pero el servicio de Clases todavía no los invoca. |
+| S4-T15 | Alinear regla de redondeo: la reunión acordó redondear hacia arriba, mientras la propuesta y `PreciosService` actualmente indican/usan `Math.round`; actualizar implementación, pruebas y documentación. | Backend P2 + P1 | **Por hacer** | Regla acordada en el acta del 21/10. |
 
----
+### Prioridad 3 — pruebas, documentación y seguimiento
 
-#### Vista por integrante (ambas semanas)
+| ID | Tarea | Responsable propuesto | Estado | Dependencias / criterio de cierre |
+| --- | --- | --- | --- | --- |
+| S4-T16 | Actualizar la propuesta de reglas S4-T09 y verificar que las decisiones acordadas estén integradas en la rama de desarrollo; registrar responsables de cuentas pendientes. | P1 + Matias (P4) | **Por hacer** | La propuesta se registró como pendiente de merge en el acta; revisar estado antes de cerrar. |
+| S4-T17 | Ampliar Postman y las pruebas e2e para login, permisos, perfil, reservas de canchas y lista de espera; cubrir casos de acceso no autorizado y concurrencia. | Matias (P4) + responsables de módulo | **Por hacer** | Se pueden avanzar pruebas de auth/permisos en paralelo; pruebas de canchas dependen de S4-T06. |
+| S4-T18 | Actualizar el LOG y realizar demo técnica de cierre con estado, bloqueos y próximos pasos. | Matias (P4) + equipo | **Por hacer** | Incluir lo completado desde el acta del 21/10. |
 
-##### P1 — Patricio Ramos (Arquitecto / Backend Lead)
+## Orden sugerido y bloqueos
 
-| Semana | ID tareas | En desarrollo ahora | Total |
-| --- | --- | --- | --- |
-| 3 | S3-T06✓, S3-T01✓, S3-T11✓, S3-T09 | — | 6 h |
-| 4 | S4-T09, S4-T02, S4-T05, S4-T08 | — | 6 h |
-| **Total 2 semanas** |  |  | **12 h** |
+1. Continuar S4-T06 y S3-T05 en paralelo.
+2. Atender S4-T10 como prioridad de seguridad; hoy los controllers de Clases y Membresías todavía permiten operaciones sin los guards descritos en la guía de correcciones.
+3. Implementar S4-T11 para desbloquear el perfil real.
+4. Avanzar S4-T12; luego conectar Canchas en S4-T13 cuando S4-T06 esté disponible.
+5. Integrar S4-T14 y corregir el redondeo en S4-T15.
+6. Completar documentación, pruebas y demo (S4-T16 a S4-T18).
 
-##### P2 — Bruno Conti (Backend Developer)
-
-| Semana | ID tareas | En desarrollo ahora | Total |
-| --- | --- | --- | --- |
-| 3 | S3-T10✓, S3-T03✓, S3-T04✓, S3-T09 | — | 6.5 h |
-| 4 | S4-T06✓, S4-T09, S4-T01✓, S4-T08 | — | 6.5 h |
-| **Total 2 semanas** |  |  | **13 h** |
-
-##### P3 — Lucas Coquet (Frontend Developer)
-
-| Semana | ID tareas | En desarrollo ahora | Total |
-| --- | --- | --- | --- |
-| 3 | S3-T05, S3-T07, S3-T09 | — | 4.5 h |
-| 4 | S4-T09, S4-T03, S4-T04, S4-T08 | — | 6.5 h |
-| **Total 2 semanas** |  |  | **11 h** |
-
-##### P4 — Matias Goncevat (QA / DevOps / Mobile)
-
-| Semana | ID tareas | En desarrollo ahora | Total |
-| --- | --- | --- | --- |
-| 3 | S3-T02 | — | 1.5 h |
-| 4 | S4-T09, S4-T07, S4-T08 | — | 5 h |
-| **Total 2 semanas** |  |  | **6.5 h** |
-
----
-
-#### Fuera de alcance (estas 2 semanas)
+## Fuera del alcance inmediato
 
 | Tema | Motivo |
 | --- | --- |
-| Pipeline CI/CD completo en GitHub Actions | Unidad V |
-| App Móvil (React Native) | Unidad VI |
-| Integración pasarela de pagos | Fase final de desarrollo (Módulo 5) |
-| Código de validación Offline / TOTP | Diferido para enfoque móvil |
+| App móvil React Native y QR/TOTP offline | Diferidos a la Unidad VI; la validación offline de acceso todavía tiene decisiones pendientes. |
+| Pagos reales o pasarela de pago | Módulo M5; no hay integración implementada. |
+| Membresías con pago/renovación completa | Requiere cerrar seguridad, lógica de renovación y módulo de pagos. |
+| Pipeline CI/CD, Docker y despliegue | No están configurados en el repositorio; planificar como trabajo específico de Unidad V. |
+| Gestión integral de sedes, clases, reportes y acceso/aforo | Son funcionalidades pendientes de los módulos M1–M5; no se presentan como terminadas en este plan. |
 
----
+## Control de avance
 
-#### Control de avance
+En la próxima reunión:
 
-**Reunión semanal:** 30 min (viernes o día acordado).
-
-1. Recorrer tabla de tareas y actualizar **Estado** (Por hacer / En desarrollo / Finalizado).
-2. Actualizar la sección **Trabajo en curso (ahora)** — una tarea “en desarrollo” por persona como mínimo.
-3. Verificar carga por integrante (¿alguien bloqueado o sobrecargado?).
-4. Actualizar [LOG.md](./LOG.md).
-5. Definir top 3 tareas de la semana siguiente.
-
-##### Plantilla LOG
-
-```md
-## YYYY-MM-DD — Seguimiento plan 2 semanas
-
-**Semana:** 3 | 4  
-**En desarrollo ahora:**
-- P1 … (S3-Txx)
-- P2 … (S3-Txx)
-- P3 … (S3-Txx)
-- P4 … (S3-Txx)
-**Finalizado desde la última vez:** S2-T09, S2-T06, S2-T04…  
-**Por hacer / bloqueadas:**  
-**Ajustes de asignación:**  
-**Próxima semana (top 3):**  
-
-```
-
----
-
-#### Trazabilidad cátedra
-
-| Semana cátedra | Tema oficial | Este plan |
-| --- | --- | --- |
-| 3 | Scaffolding e Inyección de Dependencias | Semana 3 (Consolidación API y Front) |
-| 4 | ORM, entidades y API REST | Semana 3 (Repository y Módulos M1/M3) |
-| 5 | Patrones creacionales y estructurales | Semana 4 (Inicio refactor Strategy/Observer) |
+1. Confirmar responsables y estimaciones de S4-T10 a S4-T18.
+2. Actualizar estados con evidencia del código, pruebas o documentación.
+3. Verificar si S4-T09 quedó integrado en la rama de desarrollo.
+4. Probar primero los endpoints y después los flujos del frontend.
+5. Registrar bloqueos y cambios en [LOG.md](./LOG.md).
 
 ---
 
