@@ -6,8 +6,12 @@
 --   psql -d fz_test -v ON_ERROR_STOP=1 -1 -f supabase/migrations/20260915000000_fase_a_nucleo.sql
 --   psql -d fz_test -v ON_ERROR_STOP=1 -1 -f supabase/migrations/20261005220000_membresias_clases.sql
 --   psql -d fz_test -v ON_ERROR_STOP=1 -1 -f supabase/migrations/20261006190000_notificaciones.sql
---   psql -d fz_test -v ON_ERROR_STOP=1 -c "grant all on all tables in schema public to anon, authenticated, service_role; grant usage on all types in schema public to anon, authenticated, service_role; grant execute on all functions in schema public to anon, authenticated, service_role;"
+--   psql -d fz_test -v ON_ERROR_STOP=1 -1 -f supabase/migrations/20261027200000_canchas_m4.sql
+--   psql -d fz_test -v ON_ERROR_STOP=1 -c "grant all on all tables in schema public to anon, authenticated, service_role; grant execute on all functions in schema public to service_role;"
 --   psql -d fz_test -f supabase/tests/membresias_clases.test.sql
+--   psql -d fz_test -f supabase/tests/canchas_m4.test.sql
+-- Nota: USAGE de types ya lo dejan los default privileges del stub.
+-- No re-otorgar EXECUTE de RPCs a anon/authenticated; las migraciones lo dejan solo en service_role.
 
 create role anon nologin;
 create role authenticated nologin;

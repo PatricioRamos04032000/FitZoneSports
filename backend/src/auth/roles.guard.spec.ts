@@ -12,7 +12,7 @@ import { RolesGuard } from './roles.guard';
 class Controlador {}
 const soloStaff = () => undefined;
 const libre = () => undefined;
-Roles('gerente', 'recepcionista')(soloStaff);
+Roles('gerente', 'admin_sede')(soloStaff);
 
 function contexto(
   handler: () => void,

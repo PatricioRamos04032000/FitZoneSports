@@ -18,7 +18,7 @@ class PruebaRolesController {
   }
 
   @Get('staff')
-  @RequiereRol('gerente', 'recepcionista')
+  @RequiereRol('gerente', 'admin_sede')
   staff() {
     return { ok: true };
   }
@@ -71,7 +71,7 @@ describe('RolesGuard (e2e)', () => {
   });
 
   it('acepta cualquiera de varios roles', async () => {
-    perfiles.findRol.mockResolvedValue('recepcionista');
+    perfiles.findRol.mockResolvedValue('admin_sede');
     await get('/prueba-roles/staff').expect(200);
     await get('/prueba-roles/gerente').expect(403);
   });
