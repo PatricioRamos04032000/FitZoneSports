@@ -1,5 +1,5 @@
 /** Valores del enum `public.rol_usuario`. */
-export const ROLES_USUARIO = ['socio', 'externo', 'recepcionista', 'gerente'] as const;
+export const ROLES_USUARIO = ['socio', 'externo', 'admin_sede', 'gerente'] as const;
 
 export type RolUsuario = (typeof ROLES_USUARIO)[number];
 
