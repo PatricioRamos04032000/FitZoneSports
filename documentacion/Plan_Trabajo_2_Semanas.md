@@ -3,7 +3,7 @@
 **Proyecto:** FitZone Sports · Programación V · UNER  
 **Equipo:** 4 integrantes  
 **Período de referencia:** 2026-10-22 al 2026-11-05
-**Última actualización:** 2026-10-22
+**Última actualización:** 2026-10-27
 **Unidad en curso:** III (Patrones), con integración del frontend y avance de módulos de negocio
 
 **Referencias:** [Trabajo Integrador](./Trabajo_Integrador_FitZone_Sports.md) · [Acta 2026-10-21](./Acta_Reunion_2026-10-21_Seguimiento.md) · [Decisiones pendientes](./Decisiones_Pendientes_y_Cosas_a_Definir.md) · [Correcciones de Membresías y Clases](./Correcciones_S3-T03_S3-T04_Membresias_Clases.md) · [LOG](./LOG.md)
@@ -37,7 +37,7 @@
 | Frontend | Existen prototipos estáticos para Inicio, Login, Perfil y Canchas. Login aún no llama al backend; Mi Perfil y Canchas muestran datos de prueba. No hay cliente API, sesión global ni rutas protegidas. |
 | Pruebas y entrega | Hay pruebas unitarias y e2e del backend, pruebas SQL de membresías/clases y colección Postman. No se observan tests de frontend, pipeline CI, Docker ni configuración de despliegue en el repositorio. |
 
-> La Fase A del esquema (tablas `sedes`, `perfiles` y base de `membresias`) no tiene una migración versionada en el repositorio; la migración disponible cubre planes de membresía, clases, inscripciones y lista de espera.
+> Fase A (`sedes`, `perfiles`, `membresias` y enums): versionada en `supabase/migrations/20260915000000_fase_a_nucleo.sql` (**S5-T01 Finalizado**, 2026-10-27). Encima siguen `20261005220000_membresias_clases.sql` y `20261006190000_notificaciones.sql`.
 
 ## Trabajo en curso confirmado en la reunión del 2026-10-21
 
@@ -58,6 +58,7 @@
 | S3-T03 | Módulo inicial de Membresías | Controller, service y repository implementados; requiere completar seguridad y validaciones. |
 | S3-T04 | Módulo inicial de Clases | Consulta de clases, inscripción y cancelación implementadas; requiere completar controles y el flujo Observer. |
 | S3-T06 | Diseño SQL de Membresías y Clases | Migración disponible para planes, clases, inscripciones y lista de espera. |
+| S5-T01 | Migración Fase A al repo | `20260915000000_fase_a_nucleo.sql`: sedes, perfiles, membresías y enums. Stub local solo arma `auth`. |
 | S3-T08 | `.env.example` y documentación de arranque | Plantilla de entorno incluida en el backend. |
 | S3-T10 | Separación del cliente Supabase de login | Cliente de autenticación separado del cliente compartido. |
 | S3-T11 | Patrón Repository y refactor de Sedes | Repositorio base y repositorio de Sedes implementados. |

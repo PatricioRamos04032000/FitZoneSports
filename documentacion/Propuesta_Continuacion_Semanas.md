@@ -60,9 +60,9 @@ Cada tarea tiene entregable, dependencia y criterio de cierre. Las horas son tec
 
 ### Patricio (8 h)
 
-1. **Migración Fase A al repo (2 h)**  
-   - Entregar: `supabase/migrations/…_fase_a.sql` con `sedes`, `perfiles`, `membresias` y enums (exportar lo que ya corre en Supabase).  
-   - Cierra cuando: un Postgres vacío puede recrear el núcleo sin depender solo del test simulado.
+1. **Migración Fase A al repo (2 h) — Finalizado (S5-T01, 2026-10-27)**  
+   - Entregado: [`supabase/migrations/20260915000000_fase_a_nucleo.sql`](../supabase/migrations/20260915000000_fase_a_nucleo.sql) con `sedes`, `perfiles`, `membresias` y enums. El stub local (`00_fase_a_simulada.sql`) solo arma `auth` y roles.  
+   - Cierre: un Postgres vacío puede recrear el núcleo antes de las migraciones de clases y notificaciones.
 
 2. **Migración M4 (5 h)**  
    - Entregar: `canchas` (`precio_hora`, tipo, sede), `reservas_cancha` (inicio, fin, precio, detalle de reglas, estado pendiente/confirmada/cancelada), `configuracion_pico`, `configuracion_cadena`, `admins_sede`, períodos de mantenimiento (desde–hasta), renombre `recepcionista` → `admin_sede`.  

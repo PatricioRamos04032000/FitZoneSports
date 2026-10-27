@@ -106,7 +106,7 @@ Las reglas de precio ya están decididas en parte ([S4-T09](./Propuesta_Reglas_N
 
 | Tabla / objeto | Módulo | Estado | Dónde está |
 |----------------|--------|--------|------------|
-| `sedes`, `perfiles`, `membresias` y enums | Núcleo / M1 | En Supabase | **Sin migración en el repo** (solo una simulación en `supabase/tests/00_fase_a_simulada.sql`) |
+| `sedes`, `perfiles`, `membresias` y enums | Núcleo / M1 | ✅ | `20260915000000_fase_a_nucleo.sql` (S5-T01). Ya estaba en Supabase; el stub `00_fase_a_simulada.sql` solo simula `auth` en local |
 | `planes_membresia` | M1 | ✅ | `20261005220000_membresias_clases.sql` |
 | `clases`, `inscripciones_clase`, `lista_espera`, vista y funciones | M3 | ✅ | `20261005220000_membresias_clases.sql` |
 | `notificaciones`, `perfiles.notificar_por_email` | M3 | ✅ | `20261006190000_notificaciones.sql` |
@@ -118,7 +118,7 @@ Las reglas de precio ya están decididas en parte ([S4-T09](./Propuesta_Reglas_N
 | `presencias`, `check_ins`, `totp_seeds` | M2 | ❌ | ER propuesto; faltan decisiones |
 | `pagos` | M5 | ❌ | ER propuesto |
 
-**Recomendación:** exportar el esquema real de la Fase A como migración (`supabase/migrations/2026090x_fase_a.sql`). Hoy, si hubiera que recrear la base, no hay script para las tres tablas principales.
+**Hecho (S5-T01, 2026-10-27):** la Fase A está versionada en [`supabase/migrations/20260915000000_fase_a_nucleo.sql`](../supabase/migrations/20260915000000_fase_a_nucleo.sql). En el Supabase del equipo las tablas ya existían; el archivo sirve para recrear un Postgres vacío.
 
 ---
 
@@ -241,7 +241,7 @@ Propuesta inicial para discutir en equipo. Cada uno aplicado o descartado tiene 
 | 1 | Cerrar las decisiones de S4-T09 en reunión | Equipo | — |
 | 1 | Login real, cliente de la API y estado global en el front | Lucas | — |
 | 2 | Diseño y migración de M4: `canchas`, `reservas_cancha` (sin sobreventa), `configuracion_pico`, `configuracion_cadena`, `admins_sede` y renombre de rol | Patricio | S4-T09 |
-| 2 | Migración de la Fase A al repo y función `renovar_membresia` | Patricio | — |
+| 2 | Función `renovar_membresia` (Fase A ya versionada en S5-T01) | Patricio | — |
 | 2 | Endpoints de registro y perfil propio (`/perfiles/me`) | Patricio o Bruno | — |
 | 2 | Pipeline de CI (lint, test y build de backend y frontend) | Matias | — |
 | 3 | API de Canchas (S4-T06) y Strategy (S4-T01) | Bruno | Migración M4 |

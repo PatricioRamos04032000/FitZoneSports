@@ -1,4 +1,6 @@
--- SOLO para un PostgreSQL local de prueba (ver 00_fase_a_simulada.sql). NO ejecutar en Supabase.
+-- SOLO para un PostgreSQL local de prueba. NO ejecutar en Supabase.
+-- Cadena: 00_fase_a_simulada.sql → 20260915000000_fase_a_nucleo.sql
+--          → 20261005220000_membresias_clases.sql → (opcional notificaciones) → este archivo.
 -- Cada caso imprime "OK n"; si alguno falla, psql corta con el error.
 \set ON_ERROR_STOP 1
 set client_min_messages = notice;
