@@ -1,9 +1,10 @@
 # Diseño de base de datos — Membresías, Clases, Cupos y Perfiles (S3-T06)
 
-**Estado:** decisiones cerradas (salvo D5). Migración probada en PostgreSQL local y **ejecutada en Supabase el 2026-10-05**, con seed cargado.  
+**Estado:** decisiones cerradas. D5 se cerró el 2026-10-21. Migración probada en PostgreSQL local y **ejecutada en Supabase el 2026-10-05**, con seed cargado.  
 **Fecha:** 2026-10-05  
 **Tarea:** S3-T06 (bloquea S3-T03 Membresías, S3-T04 Clases y S3-T07 Mi Perfil)  
 **Migración:** [`supabase/migrations/20261005220000_membresias_clases.sql`](../supabase/migrations/20261005220000_membresias_clases.sql)  
+**Fase A (núcleo, S5-T01):** [`supabase/migrations/20260915000000_fase_a_nucleo.sql`](../supabase/migrations/20260915000000_fase_a_nucleo.sql) — `sedes`, `perfiles`, `membresias` y enums; baseline ya aplicado en Supabase.  
 **Referencias:** [Propuesta ER](./Propuesta_ER_FitZone.md) · [Trabajo Integrador](./Trabajo_Integrador_FitZone_Sports.md) (RF-01 a RF-08, RN-03) · [Funcionalidades por actor](./Funcionalidades_por_Actor.md) · [ADR-006](./adr/ADR-006-supabase-api-sin-orm.md)
 
 ---
@@ -28,7 +29,7 @@ Fuera de alcance: acceso/QR (M2), canchas (M4), pagos (M5).
 | `perfiles` | `id` (FK `auth.users`), `rol` (enum `socio\|externo\|recepcionista\|gerente`), `dni`, `nombre`, `apellido`, `telefono`, `foto_url`, `sede_home_id` (FK `sedes`), `created_at` | **0** |
 | `membresias` | `id`, `perfil_id` (FK `perfiles`), `plan` (enum `mensual\|trimestral\|anual`), `estado` (enum `activo\|vencido\|suspendido`), `vigente_desde`, `vigente_hasta`, `created_at` | **0** |
 
-Coincide con la Fase A de la [Propuesta ER](./Propuesta_ER_FitZone.md#3-diagrama-er--fase-a-núcleo-mínimo).
+Coincide con la Fase A de la [Propuesta ER](./Propuesta_ER_FitZone.md#3-diagrama-er--fase-a-núcleo-mínimo). Desde S5-T01 (2026-10-27) ese núcleo está versionado en [`20260915000000_fase_a_nucleo.sql`](../supabase/migrations/20260915000000_fase_a_nucleo.sql).
 
 **Observaciones:**
 
@@ -46,7 +47,7 @@ Coincide con la Fase A de la [Propuesta ER](./Propuesta_ER_FitZone.md#3-diagrama
 | **D2** | Precio y duración de los planes | Tabla **`planes_membresia`**. Precios de ejemplo en la migración, a definir por el equipo. |
 | **D3** | Estado `vencido` | **Calculado en Nest** (`vigente_hasta < hoy`). La columna registra `suspendido` y el cierre de una membresía al renovar. |
 | **D4** | Tipo de clase | **Texto libre** (`clases.tipo`). |
-| **D5** | Ventana de reserva "hasta 48 hs antes" (RF-07) | **Pendiente — hay duda.** Consultar al docente: ¿la reserva *abre* 48 h antes del inicio, o *cierra* 48 h antes? No afecta el esquema: es una validación de fechas en Nest. |
+| **D5** | Ventana de reserva "hasta 48 hs antes" (RF-07) | **Decidido (2026-10-21).** Se puede reservar mientras falten 48 h o más para el inicio. Con menos de 48 h, no. La ventana cierra 48 h antes; no abre en ese momento. No afecta el esquema: es una validación de fechas en Nest, todavía sin implementar en `inscribir`. |
 | **D6** | Cancelación con menos de 2 h | **Se permite y queda registrada** (`inscripciones_clase.cancelacion_tardia`). La penalidad se define más adelante. |
 | **D7** | Cupo liberado y lista de espera (RF-08) | **Se notifica al primero de la lista y tiene un plazo para confirmar.** Sin inscripciones automáticas. |
 | **D8** | Seguridad de las tablas (RLS) | **RLS activado en todas las tablas, sin políticas.** Solo el backend accede (clave secreta). |
@@ -150,7 +151,7 @@ erDiagram
 | Una inscripción vigente por socio y clase | Índice único parcial `where estado = 'inscripto'` | — |
 | Orden y plazos de la lista de espera (D7) | Funciones `procesar_lista_espera`, `cancelar_inscripcion`, `confirmar_lugar_espera` | Define el plazo y notifica |
 | Cancelación tardía (D6) | Columna `cancelacion_tardia` | Calcula si faltan menos de 2 h |
-| Ventana de reserva (D5) | — | Validación de fechas (pendiente de definir) |
+| Ventana de reserva (D5) | — | Rechazar si faltan menos de 48 h para el inicio. Validación en Nest, todavía sin implementar |
 | Solo socios con membresía activa reservan clases (RN-03) | — | Consulta la membresía antes de reservar |
 
 Llamar funciones SQL por RPC (`supabase.rpc(...)`) sigue siendo "API de Supabase sin ORM" (ADR-006). Resuelve la concurrencia que una consulta y un insert separados no pueden garantizar.
@@ -172,7 +173,7 @@ Solo las puede ejecutar `service_role` (el backend). Los errores de negocio lleg
 
 ## 6. Pruebas
 
-La migración se probó en un PostgreSQL 18 local, sobre una réplica de la Fase A (`supabase/tests/00_fase_a_simulada.sql`). El script [`supabase/tests/membresias_clases.test.sql`](../supabase/tests/membresias_clases.test.sql) verifica:
+La migración se probó en un PostgreSQL 18 local. Cadena local: stub `auth` ([`00_fase_a_simulada.sql`](../supabase/tests/00_fase_a_simulada.sql)) → Fase A ([`20260915000000_fase_a_nucleo.sql`](../supabase/migrations/20260915000000_fase_a_nucleo.sql)) → esta migración → (opcional) notificaciones. El script [`supabase/tests/membresias_clases.test.sql`](../supabase/tests/membresias_clases.test.sql) verifica:
 
 1. Historial de membresías permitido; una segunda activa se rechaza.
 2. Clase llena: la reserva se rechaza.
@@ -201,7 +202,6 @@ La migración se probó en un PostgreSQL 18 local, sobre una réplica de la Fase
 
 | Tema | Responsable sugerido |
 |------|----------------------|
-| D5: interpretación de "hasta 48 hs antes" | Consulta al docente |
 | Duración del plazo para confirmar un lugar de la lista de espera (D7) | Equipo (se configura en Nest; ej. 30 min) |
 | Penalidad por cancelación tardía (D6) | Equipo |
 | Precios reales de los planes (D2) | Equipo |

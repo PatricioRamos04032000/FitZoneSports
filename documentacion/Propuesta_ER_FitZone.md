@@ -333,7 +333,7 @@ Protegidos: `GET /sedes`, resto de M1–M5.
 ## 10. Próximos pasos
 
 1. Revisar esta propuesta en equipo (P1 + P2 Bruno / S1-T12).
-2. Cerrar Fase A y pasar el SQL a scripts en el repo + Supabase.
+2. ~~Cerrar Fase A y pasar el SQL a scripts en el repo + Supabase.~~ **Hecho (S5-T01):** [`20260915000000_fase_a_nucleo.sql`](../supabase/migrations/20260915000000_fase_a_nucleo.sql).
 3. Dibujar/exportar el Mermaid Fase A para el paquete de arquitectura.
 4. Ampliar el ER al implementar M2–M5 (no inventar tablas antes de tiempo).
 
