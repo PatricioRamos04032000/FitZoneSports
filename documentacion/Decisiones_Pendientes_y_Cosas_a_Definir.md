@@ -219,9 +219,9 @@ Estas no son “librerías”, pero hay que **acordar el enfoque** cuando se imp
 ### 5.2 Datos de prueba
 
 - [x] Cantidad de sedes de demo — **2 o 3** (acuerdo 2026-09-02; no 25)
-- [ ] Usuarios seed: 1 gerente, 1 recepcionista, 2 socios, 1 externo
-- [ ] Canchas y clases de ejemplo por sede
-- [ ] Script o comando para cargar datos (`npm run seed`)
+- [x] Usuarios seed: 1 gerente, 1 admin_sede, 1 socio, 1 externo — ver [Seed_Demo_S5.md](./Seed_Demo_S5.md) (`npm run seed` en `backend/`)
+- [x] Canchas de ejemplo (1 paddle + 1 fútbol 5) en el seed S5; clases de ejemplo: pendiente (fuera del seed mínimo)
+- [x] Script o comando para cargar datos (`npm run seed` en `backend/`)
 
 ### 5.3 Variables de entorno (checklist, sin valores secretos)
 
