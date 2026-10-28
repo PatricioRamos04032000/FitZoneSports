@@ -426,3 +426,19 @@ Reconstruir un “antes” falso solo para generar historial no aporta evidencia
 - Consigna 1: tests de caracterización en el spec + entrada de LOG anterior.
 - Consigna 2: planilla de olores (sin olor de switch de precios).
 - Texto formal: [Justificación §3 — consigna 3 no aplica](./Justificacion_Patrones_Unidad_III.md#laboratorio-unidad-iii--consigna-3-seis-commits-de-refactor--no-aplica).
+
+---
+
+## 2026-10-28 — S6-T01: GET/PATCH /perfiles/me
+
+**Tipo:** backend / API  
+**Registrado por:** Patricio Ramos (P1)  
+**Cierre:** Lucas puede reemplazar el mock de Mi Perfil con `GET /perfiles/me` (Swagger en `/api/docs`).
+
+### Entregado
+
+- Módulo `backend/src/perfiles/`: `GET /perfiles/me` y `PATCH /perfiles/me` con `JwtAuthGuard`.
+- El id sale solo del JWT (`sub`); no se acepta `perfilId` del cliente.
+- PATCH whitelist: `dni`, `nombre`, `apellido`, `telefono`, `foto_url`, `sede_home_id`. No cambia `rol` ni `notificar_por_email` (sigue en `/notificaciones/preferencias`).
+- DNI duplicado → 409; sede inexistente → 400; sin fila de perfil → 404.
+- Tests unitarios + e2e verdes.

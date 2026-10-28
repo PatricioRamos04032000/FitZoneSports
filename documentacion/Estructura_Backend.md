@@ -56,6 +56,7 @@ backend/
 │   │
 │   ├── health/                    GET /health
 │   ├── sedes/                     GET /sedes
+│   ├── perfiles/                  GET/PATCH /perfiles/me (S6-T01)
 │   ├── notificaciones/            Notificaciones in-app + Observer de lista de espera
 │   │   ├── lista-espera.publisher.ts  Publica LUGAR_LIBERADO
 │   │   ├── lugar-liberado.event.ts    Evento y texto del aviso
@@ -152,6 +153,7 @@ Las líneas punteadas son dependencias que faltan (ver [Correcciones S3-T03 / S3
 | `AuthModule` | Login, `/auth/me`, verificación de JWT, guards de token y rol | `SupabaseJwtService`, `JwtAuthGuard`, `RolesGuard`, `PerfilesRolRepository` |
 | `HealthModule` | Chequeo de vida para el deploy | — |
 | `SedesModule` | Listado de sedes | — |
+| `PerfilesModule` | Perfil propio (`GET/PATCH /perfiles/me`) desde el JWT | `PerfilesService` |
 | `NotificacionesModule` | Notificaciones in-app, preferencias de email y Observer de lista de espera | `ListaEsperaPublisher` |
 | `MembresiasModule` | Membresías: listado, activa por perfil, alta | `MembresiasService` |
 | `ClasesModule` | Clases con cupo, inscripción y cancelación | `ClasesService` |
@@ -174,6 +176,8 @@ Las líneas punteadas son dependencias que faltan (ver [Correcciones S3-T03 / S3
 | `GET /health` | Health | Público | Estado, hora y uptime |
 | `POST /auth/login` | Auth | Público | Email y contraseña → tokens de Supabase |
 | `GET /auth/me` | Auth | Token | Usuario del token y su rol de FitZone |
+| `GET /perfiles/me` | Perfiles | Token | Perfil propio (id del JWT) + email del token |
+| `PATCH /perfiles/me` | Perfiles | Token | Actualiza contacto/foto/sede/DNI propios |
 | `GET /sedes` | Sedes | Público | Lista de sedes |
 | `GET /notificaciones` | Notificaciones | Token | Notificaciones del usuario |
 | `PATCH /notificaciones/:id/leida` | Notificaciones | Token | Marca como leída (404 si no es suya) |
