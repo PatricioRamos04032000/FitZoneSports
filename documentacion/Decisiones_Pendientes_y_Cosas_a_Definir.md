@@ -179,22 +179,39 @@ Estas no son “librerías”, pero hay que **acordar el enfoque** cuando se imp
 
 **Cuándo:** no bloquea el scaffolding inicial; evaluar al tener llamadas reales a Supabase desde Nest (Semanas 3–4 en adelante).
 
+### 3.7 CQRS nivel 2 — reportes del gerente (pendiente)
+
+**Anotado 2026-10-27.** No implementar hasta tener reservas (M4) y el alcance de reportes del gerente. Detalle en [Justificación §16](./Justificacion_Patrones_Unidad_III.md#16-cqrs-nivel-2--reportes-del-gerente).
+
+La cátedra (Unidad III clase 2) pide separar lectura de escritura en **escalones**. FitZone, para el tablero/reportes del gerente, apunta al **nivel 2**: misma base, pero las consultas de ocupación/consolidados **no** pasan por el modelo/repositorio de dominio de reservas; usan **SQL propio o vistas** y DTOs de lectura.
+
+- [ ] Definir qué reportes mínimos muestra el gerente (ocupación por sede/mes, totales de cadena, etc.)
+- [ ] Crear vista(s) o consulta agregada en migraciones (`ocupacion_por_sede_mes` o equivalente)
+- [ ] Puerto de lectura (`OcupacionQuery` / query repository) + endpoint `GET` con `@RequiereRol('gerente')`
+- [ ] No reutilizar el repositorio/Facade de reserva para armar el reporte
+- [ ] Nivel 3 (otra base / eventual) descartado salvo acuerdo de negocio
+
+**Cuándo:** al implementar reportes A4 / cuando M4 tenga datos de ocupación suficientes para demo.
+
 ---
 
 ## 4. Frontend web (React) — qué falta definir
 
 ### 4.1 Tooling
 
-- [ ] Bundler: **Vite** (recomendado) u otro
+- [x] Bundler: **Vite** (ya en `frontend/`)
 - [ ] Estilos: Tailwind CSS vs CSS Modules vs otra opción
 - [ ] Componentes UI: biblioteca (p. ej. MUI, shadcn) o componentes propios (Atomic Design)
-- [ ] Cliente HTTP: `fetch` nativo vs axios
+- [ ] Cliente HTTP: `fetch` nativo vs axios — cerrar al hacer **S4-T12**
 - [ ] Librería de formularios y validación (opcional)
 
-### 4.2 Estado y pantallas
+### 4.2 Estado, capas de UI y pantallas
 
-- [ ] Librería de estado global: Zustand vs Redux Toolkit vs Context puro
-- [ ] Routing: React Router
+- [ ] Separar **estado de servidor** (datos de la API: perfil, canchas, etc.) vs **estado de cliente** (sesión UI, formularios, filtros). La clase pide no guardar la respuesta HTTP en el store global ([Notas Unidad II §3](./Notas_Correcciones_Unidad_II.md)).
+- [ ] Estado de servidor: adoptar **TanStack Query** (u equivalente) al conectar pantallas reales — va con **S4-T12** / **S4-T13** / **S4-T11**.
+- [ ] Estado de cliente / sesión: **Zustand vs Context** (Redux Toolkit solo si hace falta) — decisión abierta; implementar en **S4-T12** (token, usuario, rol, rutas protegidas).
+- [ ] **MVVM en React (pendiente / a futuro):** hoy no hay ViewModel. Evaluar hooks por pantalla (`useLoginViewModel`, `useCanchasViewModel`, …) que concentren estado + llamadas y dejen la vista “tonta”. Encaja al armar Login real (**S3-T05**), cliente/sesión (**S4-T12**) y Canchas/Perfil conectados (**S4-T13**, **S4-T11**). No bloquea el scaffolding actual; decidirlo cuando Lucas toque esas tareas, y documentar la convención si se adopta (carpeta `hooks/` o `viewmodels/`).
+- [x] Routing: **React Router** (ya en `App.tsx`)
 - [ ] Pantallas mínimas por actor (**A1 socio, A2 externo, A3 recepcionista, A4 gerente**)
 - [ ] Cómo se muestra el aforo en “tiempo real” (polling cada N segundos vs WebSocket — puede quedar polling para el MVP)
 
@@ -204,7 +221,7 @@ Estas no son “librerías”, pero hay que **acordar el enfoque** cuando se imp
 - [ ] Diseño visual: ¿hay marca/colores definidos o se define en Unidad IV?
 - [ ] Responsive: ¿prioridad desktop primero, con uso razonable en móvil navegador?
 
-**Cuándo:** Semanas 8–10 (Unidad IV).
+**Cuándo:** Semanas 8–10 (Unidad IV). Arranque práctico: **S3-T05 → S4-T12 → S4-T11 / S4-T13**.
 
 ---
 
@@ -267,8 +284,9 @@ Pendiente solo al llegar a Semanas 13–14 (lado **socio** — distinto del offl
 - [ ] Pipeline GitHub Actions: lint → test → build
 - [ ] ¿Deploy automático a Render/Vercel en cada push a `main`, o deploy manual?
 - [ ] Docker: solo local, solo CI, o también en Render
+- [ ] **SonarCloud** (opcional, post-CI): org creada por P1; compañeros crean cuenta con GitHub; P1 invita; Matias conecta el scan en S6. Guía: [Guia_SonarCloud_FitZone.md](./Guia_SonarCloud_FitZone.md)
 
-**Cuándo:** Semanas 11–12.
+**Cuándo:** Semanas 11–12 (CI). Sonar: cuentas ya; cableado con el pipeline de Matias.
 
 ---
 
