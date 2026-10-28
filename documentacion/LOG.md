@@ -442,3 +442,21 @@ Reconstruir un “antes” falso solo para generar historial no aporta evidencia
 - PATCH whitelist: `dni`, `nombre`, `apellido`, `telefono`, `foto_url`, `sede_home_id`. No cambia `rol` ni `notificar_por_email` (sigue en `/notificaciones/preferencias`).
 - DNI duplicado → 409; sede inexistente → 400; sin fila de perfil → 404.
 - Tests unitarios + e2e verdes.
+
+---
+
+## 2026-10-28 — S6-T03: Esquema de pagos (M5)
+
+**Tipo:** base de datos / documentación  
+**Registrado por:** Patricio Ramos (P1)  
+**Cierre:** existe `pagos` para el pago mock de S7; Adapter documentado como esquema listo.
+
+### Entregado
+
+- Migración [`supabase/migrations/20261028210000_pagos_m5.sql`](../supabase/migrations/20261028210000_pagos_m5.sql): enums `concepto_pago` / `estado_pago`; columnas `monto`, `token_pasarela` (RNF-02), vínculo a `reservas_cancha` o `membresias` (`pagos_vinculo`); RLS sin policies de cliente.
+- Nota Adapter en [Justificación §7](./Justificacion_Patrones_Unidad_III.md#7-adapter--pasarela-de-pago): tabla lista; código Nest / pasarela en S7.
+
+### Fuera de alcance (sigue pendiente)
+
+- S6-T02 (registro o seed documentado como camino demo).
+- Endpoint / servicio de cobro mock (S7).

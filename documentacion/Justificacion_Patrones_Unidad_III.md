@@ -2,7 +2,7 @@
 
 **Proyecto:** FitZone Sports · Programación V · UNER  
 **Responsable:** Patricio Ramos (P1)  
-**Fecha:** 2026-10-06 (actualizado 2026-10-27)  
+**Fecha:** 2026-10-06 (actualizado 2026-10-28)  
 **Entregable:** Unidad III — código refactorizado con patrones + justificación
 
 | Patrón | Dónde | Requisito | Estado |
@@ -13,7 +13,7 @@
 | [Factory Method](#4-factory-method--descartado) | Candidato del docente (canales de aviso) | — | **Descartado** (2026-10-15) |
 | [State](#5-state--ciclo-de-la-reserva-de-cancha) | Reserva de cancha | RF-10, RF-12, RF-13 | **Diseñado** (2026-10-15); código con M4/M5 |
 | [Chain of Responsibility](#6-chain-of-responsibility--descartado) | Candidato del docente (aprobaciones / validaciones) | — | **Descartado** (2026-10-15); los guards cubren el corte en cadena |
-| [Adapter](#7-adapter--pasarela-de-pago) | Pasarela de pago | RF-13, RNF-02 | **Diseñado** (2026-10-15); código con M5 |
+| [Adapter](#7-adapter--pasarela-de-pago) | Pasarela de pago | RF-13, RNF-02 | **Esquema listo** (S6-T03); código Adapter en S7 |
 | [Facade](#8-facade--reservar-cancha-y-membresia) | Reservar cancha y alta o renovación de membresía | RF-10, RF-02, RF-13 | **Diseñado** (2026-10-15); código con M4/M5 |
 | [Builder](#9-builder--descartado) | Candidato del docente (armar una reserva) | — | **Descartado** (2026-10-15); no se planifica |
 | [Decorator](#10-decorator--descartado) | Candidato del docente (caché, log, reintentos) | — | **Descartado** (2026-10-15). Reintento de MercadoPago queda anotado para M5 |
@@ -531,7 +531,7 @@ Escribir una Chain de validaciones de reserva “para tener el patrón”. La cl
 
 **Decisión:** 2026-10-15 · Se usa Adapter al implementar M5, para poder entregar el proyecto con la pasarela simulada y poder cambiarla por MercadoPago sin tocar reservas ni membresías.  
 **Referencia de clase:** ejemplos Java, diapositivas 15–16 ([Patrones_Ejemplos_Java.md](./Patrones_Ejemplos_Java.md)).  
-**Estado:** diseño. No hay módulo de pagos todavía.
+**Estado:** esquema listo (S6-T03). Existe la tabla `pagos` ([`supabase/migrations/20261028210000_pagos_m5.sql`](../supabase/migrations/20261028210000_pagos_m5.sql)) con `monto`, `token_pasarela` (RNF-02) y vínculo a reserva o membresía. Todavía no hay módulo Nest de pagos ni implementación de `PasarelaPago` / `PasarelaSimulada` / `AdaptadorMercadoPago`: eso llega con el pago mock de S7.
 
 ### Problema
 
@@ -590,7 +590,8 @@ classDiagram
 
 ### Dónde va a estar
 
-Todavía no hay módulo de pagos. Al implementar M5: interfaz, simulacro y adaptador junto al servicio que cobra. Cuál implementación está activa sale de la configuración, no de un `if` en la reserva.
+- **BD (hecho, S6-T03):** `public.pagos` — enums `concepto_pago` / `estado_pago`; FKs a `reservas_cancha` o `membresias` según concepto.
+- **Nest (pendiente, S7):** interfaz `PasarelaPago`, `PasarelaSimulada` y (cuando corresponda) `AdaptadorMercadoPago` junto al servicio que cobra e inserta en `pagos`. Cuál implementación está activa sale de la configuración, no de un `if` en la reserva.
 
 ### Consecuencias esperadas
 

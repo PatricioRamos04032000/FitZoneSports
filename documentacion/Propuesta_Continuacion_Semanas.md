@@ -130,9 +130,9 @@ Cada tarea tiene entregable, dependencia y criterio de cierre. Las horas son tec
    - Entregar: `POST /auth/register` básico **o** documentar que la demo usa solo el seed de S5 (preferir seed si aprieta el tiempo).  
    - Cierra cuando: hay un camino escrito para “tener un socio demo”.
 
-3. **Esquema de pagos (3 h)**  
-   - Entregar: migración `pagos` (monto, token_pasarela, estado, vínculo a reserva o membresía); nota Adapter (sin pasarela completa).  
-   - Cierra cuando: la tabla existe para el pago mock de S7.
+3. **Esquema de pagos (3 h) — Finalizado (S6-T03, 2026-10-28)**  
+   - Entregado: [`supabase/migrations/20261028210000_pagos_m5.sql`](../supabase/migrations/20261028210000_pagos_m5.sql); nota Adapter en [Justificación §7](./Justificacion_Patrones_Unidad_III.md#7-adapter--pasarela-de-pago).  
+   - Cierre: la tabla existe para el pago mock de S7 (pasarela Nest pendiente).
 
 ### Bruno (4 h)
 
