@@ -325,3 +325,104 @@ No se decidió crear una tabla de tipos de cancha con tarifas estándar. Tampoco
 - [Plan_Trabajo_2_Semanas.md](./Plan_Trabajo_2_Semanas.md)
 - [Propuesta_Reglas_Negocio_S4-T09.md](./Propuesta_Reglas_Negocio_S4-T09.md)
 - [Decisiones_Pendientes_y_Cosas_a_Definir.md](./Decisiones_Pendientes_y_Cosas_a_Definir.md)
+
+---
+
+## 2026-10-27 — Frontend: ViewModel/hooks anotado como pendiente
+
+**Tipo:** decisión pendiente / seguimiento  
+**Registrado por:** Patricio Ramos  
+**Unidad / semana:** Unidad III–IV (front aún en scaffolding)
+
+### Qué se relevó
+
+El frontend no usa capa ViewModel ni hooks por pantalla: solo `useState` en Login; sin cliente HTTP ni TanStack Query. Los tests del backend se dejan como están (unitarios en `src/` + e2e en `test/`) hasta tener la unidad de clase que precise el criterio e2e.
+
+### Anotación
+
+Quedó pendiente en [Decisiones §4.2](./Decisiones_Pendientes_y_Cosas_a_Definir.md): separar estado servidor/cliente y evaluar MVVM con hooks al implementar Login real y cliente/sesión. Tareas naturales: **S3-T05**, **S4-T12** (y luego **S4-T11** / **S4-T13**). Referencia cruzada en el plan y en [Notas Unidad II §3](./Notas_Correcciones_Unidad_II.md).
+
+---
+
+## 2026-10-27 — CQRS nivel 2 (reportes gerente) anotado como pendiente
+
+**Tipo:** decisión pendiente / seguimiento  
+**Registrado por:** Patricio Ramos  
+**Unidad / semana:** Unidad III clase 2 (CQRS)
+
+### Anotación
+
+Los reportes consolidados del gerente deben ir por **CQRS nivel 2**: consultas/vistas SQL y puerto de lectura aparte; no pasar por el repositorio de dominio de reservas. Nivel 3 fuera de alcance. Quedó en [Justificación §16](./Justificacion_Patrones_Unidad_III.md#16-cqrs-nivel-2--reportes-del-gerente) y [Decisiones §3.7](./Decisiones_Pendientes_y_Cosas_a_Definir.md). Implementar cuando existan M4 + alcance de reportes A4.
+
+---
+
+## 2026-10-27 — Guía SonarCloud para el equipo
+
+**Tipo:** documentación / handoff  
+**Registrado por:** Patricio Ramos
+
+Org SonarCloud creada (P1). Compañeros aún sin cuenta: pasos en [Guia_SonarCloud_FitZone.md](./Guia_SonarCloud_FitZone.md). P1 invita cuando avisen; Matias cablea el scan con el CI (S6), sin adelantar su workflow ahora.
+
+---
+
+## 2026-10-27 — Planilla de olores (Unidad III · laboratorio)
+
+**Tipo:** laboratorio / entregable  
+**Registrado por:** Patricio Ramos (P1)  
+**Referencia:** Unidad III clase 2 — consigna 2 (≥ 5 olores: archivo, línea, olor, evidencia, decisión).  
+**Criterio de la cátedra:** un olor no obliga a refactorizar; anotar y decidir con razón también puntúa.
+
+| # | Archivo | Línea(s) | Olor | Evidencia | Decisión |
+|---|---------|----------|------|-----------|----------|
+| 1 | `backend/src/membresias/membresias.service.ts` | 33–62 (`crear`) | **Método largo** + fuga de capa | > 20 líneas; el service hace `insert` con `(this.repository as any).client` en lugar de un método del repositorio. Rompe la regla Repository (S3-T11 / ADR-006). | **Corregir** al tocar membresías / consigna 4 del lab: `repository.insert` + `unwrap`; sacar el `as any`. |
+| 2 | `backend/src/membresias/membresias.service.ts` | 39–41 | **Switch / if por discriminante** (`plan`) | `mensual` / `trimestral` / `anual` con duraciones hardcodeadas. Aparece **una sola vez** (no ≥ 3 sitios). | **No** llevar a Strategy/Factory: solo cambian datos (duración). **Corregir después** leyendo duración desde `planes_membresia` (o tabla equivalente), no con subclases. |
+| 3 | `backend/src/clases/clases.service.ts` | 21–31 y 52–58 | **Código duplicado** | Dos `switch (e.message)` casi iguales (mapear `P0001` → HTTP). Misma plantilla S3-T11 repetida. | **Corregir cuando se toque clases** (p. ej. S4-T10): Extract Method `traducirErrorSql` compartido. No es Strategy/State. |
+| 4 | `backend/src/clases/clases.controller.ts` + `clases.service.ts` | controller ~25–27; service 38–44 | **Envidia de funcionalidad / regla en el borde equivocado** | El cliente manda `inicioClase` y Nest decide si la cancelación es tardía (D6). Se puede falsear la fecha. Documentado en [Correcciones S3-T03/T04](./Correcciones_S3-T03_S3-T04_Membresias_Clases.md). | **Corregir** (S4-T10): leer `inicio` (y dueño) desde la base; no confiar en el body. |
+| 5 | `backend/src/clases/clases.service.ts` | 42, 47 | **Números mágicos / datos de configuración en código** | `2 * 60 * 60 * 1000` (ventana tardía) y `'30 minutes'` (plazo lista de espera) literales. | **Corregir** al estabilizar S4-T09: constantes de módulo o config; no inventar Strategy. |
+| 6 | `backend/src/canchas/precios/precios.service.ts` | 36 | **Desacuerdo con regla de negocio (P7)** | `Math.round` tras la cadena de estrategias; el acta acordó **redondear hacia arriba** al peso. Tests actuales fijan `Math.round`. | **Corregir** (S4-T15): `Math.ceil` (o equivalente) + actualizar specs y docs. |
+| 7 | `backend/src/canchas/precios/strategies/peak-hour-pricing.strategy.ts` | 36–68 (`extraerDiaYHoraArgentina`) | **Método largo** (> 20 líneas) | ~33 líneas; un solo tema (día/hora en zona AR con `Intl`). Ya está fuera de `aplica`/`calcular`. | **No corregir ahora.** No molesta el cambio frecuente ni mezcla abstracciones; partirlo no acerca un patrón. Revisar solo si Sonar/IDE lo marca y hay que tocar pico otra vez. |
+
+### Lectura para la defensa
+
+- Precios **ya** están en lista de reglas (Strategy); el olor histórico del `switch` de precios **no** está en el código actual.
+- State de reserva y CQRS nivel 2 **aún no aplican** olores en código: el módulo de reservas/reportes no está; quedan diseñados/pendientes.
+- Olores 1–6 tienen dueño de corrección en tareas existentes; el 7 queda como “detectado y deliberadamente no tocado”.
+
+---
+
+## 2026-10-27 — Lab Unidad III · consigna 1 (tests de caracterización de precios)
+
+**Tipo:** laboratorio / entregable  
+**Registrado por:** Patricio Ramos (P1)  
+**Evidencia:** `backend/src/canchas/precios/precios.service.spec.ts` → bloque `Caracterización del cálculo actual (lab Unidad III · consigna 1)`  
+**Producción:** no se modificó código de negocio (solo specs). Suite en verde (`npm test -- --testPathPatterns=precios.service.spec` → 21 passed).
+
+| # | Tipo | Qué fija |
+|---|------|----------|
+| 1 | Caracterización | Externo fuera de pico: solo `StandardPricing`, `precioFinal = precioBase` |
+| 2 | Caracterización | Socio en pico: orden Standard → Peak → Member y $20.400 (P4) |
+| 3 | **Rareza** | ISO **sin** zona horaria (`2026-10-06T19:00:00`) se trata como Argentina (−03:00), igual que con `-03:00`; entra en pico. Comportamiento de `normalizarFecha` poco visible fuera del comentario en `peak-hour-pricing.strategy.ts` |
+
+---
+
+## 2026-10-27 — Lab Unidad III · consigna 3 (refactor 6 commits) — no aplica
+
+**Tipo:** laboratorio / justificación  
+**Registrado por:** Patricio Ramos (P1)
+
+### Decisión
+
+**No** se hace el replay de seis commits *Replace Conditional with Polymorphism* sobre precios.
+
+### Motivo
+
+Strategy en canchas se implementó **desde el inicio** (S4-T01, commit `71c993d`): el equipo ya esperaba usar el patrón (RF-11 + consignas de Unidad III). No existió un cálculo monolítico con `if`/`switch` en el repo del que refactorizar. El estado actual (lista de reglas + DI) es el diseño original, no el final de un lab de olores.
+
+Reconstruir un “antes” falso solo para generar historial no aporta evidencia real y contradice el criterio de la clase (el patrón lo empujan olores o el requerimiento; no se finge el olor).
+
+### Evidencia alternativa
+
+- Código: `backend/src/canchas/precios/` (lista `PRICING_STRATEGIES`).
+- Consigna 1: tests de caracterización en el spec + entrada de LOG anterior.
+- Consigna 2: planilla de olores (sin olor de switch de precios).
+- Texto formal: [Justificación §3 — consigna 3 no aplica](./Justificacion_Patrones_Unidad_III.md#laboratorio-unidad-iii--consigna-3-seis-commits-de-refactor--no-aplica).

@@ -269,4 +269,58 @@ describe('PreciosService — Casos de negocio S4-T09 (S4-T01)', () => {
       expect(resultado.precioFinal).toBe(17_888);
     });
   });
+
+  /**
+   * Consigna 1 del laboratorio Unidad III (clase 2): tests de caracterización
+   * (Feathers). Fijan el comportamiento actual sin cambiar producción.
+   * Incluyen una rareza poco documentada fuera de este spec.
+   */
+  describe('Caracterización del cálculo actual (lab Unidad III · consigna 1)', () => {
+    it('caracteriza: externo fuera de pico → solo StandardPricing y precio = base', () => {
+      const resultado = service.calcular(
+        crearContexto({ esSocioActivo: false, inicio: MARTES_17_HS }),
+      );
+
+      expect(resultado).toEqual({
+        precioBase: PRECIO_BASE,
+        precioFinal: PRECIO_BASE,
+        reglasAplicadas: ['StandardPricing'],
+        descuentoSocioAplicado: false,
+      });
+    });
+
+    it('caracteriza: socio en pico → Standard → Peak → Member (P4) y monto 20.400', () => {
+      const resultado = service.calcular(
+        crearContexto({ esSocioActivo: true, inicio: MARTES_20_HS }),
+      );
+
+      // 20.000 × 1,20 × 0,85 = 20.400; el orden de la lista importa
+      expect(resultado.reglasAplicadas).toEqual([
+        'StandardPricing',
+        'PeakHourPricing',
+        'MemberDiscountPricing',
+      ]);
+      expect(resultado.precioFinal).toBe(20_400);
+      expect(resultado.descuentoSocioAplicado).toBe(true);
+    });
+
+    it('rareza: ISO sin zona horaria se interpreta como hora de Argentina (−03:00)', () => {
+      // Comportamiento en PeakHourPricing.normalizarFecha (solo un comentario en código).
+      // Sin el sufijo -03:00, Node trataría el string como hora local del servidor;
+      // el código fuerza Argentina. Martes 19:00 AR → entra en pico default.
+      const sinZona = '2026-10-06T19:00:00';
+      const conZonaAr = '2026-10-06T19:00:00-03:00';
+
+      const desdeSinZona = service.calcular(
+        crearContexto({ esSocioActivo: false, inicio: sinZona }),
+      );
+      const desdeConZona = service.calcular(
+        crearContexto({ esSocioActivo: false, inicio: conZonaAr }),
+      );
+
+      expect(desdeSinZona.precioFinal).toBe(24_000);
+      expect(desdeSinZona.reglasAplicadas).toContain('PeakHourPricing');
+      expect(desdeSinZona).toEqual(desdeConZona);
+    });
+  });
 });

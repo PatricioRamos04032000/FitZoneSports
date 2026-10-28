@@ -2,7 +2,7 @@
 
 **Proyecto:** FitZone Sports · Programación V · UNER  
 **Responsable:** Patricio Ramos (P1)  
-**Fecha:** 2026-10-06 (actualizado 2026-10-15)  
+**Fecha:** 2026-10-06 (actualizado 2026-10-27)  
 **Entregable:** Unidad III — código refactorizado con patrones + justificación
 
 | Patrón | Dónde | Requisito | Estado |
@@ -22,6 +22,7 @@
 | [Abstract Factory](#13-abstract-factory--descartado) | Familias de objetos (pasarela por país) | — | **Descartado** (2026-10-15). Una pasarela y un solo país |
 | [Composite](#14-composite--descartado) | Árbol red, región, sede y cancha | Reportes | **Descartado** (2026-10-15). No hay árbol; el total es una consulta |
 | [Circuit Breaker](#15-circuit-breaker--pasarela-real) | MercadoPago | RF-13, M5 | **Diseñado** (2026-10-15); código con M5. No aplica a Supabase ni al simulacro |
+| [CQRS nivel 2](#16-cqrs-nivel-2--reportes-del-gerente) | Reportes consolidados del gerente | Consigna TI (reserva vs reportes) | **Pendiente** (2026-10-27). Hacerlo cuando existan reportes / M4 con datos de ocupación |
 
 Cada sección de patrón aplicado sigue el mismo orden: problema, por qué este patrón, alternativas descartadas, estructura, dónde está en el código, consecuencias y cómo se prueba. Las secciones 4 y 6 justifican descartes (también puntúa en la defensa).
 
@@ -341,6 +342,20 @@ classDiagram
 | Socio activo | 17:00 | $17.000 |
 | Socio activo | 20:00 | $20.400 |
 | Socio con cuota vencida | 19:00 | $24.000 |
+
+- Tests de **caracterización** del laboratorio (consigna 1): mismo archivo, bloque `Caracterización del cálculo actual`, incluida la rareza de ISO sin zona horaria → Argentina. Ver [LOG 2026-10-27](./LOG.md).
+
+### Laboratorio Unidad III · consigna 3 (seis commits de refactor) — no aplica
+
+**Decisión:** 2026-10-27 · No se reproduce un historial de seis pasos *Replace Conditional with Polymorphism* sobre precios.
+
+La consigna 3 del laboratorio (clase 2) asume un cálculo previo con `if`/`switch` y un camino de refactor (Extract Method → interfaz → clases → lista → DI), **un commit por paso**. En FitZone **no hubo ese código previo**:
+
+- RF-11 y la rúbrica de Unidad III **ya pedían Strategy** (`StandardPricing`, `MemberDiscountPricing`, `PeakHourPricing`).
+- El equipo lo implementó **de entrada** en S4-T01 (`71c993d`): lista ordenada de reglas, `filter`/`reduce` y `PRICING_STRATEGIES` en el módulo. El destino del paso 5–6 de la diapositiva es el diseño inicial, no el resultado de un refactor.
+- Inventar un monolito con `if` solo para deshacerlo en seis commits sería teatro de git, no evidencia de olores reales empujando al patrón.
+
+Lo que sí acredita el eje: el **código** con lista de reglas, los **tests** (negocio + caracterización), la **planilla de olores** (donde el `switch` de precios **no** aparece porque nunca existió) y esta **justificación** (por qué Strategy; por qué no el camino de refactor de la consigna 3). Criterio de la cátedra: a veces el patrón no nace de un olor en el repo, sino del requerimiento; justificar “por qué no el otro camino” también cuenta.
 
 ---
 
@@ -815,7 +830,7 @@ Composite arma un árbol y trata igual a la hoja y a la rama. El ejemplo para Fi
 
 ### Por qué no
 
-Ese árbol no existe. Las sedes son una lista plana: no hay región ni un nodo "red". Una cancha pertenece a una sede. El reporte del gerente, cuando exista, es ocupación por sede y un total de la cadena: un `GROUP BY`, no un objeto que se recorre recursivamente. Inventar nodos solo para poder sumar es el costo que el patrón no paga. Además, si cada nodo consultara la base, el recorrido sería un N+1.
+Ese árbol no existe. Las sedes son una lista plana: no hay región ni un nodo "red". Una cancha pertenece a una sede. El reporte del gerente, cuando exista, es ocupación por sede y un total de la cadena: un `GROUP BY`, no un objeto que se recorre recursivamente. Inventar nodos solo para poder sumar es el costo que el patrón no paga. Además, si cada nodo consultara la base, el recorrido sería un N+1. Ese reporte se resuelve con **CQRS nivel 2** (§16), no con Composite.
 
 Si más adelante el negocio agrega regiones de verdad, se reabre. Hoy no hay un `instanceof` que eliminar.
 
@@ -856,7 +871,47 @@ En M5, junto al adaptador. Umbrales (cuántos fallos, cuánto tiempo abierto) se
 
 ---
 
-## 16. Otros patrones presentes en el código
+## 16. CQRS nivel 2 — Reportes del gerente
+
+**Decisión:** 2026-10-27 · **Pendiente de implementar** cuando existan reportes del gerente (ocupación / consolidados entre sedes) y datos de reservas (M4).  
+**Referencia de clase:** Unidad III clase 2, bloque CQRS ([UnidadIII_Clase2_Aplicacion_y_Refactoring.pdf](./UnidadIII_Clase2_Aplicacion_y_Refactoring.pdf)). También en [Decisiones pendientes §3.7](./Decisiones_Pendientes_y_Cosas_a_Definir.md).
+
+### Problema
+
+La consigna del TI opone dos necesidades: *transaccionalidad en la reserva de canchas (evitar sobreventa)* vs *reportes centralizados entre sedes*. Es el conflicto central de CQRS.
+
+| | Reservar cancha (comando) | Tablero / reportes del gerente (consulta) |
+|--|---------------------------|------------------------------------------|
+| Quién | Un socio, una vez | El gerente, sobre varias sedes |
+| Necesita | Consistencia fuerte (RN-02) | Velocidad; totales listos para dibujar |
+| Forma | Agregado chico y normalizado | Proyección ancha / agregada (`GROUP BY`) |
+| Tolera retraso | No | Sí (segundos; acordar con el negocio si aplica) |
+
+Forzar un solo camino (p. ej. cargar entidades de reserva vía el repositorio de dominio para armar el reporte) empeora lectura y escritura.
+
+### Tres niveles (cátedra) y dónde apuntamos
+
+| Nivel | Qué separa | FitZone |
+|------:|------------|---------|
+| 1 | Solo en código (comandos vs queries), misma base y modelo | Alcance general del proyecto |
+| **2** | Modelo de **lectura** aparte: SQL propio, proyecciones a DTO o **vistas** (misma base; consistencia fuerte) | **Reportes del gerente** |
+| 3 | Dos almacenes + sync por eventos (consistencia eventual) | Fuera del TI |
+
+### Qué hay que hacer cuando toque
+
+1. Interfaz de lectura aparte del repositorio de dominio, p. ej. `OcupacionQuery.porMes(...)` → DTOs planos (`OcupacionPorSede`), no entidades `Reserva`.
+2. Vista SQL (o consulta con `GROUP BY`) en Postgres; Nest la lee vía un query/repo de solo lectura (Supabase `.from('vista…')` o RPC de lectura). Referencia cercana ya en el repo: la vista `clases_con_cupo` (lectura optimizada, write path de inscripción aparte).
+3. Endpoint solo para `gerente` (`@RequiereRol`); **no** reutilizar `ReservasRepository` / Facade de `reservar()`.
+4. Pregunta de defensa: *«¿Por qué el reporte no usa el ReservaRepository?»* — porque leer y escribir tienen requisitos opuestos; en nivel 2 eso cuesta una interfaz y una consulta/vista.
+
+### Qué no hacer
+
+- Nivel 3 (otra base, eventos, eventual) salvo acuerdo explícito de negocio.
+- Composite de sedes/regiones ([§14](#14-composite--descartado)): el total es un `GROUP BY`.
+
+---
+
+## 17. Otros patrones presentes en el código
 
 No son el foco de la Unidad III, pero aparecen y conviene nombrarlos en la defensa:
 
