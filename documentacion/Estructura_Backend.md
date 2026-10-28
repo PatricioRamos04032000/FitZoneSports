@@ -79,7 +79,7 @@ backend/
 └── package.json
 ```
 
-Las migraciones de la base no están en `backend/`, sino en la raíz del repo: `supabase/migrations/`.
+Las migraciones de la base no están en `backend/`, sino en la raíz del repo: `supabase/migrations/` (núcleo, membresías/clases, notificaciones, canchas M4, pagos M5 / S6-T03).
 
 ---
 

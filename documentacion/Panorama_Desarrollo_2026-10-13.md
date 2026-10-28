@@ -96,7 +96,7 @@ Las reglas de precio ya están decididas en parte ([S4-T09](./Propuesta_Reglas_N
 
 | Funcionalidad | BD | Backend | Front |
 |---------------|----|---------|-------|
-| RF-13 Pasarela simulada (estilo MercadoPago) | ❌ `pagos` | ❌ | ❌ |
+| RF-13 Pasarela simulada (estilo MercadoPago) | ✅ `pagos` (S6-T03) | ❌ pasarela Nest en S7 | ❌ |
 | RNF-02 Guardar solo el token de la pasarela | ❌ | ❌ | ❌ |
 | RF-14 Comprobante PDF | ❌ | ❌ (falta elegir librería) | ❌ |
 
@@ -116,7 +116,7 @@ Las reglas de precio ya están decididas en parte ([S4-T09](./Propuesta_Reglas_N
 | `admins_sede` | Transversal | ❌ | S4-T09 |
 | Renombrar el rol `recepcionista` a `admin_sede` | Transversal | ❌ | Decidido en S4-T09 |
 | `presencias`, `check_ins`, `totp_seeds` | M2 | ❌ | ER propuesto; faltan decisiones |
-| `pagos` | M5 | ❌ | ER propuesto |
+| `pagos` | M5 | ✅ migración S6-T03 (`20261028210000_pagos_m5.sql`); API/pasarela pendiente S7 | ER + migración |
 
 **Hecho (S5-T01, 2026-10-27):** la Fase A está versionada en [`supabase/migrations/20260915000000_fase_a_nucleo.sql`](../supabase/migrations/20260915000000_fase_a_nucleo.sql). En el Supabase del equipo las tablas ya existían; el archivo sirve para recrear un Postgres vacío.
 

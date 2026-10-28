@@ -8,7 +8,7 @@ Carga datos de demo para que el equipo pruebe login, sedes y canchas sin inventa
 
 ## Requisitos
 
-1. Migraciones aplicadas en el Supabase de desarrollo hasta M4 (`20261027200000_canchas_m4.sql`).
+1. Migraciones aplicadas en el Supabase de desarrollo hasta M4 (`20261027200000_canchas_m4.sql`). La de pagos M5 (`20261028210000_pagos_m5.sql`) no es requerida por este seed.
 2. En `backend/.env` (ver [`.env.example`](../backend/.env.example)):
    - `SUPABASE_URL`
    - `SUPABASE_SERVICE_ROLE_KEY`
