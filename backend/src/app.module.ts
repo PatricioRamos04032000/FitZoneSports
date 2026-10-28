@@ -11,6 +11,7 @@ import { NotificacionesModule } from './notificaciones/notificaciones.module';
 import { MembresiasModule } from './membresias/membresias.module';
 import { ClasesModule } from './clases/clases.module';
 import { PreciosModule } from './canchas/precios/precios.module';
+import { PerfilesModule } from './perfiles/perfiles.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { PreciosModule } from './canchas/precios/precios.module';
     HealthModule,
     AuthModule,
     SedesModule,
+    PerfilesModule,
     NotificacionesModule,
     MembresiasModule,
     ClasesModule,

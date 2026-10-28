@@ -122,9 +122,9 @@ Cada tarea tiene entregable, dependencia y criterio de cierre. Las horas son tec
 
 ### Patricio (8 h)
 
-1. **Perfil propio (3 h)**  
-   - Entregar: `GET /perfiles/me` (y `PATCH` si entra); Swagger.  
-   - Cierra cuando: Lucas puede reemplazar el mock de Mi Perfil.
+1. **Perfil propio (3 h) — Finalizado (S6-T01, 2026-10-28)**  
+   - Entregado: `GET /perfiles/me` y `PATCH /perfiles/me` en `backend/src/perfiles/` + Swagger.  
+   - Cierre: Lucas puede reemplazar el mock de Mi Perfil (id solo desde el JWT).
 
 2. **Registro mínimo o seed documentado (2 h)**  
    - Entregar: `POST /auth/register` básico **o** documentar que la demo usa solo el seed de S5 (preferir seed si aprieta el tiempo).  
