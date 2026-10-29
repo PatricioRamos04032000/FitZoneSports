@@ -193,6 +193,25 @@ La cátedra (Unidad III clase 2) pide separar lectura de escritura en **escalone
 
 **Cuándo:** al implementar reportes A4 / cuando M4 tenga datos de ocupación suficientes para demo.
 
+### 3.8 Mejora — respuesta cuando la base / Supabase no responde (anotado 2026-10-29)
+
+**Hoy:** si un repositorio recibe un error de Supabase y el service no lo traduce, `RepositoryErrorFilter` responde **500** con el mensaje genérico `"Error al acceder a los datos"`. No hay un caso dedicado a “base offline” / servicio de datos caído. Además:
+
+- Un fallo de **red puro** (timeout, `fetch failed`, DNS) puede **no** pasar por `RepositoryError` y caer en el 500 default de Nest.
+- En **login**, un fallo de Auth/red puede confundirse con **401** `"Credenciales inválidas"`.
+- **Circuit Breaker sobre Supabase** sigue descartado (§3.6); esta mejora es solo de **clasificación y mensaje HTTP**, no de cortar llamadas.
+
+**Mejora a tener en cuenta (no urgente):**
+
+- [ ] Detectar indisponibilidad / timeout / error de red hacia Supabase (datos y, si aplica, Auth).
+- [ ] Responder **503 Service Unavailable** (o similar) con mensaje claro, p. ej. `"Servicio de datos no disponible"`, en lugar de un 500 genérico o un 401 engañoso en login.
+- [ ] Mantener el 500 `"Error al acceder a los datos"` para fallos de datos “internos” ya tipados como `RepositoryError` que no sean indisponibilidad.
+- [ ] Alinear con §3.5 (formato de errores JSON unificado) cuando se unifique el contrato de errores.
+
+**Cuándo:** mejora de DX/resiliencia de API; no bloquea M1–M5. Conviene al tocar errores globales, Auth o al preparar Demo Day (mensajes claros si Supabase falla en la demo).
+
+**Referencias de código:** `repository-error.filter.ts`, `supabase.repository.ts` (`unwrap`), `auth.service.ts` (login).
+
 ---
 
 ## 4. Frontend web (React) — qué falta definir
