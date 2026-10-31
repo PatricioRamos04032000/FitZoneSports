@@ -6,13 +6,18 @@
 
 Carga datos de demo para que el equipo pruebe login, sedes y canchas sin inventar filas a mano. Es idempotente: se puede correr más de una vez.
 
+**Seed vs registro (S6-T02):** el seed crea usuarios **ya confirmados** (atajo de demo: `socio@fitzone.com`, etc.). Las altas reales de la app van por `POST /auth/register` (mail de confirmación de Supabase Auth + perfil `externo`).
+
 ## Requisitos
 
 1. Migraciones aplicadas en el Supabase de desarrollo hasta M4 (`20261027200000_canchas_m4.sql`). La de pagos M5 (`20261028210000_pagos_m5.sql`) no es requerida por este seed.
 2. En `backend/.env` (ver [`.env.example`](../backend/.env.example)):
    - `SUPABASE_URL`
    - `SUPABASE_SERVICE_ROLE_KEY`
+   - `SUPABASE_ANON_KEY` (también para la API Nest; el seed usa service role)
    - `SEED_PASSWORD` (contraseña común de los usuarios demo; no va en el repo)
+3. Para el registro por API: en el dashboard Supabase, **Authentication → Providers → Email → Confirm email** activado. Site URL / Redirect URLs según el front. Plantilla custom de mail: solo plan Pro; en free va la default (rate limit de mails).
+4. En Windows, arrancar Nest con `npm run start:dev` (usa CA del sistema; si no, `fetch failed` contra Supabase).
 
 ## Cómo correr
 

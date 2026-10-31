@@ -126,9 +126,9 @@ Cada tarea tiene entregable, dependencia y criterio de cierre. Las horas son tec
    - Entregado: `GET /perfiles/me` y `PATCH /perfiles/me` en `backend/src/perfiles/` + Swagger.  
    - Cierre: Lucas puede reemplazar el mock de Mi Perfil (id solo desde el JWT).
 
-2. **Registro mínimo o seed documentado (2 h)**  
-   - Entregar: `POST /auth/register` básico **o** documentar que la demo usa solo el seed de S5 (preferir seed si aprieta el tiempo).  
-   - Cierra cuando: hay un camino escrito para “tener un socio demo”.
+2. **Registro mínimo o seed documentado (2 h) — Finalizado (S6-T02, 2026-10-28)**  
+   - Entregado: `POST /auth/register` (formato email en Nest + confirmación Supabase Auth + perfil `externo`). Seed de S5 sigue para demo.  
+   - Cierre: camino escrito para alta de usuario de la app y para socio demo vía seed.
 
 3. **Esquema de pagos (3 h) — Finalizado (S6-T03, 2026-10-28)**  
    - Entregado: [`supabase/migrations/20261028210000_pagos_m5.sql`](../supabase/migrations/20261028210000_pagos_m5.sql); nota Adapter en [Justificación §7](./Justificacion_Patrones_Unidad_III.md#7-adapter--pasarela-de-pago).  
