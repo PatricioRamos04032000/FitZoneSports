@@ -41,10 +41,10 @@ backend/
 │   │   ├── repository.error.ts        Error de acceso a datos
 │   │   └── repository-error.filter.ts Filtro global: RepositoryError → 500
 │   │
-│   ├── auth/                      Login, verificación de token y roles
-│   │   ├── auth.controller.ts         POST /auth/login
+│   ├── auth/                      Login, registro, verificación de token y roles
+│   │   ├── auth.controller.ts         POST /auth/login, POST /auth/register
 │   │   ├── me.controller.ts           GET /auth/me
-│   │   ├── auth.service.ts            Login contra Supabase Auth
+│   │   ├── auth.service.ts            Login/register contra Supabase Auth
 │   │   ├── supabase-jwt.service.ts    Verifica el JWT con el JWKS
 │   │   ├── jwt-auth.guard.ts          Exige token válido
 │   │   ├── roles.guard.ts             Exige uno de los roles de @Roles
@@ -150,7 +150,7 @@ Las líneas punteadas son dependencias que faltan (ver [Correcciones S3-T03 / S3
 | Módulo | Qué hace | Exporta |
 |--------|----------|---------|
 | `SupabaseModule` (global) | `SupabaseService` (cliente compartido y cliente por login) y el filtro global de `RepositoryError` | `SupabaseService` |
-| `AuthModule` | Login, `/auth/me`, verificación de JWT, guards de token y rol | `SupabaseJwtService`, `JwtAuthGuard`, `RolesGuard`, `PerfilesRolRepository` |
+| `AuthModule` | Login, registro, `/auth/me`, verificación de JWT, guards de token y rol | `SupabaseJwtService`, `JwtAuthGuard`, `RolesGuard`, `PerfilesRolRepository` |
 | `HealthModule` | Chequeo de vida para el deploy | — |
 | `SedesModule` | Listado de sedes | — |
 | `PerfilesModule` | Perfil propio (`GET/PATCH /perfiles/me`) desde el JWT | `PerfilesService` |
@@ -175,6 +175,7 @@ Las líneas punteadas son dependencias que faltan (ver [Correcciones S3-T03 / S3
 | `GET /` | App | Público | "Hello World" del template |
 | `GET /health` | Health | Público | Estado, hora y uptime |
 | `POST /auth/login` | Auth | Público | Email y contraseña → tokens de Supabase |
+| `POST /auth/register` | Auth | Público | Alta externo: formato email + confirmación Supabase; sin token hasta confirmar |
 | `GET /auth/me` | Auth | Token | Usuario del token y su rol de FitZone |
 | `GET /perfiles/me` | Perfiles | Token | Perfil propio (id del JWT) + email del token |
 | `PATCH /perfiles/me` | Perfiles | Token | Actualiza contacto/foto/sede/DNI propios |

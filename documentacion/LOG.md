@@ -445,6 +445,30 @@ Reconstruir un “antes” falso solo para generar historial no aporta evidencia
 
 ---
 
+## 2026-10-28 — S6-T02: POST /auth/register
+
+**Tipo:** backend / API  
+**Registrado por:** Patricio Ramos (P1)  
+**Cierre:** camino escrito para alta de usuario de la app (además del seed demo de S5).
+
+### Entregado
+
+- `POST /auth/register`: formato de email en Nest (`local@dominio.tld`) → 400 si falla; `signUp` con `SUPABASE_ANON_KEY` (mail de confirmación de Supabase Auth); fila en `perfiles` con rol `externo`.
+- Respuesta 201 **sin** `access_token` hasta confirmar el email; luego `POST /auth/login`.
+- Email o DNI duplicado → 409; si falla el perfil tras crear Auth, se hace rollback con `admin.deleteUser`.
+- Variable nueva: `SUPABASE_ANON_KEY` (ver `.env.example`). En Supabase: **Confirm email = ON**.
+- El seed de S5 sigue para usuarios demo ya confirmados (`socio@fitzone.com`, etc.).
+- Tests unitarios verdes.
+- Probe `npm run probe:signup-dup` y script TLS `with-system-ca` (Windows).
+
+### Verificado 2026-10-31 — email duplicado en nuestro Supabase
+
+- API Nest ante re-registro: **409** `Ya existe un usuario con ese email` (correcto).
+- Probe: Supabase responde `error: null`, `session: false`, **`identitiesLen: 0`** (no mensaje “already registered”).
+- Matcher de textos: un solo `includes('already')` como respaldo.
+
+---
+
 ## 2026-10-28 — S6-T03: Esquema de pagos (M5)
 
 **Tipo:** base de datos / documentación  
@@ -458,5 +482,4 @@ Reconstruir un “antes” falso solo para generar historial no aporta evidencia
 
 ### Fuera de alcance (sigue pendiente)
 
-- S6-T02 (registro o seed documentado como camino demo).
 - Endpoint / servicio de cobro mock (S7).

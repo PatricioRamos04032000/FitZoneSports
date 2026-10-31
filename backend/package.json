@@ -9,17 +9,18 @@
     "build": "nest build",
     "deploy": "nest deploy",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
-    "start": "nest start",
-    "start:dev": "nest start --watch",
-    "start:debug": "nest start --debug --watch",
-    "start:prod": "node dist/main",
+    "start": "node scripts/with-system-ca.cjs ./node_modules/@nestjs/cli/bin/nest.js start",
+    "start:dev": "node scripts/with-system-ca.cjs ./node_modules/@nestjs/cli/bin/nest.js start --watch",
+    "start:debug": "node scripts/with-system-ca.cjs ./node_modules/@nestjs/cli/bin/nest.js start --debug --watch",
+    "start:prod": "node scripts/with-system-ca.cjs dist/main",
     "lint": "oxlint --type-aware src/ test/",
     "test": "node --experimental-vm-modules ./node_modules/jest/bin/jest.js",
     "test:watch": "node --experimental-vm-modules ./node_modules/jest/bin/jest.js --watch",
     "test:cov": "node --experimental-vm-modules ./node_modules/jest/bin/jest.js --coverage",
     "test:debug": "node --inspect-brk --experimental-vm-modules -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "node --experimental-vm-modules ./node_modules/jest/bin/jest.js --config ./test/jest-e2e.json",
-    "seed": "node --use-system-ca ./node_modules/ts-node/dist/bin.js --transpile-only --project scripts/tsconfig.seed.json scripts/seed-demo.ts"
+    "seed": "node --use-system-ca ./node_modules/ts-node/dist/bin.js --transpile-only --project scripts/tsconfig.seed.json scripts/seed-demo.ts",
+    "probe:signup-dup": "node --use-system-ca scripts/probe-signup-duplicate.cjs"
   },
   "dependencies": {
     "@nestjs/common": "^12.0.1",

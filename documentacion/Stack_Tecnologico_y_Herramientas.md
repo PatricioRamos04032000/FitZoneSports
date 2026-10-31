@@ -138,7 +138,7 @@ flowchart LR
 - **Supabase Auth** para identidad (login, registro, JWT de sesión)
 - **Supabase API** (cliente desde Nest) para CRUD de tablas de dominio — decisión de equipo (mantener API; ORM descartado)
 - Consola web para inspección de datos en desarrollo
-- Variables backend: `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY` (o anon key según diseño); **no** exponer service role al frontend
+- Variables backend: `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, `SUPABASE_ANON_KEY` (signUp / confirmación de email); **no** exponer service role al frontend
 - **No** se usa Realtime ni se mueve la lógica de negocio (M1–M5) fuera de NestJS
 - Patrón **BFF (2026-08-28):** React habla solo con Nest; Nest es **pasarela** hacia Supabase Auth y consume Supabase API para datos
 
