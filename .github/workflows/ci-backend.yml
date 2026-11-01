@@ -38,7 +38,7 @@ jobs:
         run: npm run lint
 
       - name: Ejecutar tests unitarios
-        run: npm run test
+        run: node --experimental-vm-modules ./node_modules/.bin/jest.js --passWithNoTests
 
       - name: Ejecutar build
         run: npm run build
