@@ -8,6 +8,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { PreciosService } from '../precios/precios.service';
 import { RepositoryError } from '../../supabase/repository.error';
 import { PASARELA_PAGO, PasarelaPago } from './pasarela-pago';
+import { reservaCanchaFixture } from './reserva-cancha.fixture';
 import { ReservaCancha } from './reserva-cancha.model';
 import { ReservasCanchaRepository } from './reservas-cancha.repository';
 import { ReservasCanchaService } from './reservas-cancha.service';
@@ -17,7 +18,7 @@ const CANCHA = 'cancha-1';
 const INICIO = '2026-11-15T19:00:00-03:00';
 
 function filaPendiente(overrides: Partial<ReservaCancha> = {}): ReservaCancha {
-  return {
+  return reservaCanchaFixture({
     id: 'reserva-1',
     cancha_id: CANCHA,
     perfil_id: PERFIL,
@@ -25,10 +26,9 @@ function filaPendiente(overrides: Partial<ReservaCancha> = {}): ReservaCancha {
     fin: '2026-11-15T20:00:00-03:00',
     precio: 24000,
     detalle: { reglasAplicadas: ['StandardPricing', 'PeakHourPricing'] },
-    estado: 'pendiente',
     created_at: '2026-10-31T12:00:00Z',
     ...overrides,
-  };
+  });
 }
 
 describe('ReservasCanchaService (Facade S7-T01)', () => {

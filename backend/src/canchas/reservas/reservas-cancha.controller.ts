@@ -1,4 +1,12 @@
-import { Body, Controller, Param, Post, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  HttpCode,
+  HttpStatus,
+  Param,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
 import {
   ApiBadRequestResponse,
   ApiBearerAuth,
@@ -8,6 +16,7 @@ import {
   ApiNotFoundResponse,
   ApiOkResponse,
   ApiOperation,
+  ApiParam,
   ApiPaymentRequiredResponse,
   ApiTags,
   ApiUnauthorizedResponse,
@@ -30,6 +39,7 @@ export class ReservasCanchaController {
   constructor(private readonly service: ReservasCanchaService) {}
 
   @Post()
+  @HttpCode(HttpStatus.CREATED)
   @ApiOperation({
     summary: 'Reservar una cancha',
     description:
@@ -50,11 +60,13 @@ export class ReservasCanchaController {
   }
 
   @Post(':id/cancelar')
+  @HttpCode(HttpStatus.OK)
   @ApiOperation({
     summary: 'Cancelar una reserva propia',
     description:
       'Delega en el patrón State. Solo el dueño (perfilId del JWT) puede cancelar. Sin plazo de cancelación por ahora.',
   })
+  @ApiParam({ name: 'id', description: 'ID de la reserva a cancelar' })
   @ApiOkResponse({ type: ReservaCanchaResponseDto })
   @ApiBadRequestResponse({ description: 'La reserva no admite cancelación' })
   @ApiForbiddenResponse({ description: 'La reserva pertenece a otro usuario' })
