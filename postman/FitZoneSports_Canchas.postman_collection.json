@@ -1,0 +1,227 @@
+{
+  "info": {
+    "name": "FitZone Sports - Postman Canchas",
+    "description": "Flujo completo para login, listado de sedes, reserva exitosa y validación de conflicto por sobreventa usando el backend NestJS.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_postman_id": "fitzone-canchas-001"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000",
+      "type": "string"
+    },
+    {
+      "key": "authToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "demoEmail",
+      "value": "socio@fitzone.com",
+      "type": "string"
+    },
+    {
+      "key": "demoPassword",
+      "value": "SEED_PASSWORD",
+      "type": "string"
+    },
+    {
+      "key": "sedeId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "canchaId",
+      "value": "a3000000-0000-4000-8000-000000000001",
+      "type": "string"
+    },
+    {
+      "key": "reservaInicio",
+      "value": "2026-11-15T19:00:00-03:00",
+      "type": "string"
+    },
+    {
+      "key": "reservaId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "conflictStatus",
+      "value": "409",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "1. Login",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status 201 en login\", function () {\n  pm.expect(pm.response.code).to.eql(201);\n});\n",
+              "const json = pm.response.json();\n",
+              "pm.test(\"Devuelve access_token\", function () {\n  pm.expect(json).to.have.property(\"access_token\");\n  pm.expect(json.access_token).to.be.a(\"string\");\n  pm.environment.set(\"authToken\", json.access_token);\n});\n",
+              "pm.test(\"Usuario presente\", function () {\n  pm.expect(json.user).to.have.property(\"email\");\n});\n"
+            ],
+            "type": "text/javascript",
+            "packages": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"{{demoEmail}}\",\n  \"password\": \"{{demoPassword}}\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/auth/login",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "auth",
+            "login"
+          ]
+        },
+        "description": "POST /auth/login. El token JWT se guarda en la variable authToken."
+      },
+      "response": []
+    },
+    {
+      "name": "2. Listar sedes disponibles",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"GET /sedes devuelve 200\", function () {\n  pm.expect(pm.response.code).to.eql(200);\n});\n",
+              "const json = pm.response.json();\n",
+              "pm.test(\"Respuesta es un array\", function () {\n  pm.expect(Array.isArray(json)).to.eql(true);\n  pm.expect(json.length).to.be.greaterThan(0);\n});\n",
+              "if (Array.isArray(json) && json.length > 0) {\n  pm.environment.set(\"sedeId\", json[0].id);\n}\n"
+            ],
+            "type": "text/javascript",
+            "packages": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/sedes",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "sedes"
+          ]
+        },
+        "description": "GET /sedes. El endpoint público devuelve las sedes activas del sistema."
+      },
+      "response": []
+    },
+    {
+      "name": "3. Crear reserva de cancha exitosa",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Reserva creada con 201\", function () {\n  pm.expect(pm.response.code).to.eql(201);\n});\n",
+              "const json = pm.response.json();\n",
+              "pm.test(\"Reserva con ID y estado válido\", function () {\n  pm.expect(json).to.have.property(\"id\");\n  pm.expect(json).to.have.property(\"estado\");\n  pm.expect(json.estado).to.be.oneOf([\"pendiente\", \"confirmada\"]);\n  pm.environment.set(\"reservaId\", json.id);\n});\n"
+            ],
+            "type": "text/javascript",
+            "packages": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{authToken}}",
+            "type": "text"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"canchaId\": \"{{canchaId}}\",\n  \"inicio\": \"{{reservaInicio}}\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/canchas/reservas",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "canchas",
+            "reservas"
+          ]
+        },
+        "description": "POST /canchas/reservas. Usa el JWT del login. El perfilId se toma del token, no se envía en el body."
+      },
+      "response": []
+    },
+    {
+      "name": "4. Intentar misma reserva (conflicto por sobreventa)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Se rechaza con conflicto 409\", function () {\n  pm.expect(pm.response.code).to.eql(409);\n});\n",
+              "const json = pm.response.json();\n",
+              "pm.test(\"Mensaje de sobreventa o turno ocupado\", function () {\n  pm.expect(json).to.have.property(\"message\");\n  const msg = String(json.message).toLowerCase();\n  pm.expect(msg).to.match(/ya está reservado|ocupado|en mantenimiento|inactiva/i);\n});\n"
+            ],
+            "type": "text/javascript",
+            "packages": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{authToken}}",
+            "type": "text"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"canchaId\": \"{{canchaId}}\",\n  \"inicio\": \"{{reservaInicio}}\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/canchas/reservas",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "canchas",
+            "reservas"
+          ]
+        },
+        "description": "Reintentamos la misma reserva en el mismo turno para validar la sobreventa: debe devolver 409 Conflict."
+      },
+      "response": []
+    }
+  ]
+}

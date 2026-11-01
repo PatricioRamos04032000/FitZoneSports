@@ -73,6 +73,8 @@ npm test              # unitarios
 npm run test:watch
 npm run test:cov
 npm run test:e2e      # Supertest (config test/jest-e2e.json)
+
+> **Reporte de cobertura:** `npm run test:cov` genera el reporte en `backend/coverage/` (`lcov.info`, `lcov-report/index.html`, etc.). Ver [`documentacion/Reporte_Cobertura_Backend.md`](./Reporte_Cobertura_Backend.md) para cómo generar y consultar el reporte (entregable Unidad V, sin Docker).
 ```
 
 Configuración:

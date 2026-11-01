@@ -10,5 +10,6 @@
     "ignoreDeprecations": "6.0",
     "types": ["node"]
   },
-  "include": ["./seed-demo.ts"]
+  "rootDir": ".",
+  "include": ["./seed-demo.ts", "./smoke-demo.ts"]
 }

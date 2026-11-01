@@ -173,7 +173,7 @@ El detalle está en [Estructura_Backend.md](./Estructura_Backend.md). Resumen:
 | Tests de las funciones SQL | 🟡 `supabase/tests/membresias_clases.test.sql`, manual con un Postgres local |
 | Colección Postman (S4-T07) | ❌ |
 | Pipeline CI (GitHub Actions: lint, test, build) | ❌ no hay `.github/` |
-| Reporte de cobertura (entregable Unidad V) | ❌ (existe `npm run test:cov`, falta publicarlo) |
+| Reporte de cobertura (entregable Unidad V) | ✅ (publicado en `documentacion/Reporte_Cobertura_Backend.md`; se genera en `backend/coverage/` con `npm run test:cov`, sin Docker) |
 | Docker | ❌ |
 | Deploy en Render (backend) y Vercel (frontend) | ❌ sin configuración en el repo |
 | Tests de frontend | ❌ |

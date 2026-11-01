@@ -1,0 +1,47 @@
+name: CI Backend
+
+on:
+  pull_request:
+    branches: [desarrollo]
+
+jobs:
+  ci-backend:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+
+    env:
+      # Este flag es necesario para que Jest ejecute módulos ESM del stack de NestJS
+      # en Node 20 sobre Ubuntu (GitHub Actions). También se usa para mantener la
+      # compatibilidad con la semántica ESM de tsconfig.json (module: nodenext).
+      NODE_OPTIONS: --experimental-vm-modules
+      # Variables por defecto/dummy para evitar fallos en build y tests
+      # si algún módulo lee process.env al inicializarse.
+      # En CI real deben sobreescribirse con GitHub Secrets del repositorio.
+      SUPABASE_URL: https://dummy.supabase.co
+      SUPABASE_ANON_KEY: dummy-anon-key
+      SUPABASE_SERVICE_ROLE_KEY: dummy-service-role-key
+
+    steps:
+      - name: Checkout del código
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: backend/package-lock.json
+
+      - name: Instalar dependencias
+        run: npm ci
+
+      - name: Ejecutar lint
+        run: npm run lint
+
+      - name: Ejecutar tests unitarios
+        run: npm test -- --runInBand
+
+      - name: Ejecutar build
+        run: npm run build

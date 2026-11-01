@@ -510,3 +510,36 @@ Reconstruir un “antes” falso solo para generar historial no aporta evidencia
 - **Checkout retomable / redirect MP:** se mantiene el `POST` atómico con stub. Mejora (crear `pendiente` → pagar aparte → GET + webhook) anotada en [Decisiones §3.4.2](./Decisiones_Pendientes_y_Cosas_a_Definir.md#342-flujo-de-pago-de-cancha--mvp-actual-vs-mejora-mercadopago).
 - **Revisar columnas lista/JSON:** `configuracion_pico.dias` y `notificaciones.datos` — [Decisiones §3.4.3](./Decisiones_Pendientes_y_Cosas_a_Definir.md#343-revisar-columnas-lista--json--configuracion_pico-y-notificaciones).
 - **Desglose de precio como ítems de reserva** (cada regla con efecto en $ antes de pagar) — [Decisiones §3.4.4](./Decisiones_Pendientes_y_Cosas_a_Definir.md#344-desglose-de-precio-de-cancha-como-tems-de-la-reserva-mejora-ux--api).
+
+---
+
+## 2026-10-31 — S7-T11: Smoke del guion demo en LOG
+
+**Tipo:** backend / smoke test / Unidad V  
+**Registrado por:** Matias Goncevat (P4)  
+**Cierre:** los 4 pasos del guion demo pasaron con OK; al menos 1 pase registrado en `reservas_cancha`.
+
+### Entregado
+
+- Script [`backend/scripts/smoke-demo.ts`](../backend/scripts/smoke-demo.ts): flujo login → membresía activa → reserva de cancha → verificación de persistencia.
+- Comando `npm run smoke:demo` en `backend/package.json`.
+- Cada etapa imprime en consola `[SMOKE] Etapa N - Nombre: OK | FAIL (detalle)`.
+- Resultado global impreso: `[SMOKE] Resultado global: OK (al menos 1 pase registrado)`.
+
+### Resultado de la corrida (2026-10-31)
+
+| Etapa | Resultado | Detalle |
+|-------|-----------|---------|
+| 1 — Login | OK | token obtenido para perfil `076bfb09-f718-4124-aaad-8e70accd3ea3` |
+| 2 — Membresía activa | OK | vigente hasta `2026-12-01` |
+| 3 — Reserva de cancha | OK | reserva `368d82fe-67cf-4044-9646-22e15b2bd9c8` confirmada ($20400) |
+| 4 — Persistencia | OK | reserva confirmada en tabla `reservas_cancha` de Supabase |
+
+**Resultado global:** OK — al menos 1 pase registrado en la base de datos.
+
+### Prerrequisitos
+
+- `backend/.env` con `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, `SUPABASE_ANON_KEY`, `SEED_PASSWORD`.
+- Base de datos con seed ejecutado (`npm run seed`).
+- Membresía del socio con `vigente_hasta` futura (actualizada manualmente en Supabase para esta corrida).
+
