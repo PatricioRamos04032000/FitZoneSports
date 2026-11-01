@@ -12,6 +12,7 @@ import { MembresiasModule } from './membresias/membresias.module';
 import { ClasesModule } from './clases/clases.module';
 import { PreciosModule } from './canchas/precios/precios.module';
 import { ReservasCanchaModule } from './canchas/reservas/reservas-cancha.module';
+import { PagosModule } from './pagos/pagos.module';
 import { PerfilesModule } from './perfiles/perfiles.module';
 
 @Module({
@@ -27,6 +28,7 @@ import { PerfilesModule } from './perfiles/perfiles.module';
     MembresiasModule,
     ClasesModule,
     PreciosModule,
+    PagosModule,
     ReservasCanchaModule,
   ],
   controllers: [AppController],

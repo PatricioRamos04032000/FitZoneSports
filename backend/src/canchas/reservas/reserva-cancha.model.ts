@@ -35,4 +35,5 @@ export interface ConfiguracionPicoFila {
 export interface ConfiguracionCadenaFila {
   id: boolean;
   descuento_socio_pct: number;
+  minutos_hold_reserva?: number;
 }

@@ -21,8 +21,8 @@ Verificar el flujo crítico del demo (login → membresía → reserva de cancha
 |-------|---------------|----------------------|-------------------|
 | 1 — Login | Autenticación del socio con email + contraseña | `POST /auth/login` | 200 + `access_token` |
 | 2 — Membresía activa | El socio tiene una membresía vigente y no vencida | `GET /membresias/activas/:perfilId` | 200 + `estado: activo` |
-| 3 — Reserva de cancha | Se puede reservar una cancha con precio Strategy y pago stub | `POST /canchas/reservas` | 201 + `estado: confirmada` |
-| 4 — Persistencia | La reserva quedó registrada en Supabase | Consulta directa a `reservas_cancha` | Fila con `estado: confirmada` |
+| 3 — Reserva + checkout | Hold pendiente, URL de pago y confirmación simulada | `POST /canchas/reservas` → `POST .../pagar` → confirmar | Reserva `confirmada` tras checkout |
+| 4 — Persistencia | Reserva y pago en Supabase | `reservas_cancha` + `pagos` | Reserva confirmada + pago `aprobado` con token |
 
 ---
 

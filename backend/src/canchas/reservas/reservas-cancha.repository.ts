@@ -1,9 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import {
-  CONFIGURACION_PICO_DEFAULT,
-  ConfiguracionPico,
-  DESCUENTO_SOCIO_DEFAULT_PCT,
-} from '../precios/pricing.strategy';
+import { ConfiguracionPico } from '../precios/pricing.strategy';
+import { RepositoryError } from '../../supabase/repository.error';
 import { SupabaseRepository } from '../../supabase/supabase.repository';
 import {
   CanchaParaPrecio,
@@ -69,31 +66,75 @@ export class ReservasCanchaRepository extends SupabaseRepository<ReservaCancha> 
     );
 
     if (!fila) {
-      return CONFIGURACION_PICO_DEFAULT;
+      throw new RepositoryError(
+        `Falta configuracion_pico para la sede ${sedeId}`,
+        'CONFIG_PICO_AUSENTE',
+      );
+    }
+    if (!fila.dias?.length) {
+      throw new RepositoryError(
+        `configuracion_pico.dias inválido para la sede ${sedeId}`,
+        'CONFIG_PICO_INVALIDA',
+      );
     }
 
     return {
       recargoPct: Number(fila.recargo_pct),
       desde: this.aHhMm(fila.desde),
       hasta: this.aHhMm(fila.hasta),
-      dias: fila.dias ?? CONFIGURACION_PICO_DEFAULT.dias,
+      dias: fila.dias,
     };
   }
 
   async findDescuentoSocioPct(): Promise<number> {
-    const fila = await this.unwrap<ConfiguracionCadenaFila | null>(
-      await this.client
-        .from('configuracion_cadena')
-        .select('id, descuento_socio_pct')
-        .eq('id', true)
-        .maybeSingle(),
-      'findDescuentoSocioPct',
-    );
-
+    const fila = await this.findConfiguracionCadena();
     if (!fila) {
-      return DESCUENTO_SOCIO_DEFAULT_PCT;
+      throw new RepositoryError(
+        'Falta configuracion_cadena (descuento_socio_pct)',
+        'CONFIG_CADENA_AUSENTE',
+      );
     }
     return Number(fila.descuento_socio_pct);
+  }
+
+  /** Minutos de hold de reserva `pendiente` (`configuracion_cadena.minutos_hold_reserva`). */
+  async findMinutosHoldReserva(): Promise<number> {
+    const fila = await this.findConfiguracionCadena();
+    if (!fila || fila.minutos_hold_reserva == null) {
+      throw new RepositoryError(
+        'Falta configuracion_cadena (minutos_hold_reserva)',
+        'CONFIG_CADENA_AUSENTE',
+      );
+    }
+    const minutos = Number(fila.minutos_hold_reserva);
+    if (!(minutos > 0)) {
+      throw new RepositoryError(
+        'configuracion_cadena.minutos_hold_reserva inválido',
+        'CONFIG_CADENA_INVALIDA',
+      );
+    }
+    return minutos;
+  }
+
+  async findByPerfil(perfilId: string): Promise<ReservaCancha[]> {
+    return this.unwrap(
+      await this.from()
+        .select('*')
+        .eq('perfil_id', perfilId)
+        .order('inicio', { ascending: true }),
+      'findByPerfil',
+    );
+  }
+
+  private async findConfiguracionCadena(): Promise<ConfiguracionCadenaFila | null> {
+    return this.unwrap<ConfiguracionCadenaFila | null>(
+      await this.client
+        .from('configuracion_cadena')
+        .select('id, descuento_socio_pct, minutos_hold_reserva')
+        .eq('id', true)
+        .maybeSingle(),
+      'findConfiguracionCadena',
+    );
   }
 
   /**

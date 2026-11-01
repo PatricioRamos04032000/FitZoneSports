@@ -47,6 +47,16 @@
       "type": "string"
     },
     {
+      "key": "pagoId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "checkoutUrl",
+      "value": "",
+      "type": "string"
+    },
+    {
       "key": "conflictStatus",
       "value": "409",
       "type": "string"
@@ -138,7 +148,7 @@
             "exec": [
               "pm.test(\"Reserva creada con 201\", function () {\n  pm.expect(pm.response.code).to.eql(201);\n});\n",
               "const json = pm.response.json();\n",
-              "pm.test(\"Reserva con ID y estado válido\", function () {\n  pm.expect(json).to.have.property(\"id\");\n  pm.expect(json).to.have.property(\"estado\");\n  pm.expect(json.estado).to.be.oneOf([\"pendiente\", \"confirmada\"]);\n  pm.environment.set(\"reservaId\", json.id);\n});\n"
+              "pm.test(\"Reserva pendiente con ID\", function () {\n  pm.expect(json).to.have.property(\"id\");\n  pm.expect(json.estado).to.eql(\"pendiente\");\n  pm.expect(json).to.have.property(\"venceEn\");\n  pm.environment.set(\"reservaId\", json.id);\n});\n"
             ],
             "type": "text/javascript",
             "packages": {}
@@ -172,7 +182,74 @@
             "reservas"
           ]
         },
-        "description": "POST /canchas/reservas. Usa el JWT del login. El perfilId se toma del token, no se envía en el body."
+        "description": "POST /canchas/reservas. Crea hold pendiente (no cobra). Abrir pago con POST /:id/pagar."
+      },
+      "response": []
+    },
+    {
+      "name": "3b. Iniciar pago (checkout URL)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Pagar devuelve 200\", function () {\n  pm.expect(pm.response.code).to.eql(200);\n});\n",
+              "const json = pm.response.json();\n",
+              "pm.test(\"checkoutUrl y pagoId\", function () {\n  pm.expect(json).to.have.property(\"pagoId\");\n  pm.expect(json).to.have.property(\"checkoutUrl\");\n  pm.environment.set(\"pagoId\", json.pagoId);\n  pm.environment.set(\"checkoutUrl\", json.checkoutUrl);\n});\n"
+            ],
+            "type": "text/javascript",
+            "packages": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{authToken}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/canchas/reservas/{{reservaId}}/pagar",
+          "host": ["{{baseUrl}}"],
+          "path": ["canchas", "reservas", "{{reservaId}}", "pagar"]
+        },
+        "description": "POST /canchas/reservas/:id/pagar. Idempotente. Abrir checkoutUrl en el navegador (tarjeta 4111… aprueba)."
+      },
+      "response": []
+    },
+    {
+      "name": "3c. Listar mis reservas",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"GET me 200\", function () {\n  pm.expect(pm.response.code).to.eql(200);\n});\n",
+              "pm.test(\"Array de reservas\", function () {\n  pm.expect(Array.isArray(pm.response.json())).to.eql(true);\n});\n"
+            ],
+            "type": "text/javascript",
+            "packages": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{authToken}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/canchas/reservas/me",
+          "host": ["{{baseUrl}}"],
+          "path": ["canchas", "reservas", "me"]
+        },
+        "description": "GET /canchas/reservas/me para retomar pagos pendientes."
       },
       "response": []
     },

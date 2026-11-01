@@ -543,3 +543,46 @@ Reconstruir un “antes” falso solo para generar historial no aporta evidencia
 - Base de datos con seed ejecutado (`npm run seed`).
 - Membresía del socio con `vigente_hasta` futura (actualizada manualmente en Supabase para esta corrida).
 
+---
+
+## 2026-11-01 — S7-T02: Pasarela simulada (primera iteración)
+
+**Tipo:** backend / M5 / patrones Unidad III (Adapter target + simulacro)  
+**Registrado por:** Patricio Ramos (P1)  
+**Cierre:** el Facade cobra con `PasarelaSimulada` y queda fila en `pagos` con token opaco (RNF-02); sin PDF ni MercadoPago real.
+
+### Entregado
+
+- Módulo Nest [`backend/src/pagos/`](../backend/src/pagos/): puerto `PasarelaPago`, `PasarelaSimulada`, `PagosRepository`, `PagosModule`.
+- `CobroRequest` incluye `perfilId` y `tokenPrueba` opcional (`tok_ok` / `tok_fail`).
+- Wiring: `PASARELA_PAGO` → `PasarelaSimulada`; el stub queda solo como doble de tests.
+- Facade `reservar` pasa `perfilId` al cobro; flujo atómico sin cambios.
+- Tests: `pasarela-simulada.spec.ts` + ajuste del Facade.
+- Docs: Justificación §7/§8, Panorama M5 (RF-13 / RNF-02 backend).
+
+### Fuera de alcance (siguientes iteraciones)
+
+- `AdaptadorMercadoPago`, webhook / redirect (§3.4.2).
+- Hold + limpieza de `pendiente` (§3.4.1).
+- RF-14 PDF, Circuit Breaker, renovación de membresía con cobro.
+
+---
+
+## 2026-11-01 — S7-T02b: Checkout simulado estilo MercadoPago
+
+**Tipo:** backend / M5 / Facade partido + hold  
+**Registrado por:** Patricio Ramos (P1)  
+**Cierre:** crear `pendiente` → `POST .../pagar` (idempotente) → checkout HTML → confirmar; hold con lazy + `pg_cron`; sin guardar tarjeta.
+
+### Entregado
+
+- Migración [`supabase/migrations/20261101200000_hold_reserva_pendiente.sql`](../supabase/migrations/20261101200000_hold_reserva_pendiente.sql): `minutos_hold_reserva`, lazy en `reservar_cancha`, ventana en `confirmar_reserva_cancha`, `cancelar_reservas_pendientes_vencidas` + `pg_cron`.
+- Facade partido: `reservar` solo hold; `iniciarPago`; `listarMias`; `aplicarResultadoPago`.
+- `PasarelaSimulada.crearPreferencia` / `confirmarPago`; checkout en `/pasarela-simulada/...` (tarjetas `4111…` / `4000…`).
+- `APP_PUBLIC_URL` en `.env.example`.
+- Tests Facade/pasarela; smoke + Postman canchas; Decisiones §3.4.1/§3.4.2; Justificación §7/§8.
+
+### Fuera de alcance
+
+- MercadoPago real / IPN, PDF, Circuit Breaker, renovación membresía.
+

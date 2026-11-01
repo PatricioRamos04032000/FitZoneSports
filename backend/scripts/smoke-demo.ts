@@ -1,6 +1,6 @@
 /**
  * Smoke test del guion demo (Unidad V).
- * Flujo crítico: login -> membresía activa -> reserva de cancha -> verificación de persistencia.
+ * Flujo crítico: login -> membresía -> reserva pendiente -> checkout simulado -> persistencia.
  * Ejecuta el flujo directamente contra el módulo Nest (TestingModule).
  * Requiere: base de datos con seed ejecutado (npm run seed) y variables de entorno
  * SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, SEED_PASSWORD en backend/.env.
@@ -118,8 +118,9 @@ async function main(): Promise<void> {
     return;
   }
 
-  /* Etapa 3 — Reserva de cancha */
+  /* Etapa 3 — Reserva pendiente + iniciar pago (checkout simulado) */
   let reserva: any;
+  let pagoId: string | undefined;
 
   try {
     reserva = await reservasController.reservar(
@@ -127,25 +128,66 @@ async function main(): Promise<void> {
       { canchaId: CANCHA_PADDLE_ID, inicio: INICIO_TURNO },
     );
 
-    if (reserva?.id && reserva.estado === 'confirmada') {
-      const precio = reserva.precio ?? 0;
-      registrarEtapa(3, 'Reserva de cancha', true, `reserva ${reserva.id} confirmada ($${precio})`);
+    if (!reserva?.id || reserva.estado !== 'pendiente') {
+      registrarEtapa(3, 'Reserva pendiente', false, `estado=${reserva?.estado ?? 'sin estado'}`);
+      console.log('');
+      console.log('[SMOKE] Resultado global: FAIL (etapa 3)');
+      process.exit(1);
+      return;
+    }
+
+    const pago = await reservasController.iniciarPago(
+      { id: perfilId } as any,
+      reserva.id,
+    );
+
+    if (!pago?.pagoId || !pago?.checkoutUrl) {
+      registrarEtapa(3, 'Reserva pendiente + pagar', false, 'sin checkoutUrl');
+      console.log('');
+      console.log('[SMOKE] Resultado global: FAIL (etapa 3)');
+      process.exit(1);
+      return;
+    }
+
+    pagoId = pago.pagoId;
+
+    // Simula el POST del checkout HTML (tarjeta de prueba OK) sin abrir el navegador.
+    const { PasarelaSimulada } = await import('../src/pagos/pasarela-simulada');
+    const { ReservasCanchaService } = await import(
+      '../src/canchas/reservas/reservas-cancha.service'
+    );
+    const pasarela = moduleFixture.get(PasarelaSimulada);
+    const reservasService = moduleFixture.get(ReservasCanchaService);
+
+    await pasarela.confirmarPago(pago.pagoId, {
+      aprobado: true,
+      token: `sim-smoke-${reserva.id}`,
+    });
+    const confirmada = await reservasService.aplicarResultadoPago(reserva.id, true);
+
+    if (confirmada.estado === 'confirmada') {
+      registrarEtapa(
+        3,
+        'Reserva + checkout simulado',
+        true,
+        `reserva ${reserva.id} confirmada ($${confirmada.precio}); checkout ${pago.checkoutUrl}`,
+      );
     } else {
-      registrarEtapa(3, 'Reserva de cancha', false, `estado=${reserva?.estado ?? 'sin estado'}`);
+      registrarEtapa(3, 'Reserva + checkout simulado', false, `estado=${confirmada.estado}`);
       console.log('');
       console.log('[SMOKE] Resultado global: FAIL (etapa 3)');
       process.exit(1);
       return;
     }
   } catch (err: any) {
-    registrarEtapa(3, 'Reserva de cancha', false, err?.message ?? String(err));
+    registrarEtapa(3, 'Reserva + checkout simulado', false, err?.message ?? String(err));
     console.log('');
     console.log('[SMOKE] Resultado global: FAIL (etapa 3)');
     process.exit(1);
     return;
   }
 
-  /* Etapa 4 — Verificación de persistencia */
+  /* Etapa 4 — Verificación de persistencia (reserva + pago) */
   try {
     const { data, error } = await supabase
       .from('reservas_cancha')
@@ -161,19 +203,46 @@ async function main(): Promise<void> {
       return;
     }
 
-    if (data && data.estado === 'confirmada') {
-      registrarEtapa(4, 'Persistencia verificada', true, `reserva ${reserva.id} confirmada en BD`);
-      console.log('');
-      console.log('[SMOKE] Resultado global: OK (al menos 1 pase registrado)');
-      process.exit(0);
-      return;
-    } else {
-      registrarEtapa(4, 'Persistencia verificada', false, 'datos insuficientes o estado no confirmado');
+    const { data: pagoFila, error: pagoError } = await supabase
+      .from('pagos')
+      .select('id, estado, token_pasarela, reserva_cancha_id')
+      .eq('id', pagoId!)
+      .maybeSingle();
+
+    if (pagoError) {
+      registrarEtapa(4, 'Persistencia verificada', false, `error pagos: ${pagoError.message}`);
       console.log('');
       console.log('[SMOKE] Resultado global: FAIL (etapa 4)');
       process.exit(1);
       return;
     }
+
+    if (
+      data?.estado === 'confirmada' &&
+      pagoFila?.estado === 'aprobado' &&
+      pagoFila.token_pasarela
+    ) {
+      registrarEtapa(
+        4,
+        'Persistencia verificada',
+        true,
+        `reserva confirmada + pago ${pagoFila.id} con token`,
+      );
+      console.log('');
+      console.log('[SMOKE] Resultado global: OK (al menos 1 pase registrado)');
+      process.exit(0);
+      return;
+    }
+
+    registrarEtapa(
+      4,
+      'Persistencia verificada',
+      false,
+      `reserva=${data?.estado} pago=${pagoFila?.estado}`,
+    );
+    console.log('');
+    console.log('[SMOKE] Resultado global: FAIL (etapa 4)');
+    process.exit(1);
   } catch (err: any) {
     registrarEtapa(4, 'Persistencia verificada', false, err?.message ?? String(err));
     console.log('');
