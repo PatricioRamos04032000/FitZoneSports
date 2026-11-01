@@ -12,6 +12,10 @@ jobs:
         working-directory: backend
 
     env:
+      # Este flag es necesario para que Jest ejecute módulos ESM del stack de NestJS
+      # en Node 20 sobre Ubuntu (GitHub Actions). También se usa para mantener la
+      # compatibilidad con la semántica ESM de tsconfig.json (module: nodenext).
+      NODE_OPTIONS: --experimental-vm-modules
       # Variables por defecto/dummy para evitar fallos en build y tests
       # si algún módulo lee process.env al inicializarse.
       # En CI real deben sobreescribirse con GitHub Secrets del repositorio.
@@ -37,9 +41,7 @@ jobs:
         run: npm run lint
 
       - name: Ejecutar tests unitarios
-        run: npm test
-        env:
-          NODE_OPTIONS: --experimental-vm-modules
+        run: npm test -- --runInBand
 
       - name: Ejecutar build
         run: npm run build
