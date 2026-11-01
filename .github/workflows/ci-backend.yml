@@ -38,7 +38,9 @@ jobs:
         run: npm run lint
 
       - name: Ejecutar tests unitarios
-        run: node --experimental-vm-modules ./node_modules/jest/bin/jest.js
+        run: npx jest
+        env:
+          NODE_OPTIONS: --experimental-vm-modules
 
       - name: Ejecutar build
         run: npm run build
