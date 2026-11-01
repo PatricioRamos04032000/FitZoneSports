@@ -483,3 +483,30 @@ Reconstruir un “antes” falso solo para generar historial no aporta evidencia
 ### Fuera de alcance (sigue pendiente)
 
 - Endpoint / servicio de cobro mock (S7).
+
+---
+
+## 2026-10-31 — S7-T01: Facade + State en reserva de cancha
+
+**Tipo:** backend / patrones Unidad III  
+**Registrado por:** Patricio Ramos (P1)  
+**Cierre:** Strategy en uso desde `reservar`; Facade y State con rutas de código; justificación al día.
+
+### Entregado
+
+- Facade `ReservasCanchaService.reservar()`: precio (Strategy) → RPC `reservar_cancha` en `pendiente` → `PasarelaStub` → State confirma o cancela.
+- State: `Reserva` + `PendienteDePago` / `Confirmada` / `Cancelada` en `backend/src/canchas/reservas/estado/`.
+- HTTP: `POST /canchas/reservas`, `POST /canchas/reservas/:id/cancelar` (JWT; `perfilId` solo del token).
+- Migración `supabase/migrations/20261031200000_confirmar_reserva_cancha.sql`.
+- Justificación §3/§5/§7/§8 y tabla resumen actualizadas.
+
+### Fuera de alcance (S7-T02 u otras)
+
+- Persistir cobro en `pagos` (Adapter Nest).
+- Facade `renovar` membresía.
+- Plazo de cancelación de confirmadas.
+- API de grilla/listado de canchas.
+- **Ventana de hold + limpieza de `pendiente`:** enfoque acordado (lazy + cron); receta en [Decisiones §3.4.1](./Decisiones_Pendientes_y_Cosas_a_Definir.md#341-hold-de-pendiente--ventana--limpieza-lazy--cron-s7). Solo lazy descartado: sin otro cliente en ese horario el turno se pierde.
+- **Checkout retomable / redirect MP:** se mantiene el `POST` atómico con stub. Mejora (crear `pendiente` → pagar aparte → GET + webhook) anotada en [Decisiones §3.4.2](./Decisiones_Pendientes_y_Cosas_a_Definir.md#342-flujo-de-pago-de-cancha--mvp-actual-vs-mejora-mercadopago).
+- **Revisar columnas lista/JSON:** `configuracion_pico.dias` y `notificaciones.datos` — [Decisiones §3.4.3](./Decisiones_Pendientes_y_Cosas_a_Definir.md#343-revisar-columnas-lista--json--configuracion_pico-y-notificaciones).
+- **Desglose de precio como ítems de reserva** (cada regla con efecto en $ antes de pagar) — [Decisiones §3.4.4](./Decisiones_Pendientes_y_Cosas_a_Definir.md#344-desglose-de-precio-de-cancha-como-tems-de-la-reserva-mejora-ux--api).
