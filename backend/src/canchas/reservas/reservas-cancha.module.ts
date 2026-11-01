@@ -1,21 +1,15 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { AuthModule } from '../../auth/auth.module';
+import { PagosModule } from '../../pagos/pagos.module';
 import { PreciosModule } from '../precios/precios.module';
-import { PASARELA_PAGO } from './pasarela-pago';
-import { PasarelaStub } from './pasarela-stub';
 import { ReservasCanchaController } from './reservas-cancha.controller';
 import { ReservasCanchaRepository } from './reservas-cancha.repository';
 import { ReservasCanchaService } from './reservas-cancha.service';
 
 @Module({
-  imports: [AuthModule, PreciosModule],
+  imports: [AuthModule, PreciosModule, forwardRef(() => PagosModule)],
   controllers: [ReservasCanchaController],
-  providers: [
-    ReservasCanchaRepository,
-    ReservasCanchaService,
-    PasarelaStub,
-    { provide: PASARELA_PAGO, useExisting: PasarelaStub },
-  ],
+  providers: [ReservasCanchaRepository, ReservasCanchaService],
   exports: [ReservasCanchaService],
 })
 export class ReservasCanchaModule {}

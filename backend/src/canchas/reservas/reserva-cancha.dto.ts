@@ -1,4 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 export class ReservarCanchaDto {
   @ApiProperty({
@@ -48,4 +48,21 @@ export class ReservaCanchaResponseDto {
 
   @ApiProperty()
   createdAt: string;
+
+  @ApiPropertyOptional({
+    description:
+      'Fin de la ventana de hold (solo relevante si estado = pendiente). ISO 8601.',
+  })
+  venceEn?: string;
+}
+
+export class IniciarPagoResponseDto {
+  @ApiProperty()
+  pagoId: string;
+
+  @ApiProperty({
+    example: 'http://localhost:3000/pasarela-simulada/checkout/...',
+    description: 'URL del checkout simulado (estilo MercadoPago).',
+  })
+  checkoutUrl: string;
 }

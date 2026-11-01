@@ -149,7 +149,7 @@ Estas no son “librerías”, pero hay que **acordar el enfoque** cuando se imp
 | Parámetro | Sugerencia |
 |-----------|------------|
 | Ventana de hold | 10 minutos desde `created_at` (o columna `vence_en`) |
-| Intervalo del cron | 1 minuto |
+| Intervalo del cron | 5 minutos (`*/5 * * * *`) |
 | Dónde vive el valor | `configuracion_cadena.minutos_hold_reserva` (default 10) |
 
 #### Cómo implementarlo (receta)
@@ -178,7 +178,7 @@ Estas no son “librerías”, pero hay que **acordar el enfoque** cuando se imp
    | **`pg_cron` en Supabase** | Limpia aunque Nest esté caído; hay que habilitar la extensión en el proyecto |
    | Edge Function / GitHub Action cada minuto | Solo si las anteriores no entran; más frágil para demo |
 
-   Recomendación de equipo: **Nest schedule en el BFF** para el MVP (una sola pieza a operar); documentar que en free tier de Render el sleep pausa el cron → el lazy sigue cubriendo el Demo Day si alguien reserva. Si el sleep molesta, pasar el mismo SQL a `pg_cron`.
+   **Decisión S7-T02b:** limpieza periódica con **`pg_cron` en Supabase** (no Nest schedule), para que corra aunque Render free duerma. Función `cancelar_reservas_pendientes_vencidas()`. Habilitar extensión `pg_cron` en Dashboard → Extensions si hace falta.
 
 4. **State / Facade**  
    - `PendienteDePago.pagar`: si la RPC responde `RESERVA_VENCIDA`, no reintentar confirm.  
@@ -195,14 +195,16 @@ Estas no son “librerías”, pero hay que **acordar el enfoque** cuando se imp
 6. **Docs al cerrar el código**  
    Actualizar matriz State en [Justificación §5](./Justificacion_Patrones_Unidad_III.md#5-state--ciclo-de-la-reserva-de-cancha) (“Confirmada: cancelar; Pendiente: pagar/cancelar dentro de N min”), [LOG.md](./LOG.md) y esta tabla (§3.4) a `[x]`.
 
-- [ ] Implementar ventana + lazy en RPCs + cron Nest (o `pg_cron`)
-- [ ] Fijar minutos de hold en `configuracion_cadena` (o constante documentada)
-- [ ] Tests SQL + Nest del hold
-- [ ] Actualizar justificación State / LOG
+- [x] Implementar ventana + lazy en RPCs + `pg_cron` (S7-T02b, migración `20261101200000_hold_reserva_pendiente.sql`)
+- [x] Fijar minutos de hold en `configuracion_cadena.minutos_hold_reserva` (default 10)
+- [x] Tests Nest del hold / `RESERVA_VENCIDA` (Facade)
+- [x] Actualizar justificación State / LOG (S7-T02b)
 
 ### 3.4.2 Flujo de pago de cancha — MVP actual vs mejora (MercadoPago)
 
-**Decisión 2026-10-31:** en S7-T01 / demo cercano **seguimos con el flujo actual** del Facade: un solo `POST /canchas/reservas` hace precio → insert `pendiente` → cobro stub → confirma o cancela. No hay checkout retomable ni redirect a pasarela real todavía.
+**Actualización S7-T02b (2026-11-01):** el Facade quedó **partido** con checkout HTML simulado (estilo MercadoPago): `POST /canchas/reservas` solo crea `pendiente`; `POST .../pagar` devuelve `checkoutUrl`; el cobro se confirma en `/pasarela-simulada/checkout/:pagoId` (sin guardar tarjeta). MercadoPago real / webhook IPN sigue pendiente.
+
+**Decisión histórica 2026-10-31 (superada por S7-T02b):** el MVP atómico con stub quedó reemplazado por el flujo partido del simulacro.
 
 **Por qué anotamos mejora:** una pasarela tipo MercadoPago (Checkout Pro / redirect) **saca al usuario de FitZone**. El cobro no puede vivir en el mismo request HTTP que “iniciar reserva”; hace falta `pendiente` visible, retorno/webhook y reintento de pago. Aunque usemos Bricks embebido, el aviso de acreditación suele ser asíncrono.
 
@@ -226,8 +228,8 @@ Estas no son “librerías”, pero hay que **acordar el enfoque** cuando se imp
 4. Implementar §3.4.1 (ventana + lazy + cron) **antes o junto** con el redirect, para no dejar holds eternos si el usuario no vuelve de MP.
 5. Adapter: `PasarelaStub` / simulacro sigue para tests; `AdaptadorMercadoPago` traduce preferencia + notificación → `ResultadoCobro` / confirmación.
 
-- [ ] Diferir esta mejora; no bloquea el cierre documental de S7-T01 con stub
-- [ ] Al implementar MP: partir el Facade (crear hold ≠ confirmar) + GET + webhook + §3.4.1
+- [x] Flujo partido + checkout simulado + GET me + hold §3.4.1 (S7-T02b)
+- [ ] Al implementar MP real: `AdaptadorMercadoPago` + webhook/IPN (reusa el mismo flujo partido)
 
 ### 3.4.3 Revisar columnas “lista” / JSON — `configuracion_pico` y `notificaciones`
 

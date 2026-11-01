@@ -2,12 +2,13 @@ import { Injectable } from '@nestjs/common';
 import {
   CobroRequest,
   PasarelaPago,
+  PreferenciaCobro,
   ResultadoCobro,
-} from './pasarela-pago';
+} from '../../pagos/pasarela-pago';
 
 /**
  * Stub de pasarela (S7-T01): siempre aprueba, no escribe en `pagos`.
- * En tests se puede reemplazar por un mock que rechaza.
+ * Útil como doble en tests; en prod el módulo usa `PasarelaSimulada`.
  */
 @Injectable()
 export class PasarelaStub implements PasarelaPago {
@@ -15,6 +16,26 @@ export class PasarelaStub implements PasarelaPago {
     return {
       aprobado: true,
       token: `stub-${request.referenciaId}`,
+      reservaCanchaId: request.referenciaId,
+    };
+  }
+
+  async crearPreferencia(request: CobroRequest): Promise<PreferenciaCobro> {
+    return {
+      pagoId: `stub-pago-${request.referenciaId}`,
+      checkoutUrl: `http://localhost:3000/pasarela-simulada/checkout/stub-pago-${request.referenciaId}`,
+    };
+  }
+
+  async confirmarPago(
+    pagoId: string,
+    resultado: { aprobado: boolean; token?: string; motivo?: string },
+  ): Promise<ResultadoCobro> {
+    return {
+      aprobado: resultado.aprobado,
+      token: resultado.token ?? `stub-${pagoId}`,
+      motivo: resultado.motivo,
+      pagoId,
     };
   }
 }
