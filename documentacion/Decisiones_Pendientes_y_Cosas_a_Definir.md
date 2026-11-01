@@ -128,7 +128,8 @@ Estas no son “librerías”, pero hay que **acordar el enfoque** cuando se imp
 
 | Tema | Pregunta a resolver | Cuándo |
 |------|---------------------|--------|
-| Concurrencia de canchas (RN-02) | **Decidido (2026-10-15):** igual que las clases. Índice `UNIQUE (cancha_id, inicio)` en reservas confirmadas **y** función SQL que bloquea la cancha (`FOR UPDATE`) antes de insertar. Nest llama por RPC. Ver [S4-T09](./Propuesta_Reglas_Negocio_S4-T09.md) (P2) | Al implementar M4 |
+| Concurrencia de canchas (RN-02) | **Decidido (2026-10-15 / M4):** índice único parcial `(cancha_id, inicio)` donde `estado in ('pendiente','confirmada')` + RPC `reservar_cancha` con `FOR UPDATE`. Ver [S4-T09](./Propuesta_Reglas_Negocio_S4-T09.md) (P2) | Hecho en M4 |
+| Hold de reserva pendiente (pago) | **Enfoque acordado 2026-10-31 (aún no implementado):** ventana de confirmación + limpieza **lazy + cron** (opción robusta). Detalle en [§3.4.1](#341-hold-de-pendiente--ventana--limpieza-lazy--cron-s7). Solo lazy se descartó: una reserva abandonada dejaría el turno perdido hasta que otro cliente intente exactamente ese horario. | Al cerrar S7 (tras o junto a S7-T01/T02) |
 | Socio en una sola sede (RN-01) | Orientación 2026-09-02: **híbrido** (Nest + BD). Pendiente cerrar: checkout vs timeout; doble turno; conflicto offline. **Consultar docente.** → [Propuesta RN-01](./Propuesta_RN01_Presencia_Una_Sede.md) · [Acta](./Acta_Reunion_2026-09-02_Semana1.md) | Tras consulta docente / al implementar acceso |
 | Mora (RN-03) | ¿El backend bloquea descuento o solo avisa? | Al implementar precios/pagos |
 | QR dinámico (RF-04) | ¿TOTP por socio (ver §8.3)? ¿También se muestra en web? ¿Cómo se valida sin API? | Al implementar acceso |
@@ -136,6 +137,170 @@ Estas no son “librerías”, pero hay que **acordar el enfoque** cuando se imp
 | Lista de espera — avance automático del plazo | **Problema abierto (2026-10-15):** no hay timer/job; el vencimiento solo se procesa si alguien vuelve a llamar a `procesar_lista_espera`. En la realidad la lista se estanca. Ver [Problema_Lista_Espera_Sin_Timer](./Problema_Lista_Espera_Sin_Timer.md) | Después / al cerrar M3 |
 | Pasarela mock (RF-13) | ¿Endpoint propio que simula MercadoPago? ¿Respuestas fijas? | Semana 4+ |
 | PDF de comprobante (RF-14) | ¿Librería (p. ej. PDFKit) y dónde se guarda el archivo? | Al implementar pagos |
+
+### 3.4.1 Hold de `pendiente` — ventana + limpieza lazy + cron (S7)
+
+**Contexto (S7-T01):** el Facade inserta la reserva en `pendiente`, cobra y recién ahí confirma. Mientras está `pendiente`, el índice RN-02 **bloquea** el turno (correcto: nadie más lo vende). Si el proceso se cae o el usuario abandona el pago, el turno quedaría trabado para siempre sin una ventana ni limpieza.
+
+**Decisión de diseño (2026-10-31, Patricio):** no bajar a “solo `confirmada` ocupa el turno”. Mantener el hold en `pendiente`, con **ventana de confirmación** y la opción **más robusta de limpieza: lazy + cron**. Solo lazy no alcanza: otro cliente puede no intentar ese horario y el slot se pierde igual.
+
+**Números a fijar al implementar** (sugeridos, no cerrados):
+
+| Parámetro | Sugerencia |
+|-----------|------------|
+| Ventana de hold | 10 minutos desde `created_at` (o columna `vence_en`) |
+| Intervalo del cron | 1 minuto |
+| Dónde vive el valor | `configuracion_cadena.minutos_hold_reserva` (default 10) |
+
+#### Cómo implementarlo (receta)
+
+1. **Ventana en confirmación**  
+   En `confirmar_reserva_cancha`: si `estado = pendiente` y `now() > created_at + hold`, cancelar esa fila (o dejarla y fallar) y `raise exception 'RESERVA_VENCIDA'`. Nest mapea a 400/409. Así no se confirma un hold muerto aunque el stub/pasarela diga “ok”.
+
+2. **Lazy (defensa en el camino caliente)**  
+   Al inicio de `reservar_cancha`, antes del `INSERT`: cancelar `pendiente` vencidas de ese `(cancha_id, inicio)` (opcionalmente de toda la cancha). Así, si B llega al mismo turno y el hold de A venció, B no choca con el índice. No reemplaza al cron: solo acelera el caso “alguien pide ese turno”.
+
+3. **Cron (libera sin depender de demanda)**  
+   Job periódico que ejecuta algo equivalente a:
+
+   ```sql
+   update public.reservas_cancha
+   set estado = 'cancelada'
+   where estado = 'pendiente'
+     and created_at < now() - make_interval(mins => :minutos_hold);
+   ```
+
+   Opciones de dónde correrlo (elegir una al implementar):
+
+   | Opción | Cuándo conviene |
+   |--------|-----------------|
+   | **Nest** `@nestjs/schedule` + llamada RPC/`UPDATE` con service role | Mismo deploy que la API (Render); fácil de loguear; el job no corre si el servicio está dormido |
+   | **`pg_cron` en Supabase** | Limpia aunque Nest esté caído; hay que habilitar la extensión en el proyecto |
+   | Edge Function / GitHub Action cada minuto | Solo si las anteriores no entran; más frágil para demo |
+
+   Recomendación de equipo: **Nest schedule en el BFF** para el MVP (una sola pieza a operar); documentar que en free tier de Render el sleep pausa el cron → el lazy sigue cubriendo el Demo Day si alguien reserva. Si el sleep molesta, pasar el mismo SQL a `pg_cron`.
+
+4. **State / Facade**  
+   - `PendienteDePago.pagar`: si la RPC responde `RESERVA_VENCIDA`, no reintentar confirm.  
+   - Listados “mis reservas”: filtrar o marcar vencidas; tras el cron deberían verse `cancelada`.  
+   - No hace falta endpoint público de “limpiar”; el job es interno.
+
+5. **Pruebas mínimas**  
+   - SQL: hold fresco → segundo `reservar` = `TURNO_OCUPADO`.  
+   - SQL: hold vencido + lazy en `reservar` → segundo insert ok.  
+   - SQL: `confirmar` tarde → `RESERVA_VENCIDA` y fila no queda confirmada.  
+   - Job: tras correr el cron, no quedan `pendiente` viejas.  
+   - Nest: un test del Facade/State con reloj mockeado o fila `created_at` vieja.
+
+6. **Docs al cerrar el código**  
+   Actualizar matriz State en [Justificación §5](./Justificacion_Patrones_Unidad_III.md#5-state--ciclo-de-la-reserva-de-cancha) (“Confirmada: cancelar; Pendiente: pagar/cancelar dentro de N min”), [LOG.md](./LOG.md) y esta tabla (§3.4) a `[x]`.
+
+- [ ] Implementar ventana + lazy en RPCs + cron Nest (o `pg_cron`)
+- [ ] Fijar minutos de hold en `configuracion_cadena` (o constante documentada)
+- [ ] Tests SQL + Nest del hold
+- [ ] Actualizar justificación State / LOG
+
+### 3.4.2 Flujo de pago de cancha — MVP actual vs mejora (MercadoPago)
+
+**Decisión 2026-10-31:** en S7-T01 / demo cercano **seguimos con el flujo actual** del Facade: un solo `POST /canchas/reservas` hace precio → insert `pendiente` → cobro stub → confirma o cancela. No hay checkout retomable ni redirect a pasarela real todavía.
+
+**Por qué anotamos mejora:** una pasarela tipo MercadoPago (Checkout Pro / redirect) **saca al usuario de FitZone**. El cobro no puede vivir en el mismo request HTTP que “iniciar reserva”; hace falta `pendiente` visible, retorno/webhook y reintento de pago. Aunque usemos Bricks embebido, el aviso de acreditación suele ser asíncrono.
+
+**MVP (ahora — no cambiar):**
+
+| Pieza | Comportamiento |
+|-------|----------------|
+| `POST /canchas/reservas` | Atómico: crea + cobra stub + confirma |
+| Salir de la página antes del POST | No hay fila |
+| Pago rechazado | Cancela en el mismo request |
+| Crash entre insert y confirm | `pendiente` huérfana (mitigar después con §3.4.1) |
+| GET / pagar aparte | No existen |
+
+**Mejora futura (cuando entre Adapter MP / S7-T02+ o post-demo):**
+
+1. Separar el caso de uso:
+   - `POST /canchas/reservas` → solo crea `pendiente` + hold (RN-02) y devuelve `id`, precio, `venceEn`.
+   - `POST /canchas/reservas/:id/pagar` (o “crear preferencia MP”) → inicia cobro; **no** confirma hasta aprobado.
+2. Confirmación asíncrona: webhook/IPN (o return URL + verificación server-side) → State `pagar()` / `confirmar_reserva_cancha`.
+3. Lectura para retomar: `GET /canchas/reservas/me` (y/o `GET :id`) filtrando propias; el front puede reabrir checkout si sigue `pendiente` y dentro de la ventana.
+4. Implementar §3.4.1 (ventana + lazy + cron) **antes o junto** con el redirect, para no dejar holds eternos si el usuario no vuelve de MP.
+5. Adapter: `PasarelaStub` / simulacro sigue para tests; `AdaptadorMercadoPago` traduce preferencia + notificación → `ResultadoCobro` / confirmación.
+
+- [ ] Diferir esta mejora; no bloquea el cierre documental de S7-T01 con stub
+- [ ] Al implementar MP: partir el Facade (crear hold ≠ confirmar) + GET + webhook + §3.4.1
+
+### 3.4.3 Revisar columnas “lista” / JSON — `configuracion_pico` y `notificaciones`
+
+**Anotado 2026-10-31 (Patricio), sin cambio de código aún.** Al mirar tablas en Supabase tras S7-T01, conviene revisar si el modelado o el uso Nest de estas columnas es el adecuado (se ven como listas / JSON en el Table Editor):
+
+| Tabla | Columna | Tipo | Nota a revisar |
+|-------|---------|------|----------------|
+| `configuracion_pico` | `dias` | `smallint[]` | Array de días ISO 1–7. ¿Seguimos con array o preferimos otra forma (tabla hija, bitmask, etc.)? Hoy Strategy lo consume bien. |
+| `notificaciones` | `datos` | `jsonb` | Payload libre del Observer. ¿Convención de claves (snake vs camel), forma estable por tipo de aviso, o sobra flexibilidad? |
+
+Relacionado (mismo tema, no pedido explícito pero ya detectado): `reservas_cancha.detalle` (`jsonb`) se escribe desde el Facade con claves **camelCase** (`precioBase`, `reglasAplicadas`, …) mientras el resto del schema es snake_case — alinear cuando se toque.
+
+- [ ] Revisar `configuracion_pico.dias` (¿array OK o cambiar modelo?)
+- [ ] Revisar `notificaciones.datos` (contrato JSON / naming)
+- [ ] Opcional: snake_case en `reservas_cancha.detalle`
+
+### 3.4.4 Desglose de precio de cancha como ítems de la reserva (mejora UX / API)
+
+**Anotado 2026-10-31 (Patricio). No implementar ahora** — el MVP S7-T01 sigue con `detalle` jsonb plano (`precioBase`, `precioFinal`, `reglasAplicadas[]` solo nombres).
+
+**Problema:** hoy el cliente (y Supabase) ven un blob: una lista de nombres de Strategy sin explicar **cuánto** aportó cada regla al pasar del `precio_hora` de la cancha al `precio` de la reserva. Antes de pagar, el socio debería ver un desglose legible.
+
+**Idea:** presentar el precio como **ítems de la reserva** (líneas de liquidación), no como metadata opaca. Cada ítem = una razón por la que el precio estándar se modificó (o la línea base).
+
+#### Forma deseada (contrato conceptual)
+
+Ejemplo socio en pico, base $20.000, pico +20 %, descuento socio −15 % (orden Strategy actual: Standard → Peak → Member):
+
+| # | Código / regla | Descripción (UI) | Efecto | Monto tras aplicar |
+|---|----------------|------------------|--------|--------------------|
+| 1 | `precio_base` / StandardPricing | Precio hora de la cancha | +20000 | 20000 |
+| 2 | `recargo_pico` / PeakHourPricing | Horario pico 19–21 (+20 %) | +4000 | 24000 |
+| 3 | `descuento_socio` / MemberDiscountPricing | Membresía activa (−15 %) | −3600 | 20400 |
+
+Total a pagar = última fila (o `precio_final` redondeado como hoy P7).
+
+Si el socio **no** tiene membresía vigente el día del turno: no aparece ítem de descuento; opcionalmente un ítem informativo `sin_descuento_socio` con efecto 0 y motivo `MEMBRESIA_NO_ACTIVA` (aviso, no mueve el precio).
+
+#### Persistencia (a decidir al implementar)
+
+| Opción | Pros | Contras |
+|--------|------|---------|
+| **A — `detalle` jsonb estructurado** (`items: [...]`) | Sin migración de tablas; un solo campo ya existe | Sigue siendo JSON; conviene snake_case y schema versionado |
+| **B — tabla `reserva_cancha_items`** | Consultable, 3FN, claro en Table Editor | Más joins; migración + repo |
+
+Recomendación tentativa: **A** para el front/API rápido; subir a **B** solo si hace falta reportes por regla.
+
+Campos sugeridos por ítem (snake_case):
+
+```ts
+{
+  orden: number;
+  codigo: 'precio_base' | 'recargo_pico' | 'descuento_socio' | string;
+  regla: string;           // nombre Strategy o 'base'
+  descripcion: string;     // texto UI
+  pct?: number;            // si aplica (20, 15, …)
+  efecto: number;          // delta en pesos (puede ser negativo)
+  subtotal: number;        // precio acumulado después de esta línea
+}
+```
+
+Más `precio_base`, `precio_final` a nivel reserva (como hoy).
+
+#### Cambios de código cuando se haga
+
+1. **`PreciosService` / Strategy:** además de `reglasAplicadas: string[]`, devolver `items` (o `lineas`) con delta y subtotal por estrategia aplicada. StandardPricing aporta la línea base; las demás el delta respecto al precio entrante.
+2. **Facade `reservar`:** persistir ese arreglo en `detalle` (o tabla items) **antes** del cobro, para que un futuro checkout (§3.4.2) pueda mostrar el desglose sin recalcular.
+3. **API / DTO:** exponer `items` (o `desglose`) en la respuesta de reserva; el front los lista “antes de pagar”.
+4. **Docs:** actualizar justificación Strategy “cómo se prueba” + ejemplo de liquidación; alinear con §3.4.3 (naming snake_case en `detalle`).
+5. **No bloquea** S7-T01 ni el stub atómico actual; encaja natural con el flujo partido (crear hold → ver ítems → pagar).
+
+- [ ] Diferir; no tocar S7-T01 entregado
+- [ ] Al retomar: ampliar `PrecioCalculado` con ítems + contrato API + persistencia (A o B)
 
 ### 3.5 Documentación de API
 

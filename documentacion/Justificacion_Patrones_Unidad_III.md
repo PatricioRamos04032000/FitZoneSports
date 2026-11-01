@@ -2,19 +2,19 @@
 
 **Proyecto:** FitZone Sports · Programación V · UNER  
 **Responsable:** Patricio Ramos (P1)  
-**Fecha:** 2026-10-06 (actualizado 2026-10-28)  
+**Fecha:** 2026-10-06 (actualizado 2026-10-31)  
 **Entregable:** Unidad III — código refactorizado con patrones + justificación
 
 | Patrón | Dónde | Requisito | Estado |
 |--------|-------|-----------|--------|
 | [Repository](#1-repository--acceso-a-datos) | Toda la capa de datos del backend | ADR-006 | **Implementado** (S3-T11) |
 | [Observer](#2-observer--lista-de-espera-de-clases) | Clases / lista de espera | RF-08 | **Implementado** (S4-T02) |
-| [Strategy](#3-strategy--precio-de-canchas) | Canchas / precios | RF-11, RN-03 | **Implementado** (S4-T01) |
+| [Strategy](#3-strategy--precio-de-canchas) | Canchas / precios | RF-11, RN-03 | **Implementado** (S4-T01); **en uso** desde Facade `reservar` (S7-T01) |
 | [Factory Method](#4-factory-method--descartado) | Candidato del docente (canales de aviso) | — | **Descartado** (2026-10-15) |
-| [State](#5-state--ciclo-de-la-reserva-de-cancha) | Reserva de cancha | RF-10, RF-12, RF-13 | **Diseñado** (2026-10-15); código con M4/M5 |
+| [State](#5-state--ciclo-de-la-reserva-de-cancha) | Reserva de cancha | RF-10, RF-12, RF-13 | **Implementado** (S7-T01) |
 | [Chain of Responsibility](#6-chain-of-responsibility--descartado) | Candidato del docente (aprobaciones / validaciones) | — | **Descartado** (2026-10-15); los guards cubren el corte en cadena |
-| [Adapter](#7-adapter--pasarela-de-pago) | Pasarela de pago | RF-13, RNF-02 | **Esquema listo** (S6-T03); código Adapter en S7 |
-| [Facade](#8-facade--reservar-cancha-y-membresia) | Reservar cancha y alta o renovación de membresía | RF-10, RF-02, RF-13 | **Diseñado** (2026-10-15); código con M4/M5 |
+| [Adapter](#7-adapter--pasarela-de-pago) | Pasarela de pago | RF-13, RNF-02 | **Esquema listo** (S6-T03); Nest Adapter / persistir en `pagos` en S7-T02 |
+| [Facade](#8-facade--reservar-cancha-y-membresia) | Reservar cancha y alta o renovación de membresía | RF-10, RF-02, RF-13 | **Implementado** cancha (S7-T01); membresía `renovar` pendiente |
 | [Builder](#9-builder--descartado) | Candidato del docente (armar una reserva) | — | **Descartado** (2026-10-15); no se planifica |
 | [Decorator](#10-decorator--descartado) | Candidato del docente (caché, log, reintentos) | — | **Descartado** (2026-10-15). Reintento de MercadoPago queda anotado para M5 |
 | [Command](#11-command--no-implementado) | Cola de acciones sin conexión | RNF-01, Unidad VI | **No implementado** (2026-10-15). Candidato cuando existan offline y app móvil |
@@ -320,6 +320,7 @@ classDiagram
   - `backend/src/canchas/precios/strategies/peak-hour-pricing.strategy.ts` (`PeakHourPricing`)
   - `backend/src/canchas/precios/strategies/member-discount-pricing.strategy.ts` (`MemberDiscountPricing`)
 - Contexto y módulo NestJS: `backend/src/canchas/precios/precios.service.ts`, `backend/src/canchas/precios/precios.module.ts`
+- **En uso (S7-T01):** `ReservasCanchaService.reservar()` arma `ContextoPrecio` (cancha, pico, descuento cadena, membresía del día del turno) y llama a `PreciosService.calcular` antes del RPC.
 
 ### Consecuencias
 
@@ -404,7 +405,7 @@ Forzar Factory “para tener el patrón del catálogo” sin un problema de crea
 
 **Decisión:** 2026-10-15 · Se usa State para el ciclo de vida de la **reserva** de cancha.  
 **Referencia de clase:** ejemplos Java, diapositivas 7–8 ([Patrones_Ejemplos_Java.md](./Patrones_Ejemplos_Java.md)).  
-**Estado:** diseño. El código llega con M4 (reservas) y M5 (pago).
+**Estado:** **Implementado** (S7-T01, 2026-10-31). Enum SQL desde M4; clases Nest + RPC `confirmar_reserva_cancha`.
 
 ### Problema
 
@@ -416,15 +417,17 @@ Aparte, la grilla muestra horarios **disponibles**, **reservados** o en **manten
 
 State hace que el comportamiento cambie con el estado interno: el contexto (`Reserva`) delega y el estado actual acepta o rechaza la acción (como el documento Borrador / Publicado de la clase).
 
-Ciclo previsto:
+Ciclo:
 
-| Estado | Puede | No puede |
-|--------|-------|----------|
-| Pendiente de pago | Pagar, cancelar | Usarse como turno confirmado |
-| Confirmada | Cancelar (con las reglas de plazo que defina el equipo) | Volver a pagar |
-| Cancelada | — | Cualquier otra acción |
+| Estado (SQL / clase) | Puede | No puede |
+|----------------------|-------|----------|
+| `pendiente` / `PendienteDePago` | Pagar, cancelar | Contar como turno cobrado |
+| `confirmada` / `Confirmada` | Cancelar (**sin plazo** por ahora; el equipo lo definirá después) | Volver a pagar |
+| `cancelada` / `Cancelada` | — | Cualquier otra acción |
 
-El nombre del estado se persiste en una columna y se reconstruye al leer (diapositiva 21).
+`pendiente` sigue ocupando el turno (RN-02). **Acordado 2026-10-31, aún no implementado:** ventana de confirmación + limpieza **lazy + cron** para no dejar holds abandonados; receta en [Decisiones §3.4.1](./Decisiones_Pendientes_y_Cosas_a_Definir.md#341-hold-de-pendiente--ventana--limpieza-lazy--cron-s7). El Facade MVP cobra en el mismo `POST` (stub); el flujo partido para redirect MercadoPago queda como mejora en [Decisiones §3.4.2](./Decisiones_Pendientes_y_Cosas_a_Definir.md#342-flujo-de-pago-de-cancha--mvp-actual-vs-mejora-mercadopago).
+
+El nombre del estado se persiste en `reservas_cancha.estado` y se reconstruye al leer (`Reserva.desdeFila`, diapositiva 21).
 
 ### Qué no es State
 
@@ -443,7 +446,7 @@ El nombre del estado se persiste en una columna y se reconstruye al leer (diapos
 | Poner “mantenimiento” como estado de la reserva | Mezcla el recurso (cancha) con el turno (reserva) y contradice RF-12 |
 | State en la cancha (disponible / mantenimiento) | El mantenimiento es un intervalo configurable, no un cambio de comportamiento de la cancha en sí |
 
-### Estructura (propuesta)
+### Estructura
 
 ```mermaid
 classDiagram
@@ -473,11 +476,15 @@ classDiagram
 | State | `EstadoReserva` |
 | ConcreteState | `PendienteDePago`, `Confirmada`, `Cancelada` |
 
-### Dónde va a estar
+### Dónde está
 
-Todavía no hay módulo de canchas. Al implementarlo: junto al servicio de reservas (M4/M5), persistiendo el nombre del estado en `reservas_cancha`.
+- Interfaz: `backend/src/canchas/reservas/estado/estado-reserva.ts`
+- Context: `backend/src/canchas/reservas/estado/reserva.ts`
+- Estados: `pendiente-de-pago.ts`, `confirmada.ts`, `cancelada.ts` (mismo directorio)
+- Persistencia de transiciones: RPC `confirmar_reserva_cancha` / `cancelar_reserva_cancha` vía `ReservasCanchaRepository`
+- Migración confirmar: `supabase/migrations/20261031200000_confirmar_reserva_cancha.sql`
 
-### Consecuencias esperadas
+### Consecuencias
 
 | Positivas | Negativas |
 |-----------|-----------|
@@ -485,10 +492,10 @@ Todavía no hay módulo de canchas. Al implementarlo: junto al servicio de reser
 | Cada estado se prueba solo: qué acepta y qué rechaza | Hay que reconstruir el objeto de estado al leer la fila |
 | La grilla y el mantenimiento quedan fuera de esta máquina y no se mezclan | |
 
-### Cómo se va a probar
+### Cómo se prueba
 
-- Unitarios por estado: pendiente acepta pagar y cancelar; confirmada rechaza pagar; cancelada rechaza todo.
-- Al reservar un horario dentro de un bloqueo de mantenimiento, no se crea la reserva (regla de la cancha, no de State).
+- `backend/src/canchas/reservas/estado/reserva.spec.ts`: pendiente acepta pagar y cancelar; confirmada rechaza pagar y acepta cancelar; cancelada rechaza todo.
+- Al reservar un horario dentro de un bloqueo de mantenimiento, no se crea la reserva (regla SQL de la cancha, no de State).
 - Dos reservas del mismo slot: lo garantiza la base (RN-02), no el patrón.
 
 ---
@@ -531,7 +538,7 @@ Escribir una Chain de validaciones de reserva “para tener el patrón”. La cl
 
 **Decisión:** 2026-10-15 · Se usa Adapter al implementar M5, para poder entregar el proyecto con la pasarela simulada y poder cambiarla por MercadoPago sin tocar reservas ni membresías.  
 **Referencia de clase:** ejemplos Java, diapositivas 15–16 ([Patrones_Ejemplos_Java.md](./Patrones_Ejemplos_Java.md)).  
-**Estado:** esquema listo (S6-T03). Existe la tabla `pagos` ([`supabase/migrations/20261028210000_pagos_m5.sql`](../supabase/migrations/20261028210000_pagos_m5.sql)) con `monto`, `token_pasarela` (RNF-02) y vínculo a reserva o membresía. Todavía no hay módulo Nest de pagos ni implementación de `PasarelaPago` / `PasarelaSimulada` / `AdaptadorMercadoPago`: eso llega con el pago mock de S7.
+**Estado:** esquema listo (S6-T03). Tabla `pagos` en [`supabase/migrations/20261028210000_pagos_m5.sql`](../supabase/migrations/20261028210000_pagos_m5.sql). En S7-T01 el Facade ya depende del puerto `PasarelaPago` (`backend/src/canchas/reservas/pasarela-pago.ts`) con `PasarelaStub` (aprueba, **no** escribe en `pagos`). Persistir token mock / `PasarelaSimulada` / `AdaptadorMercadoPago` = **S7-T02**.
 
 ### Problema
 
@@ -591,7 +598,7 @@ classDiagram
 ### Dónde va a estar
 
 - **BD (hecho, S6-T03):** `public.pagos` — enums `concepto_pago` / `estado_pago`; FKs a `reservas_cancha` o `membresias` según concepto.
-- **Nest (pendiente, S7):** interfaz `PasarelaPago`, `PasarelaSimulada` y (cuando corresponda) `AdaptadorMercadoPago` junto al servicio que cobra e inserta en `pagos`. Cuál implementación está activa sale de la configuración, no de un `if` en la reserva.
+- **Nest:** puerto `PasarelaPago` + `PasarelaStub` (S7-T01, sin fila en `pagos`). **Pendiente S7-T02:** `PasarelaSimulada` / `AdaptadorMercadoPago` que inserten en `pagos`. Cuál implementación está activa sale de la configuración, no de un `if` en la reserva.
 
 ### Consecuencias esperadas
 
@@ -613,7 +620,7 @@ classDiagram
 
 **Decisión:** 2026-10-15 · Dos fachadas, una por caso de uso: `reservar` una cancha y dar de alta o `renovar` una membresía. La inscripción a una clase no lleva Facade.  
 **Referencia de clase:** ejemplos Java, diapositivas 19–20 ([Patrones_Ejemplos_Java.md](./Patrones_Ejemplos_Java.md)).  
-**Estado:** diseño. El código llega con M4 (canchas) y M5 (pagos).
+**Estado:** **Implementado** `reservar` cancha (S7-T01, 2026-10-31). `renovar` membresía sigue pendiente. Pasarela: stub que aprueba; Adapter que escribe en `pagos` = S7-T02.
 
 ### Problema
 
@@ -631,15 +638,15 @@ Inscribirse a una clase es una llamada a `inscribir_en_clase`. Una fachada que s
 
 ### Las dos fachadas
 
-**`ReservasCanchaService.reservar()`**
+**`ReservasCanchaService.reservar()`** (implementado)
 
-1. La función SQL bloquea la cancha (`FOR UPDATE`) y rechaza el turno si está tomado o en mantenimiento (RN-02).
-2. Calcula el precio (Strategy: estándar, descuento de socio y recargo de pico, en orden).
-3. Cobra con `PasarelaPago` (simulacro o `AdaptadorMercadoPago`).
-4. Si el pago falla, la reserva no queda confirmada (State).
-5. Si aprueba, pasa a confirmada.
+1. Calcula el precio con `PreciosService` (Strategy: estándar, pico, descuento socio).
+2. La función SQL `reservar_cancha` bloquea la cancha (`FOR UPDATE`), inserta en `pendiente` y rechaza si el turno está tomado o en mantenimiento (RN-02).
+3. Cobra con `PasarelaPago` (hoy `PasarelaStub`; Adapter real en S7-T02).
+4. Si el pago falla, State cancela la reserva (`cancelada`) y responde 402.
+5. Si aprueba, State confirma (`pendiente` → `confirmada` vía `confirmar_reserva_cancha`).
 
-**`MembresiasService` (alta o `renovar()`)**
+**`MembresiasService` (alta o `renovar()`)** (pendiente)
 
 1. Si ya hay una membresía activa, la cierra (D1: una sola activa por socio).
 2. Arma la vigencia según el plan.
@@ -657,12 +664,13 @@ El controller de cada uno solo delega. No comparten clase.
 | Una sola fachada para todo FitZone | God object (diapositiva 20) |
 | Facade para inscribir a una clase | Solo reenvía a una función SQL |
 
-### Estructura (propuesta)
+### Estructura
 
 ```mermaid
 classDiagram
     class ReservasCanchaService {
         +reservar()
+        +cancelar()
     }
     class MembresiasService {
         +renovar()
@@ -671,42 +679,49 @@ classDiagram
     class PasarelaPago {
         <<interface>>
     }
-    class ReservasController
+    class PasarelaStub
+    class ReservasCanchaController
     class MembresiasController
 
-    ReservasController --> ReservasCanchaService
+    ReservasCanchaController --> ReservasCanchaService
     MembresiasController --> MembresiasService
     ReservasCanchaService --> PreciosService : precio
     ReservasCanchaService --> PasarelaPago : cobra
+    PasarelaPago <|.. PasarelaStub
     MembresiasService --> PasarelaPago : cobra
 ```
 
 | Rol GoF | Clase |
 |---------|-------|
 | Facade | `ReservasCanchaService.reservar()` |
-| Facade | Alta o `MembresiasService.renovar()` |
-| Subsistemas | Función SQL del turno, `PreciosService`, `PasarelaPago`, State de la reserva |
-| Cliente | El controller de canchas o el de membresías |
+| Facade | Alta o `MembresiasService.renovar()` (pendiente) |
+| Subsistemas | RPC `reservar_cancha`, `PreciosService`, `PasarelaPago`, State `Reserva` |
+| Cliente | `ReservasCanchaController` |
 
-### Dónde va a estar
+### Dónde está
 
-Todavía no hay módulo de canchas ni de pagos. `MembresiasService.crear` existe, pero hoy inserta directo y no cobra: al hacer M5 pasa a ser la fachada de alta o renovación. `reservar()` nace con M4/M5.
+- Facade: `backend/src/canchas/reservas/reservas-cancha.service.ts`
+- Controller HTTP: `backend/src/canchas/reservas/reservas-cancha.controller.ts` — `POST /canchas/reservas`, `POST /canchas/reservas/:id/cancelar`
+- Módulo: `backend/src/canchas/reservas/reservas-cancha.module.ts` (registrado en `app.module.ts`)
+- Puerto de cobro: `pasarela-pago.ts` + stub `pasarela-stub.ts` (sin escribir en `pagos`; Adapter Nest = S7-T02)
+- Strategy en uso: `PreciosService.calcular` dentro de `reservar()`
 
-### Consecuencias esperadas
+### Consecuencias
 
 | Positivas | Negativas |
 |-----------|-----------|
 | Cada caso de uso tiene un solo orden, testeable sin el controller | Una clase que conoce varios subsistemas: hay que mantenerla chica |
-| Cambiar Strategy o la pasarela no cambia la firma de `reservar()` ni de `renovar()` | La compensación si el pago falla (no confirmar, no dejar la membresía a medias) hay que probarla explícitamente |
+| Cambiar Strategy o la pasarela no cambia la firma de `reservar()` ni de `renovar()` | La compensación si el pago falla (cancelar pendiente) hay que probarla explícitamente |
 | La inscripción a clase sigue siendo una llamada simple | |
 
-### Cómo se va a probar
+### Cómo se prueba
 
-- `reservar` con pasarela falsa aprobada: queda confirmada y el precio es el de Strategy.
-- `reservar` con pago rechazado: no queda confirmada.
-- Dos reservas del mismo turno: la segunda falla por la base (RN-02), no por la fachada.
-- `renovar` con pago rechazado: no queda una membresía activa nueva.
+- `backend/src/canchas/reservas/reservas-cancha.service.spec.ts`:
+  - pasarela aprobada → `confirmada` y precio de Strategy;
+  - pago rechazado → cancela y 402, sin confirmar;
+  - `TURNO_OCUPADO` (RN-02) → 409.
 - Inscribir a una clase no pasa por estas clases.
+- `renovar` membresía: pendiente de implementación.
 
 ---
 
