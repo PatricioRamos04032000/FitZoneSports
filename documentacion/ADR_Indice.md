@@ -5,14 +5,27 @@
 **Entregable relacionado:** Unidad I — PDF con diagramas C4 + documento ADR  
 **Referencias:** [C4](./C4_Arquitectura_FitZone.md) · [Stack](./Stack_Tecnologico_y_Herramientas.md) · [Trabajo Integrador](./Trabajo_Integrador_FitZone_Sports.md)
 
+## Vigentes
+
 | ID | Título | Estado |
 |----|--------|--------|
 | [ADR-001](./adr/ADR-001-monolito-modular.md) | Adopción de arquitectura de monolito modular | Aceptado |
-| [ADR-002](./adr/ADR-002-postgresql.md) | Uso de PostgreSQL como base de datos relacional | Aceptado |
-| [ADR-003](./adr/ADR-003-stack-nestjs-react.md) | Adopción de NestJS y React web multi-rol con TypeScript | Aceptado |
-| [ADR-004](./adr/ADR-004-hosting-vercel-render-supabase.md) | Despliegue en Vercel, Render y Supabase | Aceptado |
 | [ADR-005](./adr/ADR-005-bff-supabase-auth.md) | Uso de Supabase Auth con NestJS como pasarela (BFF) | Aceptado |
 | [ADR-006](./adr/ADR-006-supabase-api-sin-orm.md) | Acceso a datos vía API de Supabase sin ORM | Aceptado |
+| [ADR-007](./adr/ADR-007-acceso-totp-cola-offline.md) | Acceso TOTP + cola offline (sede) + RN-01 por unique en BD | Propuesto |
+| [ADR-008](./adr/ADR-008-postgresql.md) | Uso de PostgreSQL como base de datos relacional | Aceptado |
+| [ADR-009](./adr/ADR-009-stack-nestjs-react.md) | Adopción de NestJS y React web multi-rol con TypeScript | Aceptado |
+| [ADR-010](./adr/ADR-010-hosting-vercel-render-supabase.md) | Despliegue en Vercel, Render y Supabase | Aceptado |
+
+## Reemplazados (historial)
+
+El archivo viejo **es** el historial: no se reescribe el cuerpo; solo cambia el estado a `Reemplazado por ADR-YYY`.
+
+| ID | Título | Estado |
+|----|--------|--------|
+| [ADR-002](./adr/ADR-002-postgresql.md) | PostgreSQL + acceso vía ORM (pendiente) | Reemplazado por ADR-008 y ADR-006 |
+| [ADR-003](./adr/ADR-003-stack-nestjs-react.md) | NestJS + React (con auth JWT / ORM como hijas) | Reemplazado por ADR-009 |
+| [ADR-004](./adr/ADR-004-hosting-vercel-render-supabase.md) | Hosting; Supabase solo como host PG (sin Auth) | Reemplazado por ADR-010 y ADR-005 |
 
 ---
 
@@ -43,7 +56,9 @@ Alternativas consideradas
 **Convenciones del repo**
 
 - Archivo: `documentacion/adr/ADR-00N-slug.md`
-- Nuevas decisiones se agregan al índice de arriba.
+- **Un ADR = una decisión.** No mezclar motor de BD con ORM, ni hosting con auth.
+- Un ADR **Aceptado no se reescribe** para cambiar la decisión. Si la decisión cambia: `Estado: Reemplazado por ADR-YYY` y se crea un ADR nuevo con la definición vigente. El archivo reemplazado queda como historial.
+- Nuevas decisiones se agregan al índice (Vigentes o Reemplazados).
 - Detalle de implementación pendiente → `Decisiones_Pendientes_y_Cosas_a_Definir.md`, no en el ADR.
 
 ---

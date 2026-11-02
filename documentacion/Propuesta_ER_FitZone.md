@@ -4,7 +4,7 @@
 **Actualización 2026-10-05:** Fase A implementada en Supabase. Fase C (clases) y los ajustes de membresías están definidos e implementados en [Diseño BD S3-T06](./Diseno_BD_S3-T06_Membresias_Clases.md), que reemplaza a esta propuesta para esas tablas.  
 **Fecha:** 2026-09-04  
 **Alcance:** modelo de datos de dominio en PostgreSQL (Supabase)  
-**Referencias:** [C4](./C4_Arquitectura_FitZone.md) · [ADR-002](./adr/ADR-002-postgresql.md) · [ADR-005](./adr/ADR-005-bff-supabase-auth.md) · [ADR-006](./adr/ADR-006-supabase-api-sin-orm.md) · [Acta 2026-09-02](./Acta_Reunion_2026-09-02_Semana1.md) · [Propuesta RN-01](./Propuesta_RN01_Presencia_Una_Sede.md) · [Inventario diagramas](./Propuesta_Inventario_Diagramas.md)
+**Referencias:** [C4](./C4_Arquitectura_FitZone.md) · [ADR-008](./adr/ADR-008-postgresql.md) · [ADR-005](./adr/ADR-005-bff-supabase-auth.md) · [ADR-006](./adr/ADR-006-supabase-api-sin-orm.md) · [Acta 2026-09-02](./Acta_Reunion_2026-09-02_Semana1.md) · [Propuesta RN-01](./Propuesta_RN01_Presencia_Una_Sede.md) · [Inventario diagramas](./Propuesta_Inventario_Diagramas.md)
 
 ---
 
@@ -244,7 +244,7 @@ erDiagram
 
 | Regla | Implementación sugerida |
 |-------|-------------------------|
-| RN-01 (una sede a la vez) | `presencias.perfil_id` **PRIMARY KEY** o UNIQUE + validación en Nest (híbrido) |
+| RN-01 (una sede a la vez) | `presencias.perfil_id` **PRIMARY KEY** o UNIQUE; Nest mapea `unique_violation` (como RN-02), sin `if` de unicidad |
 | RN-02 (sin sobreventa cancha) | `UNIQUE (cancha_id, inicio)` en `reservas_cancha` donde estado = confirmada (unique parcial o lógica + unique) |
 | Un perfil ↔ un auth user | `perfiles.id` = `auth.users.id` |
 | DNI único | `UNIQUE (dni)` en `perfiles` |

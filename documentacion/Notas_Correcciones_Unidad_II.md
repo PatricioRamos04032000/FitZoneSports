@@ -9,7 +9,7 @@ Notas de la revisión contra la clase de frameworks (Unidad II, clase 1). Cada �
 ## 1. El ADR de frameworks no registra licencia, gobernanza, versión, EOL ni plan de actualización
 
 **Estado:** pendiente de corregir  
-**Dónde:** [ADR-003](./adr/ADR-003-stack-nestjs-react.md). El [stack](./Stack_Tecnologico_y_Herramientas.md) repite la elección y tampoco lo tiene. La plantilla del [índice de ADR](./ADR_Indice.md) no pide estos campos.
+**Dónde:** [ADR-009](./adr/ADR-009-stack-nestjs-react.md) (vigente; [ADR-003](./adr/ADR-003-stack-nestjs-react.md) quedó reemplazado). El [stack](./Stack_Tecnologico_y_Herramientas.md) repite la elección y tampoco lo tiene. La plantilla del [índice de ADR](./ADR_Indice.md) no pide estos campos.
 
 **Qué pide la clase.** En el ADR de selección conviene registrar explícitamente:
 
@@ -20,9 +20,9 @@ Notas de la revisión contra la clase de frameworks (Unidad II, clase 1). Cada �
 
 Además, la decisión tiene que decir qué se elige y en qué versión exacta, y conviene una fecha de revisión atada al EOL de esa versión (diapositiva 27).
 
-**Qué hay hoy.** El ADR-003 (aceptado, 2026-08-25) elige NestJS, React y TypeScript, y descarta Spring Boot, Vue, Express, Next.js y adelantar la app móvil. No nombra versión, licencia, entidad que gobierna, EOL ni plan de actualización.
+**Qué hay hoy.** El ADR-009 (aceptado, 2026-11-02; reemplaza ADR-003) elige NestJS, React y TypeScript, y descarta Spring Boot, Vue, Express, Next.js y adelantar la app móvil. No nombra versión, licencia, entidad que gobierna, EOL ni plan de actualización.
 
-La palabra "integridad" del ADR-002 es la consistencia de pagos y canchas, no la gobernanza de los frameworks. En la clase el término es **entidad que gobierna el proyecto**.
+La palabra "integridad" del ADR-008 (PostgreSQL) es la consistencia de pagos y canchas, no la gobernanza de los frameworks. En la clase el término es **entidad que gobierna el proyecto**.
 
 **Versiones que ya usa el código** (para completar el ADR; no están escritas ahí):
 
@@ -39,11 +39,11 @@ Al corregir, completar licencia, entidad que gobierna, EOL y plan de actualizaci
 ## 2. El ADR de frameworks no adjunta la matriz ponderada de alternativas
 
 **Estado:** pendiente de corregir  
-**Dónde:** [ADR-003](./adr/ADR-003-stack-nestjs-react.md), sección «Alternativas consideradas».
+**Dónde:** [ADR-009](./adr/ADR-009-stack-nestjs-react.md), sección «Alternativas consideradas».
 
 **Qué pide la clase.** Diapositiva 26: una matriz con pesos definidos antes de puntuar, escala 1–5, una columna por alternativa y el total ponderado. El ejemplo de la cátedra compara Spring Boot, Quarkus y NestJS. Diapositiva 27: las alternativas del ADR van con esa matriz adjunta. La matriz no decide sola; hace explícito el razonamiento.
 
-**Qué hay hoy.** El ADR-003 nombra las alternativas en prosa y dice por qué se descartan: Spring Boot, Vue, Express, Next.js y adelantar la app móvil. No hay criterios, pesos ni puntajes. El documento de stack tampoco tiene la matriz.
+**Qué hay hoy.** El ADR-009 nombra las alternativas en prosa y dice por qué se descartan: Spring Boot, Vue, Express, Next.js y adelantar la app móvil. No hay criterios, pesos ni puntajes. El documento de stack tampoco tiene la matriz.
 
 ---
 
@@ -356,11 +356,11 @@ El código sigue siendo la fuente mientras usemos code-first. La gobernanza mira
 ## 21. El balanceador de carga queda fuera del proyecto
 
 **Estado:** anotado. No es una corrección de código.  
-**Dónde:** diapositiva 23 de la [clase 2](./Unidad_II_Clase_2_Datos_y_APIs.md), restricción «sistema en capas». Despliegue en [ADR-004](./adr/ADR-004-hosting-vercel-render-supabase.md).
+**Dónde:** diapositiva 23 de la [clase 2](./Unidad_II_Clase_2_Datos_y_APIs.md), restricción «sistema en capas». Despliegue en [ADR-010](./adr/ADR-010-hosting-vercel-render-supabase.md) (vigente; ADR-004 reemplazado).
 
 **Qué dice la clase.** El cliente no distingue si habla con el servidor, con un proxy, con un balanceador o con un gateway. El balanceador reparte las peticiones entre varias copias del mismo servicio. Para que eso funcione, cada petición tiene que traer todo lo que hace falta (restricción «sin estado»): el JWT, no una sesión guardada en la memoria de una instancia.
 
-**Qué hay en FitZone.** No hay balanceador en el repositorio: no hay Nginx, ni `Dockerfile`, ni varias instancias declaradas. El ADR-004 deja un solo proceso Nest en Render, el front en Vercel y la base en Supabase, y descarta un VPS propio donde el equipo administraría Nginx. Lo que sí prepara la app es el requisito: la identidad viaja en el JWT de Supabase, así que cualquier copia de Nest podría atender el request. Hoy hay una sola copia. Si más adelante Render levanta más de una, el reparto lo hace la plataforma, no un módulo del backend.
+**Qué hay en FitZone.** No hay balanceador en el repositorio: no hay Nginx, ni `Dockerfile`, ni varias instancias declaradas. El ADR-010 deja un solo proceso Nest en Render, el front en Vercel y la base en Supabase, y descarta un VPS propio donde el equipo administraría Nginx. Lo que sí prepara la app es el requisito: la identidad viaja en el JWT de Supabase, así que cualquier copia de Nest podría atender el request. Hoy hay una sola copia. Si más adelante Render levanta más de una, el reparto lo hace la plataforma, no un módulo del backend.
 
 ---
 

@@ -3,7 +3,7 @@
 **Para:** próxima reunión de equipo  
 **Estado:** a decidir  
 **Fecha del documento:** 2026-08-31  
-**Relacionado:** Trabajo Integrador (RN-01) · [Decisiones pendientes §3.4 / §8](./Decisiones_Pendientes_y_Cosas_a_Definir.md) · [C4 Acceso](./C4_Arquitectura_FitZone.md) · ADR-001 / ADR-002 / ADR-006
+**Relacionado:** Trabajo Integrador (RN-01) · [Decisiones pendientes §3.4 / §8](./Decisiones_Pendientes_y_Cosas_a_Definir.md) · [C4 Acceso](./C4_Arquitectura_FitZone.md) · ADR-001 / ADR-008 / ADR-006
 
 ---
 

@@ -7,9 +7,9 @@ Fecha: 2026-08-31
 
 FitZone Sports necesita autenticar a cuatro tipos de usuario — socio activo (A1), cliente externo (A2), recepcionista (A3) y gerente central (A4) — y restringir el acceso a cada módulo según el rol. El backend del curso debe ser un monolito NestJS con API REST, guards por rol y documentación Swagger (Unidad II).
 
-El hosting ya incluye Supabase (ADR-004), que ofrece capacidades de identidad (registro, login, tokens de sesión) además de PostgreSQL. Implementar identidad desde cero — almacenamiento de credenciales, hashing, refresh, emisión de JWT — implica esfuerzo y riesgo de seguridad para un equipo de cuatro personas.
+El hosting incluye Supabase (ADR-010), que ofrece capacidades de identidad (registro, login, tokens de sesión) además de PostgreSQL. Implementar identidad desde cero — almacenamiento de credenciales, hashing, refresh, emisión de JWT — implica esfuerzo y riesgo de seguridad para un equipo de cuatro personas.
 
-En la exposición al docente del 28/08/2026 se discutió cómo debe relacionarse el frontend con los servicios de Supabase: si el cliente integra Supabase directamente o si toda comunicación pasa por Nest. La lógica de negocio (M1–M5) debe seguir en Nest (ADR-001), sin reemplazar el monolito por un BaaS completo.
+En la exposición al docente del 28/08/2026 se discutió cómo debe relacionarse el frontend con los servicios de Supabase: si el cliente integra Supabase directamente o si toda comunicación pasa por Nest. La lógica de negocio (M1–M5) debe seguir en Nest (ADR-001), sin reemplazar el monolito por un BaaS completo. Este ADR anula el límite de ADR-004 (“Supabase solo como host de PostgreSQL, sin Auth”) y forma parte del reemplazo de ese documento junto con ADR-010.
 
 ## Decisión
 
@@ -31,4 +31,4 @@ Negativas: dependemos de la disponibilidad de red y de Supabase Auth en cada log
 
 (b) Frontend llamando directo a Supabase Auth (SDK en React): descartada porque incumple el patrón BFF acordado con el docente, expone la integración con Supabase en el cliente y fragmenta el contrato de la API.
 
-(c) Supabase como BaaS completo (sin Nest para auth ni negocio): descartada porque choca con ADR-001/003 y con los entregables de frameworks backend del curso.
+(c) Supabase como BaaS completo (sin Nest para auth ni negocio): descartada porque choca con ADR-001/009 y con los entregables de frameworks backend del curso.
