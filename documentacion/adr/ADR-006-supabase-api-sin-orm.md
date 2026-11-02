@@ -5,9 +5,9 @@ Fecha: 2026-08-31
 
 ## Contexto
 
-FitZone Sports persiste sedes, membresías, reservas de canchas, clases, pagos y perfiles de usuario en PostgreSQL (ADR-002), administrado en Supabase (ADR-004). El monolito NestJS debe leer y escribir esos datos respetando reglas de negocio como evitar la doble reserva de una cancha en el mismo horario (RN-02) y el patrón Repository que pide el curso.
+FitZone Sports persiste sedes, membresías, reservas de canchas, clases, pagos y perfiles de usuario en PostgreSQL (ADR-008), administrado en Supabase (ADR-010). El monolito NestJS debe leer y escribir esos datos respetando reglas de negocio como evitar la doble reserva de una cancha en el mismo horario (RN-02) y el patrón Repository que pide el curso.
 
-Existen al menos dos formas habituales de acceder a PostgreSQL desde Nest cuando la base está en Supabase: conectar por `DATABASE_URL` con un ORM (TypeORM, Prisma) y mapeo de entidades, o usar el cliente SDK de Supabase (REST/PostgREST) para leer y escribir tablas. En la exposición al docente del 28/08/2026 se plantearon ambas opciones.
+Existen al menos dos formas habituales de acceder a PostgreSQL desde Nest cuando la base está en Supabase: conectar por `DATABASE_URL` con un ORM (TypeORM, Prisma) y mapeo de entidades, o usar el cliente SDK de Supabase (REST/PostgREST) para leer y escribir tablas. En la exposición al docente del 28/08/2026 se plantearon ambas opciones. ADR-002 había dejado el acceso “vía ORM pendiente”; este ADR cierra esa parte (junto con ADR-008) y reemplaza esa decisión.
 
 El frontend no debería acceder directo a las tablas de dominio (patrón BFF, ADR-005). La lógica de negocio (M1–M5) debe permanecer en Nest.
 

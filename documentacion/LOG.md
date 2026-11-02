@@ -8,6 +8,25 @@ Cada entrada puede vincular commits del repositorio cuando corresponda.
 
 ---
 
+## 2026-11-02 — ADR: reemplazo estricto 002/003/004 → 008/009/010
+
+**Tipo:** documentación / arquitectura  
+**Registrado por:** Patricio Ramos (P1)
+
+### Qué se hizo
+
+Los ADR-002, ADR-003 y ADR-004 se habían **reescrito in-place** (28–31/08) mezclando o cambiando decisiones (ORM→API, JWT→BFF, Supabase “solo PG”→Auth). Quedaron restaurados como **historial** con `Estado: Reemplazado`, sin sección “historial” aparte.
+
+| Viejo (congelado) | Vigente |
+|-------------------|---------|
+| [ADR-002](./adr/ADR-002-postgresql.md) | [ADR-008](./adr/ADR-008-postgresql.md) (motor) + [ADR-006](./adr/ADR-006-supabase-api-sin-orm.md) (acceso) |
+| [ADR-003](./adr/ADR-003-stack-nestjs-react.md) | [ADR-009](./adr/ADR-009-stack-nestjs-react.md) |
+| [ADR-004](./adr/ADR-004-hosting-vercel-render-supabase.md) | [ADR-010](./adr/ADR-010-hosting-vercel-render-supabase.md) + [ADR-005](./adr/ADR-005-bff-supabase-auth.md) (Auth) |
+
+Convención en [ADR_Indice](./ADR_Indice.md): un ADR aceptado no se reescribe; si cambia la decisión → `Reemplazado por ADR-YYY` + ADR nuevo. Un ADR = una decisión.
+
+---
+
 ## 2026-09-04 — Aclaración docente: entrega C4 + ADR y desarrollo
 
 **Tipo:** feedback / aclaración docente  

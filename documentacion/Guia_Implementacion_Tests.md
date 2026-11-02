@@ -2,7 +2,7 @@
 
 **Fecha:** 2026-10-29  
 **Estado:** análisis y plan de implementación (sin cambios de código aún)  
-**Referencias:** [Stack tecnológico](./Stack_Tecnologico_y_Herramientas.md), [Estructura Backend](./Estructura_Backend.md), [ADR-003](./adr/ADR-003-stack-nestjs-react.md)
+**Referencias:** [Stack tecnológico](./Stack_Tecnologico_y_Herramientas.md), [Estructura Backend](./Estructura_Backend.md), [ADR-009](./adr/ADR-009-stack-nestjs-react.md)
 
 ---
 

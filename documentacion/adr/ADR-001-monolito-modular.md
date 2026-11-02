@@ -11,7 +11,7 @@ El equipo son cuatro personas, con dieciséis semanas de trabajo y entregables a
 
 ## Decisión
 
-Vamos a adoptar un monolito modular: una sola aplicación backend desplegable (API REST), con módulos internos por dominio (usuarios, acceso, clases, canchas, pagos, sedes) y una base de datos compartida (ADR-002). El camino crítico es una aplicación web multi-rol; la app móvil queda diferida a la Unidad VI (ADR-003).
+Vamos a adoptar un monolito modular: una sola aplicación backend desplegable (API REST), con módulos internos por dominio (usuarios, acceso, clases, canchas, pagos, sedes) y una base de datos compartida (ADR-008). El camino crítico es una aplicación web multi-rol; la app móvil queda diferida a la Unidad VI (ADR-009).
 
 No adoptaremos microservicios ni bases de datos separadas por módulo en este proyecto. La lógica de negocio y los patrones GoF (Repository, Strategy, Observer) vivirán dentro del monolito NestJS, no en un BaaS que reemplace el backend del curso.
 
@@ -27,4 +27,4 @@ Negativas: el despliegue escala la API entera, no un módulo aislado; hace falta
 
 (b) Monolito sin módulos (“big ball of mud”): descartado porque dificulta aplicar Repository, Strategy y Observer y escalar el trabajo en paralelo dentro del equipo.
 
-(c) Backend BaaS puro (toda la lógica en Supabase, sin Nest): descartado porque la lógica de negocio y los patrones del curso deben vivir en el backend NestJS (ver también ADR-003 y ADR-005).
+(c) Backend BaaS puro (toda la lógica en Supabase, sin Nest): descartado porque la lógica de negocio y los patrones del curso deben vivir en el backend NestJS (ver también ADR-009 y ADR-005).

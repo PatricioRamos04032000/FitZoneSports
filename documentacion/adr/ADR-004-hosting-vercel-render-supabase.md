@@ -1,36 +1,78 @@
-# ADR-004: Despliegue en Vercel, Render y Supabase
+# ADR-004 — Hosting: Vercel + Render + Supabase
 
-Estado: Aceptado  
-Fecha: 2026-08-25
+| Campo | Valor |
+|-------|-------|
+| **ID** | ADR-004 |
+| **Título** | Desplegar front en Vercel, API en Render y PostgreSQL en Supabase |
+| **Estado** | **Reemplazado** por [ADR-010](./ADR-010-hosting-vercel-render-supabase.md) (deploy) y [ADR-005](./ADR-005-bff-supabase-auth.md) (Supabase Auth / BFF; anula el límite “solo host PG”) |
+| **Fecha** | 2026-08-25 |
+| **Reemplazado el** | 2026-11-02 |
+| **Decisores** | Equipo FitZone Sports (P1–P4) |
+| **Relacionado** | [ADR-002](./ADR-002-postgresql.md) · [ADR-003](./ADR-003-stack-nestjs-react.md) · [Stack](../Stack_Tecnologico_y_Herramientas.md) |
+
+> Documento histórico. No editar el cuerpo. El mapa de deploy vigente es ADR-010. El uso de Supabase Auth vía Nest BFF es ADR-005 (contradice el límite de alcance de este ADR).
+
+---
 
 ## Contexto
 
-Además del control de versiones en GitHub, el equipo necesita entornos de desarrollo compartido y demo sin administrar servidores propios. Hay que hospedar un frontend React (SPA), un backend NestJS (proceso Node) y una base PostgreSQL accesible desde local y desde la API en la nube.
+Además del control de versiones en **GitHub**, el equipo necesita entornos de **desarrollo compartido** y **demo** sin administrar servidores propios:
 
-El presupuesto es académico (tier gratuito o student-friendly) y en la Unidad V habrá que integrar CI/CD. Varios proveedores cloud ofrecen hosting para front, API y base por separado; hay que elegir una combinación que el equipo pueda operar con poco overhead. Las decisiones de autenticación y acceso a datos (ADR-005 y ADR-006) dependen de dónde se hospede Supabase, pero este ADR trata solo del despliegue por capa.
+- Frontend React (build estático o SPA).
+- Backend NestJS (proceso Node 24/7 o bajo demanda).
+- PostgreSQL accesible desde local y desde la API en la nube.
+- Presupuesto académico (tier gratuito / student-friendly).
+- Integración futura con CI/CD (Unidad V).
 
 ## Decisión
 
-Vamos a desplegar el proyecto así: GitHub para código y pull requests (luego GitHub Actions); Vercel para el frontend React con previews por PR; Render como Web Service de la API NestJS; Supabase para PostgreSQL administrado y Supabase Auth.
+| Capa | Servicio | Uso |
+|------|----------|-----|
+| Código | **GitHub** | Repo, PRs, (luego) GitHub Actions |
+| Frontend | **Vercel** | Deploy del React; previews por PR |
+| Backend | **Render** | Web Service NestJS |
+| Base de datos | **Supabase** | PostgreSQL administrado |
 
-El frontend no llamará directo a Supabase; consumirá solo la API Nest (ADR-005). Nest accederá a tablas de dominio vía API de Supabase (ADR-006). La lógica de negocio (M1–M5) y los guards por rol A1–A4 viven en Nest.
+**Límite de alcance de Supabase:** se usa como **host de PostgreSQL** (connection string). La lógica de negocio, auth de dominio y patrones GoF viven en **NestJS**, no se reemplazan por Supabase Auth/Realtime como backend principal.
 
-En desarrollo local, Nest y React corren en `localhost`; la base preferentemente es el mismo proyecto Supabase de desarrollo. No commitearemos `.env` ni connection strings. En la pasarela de pago mock solo persistiremos el token de transacción, nunca PAN ni CVV (RNF-02).
-
-## Consecuencias
-
-Positivas: cada contenedor del diagrama C4 tiene un destino de deploy claro; facilita el Demo Day con URLs públicas; encaja con un pipeline push a GitHub → build/test → deploy; los secretos quedan fuera del repositorio.
-
-Negativas: los cold starts y límites del free tier (sobre todo en Render) pueden afectar las demos y conviene calentar el servicio antes de presentar; hay tres consolas de cloud además de GitHub; CORS y variables de entorno deben configurarse con cuidado entre Vercel y Render; el backend local depende de red hacia Supabase.
+Desarrollo local: Nest y React en `localhost`; BD preferentemente el mismo proyecto Supabase de desarrollo (PostgreSQL local/Docker opcional más adelante).
 
 ## Alternativas consideradas
 
-(a) Todo en un VPS (DigitalOcean, etc.): descartado por el mayor trabajo de operaciones (Nginx, SSL, backups) para el tamaño del equipo.
+| Alternativa | Motivo de descarte (ahora) |
+|-------------|----------------------------|
+| **Todo en un VPS** (DigitalOcean, etc.) | Más ops (Nginx, SSL, backups) para el equipo |
+| **Heroku / Railway para API+DB** | Válidos; se elige la combinación Vercel+Render+Supabase ya acordada por el equipo |
+| **AWS/GCP completo** | Exceso de complejidad para el cuatrimestre |
+| **Supabase como BaaS completo** (sin Nest) | Choca con ADR-001/003 y entregables de frameworks backend |
+| **Frontend solo en Render** | Vercel es más ergonómico para React/SPA y previews |
 
-(b) Heroku o Railway para API y base de datos: descartados como combinación principal; son válidos, pero el equipo ya acordó Vercel + Render + Supabase.
+## Consecuencias
 
-(c) AWS o GCP completos: descartados por exceso de complejidad para el cuatrimestre.
+### Positivas
 
-(d) Supabase como BaaS completo sin Nest: descartado porque choca con ADR-001, ADR-003 y los entregables de frameworks backend del curso.
+- Cada contenedor C4 tiene un destino de deploy claro.
+- Secretos (`DATABASE_URL`, `JWT_SECRET`, `VITE_API_URL`) por plataforma, no en el repo.
+- Facilita Demo Day con URLs públicas.
+- Encaja con pipeline: push a GitHub → build/test → deploy.
 
-(e) Frontend solo en Render: descartado; Vercel es más ergonómico para React/SPA y previews por PR.
+### Negativas / trade-offs
+
+- Cold starts / límites del free tier (sobre todo Render) pueden afectar demos; hay que calentar el servicio antes de presentar.
+- Tres consolas de cloud además de GitHub.
+- CORS y variables de entorno deben configurarse con cuidado entre Vercel y Render.
+- Dependencia de red hacia Supabase desde el backend local.
+
+### Impacto en el diseño
+
+- Vista de despliegue del documento C4.
+- Checklist de variables en [Decisiones pendientes](../Decisiones_Pendientes_y_Cosas_a_Definir.md).
+- CI/CD (Unidad V) se engancha a GitHub y, opcionalmente, a deploys automáticos.
+
+---
+
+## Seguridad (mínimo acordado)
+
+- No commitear `.env` ni connection strings.
+- Rotar secrets si se filtran en un PR.
+- En pasarela mock: solo persistir **token**, nunca PAN/CVV (RNF-02).

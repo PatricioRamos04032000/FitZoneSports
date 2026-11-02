@@ -7,7 +7,7 @@ Documento de trabajo para el equipo: qué **ya está cerrado**, qué **falta dec
 - [Trabajo Integrador](./Trabajo_Integrador_FitZone_Sports.md)
 - [Stack tecnológico y herramientas](./Stack_Tecnologico_y_Herramientas.md)
 - [Funcionalidades por actor](./Funcionalidades_por_Actor.md)
-- [Índice de ADR](./ADR_Indice.md) (decisiones ya aceptadas)
+- [Índice de ADR](./ADR_Indice.md) (vigentes y reemplazados; un ADR aceptado no se reescribe)
 - [Bitácora LOG.md](./LOG.md)
 
 **Cómo usar este documento:** marcar `[x]` cuando el equipo cierre cada ítem y anotar la decisión en la columna o en una nota al pie. No hace falta decidir todo al inicio; varias cosas se resuelven en la unidad correspondiente del cronograma.

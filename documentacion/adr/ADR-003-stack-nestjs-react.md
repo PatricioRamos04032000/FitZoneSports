@@ -1,38 +1,84 @@
-# ADR-003: Adopción de NestJS y React web multi-rol con TypeScript
+# ADR-003 — Stack NestJS + React (TypeScript)
 
-Estado: Aceptado  
-Fecha: 2026-08-25
+| Campo | Valor |
+|-------|-------|
+| **ID** | ADR-003 |
+| **Título** | Adoptar NestJS (API) y React web multi-rol con TypeScript |
+| **Estado** | **Reemplazado** por [ADR-009](./ADR-009-stack-nestjs-react.md) |
+| **Fecha** | 2026-08-25 |
+| **Reemplazado el** | 2026-11-02 |
+| **Actualizado** | 2026-08-25 (web multi-rol; móvil diferido) |
+| **Decisores** | Equipo FitZone Sports (P1–P4) |
+| **Relacionado** | [ADR-001](./ADR-001-monolito-modular.md) · [C4 Containers](../C4_Arquitectura_FitZone.md) · [Stack](../Stack_Tecnologico_y_Herramientas.md) |
+
+> Documento histórico. No editar el cuerpo. Auth (JWT previsto) y ORM quedaron como decisiones hijas; cerradas después en [ADR-005](./ADR-005-bff-supabase-auth.md) y [ADR-006](./ADR-006-supabase-api-sin-orm.md). El stack vigente es ADR-009.
+
+---
 
 ## Contexto
 
-El enunciado del trabajo integrador admite alternativas por contenedor: React o Vue en frontend web, React Native o Flutter en móvil, Spring Boot o NestJS en backend, y PostgreSQL en base de datos (cerrado en ADR-002).
+El enunciado admite alternativas por contenedor:
 
-El equipo necesita un stack coherente con el monolito modular (ADR-001), la documentación Swagger de la Unidad II y Atomic Design de la Unidad IV. La Unidad VI (móvil) está al final del curso: no conviene invertir esfuerzo temprano en la app móvil ni condicionar el resto del proyecto a ella.
+| Contenedor | Opciones de cátedra |
+|------------|---------------------|
+| Frontend Web | React / Vue |
+| App Móvil | React Native / Flutter |
+| Backend | Java Spring Boot / Node NestJS |
+| BD | PostgreSQL (cerrado en ADR-002) |
 
-Todos los actores — socio (A1), cliente externo (A2), recepcionista (A3) y gerente (A4) — deben poder operar desde la web; no alcanza con un panel solo-admin. Autenticación y acceso a datos son decisiones aparte (ADR-005 y ADR-006).
+El equipo necesita un stack coherente con el monolito modular, Swagger (Unidad II) y Atomic Design (Unidad IV). La Unidad VI (móvil) está **al final del curso**: no se espera invertir esfuerzo temprano en móvil ni condicionar el resto del proyecto a esa app.
+
+**Decisión de alcance de canal:** la aplicación debe funcionar en la **web para todos los roles**, incluido el cliente externo (A2). Socio (A1), externo (A2), recepcionista (A3) y gerente (A4) operan por React.
 
 ## Decisión
 
-Vamos a usar NestJS (Node.js) con TypeScript como backend: monolito modular, API REST, Swagger, inyección de dependencias y módulos por dominio. En frontend, React con TypeScript como aplicación web multi-rol (A1–A4). TypeScript será el lenguaje común en front y back.
+- **Backend:** **NestJS** (Node.js) + **TypeScript** — monolito modular, API REST, Swagger, DI y módulos por dominio.
+- **Frontend web (camino crítico):** **React** + **TypeScript** — aplicación **multi-rol** (A1–A4), no un panel solo-admin.
+- **Lenguaje común:** TypeScript en front y back.
+- **App móvil:** **diferida a Unidad VI**, prioridad baja; React Native vs Flutter se cierra recién entonces. No forma parte del MVP de M1–M5 ni del Demo Day del núcleo web.
 
-La app móvil queda diferida a la Unidad VI, con prioridad baja; React Native vs Flutter se cerrará recién entonces. No forma parte del MVP de M1–M5 ni del Demo Day del núcleo web.
-
-Estilos, estado global en React y framework móvil definitivo siguen abiertos en `Decisiones_Pendientes_y_Cosas_a_Definir.md`.
-
-## Consecuencias
-
-Positivas: un solo lenguaje (TypeScript) reduce fricción entre backend y frontend; un solo front web concentra el esfuerzo de la Unidad IV y la demo funcional de punta a punta; NestJS encaja con módulos, Repository, Strategy y Observer; el contrato es claro (web multi-rol → REST → Nest → PostgreSQL); el trabajo de móvil no bloquea reservas, pagos, membresías ni paneles de sede y gerente.
-
-Negativas: el frontend crece en cantidad de pantallas (cuatro roles) y requiere routing y autorización por rol bien definidos; el entregable móvil de la Unidad VI será acotado (por ejemplo QR offline) sobre una API ya estable; RNF-01 offline no se resuelve en el camino crítico web (se asume conectividad hasta la Unidad VI).
+Autenticación prevista: **JWT** + guards por rol en NestJS (incluyendo rol de cliente externo). Estilos, estado global y ORM quedan como decisiones de implementación.
 
 ## Alternativas consideradas
 
-(a) Spring Boot (Java) en backend: descartado; es válido académicamente, pero el equipo elige ecosistema Node/TypeScript para unificar con React.
+| Alternativa | Motivo de descarte (ahora) |
+|-------------|----------------------------|
+| **Spring Boot (Java)** | Válido académicamente; el equipo elige ecosistema Node/TS para unificar con React |
+| **Vue (web)** | Equivalente a React; se opta por React por familiaridad |
+| **Express “plano” sin Nest** | Menos estructura para módulos, DI y Swagger alineados al curso |
+| **Next.js full-stack en lugar de Nest** | Se prefiere API Nest separada (C4 Containers claros) |
+| **Web solo admin + móvil para socio/externo desde el inicio** | Descartado: móvil llega tarde; la web debe cubrir A1 y A2 desde el desarrollo principal |
 
-(b) Vue en frontend web: descartado; es equivalente a React, pero se opta por React por familiaridad del equipo.
+## Consecuencias
 
-(c) Express “plano” sin Nest: descartado; ofrece menos estructura para módulos, DI y Swagger alineados al curso.
+### Positivas
 
-(d) Next.js full-stack en lugar de Nest: descartado; se prefiere API Nest separada para mantener contenedores C4 claros.
+- Un solo lenguaje (TS) reduce fricción entre backend y frontend.
+- Un solo front web concentra el esfuerzo de Unidad IV y la demo funcional de punta a punta.
+- NestJS encaja con módulos, Repository, Strategy y Observer.
+- Contrato claro: web multi-rol → REST → Nest → PostgreSQL.
+- El trabajo de móvil no bloquea reservas, pagos, membresías ni paneles de sede/gerente.
 
-(e) Web solo admin + móvil para socio y externo desde el inicio: descartado; la móvil llega tarde en el cronograma y la web debe cubrir A1 y A2 desde el desarrollo principal.
+### Negativas / trade-offs
+
+- El frontend crece en pantallas (cuatro roles); requiere routing y autorización por rol bien definidos.
+- El entregable móvil de Unidad VI será acotado (p. ej. QR offline) sobre una API ya estable.
+- RNF-01 offline no se resuelve en el camino crítico web (se asume conectividad hasta Unidad VI).
+
+### Impacto en el diseño
+
+- Contenedores C4: **Frontend Web multi-rol** + API NestJS + PostgreSQL; móvil como contenedor diferido.
+- Entregable Unidad II: backend Nest + Swagger.
+- Entregable Unidad IV: frontend React con flujos A1–A4.
+- Unidad VI: app opcional/acotada; no reabrir el diseño del monolito.
+
+---
+
+## Decisiones hijas (aún abiertas)
+
+No forman parte de este ADR; se registrarán al cerrarse:
+
+- ORM: TypeORM vs Prisma  
+- Estado React: Zustand vs Redux Toolkit vs Context  
+- Estilos: Tailwind vs CSS Modules u otro  
+- Framework móvil: React Native vs Flutter (**solo Unidad VI**)

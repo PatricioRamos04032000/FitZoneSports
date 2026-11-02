@@ -1,32 +1,68 @@
-# ADR-002: Uso de PostgreSQL como base de datos relacional
+# ADR-002 — PostgreSQL como base de datos
 
-Estado: Aceptado  
-Fecha: 2026-08-25
+| Campo | Valor |
+|-------|-------|
+| **ID** | ADR-002 |
+| **Título** | Usar PostgreSQL como base de datos relacional |
+| **Estado** | **Reemplazado** por [ADR-008](./ADR-008-postgresql.md) (motor) y [ADR-006](./ADR-006-supabase-api-sin-orm.md) (acceso sin ORM) |
+| **Fecha** | 2026-08-25 |
+| **Reemplazado el** | 2026-11-02 |
+| **Decisores** | Equipo FitZone Sports (P1–P4) |
+| **Relacionado** | [ADR-001](./ADR-001-monolito-modular.md) · [ADR-004](./ADR-004-hosting-vercel-render-supabase.md) · Trabajo Integrador (ADR preliminar) |
+
+> Documento histórico. No editar el cuerpo: registra la decisión original (PostgreSQL + acceso vía ORM pendiente). La vigencia actual está en ADR-008 y ADR-006.
+
+---
 
 ## Contexto
 
-El dominio de FitZone Sports exige integridad entre sedes, inventario de turnos de canchas, membresías y pagos. Hay que evitar la sobreventa de canchas (RN-02), responder consultas de disponibilidad con buen rendimiento (RNF-03), agregar sedes por configuración en datos sin redesplegar (RNF-04) y no almacenar datos de tarjeta — solo el token de la pasarela (RNF-02) — pero sí persistir comprobantes y estados de pago.
+El dominio exige **integridad** entre sedes, inventario de turnos de canchas, membresías y pagos:
 
-Se necesita un motor con transacciones robustas, esquema estructurado y migraciones versionadas en el repositorio. El enunciado del trabajo integrador orienta a una base relacional por la integridad de pagos y la consistencia del inventario de canchas. El monolito modular (ADR-001) asume un único almacén primario compartido por todos los módulos.
+- Evitar **sobreventa** de canchas (RN-02).
+- Consultas de disponibilidad con buen rendimiento (RNF-03 → índices).
+- Agregar sedes por **configuración en datos**, sin redesplegar (RNF-04).
+- No almacenar datos de tarjeta; solo token de pasarela (RNF-02), pero sí persistir comprobantes y estados de pago.
+
+Se necesita un motor con transacciones robustas, esquema estructurado y migraciones versionadas en el repositorio.
 
 ## Decisión
 
-Vamos a usar PostgreSQL como único almacén primario de datos de negocio. En desarrollo y demo lo administraremos mediante Supabase (ADR-004), que provee PostgreSQL administrado junto con Auth y API de datos.
+Usar **PostgreSQL** como único almacén primario de datos de negocio.
 
-El mecanismo de acceso desde NestJS se detalla en ADR-006 (API de Supabase, sin ORM). La lógica de negocio (M1–M5) permanece en Nest; PostgreSQL es el motor relacional detrás de Supabase.
-
-## Consecuencias
-
-Positivas: las transacciones y constraints (por ejemplo unicidad de slot cancha + horario) apoyan RN-02; el esquema es claro para sedes, usuarios, membresías, clases, canchas y pagos; las migraciones quedan controladas y alineadas al monolito (ADR-001); podemos definir índices sobre disponibilidad (RNF-03).
-
-Negativas: requiere diseño de esquema y migraciones desde el inicio; el equipo debe cuidar connection strings y secretos (no commitear `.env`); reportes analíticos muy pesados no son el foco del MVP, aunque PostgreSQL alcanza para los reportes consolidados del gerente en el alcance académico.
+- Acceso desde el monolito NestJS vía ORM (TypeORM o Prisma; decisión de implementación pendiente).
+- En desarrollo/demo, PostgreSQL administrado mediante **Supabase** (ver ADR-004), sin reemplazar la lógica de negocio por features BaaS.
 
 ## Alternativas consideradas
 
-(a) MongoDB u otra base NoSQL documental: descartada porque el modelo de reservas y las restricciones de unicidad (cancha + horario) son naturalmente relacionales; las transacciones multi-documento son más complejas para nuestro caso.
+| Alternativa | Motivo de descarte (ahora) |
+|-------------|----------------------------|
+| **MongoDB / NoSQL documental** | Modelo de reservas y constraints de unicidad (cancha + horario) es naturalmente relacional; transacciones multi-documento más complejas |
+| **MySQL / MariaDB** | Válidos como SQL, pero PostgreSQL es la opción del enunciado/ADR de cátedra y suficiente para el equipo |
+| **SQLite** | Simple en local, débil para multi-usuario concurrente y hosting compartido del equipo |
+| **Solo almacenamiento en Supabase Auth/Storage sin SQL de dominio** | No cubre el modelado relacional ni el Repository pattern del curso |
 
-(b) MySQL / MariaDB: descartadas como opción principal; son SQL válidos, pero PostgreSQL es la opción del enunciado y del ADR de cátedra, y es suficiente para el equipo.
+## Consecuencias
 
-(c) SQLite: descartada por ser simple en local pero débil para multi-usuario concurrente y hosting compartido del equipo.
+### Positivas
 
-(d) Solo Supabase Auth/Storage sin SQL de dominio: descartada porque no cubre el modelado relacional ni el patrón Repository que exige el curso.
+- Transacciones y constraints (p. ej. unicidad de slot) apoyan RN-02.
+- Esquema claro para sedes, usuarios, membresías, clases, canchas y pagos.
+- Migraciones controladas y alineadas al monolito (ADR-001).
+- Índices sobre disponibilidad (RNF-03).
+
+### Negativas / trade-offs
+
+- Requiere diseño de esquema y migraciones desde el inicio.
+- El equipo debe cuidar connection strings y secretos (no commitear `.env`).
+- Reportes “analíticos” muy pesados no son el foco; PostgreSQL alcanza para reportes consolidados del gerente en el alcance académico.
+
+### Impacto en el diseño
+
+- Contenedor **Base de datos** en C4 = PostgreSQL.
+- Patrón **Repository** aísla el motor respecto de los servicios de dominio.
+
+---
+
+## Notas
+
+Coincide con el ADR preliminar del trabajo integrador: *“usar PostgreSQL como base relacional”* por integridad de pagos y consistencia del inventario de canchas.
