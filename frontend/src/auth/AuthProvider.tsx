@@ -45,7 +45,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
       }
     };
 
-    validateSession();
+    void validateSession();
   }, [accessToken]);
 
   const login = (token: string) => {

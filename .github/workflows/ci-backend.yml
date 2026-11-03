@@ -36,6 +36,8 @@ jobs:
           cache: 'npm'
           cache-dependency-path: backend/package-lock.json
 
+      # Sin --ignore-scripts: oxlint y el resto del toolchain instalan
+      # binarios en postinstall. El lockfile fija lo que se instala.
       - name: Instalar dependencias
         run: npm ci
 

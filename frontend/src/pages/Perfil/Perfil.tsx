@@ -67,7 +67,7 @@ function Perfil() {
       }
     };
 
-    cargarDatos();
+    void cargarDatos();
   }, [accessToken]);
 
   function actualizarCampo(
@@ -274,6 +274,9 @@ function Perfil() {
             </div>
 
             <label className="perfil-switch">
+              <span className="perfil-switch-nombre">
+                Notificaciones por email
+              </span>
               <input
                 type="checkbox"
                 checked={preferenciaEmail}

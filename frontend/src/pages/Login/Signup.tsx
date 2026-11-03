@@ -93,8 +93,9 @@ function Signup() {
         <p>Completá tus datos para registrarte.</p>
 
         <form onSubmit={handleSubmit}>
-          <label>Nombre</label>
+          <label htmlFor="signup-nombre">Nombre</label>
           <input
+            id="signup-nombre"
             type="text"
             placeholder="Ingresá tu nombre"
             value={nombre}
@@ -102,16 +103,18 @@ function Signup() {
             required
           />
 
-          <label>Apellido</label>
+          <label htmlFor="signup-apellido">Apellido</label>
           <input
+            id="signup-apellido"
             type="text"
             placeholder="Ingresá tu apellido"
             value={apellido}
             onChange={(e) => setApellido(e.target.value)}
           />
 
-          <label>DNI</label>
+          <label htmlFor="signup-dni">DNI</label>
           <input
+            id="signup-dni"
             type="text"
             placeholder="Ingresá tu DNI"
             value={dni}
@@ -119,16 +122,18 @@ function Signup() {
             required
           />
 
-          <label>Teléfono</label>
+          <label htmlFor="signup-telefono">Teléfono</label>
           <input
+            id="signup-telefono"
             type="tel"
             placeholder="Ingresá tu teléfono"
             value={telefono}
             onChange={(e) => setTelefono(e.target.value)}
           />
 
-          <label>Correo electrónico</label>
+          <label htmlFor="signup-email">Correo electrónico</label>
           <input
+            id="signup-email"
             type="email"
             placeholder="ejemplo@correo.com"
             value={email}
@@ -136,8 +141,9 @@ function Signup() {
             required
           />
 
-          <label>Contraseña</label>
+          <label htmlFor="signup-password">Contraseña</label>
           <input
+            id="signup-password"
             type="password"
             placeholder="Ingresá tu contraseña"
             value={password}
@@ -145,8 +151,9 @@ function Signup() {
             required
           />
 
-          <label>Confirmar contraseña</label>
+          <label htmlFor="signup-confirmar">Confirmar contraseña</label>
           <input
+            id="signup-confirmar"
             type="password"
             placeholder="Repetí tu contraseña"
             value={confirmarPassword}
