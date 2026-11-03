@@ -1,0 +1,258 @@
+{
+  "info": {
+    "name": "FitZone Sports - Acceso M2 (TOTP / check-in)",
+    "description": "Login admin → código TOTP del socio → check-in → presencias → check-out. Segundo check-in en la misma sede debe dar 409 YA_DENTRO.\n\nConfigurar antes de correr:\n1) Collection variables → demoPassword = el valor real de SEED_PASSWORD en backend/.env (NO dejes el texto SEED_PASSWORD).\n2) baseUrl = http://localhost:3000\n3) Cada request: Body = raw + JSON (Content-Type application/json).",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_postman_id": "fitzone-acceso-001"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:3000", "type": "string" },
+    { "key": "adminToken", "value": "", "type": "string" },
+    { "key": "socioToken", "value": "", "type": "string" },
+    { "key": "adminEmail", "value": "admin.central@fitzone.com", "type": "string" },
+    { "key": "socioEmail", "value": "socio@fitzone.com", "type": "string" },
+    { "key": "demoPassword", "value": "", "type": "string" },
+    { "key": "sedeId", "value": "a1000000-0000-4000-8000-000000000001", "type": "string" },
+    { "key": "socioPerfilId", "value": "", "type": "string" },
+    { "key": "totpCode", "value": "", "type": "string" }
+  ],
+  "item": [
+    {
+      "name": "1. Login admin_sede",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status 201', () => pm.expect(pm.response.code).to.eql(201));",
+              "const json = pm.response.json();",
+              "pm.collectionVariables.set('adminToken', json.access_token);"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"{{adminEmail}}\",\n  \"password\": \"{{demoPassword}}\"\n}"
+        },
+        "url": "{{baseUrl}}/auth/login"
+      }
+    },
+    {
+      "name": "2. Login socio",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status 201', () => pm.expect(pm.response.code).to.eql(201));",
+              "const json = pm.response.json();",
+              "pm.collectionVariables.set('socioToken', json.access_token);",
+              "if (json.user && json.user.id) {",
+              "  pm.collectionVariables.set('socioPerfilId', json.user.id);",
+              "}"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"{{socioEmail}}\",\n  \"password\": \"{{demoPassword}}\"\n}"
+        },
+        "url": "{{baseUrl}}/auth/login"
+      }
+    },
+    {
+      "name": "3. GET totp/me (socio)",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{socioToken}}" }
+        ],
+        "url": "{{baseUrl}}/acceso/totp/me"
+      }
+    },
+    {
+      "name": "4. GET totp/me/codigo (socio)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status 200', () => pm.expect(pm.response.code).to.eql(200));",
+              "const json = pm.response.json();",
+              "pm.test('code 6 digitos', () => pm.expect(json.code).to.match(/^\\d{6}$/));",
+              "pm.collectionVariables.set('totpCode', json.code);"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{socioToken}}" }
+        ],
+        "url": "{{baseUrl}}/acceso/totp/me/codigo"
+      }
+    },
+    {
+      "name": "5. POST check-ins (admin)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status 201', () => pm.expect(pm.response.code).to.eql(201));",
+              "const json = pm.response.json();",
+              "pm.test('tipo entrada', () => pm.expect(json.tipo).to.eql('entrada'));"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{adminToken}}" },
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"perfilId\": \"{{socioPerfilId}}\",\n  \"code\": \"{{totpCode}}\",\n  \"sedeId\": \"{{sedeId}}\"\n}"
+        },
+        "url": "{{baseUrl}}/acceso/check-ins"
+      }
+    },
+    {
+      "name": "6. GET presencias",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{adminToken}}" }
+        ],
+        "url": "{{baseUrl}}/acceso/presencias?sedeId={{sedeId}}"
+      }
+    },
+    {
+      "name": "7. POST check-ins otra vez (espera 409)",
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              "pm.sendRequest({",
+              "  url: pm.collectionVariables.get('baseUrl') + '/acceso/totp/me/codigo',",
+              "  method: 'GET',",
+              "  header: { Authorization: 'Bearer ' + pm.collectionVariables.get('socioToken') }",
+              "}, (err, res) => {",
+              "  if (!err) pm.collectionVariables.set('totpCode', res.json().code);",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status 409 YA_DENTRO', () => pm.expect(pm.response.code).to.eql(409));"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{adminToken}}" },
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"perfilId\": \"{{socioPerfilId}}\",\n  \"code\": \"{{totpCode}}\",\n  \"sedeId\": \"{{sedeId}}\"\n}"
+        },
+        "url": "{{baseUrl}}/acceso/check-ins"
+      }
+    },
+    {
+      "name": "8. POST check-outs",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status 201', () => pm.expect(pm.response.code).to.eql(201));",
+              "pm.test('tipo salida', () => pm.expect(pm.response.json().tipo).to.eql('salida'));"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{adminToken}}" },
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"perfilId\": \"{{socioPerfilId}}\",\n  \"sedeId\": \"{{sedeId}}\"\n}"
+        },
+        "url": "{{baseUrl}}/acceso/check-outs"
+      }
+    },
+    {
+      "name": "9. POST check-ins/sync (batch offline)",
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              "pm.sendRequest({",
+              "  url: pm.collectionVariables.get('baseUrl') + '/acceso/totp/me/codigo',",
+              "  method: 'GET',",
+              "  header: { Authorization: 'Bearer ' + pm.collectionVariables.get('socioToken') }",
+              "}, (err, res) => {",
+              "  if (!err) pm.collectionVariables.set('totpCode', res.json().code);",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status 200', () => pm.expect(pm.response.code).to.eql(200));",
+              "const json = pm.response.json();",
+              "pm.test('results array', () => pm.expect(json.results).to.be.an('array'));",
+              "pm.test('primer item tiene ok', () => pm.expect(json.results[0]).to.have.property('ok'));"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{adminToken}}" },
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"items\": [\n    {\n      \"clientEventId\": \"c1000000-0000-4000-8000-000000000099\",\n      \"perfilId\": \"{{socioPerfilId}}\",\n      \"code\": \"{{totpCode}}\",\n      \"sedeId\": \"{{sedeId}}\",\n      \"ocurrioEn\": \"2026-11-02T15:00:00.000Z\"\n    }\n  ]\n}"
+        },
+        "url": "{{baseUrl}}/acceso/check-ins/sync"
+      }
+    }
+  ]
+}

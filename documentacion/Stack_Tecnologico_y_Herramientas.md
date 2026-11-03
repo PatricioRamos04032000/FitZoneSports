@@ -187,7 +187,7 @@ El enunciado contempla una app para socios (QR dinámico offline). En este proye
 | React Native | Reutiliza conocimiento de React |
 | Flutter | Alternativa válida del enunciado |
 
-La app, si se entrega, consumirá la misma API NestJS. El requisito offline (RNF-01) se acota a ese entregable y no al camino crítico web.
+La app, si se entrega, consumirá la misma API NestJS. El **RNF-01 de sede** (check-in en recepción) no espera a Unidad VI: MVP = cola local en la web de recepción + sync a Nest ([ADR-007](./adr/ADR-007-acceso-totp-cola-offline.md), [Plan M2](./Plan_M2_Acceso_QR_Patricio.md)). La app móvil aporta el QR del socio usable sin red; no sustituye el offline de sede.
 
 ---
 
@@ -223,7 +223,7 @@ La app, si se entrega, consumirá la misma API NestJS. El requisito offline (RNF
 
 | ID | Requisito | Cómo lo cubre el stack |
 |----|-----------|------------------------|
-| RNF-01 | Disponibilidad / acceso offline | Diferido a app móvil (Unidad VI); el núcleo web+API asume conectividad |
+| RNF-01 | Disponibilidad / acceso offline | **Sede:** cola local + sync a Nest (MVP, ADR-007). **Móvil:** QR/seed del socio (Unidad VI). Resto del sistema online-first |
 | RNF-02 | Seguridad de pagos | Token de pasarela mock; sin almacenar datos de tarjeta en PostgreSQL |
 | RNF-03 | Rendimiento en disponibilidad | Índices PostgreSQL; consultas optimizadas desde NestJS |
 | RNF-04 | Escalabilidad por sedes | Configuración de sedes en BD; monolito stateless en Render |

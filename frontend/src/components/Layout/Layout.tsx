@@ -1,4 +1,3 @@
-
 import { Link, Outlet, useNavigate } from "react-router-dom";
 import { useAuth } from "../../auth/useAuth";
 import "./Layout.css";
@@ -12,6 +11,8 @@ function Layout() {
     navigate("/login");
   }
 
+  const rol = user?.rol;
+
   return (
     <div className="layout">
       <nav className="navbar">
@@ -24,13 +25,14 @@ function Layout() {
           <Link to="/canchas">Canchas</Link>
           <Link to="/perfil">Mi Perfil</Link>
           <Link to="/dashboard">Dashboard</Link>
+          {rol === "socio" && <Link to="/mi-qr">Mi QR</Link>}
+          {(rol === "admin_sede" || rol === "gerente") && (
+            <Link to="/acceso">Acceso</Link>
+          )}
         </div>
 
         {user ? (
-          <button
-            className="navbar-login"
-            onClick={cerrarSesion}
-          >
+          <button className="navbar-login" onClick={cerrarSesion}>
             Cerrar sesión
           </button>
         ) : (

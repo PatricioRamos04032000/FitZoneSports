@@ -55,15 +55,17 @@ Leyenda: ✅ hecho · 🟡 parcial · ❌ falta
 
 ### M2 — Gimnasio y Acceso (RF-04, RF-05, RN-01, RNF-01)
 
+**Actualizado 2026-11-03** ([Plan M2](./Plan_M2_Acceso_QR_Patricio.md) · [ADR-007](./adr/ADR-007-acceso-totp-cola-offline.md) Aceptado).
+
 | Funcionalidad | BD | Backend | Front |
 |---------------|----|---------|-------|
-| RF-04 QR dinámico (TOTP) | ❌ `totp_seeds` | ❌ | ❌ |
-| Validación de ingreso en recepción | ❌ `check_ins` | ❌ | ❌ |
-| RN-01 Una sede a la vez | ❌ `presencias` | ❌ | ❌ |
-| RF-05 Aforo en tiempo real | 🟡 `sedes.aforo_max` | ❌ | ❌ |
-| RNF-01 Acceso sin internet | — | ❌ | ❌ |
+| RF-04 QR dinámico (TOTP) | ✅ `totp_seeds` | ✅ `TotpService` + `GET /acceso/totp/me` (+ `/codigo`); emisión al crear membresía | ✅ `/mi-qr` (socio) |
+| Validación de ingreso en recepción | ✅ `check_ins` | ✅ `POST /acceso/check-ins` (+ out, listados) | ✅ `/acceso` (admin_sede/gerente); pegar JSON/código |
+| RN-01 Una sede a la vez | ✅ `presencias` PK | ✅ RPC `registrar_check_in` mapea `YA_DENTRO` / `YA_EN_OTRA_SEDE` | 🟡 errores visibles; UX de salida en UI aún mínima (API sí) |
+| RF-05 Aforo en tiempo real | ✅ `sedes.aforo_max` | ✅ soft en `GET /acceso/presencias` | 🟡 muestra ocupación / aforo; no bloquea |
+| RNF-01 Acceso sin internet | — | ✅ `POST /acceso/check-ins/sync` (batch + idempotencia) | ✅ cola `localStorage` + sync |
 
-**Bloqueado por decisiones:** salida explícita o por tiempo en `presencias` (consultar al docente), TOTP de 30 o 60 s, cómo llegan las semillas a la sede. Ver [Propuesta RN-01](./Propuesta_RN01_Presencia_Una_Sede.md) y [Decisiones pendientes §8](./Decisiones_Pendientes_y_Cosas_a_Definir.md).
+**Cerrado en MVP:** TOTP 60 s ±1; seed cifrado con `TOTP_SEED_ENCRYPTION_KEY` (demo en claro); offline = cola cliente + sync (sin nodo por sede). **Pendiente / stretch:** cámara QR, check-out amigable en UI, timeout automático de presencia (convención 3 h en ADR), app móvil.
 
 ### M3 — Clases Grupales (RF-06 a RF-08)
 
@@ -115,7 +117,7 @@ Las reglas de precio ya están decididas en parte ([S4-T09](./Propuesta_Reglas_N
 | `configuracion_pico`, `configuracion_cadena` | M4 | ❌ | S4-T09 (P3 y P8 decididos) |
 | `admins_sede` | Transversal | ❌ | S4-T09 |
 | Renombrar el rol `recepcionista` a `admin_sede` | Transversal | ❌ | Decidido en S4-T09 |
-| `presencias`, `check_ins`, `totp_seeds` | M2 | ❌ | ER propuesto; faltan decisiones |
+| `presencias`, `check_ins`, `totp_seeds` | M2 | ✅ | `20261101210000_acceso_m2.sql` + Nest `acceso/` + UI `/mi-qr` `/acceso` |
 | `pagos` | M5 | ✅ migración S6-T03; Nest `PasarelaSimulada` escribe filas (S7-T02); PDF / MP real pendientes | ER + migración + módulo `backend/src/pagos/` |
 
 **Hecho (S5-T01, 2026-10-27):** la Fase A está versionada en [`supabase/migrations/20260915000000_fase_a_nucleo.sql`](../supabase/migrations/20260915000000_fase_a_nucleo.sql). En el Supabase del equipo las tablas ya existían; el archivo sirve para recrear un Postgres vacío.
@@ -250,4 +252,4 @@ Propuesta inicial para discutir en equipo. Cada uno aplicado o descartado tiene 
 | 3 | Colección Postman y deploy en Render y Vercel | Matias | — |
 | 4 | Analizar en equipo los patrones de la sección 7.3 y actualizar la justificación | Patricio + Bruno | — |
 | 4 | Diseño de M5 (pagos, Adapter de la pasarela, comprobante PDF) | Patricio | M4 |
-| 5 | M2 (acceso, QR, aforo) y móvil | Matias + Patricio | Decisiones RN-01 y TOTP |
+| 5 | M2 (acceso, QR, aforo) y móvil | **Patricio** (plan 2026-11-01); Matias stretch QR si sobra | [Plan_M2_Acceso_QR_Patricio.md](./Plan_M2_Acceso_QR_Patricio.md) · Decisiones §8 |

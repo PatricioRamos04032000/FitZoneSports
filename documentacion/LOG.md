@@ -6,72 +6,108 @@ Cada entrada puede vincular commits del repositorio cuando corresponda.
 **Estados de tarea (alineados al plan):** `Por hacer` · `En desarrollo` · `Finalizado`  
 **Plan vivo:** [Plan_Trabajo_2_Semanas.md](./Plan_Trabajo_2_Semanas.md) → sección *Trabajo en curso (ahora)*
 
----
-
-## 2026-11-02 — ADR: reemplazo estricto 002/003/004 → 008/009/010
-
-**Tipo:** documentación / arquitectura  
-**Registrado por:** Patricio Ramos (P1)
-
-### Qué se hizo
-
-Los ADR-002, ADR-003 y ADR-004 se habían **reescrito in-place** (28–31/08) mezclando o cambiando decisiones (ORM→API, JWT→BFF, Supabase “solo PG”→Auth). Quedaron restaurados como **historial** con `Estado: Reemplazado`, sin sección “historial” aparte.
-
-| Viejo (congelado) | Vigente |
-|-------------------|---------|
-| [ADR-002](./adr/ADR-002-postgresql.md) | [ADR-008](./adr/ADR-008-postgresql.md) (motor) + [ADR-006](./adr/ADR-006-supabase-api-sin-orm.md) (acceso) |
-| [ADR-003](./adr/ADR-003-stack-nestjs-react.md) | [ADR-009](./adr/ADR-009-stack-nestjs-react.md) |
-| [ADR-004](./adr/ADR-004-hosting-vercel-render-supabase.md) | [ADR-010](./adr/ADR-010-hosting-vercel-render-supabase.md) + [ADR-005](./adr/ADR-005-bff-supabase-auth.md) (Auth) |
-
-Convención en [ADR_Indice](./ADR_Indice.md): un ADR aceptado no se reescribe; si cambia la decisión → `Reemplazado por ADR-YYY` + ADR nuevo. Un ADR = una decisión.
 
 ---
 
-## 2026-09-04 — Aclaración docente: entrega C4 + ADR y desarrollo
+## 2026-08-26 — Reunión grupal: puesta en común
 
-**Tipo:** feedback / aclaración docente  
-**Registrado por:** Patricio Ramos (tras consulta al profesor)  
-**Unidad / semana:** Unidad I en curso · aplicable a planes futuros
+**Tipo:** reunión de equipo  
+**Participantes:** grupo completo (4 integrantes)  
+**Unidad / semana:** Unidad I (Semanas 1–2)
 
-### Aclaración
+### Contexto
 
-El **modelo C4** y el documento **ADR** se entregan **al final del curso**, junto con la **demostración (Demo Day)**.  
-No es obligatorio terminar C4 + ADR **antes** de empezar a desarrollar. El avance se irá **revisando periódicamente**.
+Reunión para alinear avances individuales y revisar el estado de la documentación de arquitectura generada hasta el momento.
 
-A medida que el equipo desarrolla, debe **seguir actualizando el modelo**, incorporando (entre otras cosas):
+### Acuerdos y decisiones
 
-- diagrama **relacional / ER**
-- diagrama de **clases**
-- y demás vistas que surjan de la implementación
+| Tema | Decisión |
+|------|----------|
+| Documentación C4 | El equipo considera que [`C4_Arquitectura_FitZone.md`](./C4_Arquitectura_FitZone.md) está **bien elaborada** como base del entregable de Unidad I. |
+| Documentación ADR | Los ADR en [`adr/`](./adr/) y el [`ADR_Indice.md`](./ADR_Indice.md) fueron evaluados de forma **positiva** en conjunto. |
+| Revisión anti-alucinaciones | **Cada integrante** debe revisar la documentación C4 y ADR para detectar posibles **alucinaciones o imprecisiones de la IA** (datos inventados, supuestos no acordados, inconsistencias con el enunciado). |
+| Stack móvil | Se define **React Native** como tecnología de la aplicación móvil (Unidad VI). Cierra la alternativa Flutter que figuraba como TBD en la documentación previa. |
 
-### Consecuencia para el equipo (planes futuros)
+### Pendientes derivados
 
-- El [Plan de trabajo 2 semanas](./Plan_Trabajo_2_Semanas.md) **no se modifica** por esta aclaración (queda como estuvo).
-- De ahora en más, en **nuevos planes** y en el trabajo diario: **desarrollar en paralelo** a la documentación de arquitectura; no bloquear código por un PDF temprano de C4+ADR.
-- C4 y ADR se tratan como **documentación viva** hasta el cierre; ER y clases se agregan cuando el código los justifique.
-- Para revisiones parciales del docente: mostrar avance (repo + docs actualizados), no un entregable PDF cerrado de Unidad I.
+- [ ] Revisión individual de C4 y ADR por cada integrante; reportar hallazgos al grupo.
+- [ ] Actualizar documentación de stack y ADR-003 cuando se formalice el cierre de React Native en los docs técnicos.
+- [ ] Continuar con el plan de Unidad I (modelado C4 + ADR para entrega).
 
-### Relacionado
+### Documentos relacionados
 
-- Pregunta abierta en reunión 2026-09-02 (¿PDF Unidad I incluye ER/clases?) → queda respondida en el sentido de que **van entrando al paquete de arquitectura a lo largo del curso**, con entrega formal al final.
-- [Acta_Reunion_2026-09-02_Semana1.md](./Acta_Reunion_2026-09-02_Semana1.md) · [Propuesta_Inventario_Diagramas.md](./Propuesta_Inventario_Diagramas.md) · [Propuesta_ER_FitZone.md](./Propuesta_ER_FitZone.md) (borrador ER Fase A + visión completa, 2026-09-04)
+- [`C4_Arquitectura_FitZone.md`](./C4_Arquitectura_FitZone.md)
+- [`ADR_Indice.md`](./ADR_Indice.md)
+- [`Stack_Tecnologico_y_Herramientas.md`](./Stack_Tecnologico_y_Herramientas.md)
+- [`Trabajo_Integrador_FitZone_Sports.md`](./Trabajo_Integrador_FitZone_Sports.md)
+
+### Commits vinculados
+
+_Sin commits asociados a esta entrada._
 
 ---
 
-## Trabajo en curso (snapshot 2026-09-04)
+---
 
-Lo que cada integrante **está trabajando ahora** (post reunión 2026-09-02), no el backlog completo.
+## 2026-08-28 — Exposición de avance al docente
 
-| Integrante | Rol | ID | Trabajo actual | Estado |
-|------------|-----|----|----------------|--------|
-| Patricio Ramos | P1 | S1-T01 / S1-T11 | Revisión C4 residual + PDF cuando corresponda (S1-T09 Finalizado 2026-09-04) | En desarrollo |
-| Bruno Conti | P2 | S1-T02 | Revisar ADR-001…006 (formato cátedra + hallazgos) | En desarrollo |
-| Lucas Coquet | P3 | S1-T03 (+ S2-T01) | Revisar funcionalidades por actor / stack; crear cuenta Supabase | En desarrollo |
-| Matias Goncevat | P4 | S1-T04 | Revisar decisiones pendientes (§1–§3) y anotar hallazgos | En desarrollo |
+**Tipo:** revisión / feedback docente  
+**Participantes:** equipo + Prof. Lic. Aguirre, Juan José  
+**Unidad / semana:** Unidad I (avance de arquitectura / documentación)
 
-**Finalizado reciente:** S1-T05 (reunión), S1-T06 (acta + LOG), S1-T07 (nombres P1–P4 en el plan).
+### Contexto
 
-Al cambiar de tarea: actualizar esta tabla **y** el estado en el plan (`Por hacer` → `En desarrollo` → `Finalizado`).
+Se expuso el avance del trabajo integrador (documentación C4, ADR, stack). El docente aportó definiciones/correcciones de diseño.
+
+### Feedback y definiciones registradas
+
+| Tema | Definición |
+|------|------------|
+| Supabase Auth | **Sí** se usa **Supabase Auth** para identidad (login, tokens de sesión). |
+| Patrón BFF | **NestJS como Backend for Frontend:** el frontend **no** habla directo con Supabase; solo consume la API Nest. |
+| Módulo Auth en Nest | Actúa como **pasarela** hacia Supabase Auth: recibe login del cliente, delega en Supabase, expone un contrato unificado hacia el front. |
+| Roles de negocio | Mapeo A1–A4 y guards de endpoints en Nest (sobre JWT de Supabase + datos vía Supabase API). |
+| Lógica de negocio | Sigue en Nest (M1–M5); Supabase Auth no reemplaza el monolito. |
+| Acceso a datos | **API de Supabase** (recomendado por el docente). **Decisión de equipo: mantener API**; ORM descartado. |
+
+### Aclaración (misma fecha)
+
+Se corrigió una interpretación errónea en docs previos: el docente **no** pidió auth 100 % casera en Nest; pidió **no saltarse el BFF** (el front no debe integrar Supabase Auth directo) y usar Nest como capa intermedia hacia Supabase Auth.
+
+### Pendientes derivados
+
+- [x] Decisión de equipo: **mantener API de Supabase** (no ORM).
+- [ ] Terminar de alinear C4 residual / Demo Day con BFF + Supabase Auth + Supabase API.
+- [ ] Al implementar Unidad II: módulo Auth Nest (pasarela Supabase Auth + guards de rol) y cliente Supabase para datos.
+- [ ] Registrar más definiciones del docente en esta bitácora a medida que se anoten.
+
+### Documentos relacionados
+
+- [`Decisiones_Pendientes_y_Cosas_a_Definir.md`](./Decisiones_Pendientes_y_Cosas_a_Definir.md) (§3.1, §3.2)
+- [`adr/ADR-005-bff-supabase-auth.md`](./adr/ADR-005-bff-supabase-auth.md)
+- [`adr/ADR-006-supabase-api-sin-orm.md`](./adr/ADR-006-supabase-api-sin-orm.md)
+- [`adr/ADR-004-hosting-vercel-render-supabase.md`](./adr/ADR-004-hosting-vercel-render-supabase.md)
+- [`Stack_Tecnologico_y_Herramientas.md`](./Stack_Tecnologico_y_Herramientas.md)
+
+### Commits vinculados
+
+_Pendiente de commit al cerrar la documentación de esta sesión._
+
+---
+
+## 2026-08-31 — ADR dedicados: auth BFF y API Supabase sin ORM
+
+**Tipo:** documentación / ADR  
+**Participantes:** equipo (vía asistente de documentación)
+
+### Cambios
+
+- Creado [ADR-005](./adr/ADR-005-bff-supabase-auth.md) — BFF en NestJS + Supabase Auth (pasarela; roles A1–A4 en Nest).
+- Creado [ADR-006](./adr/ADR-006-supabase-api-sin-orm.md) — acceso a datos vía API de Supabase; ORM descartado.
+- Corregido [ADR-003](./adr/ADR-003-stack-nestjs-react.md): auth/datos referenciados a ADR-005/006; eliminado “acceso a datos” de decisiones hijas abiertas.
+- Actualizados [ADR_Indice](./ADR_Indice.md), [ADR-002](./adr/ADR-002-postgresql.md), [ADR-004](./adr/ADR-004-hosting-vercel-render-supabase.md) y [Decisiones pendientes](./Decisiones_Pendientes_y_Cosas_a_Definir.md) con enlaces cruzados.
+- Reformateados [ADR-001](./adr/ADR-001-monolito-modular.md) a [ADR-004](./adr/ADR-004-hosting-vercel-render-supabase.md) con la plantilla de cátedra (Contexto → Decisión → Consecuencias → Alternativas).
+- Actualizado [ADR_Indice](./ADR_Indice.md): plantilla genérica de cátedra + ejemplo TiendaYa (pasarela de pago); ADR-001 a ADR-006 alineados al formato (Contexto neutral, `Estado:` / `Fecha:` sin negrita).
 
 ---
 
@@ -124,108 +160,51 @@ _Pendiente de commit al cerrar la documentación de esta sesión._
 
 ---
 
-## 2026-08-31 — ADR dedicados: auth BFF y API Supabase sin ORM
+## 2026-09-04 — Aclaración docente: entrega C4 + ADR y desarrollo
 
-**Tipo:** documentación / ADR  
-**Participantes:** equipo (vía asistente de documentación)
+**Tipo:** feedback / aclaración docente  
+**Registrado por:** Patricio Ramos (tras consulta al profesor)  
+**Unidad / semana:** Unidad I en curso · aplicable a planes futuros
 
-### Cambios
+### Aclaración
 
-- Creado [ADR-005](./adr/ADR-005-bff-supabase-auth.md) — BFF en NestJS + Supabase Auth (pasarela; roles A1–A4 en Nest).
-- Creado [ADR-006](./adr/ADR-006-supabase-api-sin-orm.md) — acceso a datos vía API de Supabase; ORM descartado.
-- Corregido [ADR-003](./adr/ADR-003-stack-nestjs-react.md): auth/datos referenciados a ADR-005/006; eliminado “acceso a datos” de decisiones hijas abiertas.
-- Actualizados [ADR_Indice](./ADR_Indice.md), [ADR-002](./adr/ADR-002-postgresql.md), [ADR-004](./adr/ADR-004-hosting-vercel-render-supabase.md) y [Decisiones pendientes](./Decisiones_Pendientes_y_Cosas_a_Definir.md) con enlaces cruzados.
-- Reformateados [ADR-001](./adr/ADR-001-monolito-modular.md) a [ADR-004](./adr/ADR-004-hosting-vercel-render-supabase.md) con la plantilla de cátedra (Contexto → Decisión → Consecuencias → Alternativas).
-- Actualizado [ADR_Indice](./ADR_Indice.md): plantilla genérica de cátedra + ejemplo TiendaYa (pasarela de pago); ADR-001 a ADR-006 alineados al formato (Contexto neutral, `Estado:` / `Fecha:` sin negrita).
+El **modelo C4** y el documento **ADR** se entregan **al final del curso**, junto con la **demostración (Demo Day)**.  
+No es obligatorio terminar C4 + ADR **antes** de empezar a desarrollar. El avance se irá **revisando periódicamente**.
 
----
+A medida que el equipo desarrolla, debe **seguir actualizando el modelo**, incorporando (entre otras cosas):
 
-## 2026-08-28 — Exposición de avance al docente
+- diagrama **relacional / ER**
+- diagrama de **clases**
+- y demás vistas que surjan de la implementación
 
-**Tipo:** revisión / feedback docente  
-**Participantes:** equipo + Prof. Lic. Aguirre, Juan José  
-**Unidad / semana:** Unidad I (avance de arquitectura / documentación)
+### Consecuencia para el equipo (planes futuros)
 
-### Contexto
+- El [Plan de trabajo 2 semanas](./Plan_Trabajo_2_Semanas.md) **no se modifica** por esta aclaración (queda como estuvo).
+- De ahora en más, en **nuevos planes** y en el trabajo diario: **desarrollar en paralelo** a la documentación de arquitectura; no bloquear código por un PDF temprano de C4+ADR.
+- C4 y ADR se tratan como **documentación viva** hasta el cierre; ER y clases se agregan cuando el código los justifique.
+- Para revisiones parciales del docente: mostrar avance (repo + docs actualizados), no un entregable PDF cerrado de Unidad I.
 
-Se expuso el avance del trabajo integrador (documentación C4, ADR, stack). El docente aportó definiciones/correcciones de diseño.
+### Relacionado
 
-### Feedback y definiciones registradas
-
-| Tema | Definición |
-|------|------------|
-| Supabase Auth | **Sí** se usa **Supabase Auth** para identidad (login, tokens de sesión). |
-| Patrón BFF | **NestJS como Backend for Frontend:** el frontend **no** habla directo con Supabase; solo consume la API Nest. |
-| Módulo Auth en Nest | Actúa como **pasarela** hacia Supabase Auth: recibe login del cliente, delega en Supabase, expone un contrato unificado hacia el front. |
-| Roles de negocio | Mapeo A1–A4 y guards de endpoints en Nest (sobre JWT de Supabase + datos vía Supabase API). |
-| Lógica de negocio | Sigue en Nest (M1–M5); Supabase Auth no reemplaza el monolito. |
-| Acceso a datos | **API de Supabase** (recomendado por el docente). **Decisión de equipo: mantener API**; ORM descartado. |
-
-### Aclaración (misma fecha)
-
-Se corrigió una interpretación errónea en docs previos: el docente **no** pidió auth 100 % casera en Nest; pidió **no saltarse el BFF** (el front no debe integrar Supabase Auth directo) y usar Nest como capa intermedia hacia Supabase Auth.
-
-### Pendientes derivados
-
-- [x] Decisión de equipo: **mantener API de Supabase** (no ORM).
-- [ ] Terminar de alinear C4 residual / Demo Day con BFF + Supabase Auth + Supabase API.
-- [ ] Al implementar Unidad II: módulo Auth Nest (pasarela Supabase Auth + guards de rol) y cliente Supabase para datos.
-- [ ] Registrar más definiciones del docente en esta bitácora a medida que se anoten.
-
-### Documentos relacionados
-
-- [`Decisiones_Pendientes_y_Cosas_a_Definir.md`](./Decisiones_Pendientes_y_Cosas_a_Definir.md) (§3.1, §3.2)
-- [`adr/ADR-005-bff-supabase-auth.md`](./adr/ADR-005-bff-supabase-auth.md)
-- [`adr/ADR-006-supabase-api-sin-orm.md`](./adr/ADR-006-supabase-api-sin-orm.md)
-- [`adr/ADR-004-hosting-vercel-render-supabase.md`](./adr/ADR-004-hosting-vercel-render-supabase.md)
-- [`Stack_Tecnologico_y_Herramientas.md`](./Stack_Tecnologico_y_Herramientas.md)
-
-### Commits vinculados
-
-_Pendiente de commit al cerrar la documentación de esta sesión._
+- Pregunta abierta en reunión 2026-09-02 (¿PDF Unidad I incluye ER/clases?) → queda respondida en el sentido de que **van entrando al paquete de arquitectura a lo largo del curso**, con entrega formal al final.
+- [Acta_Reunion_2026-09-02_Semana1.md](./Acta_Reunion_2026-09-02_Semana1.md) · [Propuesta_Inventario_Diagramas.md](./Propuesta_Inventario_Diagramas.md) · [Propuesta_ER_FitZone.md](./Propuesta_ER_FitZone.md) (borrador ER Fase A + visión completa, 2026-09-04)
 
 ---
 
-## 2026-08-26 — Reunión grupal: puesta en común
+## Trabajo en curso (snapshot 2026-09-04)
 
-**Tipo:** reunión de equipo  
-**Participantes:** grupo completo (4 integrantes)  
-**Unidad / semana:** Unidad I (Semanas 1–2)
+Lo que cada integrante **está trabajando ahora** (post reunión 2026-09-02), no el backlog completo.
 
-### Contexto
+| Integrante | Rol | ID | Trabajo actual | Estado |
+|------------|-----|----|----------------|--------|
+| Patricio Ramos | P1 | S1-T01 / S1-T11 | Revisión C4 residual + PDF cuando corresponda (S1-T09 Finalizado 2026-09-04) | En desarrollo |
+| Bruno Conti | P2 | S1-T02 | Revisar ADR-001…006 (formato cátedra + hallazgos) | En desarrollo |
+| Lucas Coquet | P3 | S1-T03 (+ S2-T01) | Revisar funcionalidades por actor / stack; crear cuenta Supabase | En desarrollo |
+| Matias Goncevat | P4 | S1-T04 | Revisar decisiones pendientes (§1–§3) y anotar hallazgos | En desarrollo |
 
-Reunión para alinear avances individuales y revisar el estado de la documentación de arquitectura generada hasta el momento.
+**Finalizado reciente:** S1-T05 (reunión), S1-T06 (acta + LOG), S1-T07 (nombres P1–P4 en el plan).
 
-### Acuerdos y decisiones
-
-| Tema | Decisión |
-|------|----------|
-| Documentación C4 | El equipo considera que [`C4_Arquitectura_FitZone.md`](./C4_Arquitectura_FitZone.md) está **bien elaborada** como base del entregable de Unidad I. |
-| Documentación ADR | Los ADR en [`adr/`](./adr/) y el [`ADR_Indice.md`](./ADR_Indice.md) fueron evaluados de forma **positiva** en conjunto. |
-| Revisión anti-alucinaciones | **Cada integrante** debe revisar la documentación C4 y ADR para detectar posibles **alucinaciones o imprecisiones de la IA** (datos inventados, supuestos no acordados, inconsistencias con el enunciado). |
-| Stack móvil | Se define **React Native** como tecnología de la aplicación móvil (Unidad VI). Cierra la alternativa Flutter que figuraba como TBD en la documentación previa. |
-
-### Pendientes derivados
-
-- [ ] Revisión individual de C4 y ADR por cada integrante; reportar hallazgos al grupo.
-- [ ] Actualizar documentación de stack y ADR-003 cuando se formalice el cierre de React Native en los docs técnicos.
-- [ ] Continuar con el plan de Unidad I (modelado C4 + ADR para entrega).
-
-### Documentos relacionados
-
-- [`C4_Arquitectura_FitZone.md`](./C4_Arquitectura_FitZone.md)
-- [`ADR_Indice.md`](./ADR_Indice.md)
-- [`Stack_Tecnologico_y_Herramientas.md`](./Stack_Tecnologico_y_Herramientas.md)
-- [`Trabajo_Integrador_FitZone_Sports.md`](./Trabajo_Integrador_FitZone_Sports.md)
-
-### Commits vinculados
-
-_Sin commits asociados a esta entrada._
-
----
-
-*FitZone Sports · Programación V · UNER*
-
+Al cambiar de tarea: actualizar esta tabla **y** el estado en el plan (`Por hacer` → `En desarrollo` → `Finalizado`).
 
 ---
 
@@ -347,6 +326,18 @@ No se decidió crear una tabla de tipos de cancha con tarifas estándar. Tampoco
 
 ---
 
+## 2026-10-27 — CQRS nivel 2 (reportes gerente) anotado como pendiente
+
+**Tipo:** decisión pendiente / seguimiento  
+**Registrado por:** Patricio Ramos  
+**Unidad / semana:** Unidad III clase 2 (CQRS)
+
+### Anotación
+
+Los reportes consolidados del gerente deben ir por **CQRS nivel 2**: consultas/vistas SQL y puerto de lectura aparte; no pasar por el repositorio de dominio de reservas. Nivel 3 fuera de alcance. Quedó en [Justificación §16](./Justificacion_Patrones_Unidad_III.md#16-cqrs-nivel-2--reportes-del-gerente) y [Decisiones §3.7](./Decisiones_Pendientes_y_Cosas_a_Definir.md). Implementar cuando existan M4 + alcance de reportes A4.
+
+---
+
 ## 2026-10-27 — Frontend: ViewModel/hooks anotado como pendiente
 
 **Tipo:** decisión pendiente / seguimiento  
@@ -363,49 +354,12 @@ Quedó pendiente en [Decisiones §4.2](./Decisiones_Pendientes_y_Cosas_a_Definir
 
 ---
 
-## 2026-10-27 — CQRS nivel 2 (reportes gerente) anotado como pendiente
-
-**Tipo:** decisión pendiente / seguimiento  
-**Registrado por:** Patricio Ramos  
-**Unidad / semana:** Unidad III clase 2 (CQRS)
-
-### Anotación
-
-Los reportes consolidados del gerente deben ir por **CQRS nivel 2**: consultas/vistas SQL y puerto de lectura aparte; no pasar por el repositorio de dominio de reservas. Nivel 3 fuera de alcance. Quedó en [Justificación §16](./Justificacion_Patrones_Unidad_III.md#16-cqrs-nivel-2--reportes-del-gerente) y [Decisiones §3.7](./Decisiones_Pendientes_y_Cosas_a_Definir.md). Implementar cuando existan M4 + alcance de reportes A4.
-
----
-
 ## 2026-10-27 — Guía SonarCloud para el equipo
 
 **Tipo:** documentación / handoff  
 **Registrado por:** Patricio Ramos
 
 Org SonarCloud creada (P1). Compañeros aún sin cuenta: pasos en [Guia_SonarCloud_FitZone.md](./Guia_SonarCloud_FitZone.md). P1 invita cuando avisen; Matias cablea el scan con el CI (S6), sin adelantar su workflow ahora.
-
----
-
-## 2026-10-27 — Planilla de olores (Unidad III · laboratorio)
-
-**Tipo:** laboratorio / entregable  
-**Registrado por:** Patricio Ramos (P1)  
-**Referencia:** Unidad III clase 2 — consigna 2 (≥ 5 olores: archivo, línea, olor, evidencia, decisión).  
-**Criterio de la cátedra:** un olor no obliga a refactorizar; anotar y decidir con razón también puntúa.
-
-| # | Archivo | Línea(s) | Olor | Evidencia | Decisión |
-|---|---------|----------|------|-----------|----------|
-| 1 | `backend/src/membresias/membresias.service.ts` | 33–62 (`crear`) | **Método largo** + fuga de capa | > 20 líneas; el service hace `insert` con `(this.repository as any).client` en lugar de un método del repositorio. Rompe la regla Repository (S3-T11 / ADR-006). | **Corregir** al tocar membresías / consigna 4 del lab: `repository.insert` + `unwrap`; sacar el `as any`. |
-| 2 | `backend/src/membresias/membresias.service.ts` | 39–41 | **Switch / if por discriminante** (`plan`) | `mensual` / `trimestral` / `anual` con duraciones hardcodeadas. Aparece **una sola vez** (no ≥ 3 sitios). | **No** llevar a Strategy/Factory: solo cambian datos (duración). **Corregir después** leyendo duración desde `planes_membresia` (o tabla equivalente), no con subclases. |
-| 3 | `backend/src/clases/clases.service.ts` | 21–31 y 52–58 | **Código duplicado** | Dos `switch (e.message)` casi iguales (mapear `P0001` → HTTP). Misma plantilla S3-T11 repetida. | **Corregir cuando se toque clases** (p. ej. S4-T10): Extract Method `traducirErrorSql` compartido. No es Strategy/State. |
-| 4 | `backend/src/clases/clases.controller.ts` + `clases.service.ts` | controller ~25–27; service 38–44 | **Envidia de funcionalidad / regla en el borde equivocado** | El cliente manda `inicioClase` y Nest decide si la cancelación es tardía (D6). Se puede falsear la fecha. Documentado en [Correcciones S3-T03/T04](./Correcciones_S3-T03_S3-T04_Membresias_Clases.md). | **Corregir** (S4-T10): leer `inicio` (y dueño) desde la base; no confiar en el body. |
-| 5 | `backend/src/clases/clases.service.ts` | 42, 47 | **Números mágicos / datos de configuración en código** | `2 * 60 * 60 * 1000` (ventana tardía) y `'30 minutes'` (plazo lista de espera) literales. | **Corregir** al estabilizar S4-T09: constantes de módulo o config; no inventar Strategy. |
-| 6 | `backend/src/canchas/precios/precios.service.ts` | 36 | **Desacuerdo con regla de negocio (P7)** | `Math.round` tras la cadena de estrategias; el acta acordó **redondear hacia arriba** al peso. Tests actuales fijan `Math.round`. | **Corregir** (S4-T15): `Math.ceil` (o equivalente) + actualizar specs y docs. |
-| 7 | `backend/src/canchas/precios/strategies/peak-hour-pricing.strategy.ts` | 36–68 (`extraerDiaYHoraArgentina`) | **Método largo** (> 20 líneas) | ~33 líneas; un solo tema (día/hora en zona AR con `Intl`). Ya está fuera de `aplica`/`calcular`. | **No corregir ahora.** No molesta el cambio frecuente ni mezcla abstracciones; partirlo no acerca un patrón. Revisar solo si Sonar/IDE lo marca y hay que tocar pico otra vez. |
-
-### Lectura para la defensa
-
-- Precios **ya** están en lista de reglas (Strategy); el olor histórico del `switch` de precios **no** está en el código actual.
-- State de reserva y CQRS nivel 2 **aún no aplican** olores en código: el módulo de reservas/reportes no está; quedan diseñados/pendientes.
-- Olores 1–6 tienen dueño de corrección en tareas existentes; el 7 queda como “detectado y deliberadamente no tocado”.
 
 ---
 
@@ -445,6 +399,31 @@ Reconstruir un “antes” falso solo para generar historial no aporta evidencia
 - Consigna 1: tests de caracterización en el spec + entrada de LOG anterior.
 - Consigna 2: planilla de olores (sin olor de switch de precios).
 - Texto formal: [Justificación §3 — consigna 3 no aplica](./Justificacion_Patrones_Unidad_III.md#laboratorio-unidad-iii--consigna-3-seis-commits-de-refactor--no-aplica).
+
+---
+
+## 2026-10-27 — Planilla de olores (Unidad III · laboratorio)
+
+**Tipo:** laboratorio / entregable  
+**Registrado por:** Patricio Ramos (P1)  
+**Referencia:** Unidad III clase 2 — consigna 2 (≥ 5 olores: archivo, línea, olor, evidencia, decisión).  
+**Criterio de la cátedra:** un olor no obliga a refactorizar; anotar y decidir con razón también puntúa.
+
+| # | Archivo | Línea(s) | Olor | Evidencia | Decisión |
+|---|---------|----------|------|-----------|----------|
+| 1 | `backend/src/membresias/membresias.service.ts` | 33–62 (`crear`) | **Método largo** + fuga de capa | > 20 líneas; el service hace `insert` con `(this.repository as any).client` en lugar de un método del repositorio. Rompe la regla Repository (S3-T11 / ADR-006). | **Corregir** al tocar membresías / consigna 4 del lab: `repository.insert` + `unwrap`; sacar el `as any`. |
+| 2 | `backend/src/membresias/membresias.service.ts` | 39–41 | **Switch / if por discriminante** (`plan`) | `mensual` / `trimestral` / `anual` con duraciones hardcodeadas. Aparece **una sola vez** (no ≥ 3 sitios). | **No** llevar a Strategy/Factory: solo cambian datos (duración). **Corregir después** leyendo duración desde `planes_membresia` (o tabla equivalente), no con subclases. |
+| 3 | `backend/src/clases/clases.service.ts` | 21–31 y 52–58 | **Código duplicado** | Dos `switch (e.message)` casi iguales (mapear `P0001` → HTTP). Misma plantilla S3-T11 repetida. | **Corregir cuando se toque clases** (p. ej. S4-T10): Extract Method `traducirErrorSql` compartido. No es Strategy/State. |
+| 4 | `backend/src/clases/clases.controller.ts` + `clases.service.ts` | controller ~25–27; service 38–44 | **Envidia de funcionalidad / regla en el borde equivocado** | El cliente manda `inicioClase` y Nest decide si la cancelación es tardía (D6). Se puede falsear la fecha. Documentado en [Correcciones S3-T03/T04](./Correcciones_S3-T03_S3-T04_Membresias_Clases.md). | **Corregir** (S4-T10): leer `inicio` (y dueño) desde la base; no confiar en el body. |
+| 5 | `backend/src/clases/clases.service.ts` | 42, 47 | **Números mágicos / datos de configuración en código** | `2 * 60 * 60 * 1000` (ventana tardía) y `'30 minutes'` (plazo lista de espera) literales. | **Corregir** al estabilizar S4-T09: constantes de módulo o config; no inventar Strategy. |
+| 6 | `backend/src/canchas/precios/precios.service.ts` | 36 | **Desacuerdo con regla de negocio (P7)** | `Math.round` tras la cadena de estrategias; el acta acordó **redondear hacia arriba** al peso. Tests actuales fijan `Math.round`. | **Corregir** (S4-T15): `Math.ceil` (o equivalente) + actualizar specs y docs. |
+| 7 | `backend/src/canchas/precios/strategies/peak-hour-pricing.strategy.ts` | 36–68 (`extraerDiaYHoraArgentina`) | **Método largo** (> 20 líneas) | ~33 líneas; un solo tema (día/hora en zona AR con `Intl`). Ya está fuera de `aplica`/`calcular`. | **No corregir ahora.** No molesta el cambio frecuente ni mezcla abstracciones; partirlo no acerca un patrón. Revisar solo si Sonar/IDE lo marca y hay que tocar pico otra vez. |
+
+### Lectura para la defensa
+
+- Precios **ya** están en lista de reglas (Strategy); el olor histórico del `switch` de precios **no** está en el código actual.
+- State de reserva y CQRS nivel 2 **aún no aplican** olores en código: el módulo de reservas/reportes no está; quedan diseñados/pendientes.
+- Olores 1–6 tienen dueño de corrección en tareas existentes; el 7 queda como “detectado y deliberadamente no tocado”.
 
 ---
 
@@ -564,6 +543,35 @@ Reconstruir un “antes” falso solo para generar historial no aporta evidencia
 
 ---
 
+## 2026-11-01 — Plan M2: check-in en sede + QR regenerativo (Patricio)
+
+**Tipo:** plan de trabajo / M2 acceso  
+**Registrado por:** Patricio Ramos (P1)  
+**Estado:** Fase 1 Finalizado · Fase 2 Por hacer  
+
+### Qué se anotó
+
+Quedó un plan personal/módulo para desarrollar **check-in en recepción** y **QR regenerativo (TOTP)**, track paralelo al Demo Day de canchas (que en S5–S7 había dejado M2 cortado).
+
+Documento: [Plan_M2_Acceso_QR_Patricio.md](./Plan_M2_Acceso_QR_Patricio.md).  
+Decisiones §8 actualizadas con el alcance offline del MVP.
+
+### Alcance offline (decisión de implementación)
+
+Sin red, la sede **solo acumula** check-ins en cola local. Al recuperar conexión **intenta registrarlos** en Nest (`/acceso/check-ins/sync`) y **anota errores** por ítem (membresía, TOTP, RN-01, etc.). No hay resolución automática de conflictos ni nodo servidor por sede.
+
+### Fases resumidas
+
+0. Docs · 1. Migración `totp_seeds` / `presencias` / `check_ins` · 2. API online · 3. Sync batch + idempotencia · 4. UI Mi QR + Recepción · 5. ADR Aceptado + README demo.
+
+### Fase 0 cerrada (2026-11-01)
+
+- Borrador [ADR-007](./adr/ADR-007-acceso-totp-cola-offline.md) (Propuesto) + fila en [ADR_Indice](./ADR_Indice.md).
+- Alineados Stack (RNF-01 sede vs móvil), C4 §5 (MVP cola + sync) y [Propuesta RN-01](./Propuesta_RN01_Presencia_Una_Sede.md) (unique en BD + Nest mapea error, como RN-02).
+- Siguiente: Fase 1 (migración + seed TOTP).
+
+---
+
 ## 2026-11-01 — S7-T02: Pasarela simulada (primera iteración)
 
 **Tipo:** backend / M5 / patrones Unidad III (Adapter target + simulacro)  
@@ -605,3 +613,110 @@ Reconstruir un “antes” falso solo para generar historial no aporta evidencia
 
 - MercadoPago real / IPN, PDF, Circuit Breaker, renovación membresía.
 
+---
+
+## 2026-11-01 — S8-T1 Fase 1: migración Acceso M2 + seed TOTP
+
+**Tipo:** backend / BD / M2 acceso  
+**Registrado por:** Patricio Ramos (P1)  
+**Cierre:** tablas `totp_seeds`, `presencias`, `check_ins` + RPC check-in/out; socio demo con seed TOTP.
+
+### Entregado
+
+- Migración [`supabase/migrations/20261101210000_acceso_m2.sql`](../supabase/migrations/20261101210000_acceso_m2.sql): enums, RLS, `registrar_check_in` / `registrar_check_out` (RN-01 por PK en `presencias`; códigos `YA_DENTRO` / `YA_EN_OTRA_SEDE`).
+- Seed: upsert TOTP del socio (`JBSWY3DPEHPK3PXP`, 60 s) en [`seed-demo.ts`](../backend/scripts/seed-demo.ts); [Seed_Demo_S5](./Seed_Demo_S5.md) actualizado.
+- Plan M2: SQL + seed en repo. ADR-007 sigue Propuesto (API Nest = Fase 2). Seed en claro hasta cifrado Nest.
+- Migración aplicada en Supabase; `npm run seed` OK (`totp_seeds` del socio).
+
+---
+
+## 2026-11-02 — ADR: reemplazo estricto 002/003/004 → 008/009/010
+
+**Tipo:** documentación / arquitectura  
+**Registrado por:** Patricio Ramos (P1)
+
+### Qué se hizo
+
+Los ADR-002, ADR-003 y ADR-004 se habían **reescrito in-place** (28–31/08) mezclando o cambiando decisiones (ORM→API, JWT→BFF, Supabase “solo PG”→Auth). Quedaron restaurados como **historial** con `Estado: Reemplazado`, sin sección “historial” aparte.
+
+| Viejo (congelado) | Vigente |
+|-------------------|---------|
+| [ADR-002](./adr/ADR-002-postgresql.md) | [ADR-008](./adr/ADR-008-postgresql.md) (motor) + [ADR-006](./adr/ADR-006-supabase-api-sin-orm.md) (acceso) |
+| [ADR-003](./adr/ADR-003-stack-nestjs-react.md) | [ADR-009](./adr/ADR-009-stack-nestjs-react.md) |
+| [ADR-004](./adr/ADR-004-hosting-vercel-render-supabase.md) | [ADR-010](./adr/ADR-010-hosting-vercel-render-supabase.md) + [ADR-005](./adr/ADR-005-bff-supabase-auth.md) (Auth) |
+
+Convención en [ADR_Indice](./ADR_Indice.md): un ADR aceptado no se reescribe; si cambia la decisión → `Reemplazado por ADR-YYY` + ADR nuevo. Un ADR = una decisión.
+
+---
+
+## 2026-11-02 — S8-T1 Fase 2: API Nest Acceso (TOTP + check-in online)
+
+**Tipo:** backend / M2 acceso  
+**Registrado por:** Patricio Ramos (P1)  
+**Cierre:** módulo `acceso/` online; RN-01 por RPC (sin `if` de unicidad); Postman Acceso.
+
+### Entregado
+
+- Nest [`backend/src/acceso/`](../backend/src/acceso/): `TotpService` (otplib, 60 s ±1), check-in/out, `totp/me`, presencias; mapeo `P0001` → HTTP.
+- Seed demo en claro sigue válido; emisión cifrada requiere `TOTP_SEED_ENCRYPTION_KEY`.
+- Alta de membresía (`MembresiasService.crear`) llama `ensureTotpSeed`: emite seed AES-GCM si no hay activo y hay key; no rota existentes.
+- Tests unitarios Acceso/Totp; colección Postman Acceso.
+- Plan M2 Fase 2 marcada hecha. ADR-007 sigue **Propuesto** (sync = Fase 3).
+
+---
+
+## 2026-11-03 — S8-T1 Fase 3: sync offline check-ins (batch + idempotencia)
+
+**Tipo:** backend / M2 acceso  
+**Registrado por:** Patricio Ramos (P1)  
+**Cierre:** `POST /acceso/check-ins/sync`; respuesta por ítem; reintento por `clientEventId` sin re-TOTP.
+
+### Entregado
+
+- Batch (máx. 50): membresía + TOTP + RPC `origen=offline_sync`; fallos tipados (`YA_EN_OTRA_SEDE`, `TOTP_INVALIDO`, etc.) sin abortar el lote.
+- Idempotencia: si `client_event_id` ya existe → `ok` sin revalidar TOTP.
+- Tests unitarios sync; Postman request sync; Plan M2 Fase 3 marcada hecha. ADR-007 sigue **Propuesto** (UI = Fase 4; cierre ADR = Fase 5).
+
+---
+
+## 2026-11-03 — S8-T1 Fase 4: UI Mi QR + recepción / cola offline
+
+**Tipo:** frontend / M2 acceso  
+**Registrado por:** Patricio Ramos (P1)  
+**Cierre:** `/mi-qr` (socio) y `/acceso` (admin_sede/gerente) con cola `localStorage` + sync.
+
+### Entregado
+
+- `RoleRoute` + links en Layout según `user.rol`.
+- Mi QR: `GET /acceso/totp/me/codigo` + QR JSON `{ v:1, perfilId, code }` (`qrcode`).
+- Acceso: pegar payload; check-in online; encolar si offline/fallo de red; panel cola + `POST /acceso/check-ins/sync`; sede default `sede_home_id`.
+- `ApiError` en `api.ts` para códigos Nest. Plan M2 Fase 4 hecha.
+
+---
+
+## 2026-11-03 — S8-T1 Fase 5: cierre docs Acceso M2 (ADR-007 Aceptado)
+
+**Tipo:** documentación / M2 acceso  
+**Registrado por:** Patricio Ramos (P1)  
+**Cierre:** plan M2 Fases 0–5; ADR-007 Aceptado; demo Acceso en README.
+
+### Entregado
+
+- [ADR-007](./adr/ADR-007-acceso-totp-cola-offline.md) → **Aceptado**; índice ADR actualizado.
+- [Panorama](./Panorama_Desarrollo_2026-10-13.md) §M2 y fila BD `totp_seeds`/`presencias`/`check_ins` al día.
+- README §6: recorrido UI Mi QR + Acceso / cola offline; Postman Acceso.
+- Justificación patrones: nota de que Acceso usa Repository (sin patrón nuevo).
+- Plan M2 marcado cerrado (MVP). Stretch UX (cámara, check-out UI, nombres en presencias) queda fuera del plan.
+
+---
+
+## 2026-11-03 — Acceso UX v2 documentado (continuación en otra rama)
+
+**Tipo:** documentación / M2 acceso  
+**Registrado por:** Patricio Ramos (P1)
+
+Quedó [Plan_M2_Acceso_UX_V2.md](./Plan_M2_Acceso_UX_V2.md): sede(s) asignadas + `sedeId` en cada check-in, cámara QR, form DNI+código. Estimación ~5–7 h. Rama sugerida `s8t1-acceso-ux-v2`. No implementado en esta sesión.
+
+---
+
+*FitZone Sports · Programación V · UNER*

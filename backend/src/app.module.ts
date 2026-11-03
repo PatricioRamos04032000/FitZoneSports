@@ -14,6 +14,7 @@ import { PreciosModule } from './canchas/precios/precios.module';
 import { ReservasCanchaModule } from './canchas/reservas/reservas-cancha.module';
 import { PagosModule } from './pagos/pagos.module';
 import { PerfilesModule } from './perfiles/perfiles.module';
+import { AccesoModule } from './acceso/acceso.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { PerfilesModule } from './perfiles/perfiles.module';
     PreciosModule,
     PagosModule,
     ReservasCanchaModule,
+    AccesoModule,
   ],
   controllers: [AppController],
   providers: [AppService],
