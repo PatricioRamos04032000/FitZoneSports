@@ -1,9 +1,13 @@
 # Propuesta — RN-01: una sede a la vez
 
 **Para:** próxima reunión de equipo  
-**Estado:** a decidir  
-**Fecha del documento:** 2026-08-31  
-**Relacionado:** Trabajo Integrador (RN-01) · [Decisiones pendientes §3.4 / §8](./Decisiones_Pendientes_y_Cosas_a_Definir.md) · [C4 Acceso](./C4_Arquitectura_FitZone.md) · ADR-001 / ADR-002 / ADR-006
+**Estado:** elección de trabajo **unique en BD + Nest mapea error** (como RN-02; 2026-11-01) · ratificación de equipo / docente pendiente  
+**Fecha del documento:** 2026-08-31 · **Actualizado:** 2026-11-01  
+**Relacionado:** Trabajo Integrador (RN-01) · [Decisiones pendientes §3.4 / §8](./Decisiones_Pendientes_y_Cosas_a_Definir.md) · [C4 Acceso](./C4_Arquitectura_FitZone.md) · [ADR-007](./adr/ADR-007-acceso-totp-cola-offline.md) · [Plan M2 Acceso](./Plan_M2_Acceso_QR_Patricio.md) · ADR-001 / ADR-008 / ADR-006
+
+### Elección de trabajo (2026-11-01, Patricio)
+
+Para implementar M2 se adopta el **mismo patrón que RN-02/canchas** (en la taxonomía vieja de este doc, cerca de **B** con Nest solo como fachada de errores — **no** la “híbrida” con `if` previo en Nest): la garantía es el `UNIQUE(perfil_id)` en `presencias`; Nest inserta y traduce el error de BD a código de negocio (`YA_EN_OTRA_SEDE`, etc.), como `reservar_cancha` → `TURNO_OCUPADO`. Offline: consistencia eventual; al sync, conflicto → **rechazar el segundo y anotar error** (sin auto-cerrar). Checkout: **timeout** (p. ej. 3 h) + salida explícita opcional. Documentado en [ADR-007](./adr/ADR-007-acceso-totp-cola-offline.md) (Propuesto) y el [Plan M2](./Plan_M2_Acceso_QR_Patricio.md).
 
 ---
 
@@ -17,9 +21,9 @@ Hay que acordar **dónde se garantiza** esa regla:
 |--------|---------|
 | **A** | Solo en **lógica de negocio** (Nest — módulo Acceso) |
 | **B** | En **base de datos** (constraint / unicidad de presencia) |
-| **Híbrida** | Validación en Nest **+** unique de presencia en PostgreSQL |
+| **Híbrida** (histórica) | Antes: `if` en Nest **+** unique. **No usar:** la elección vigente es **B + Nest mapea error** (como RN-02) |
 
-Al cerrar, documentar en un **ADR-007** (plantilla de cátedra).
+Cierre de implementación: [ADR-007](./adr/ADR-007-acceso-totp-cola-offline.md) (incluye TOTP + cola offline + RN-01 por unique en BD).
 
 ---
 
@@ -129,20 +133,20 @@ Recepcionista → Nest
 
 ---
 
-## 6. Recomendación del documento (a votar)
+## 6. Recomendación (actualizada 2026-11-01)
 
-**Opción híbrida (recomendada):**
+**Elegido: B + Nest como fachada de errores (mismo patrón que RN-02):**
 
-1. Modelo de **presencia** en BD con `UNIQUE(socio_id)` (red de seguridad online).
-2. **Validación previa en Nest** (mensaje claro, Swagger, tests).
-3. **Offline:** RN-01 best-effort / eventual hasta el sync; el constraint actúa al consolidar.
+1. Modelo de **presencia** en BD con `UNIQUE(perfil_id)`.
+2. Nest **inserta** y **mapea** `unique_violation` → código de negocio (sin `if` previo de unicidad).
+3. **Offline:** RN-01 eventual hasta el sync; el constraint actúa al consolidar.
 
-Si el equipo quiere una sola capa:
+La “híbrida” con validación previa en Nest queda **descartada** como garantía (duplicaba el juez y podía mentir bajo carrera).
 
 | Prioridad | Elegir |
 |-----------|--------|
-| Patrones + demo rápida + offline primero | **A — lógica** (aceptar race + conflicto en sync) |
-| Integridad online fuerte (como RN-02) | **B — presencia + unique** (Nest como fachada) |
+| ~~Patrones + demo rápida + offline primero~~ | ~~**A — lógica**~~ descartada para unicidad |
+| Integridad online fuerte (como RN-02) | **B — presencia + unique** (Nest traduce error) |
 
 ---
 
@@ -151,7 +155,7 @@ Si el equipo quiere una sola capa:
 ### Preguntas a cerrar
 
 1. ¿Checkout **explícito** o solo **timeout** (p. ej. 4–6 h)?
-2. ¿Enfoque online: **híbrido**, **solo A** o **solo B**?
+2. ¿Enfoque online: ~~híbrido con if~~ / A / **B + Nest mapea** (cerrado: B + mapeo)?
 3. Offline / sync: si hay conflicto (mismo socio en dos sedes), ¿qué hacemos?
    - Rechazar el segundo y loguear  
    - Auto-cerrar la presencia vieja  
@@ -159,19 +163,19 @@ Si el equipo quiere una sola capa:
 
 ### Resultado esperado
 
-- [ ] Opción elegida: A / B / Híbrida  
-- [ ] Checkout: explícito / timeout / ambos  
-- [ ] Política de conflicto offline  
-- [ ] Responsable de redactar **ADR-007**  
-- [ ] Actualizar [Decisiones_Pendientes §3.4](./Decisiones_Pendientes_y_Cosas_a_Definir.md) (marcar RN-01 cerrada cuando corresponda)
+- [x] Opción elegida: **B (unique en `presencias`) + Nest mapea error** — no `if` de unicidad (2026-11-01)  
+- [x] Checkout: **timeout + salida explícita opcional**  
+- [x] Política de conflicto offline: **rechazar el segundo y anotar error**  
+- [x] Responsable de redactar **ADR-007**: Patricio (borrador Propuesto 2026-11-01)  
+- [ ] Actualizar [Decisiones_Pendientes §3.4](./Decisiones_Pendientes_y_Cosas_a_Definir.md) (marcar RN-01 cerrada cuando el ADR pase a Aceptado / el equipo ratifique)
 
 ---
 
-## 8. Título tentativo del ADR (cuando se cierre)
+## 8. ADR (unificado con Acceso)
 
-- Híbrida: **ADR-007: Enforce RN-01 (una sede a la vez) con presencia en BD + validación en Nest**
-- Solo lógica: **ADR-007: Enforce RN-01 en lógica de Acceso (Nest), sin unique de presencia**
-- Solo BD: **ADR-007: Enforce RN-01 con tabla de presencia y UNIQUE(socio_id) en PostgreSQL**
+El ADR-007 del repo cubre **TOTP + cola offline + RN-01 por unique en BD** (no un ADR solo de presencia):
+
+- [ADR-007: Acceso en sede con QR TOTP y cola offline](./adr/ADR-007-acceso-totp-cola-offline.md) — Estado: **Propuesto**
 
 ---
 

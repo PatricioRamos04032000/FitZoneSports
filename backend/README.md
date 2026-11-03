@@ -55,6 +55,10 @@ $ npm run test:e2e
 
 # test coverage
 $ npm run test:cov
+
+La cobertura se genera en `backend/coverage/` (archivos: `lcov.info`, `lcov-report/index.html`, `clover.xml`, `coverage-final.json`). Para consultar el reporte visual, abrir `backend/coverage/lcov-report/index.html` en el navegador. Para la pipeline/SonarCloud usar `backend/coverage/lcov.info`.
+
+Documentación completa: [`documentacion/Reporte_Cobertura_Backend.md`](../documentacion/Reporte_Cobertura_Backend.md)
 ```
 
 ## Deployment

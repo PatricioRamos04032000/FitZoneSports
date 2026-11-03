@@ -138,7 +138,7 @@ flowchart LR
 - **Supabase Auth** para identidad (login, registro, JWT de sesión)
 - **Supabase API** (cliente desde Nest) para CRUD de tablas de dominio — decisión de equipo (mantener API; ORM descartado)
 - Consola web para inspección de datos en desarrollo
-- Variables backend: `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY` (o anon key según diseño); **no** exponer service role al frontend
+- Variables backend: `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, `SUPABASE_ANON_KEY` (signUp / confirmación de email); **no** exponer service role al frontend
 - **No** se usa Realtime ni se mueve la lógica de negocio (M1–M5) fuera de NestJS
 - Patrón **BFF (2026-08-28):** React habla solo con Nest; Nest es **pasarela** hacia Supabase Auth y consume Supabase API para datos
 
@@ -187,7 +187,7 @@ El enunciado contempla una app para socios (QR dinámico offline). En este proye
 | React Native | Reutiliza conocimiento de React |
 | Flutter | Alternativa válida del enunciado |
 
-La app, si se entrega, consumirá la misma API NestJS. El requisito offline (RNF-01) se acota a ese entregable y no al camino crítico web.
+La app, si se entrega, consumirá la misma API NestJS. El **RNF-01 de sede** (check-in en recepción) no espera a Unidad VI: MVP = cola local en la web de recepción + sync a Nest ([ADR-007](./adr/ADR-007-acceso-totp-cola-offline.md), [Plan M2](./Plan_M2_Acceso_QR_Patricio.md)). La app móvil aporta el QR del socio usable sin red; no sustituye el offline de sede.
 
 ---
 
@@ -223,7 +223,7 @@ La app, si se entrega, consumirá la misma API NestJS. El requisito offline (RNF
 
 | ID | Requisito | Cómo lo cubre el stack |
 |----|-----------|------------------------|
-| RNF-01 | Disponibilidad / acceso offline | Diferido a app móvil (Unidad VI); el núcleo web+API asume conectividad |
+| RNF-01 | Disponibilidad / acceso offline | **Sede:** cola local + sync a Nest (MVP, ADR-007). **Móvil:** QR/seed del socio (Unidad VI). Resto del sistema online-first |
 | RNF-02 | Seguridad de pagos | Token de pasarela mock; sin almacenar datos de tarjeta en PostgreSQL |
 | RNF-03 | Rendimiento en disponibilidad | Índices PostgreSQL; consultas optimizadas desde NestJS |
 | RNF-04 | Escalabilidad por sedes | Configuración de sedes en BD; monolito stateless en Render |

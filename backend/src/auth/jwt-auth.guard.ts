@@ -7,9 +7,11 @@ import {
 import type { Request } from 'express';
 import { errors } from 'jose';
 import { AuthUserDto } from './auth-user.dto';
+import type { RolUsuario } from './rol-usuario';
 import { SupabaseJwtService } from './supabase-jwt.service';
 
-export type AuthenticatedRequest = Request & { user: AuthUserDto };
+/** `rol` lo completa `RolesGuard` en los endpoints con `@Roles`. */
+export type AuthenticatedRequest = Request & { user: AuthUserDto; rol?: RolUsuario };
 
 @Injectable()
 export class JwtAuthGuard implements CanActivate {

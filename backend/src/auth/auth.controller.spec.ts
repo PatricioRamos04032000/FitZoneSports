@@ -9,6 +9,7 @@ describe('AuthController', () => {
     // Se crea mock vacío para que el test no intente conectar a Supabase
     const mockAuthService = {
       login: jest.fn(),
+      register: jest.fn(),
     };
 
     const module: TestingModule = await Test.createTestingModule({

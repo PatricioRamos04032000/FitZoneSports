@@ -41,7 +41,7 @@ Actualizado el **2026-10-01** según el tablero de Trello. Refleja lo que cada i
 
 | Integrante | Rol | Tarea en curso (ID) | Qué está haciendo | Estado |
 |------------|-----|---------------------|-------------------|--------|
-| Patricio Ramos | P1 | S2-T13 | Documentar login + health + sedes en Swagger | En desarrollo |
+| Patricio Ramos | P1 | S2-T13 | Documentar login + health + sedes en Swagger | Finalizado (2026-10-05) |
 | Bruno Conti | P2 | — | Sin tarjeta en desarrollo; tareas backend de Semana 2 finalizadas | — |
 | Lucas Coquet | P3 | S2-T11 | Pantalla login + cliente HTTP hacia Nest | En desarrollo |
 | Matias Goncevat | P4 | S2-T14 | `README.md` para levantar back y front en local | En desarrollo |
@@ -181,7 +181,7 @@ React → Nest (BFF) → Supabase Auth
 | S2-T10 | Scaffolding React + Vite en `frontend/` | Lucas Coquet | P3 | 1 h | Finalizado |
 | S2-T11 | Pantalla login (formulario) + cliente HTTP hacia Nest (no Supabase directo) | Lucas Coquet | P3 | 1,5 h | En desarrollo |
 | S2-T12 | Router base y layout mínimo post-login (placeholder) | Lucas Coquet | P3 | 1 h | Por hacer |
-| S2-T13 | Integrar Swagger: documentar login + health + sedes | Patricio Ramos | P1 | 0,5 h | En desarrollo |
+| S2-T13 | Integrar Swagger: documentar login + health + sedes | Patricio Ramos | P1 | 0,5 h | Finalizado |
 | S2-T14 | `README.md`: clonar repo, `.env`, levantar back y front en local | Matias Goncevat | P4 | 1 h | En desarrollo |
 | S2-T15 | Prueba manual E2E: login + listar sedes; anotar resultado en `LOG.md` | Matias Goncevat | P4 | 0,5 h | Por hacer |
 | S2-T16 | Reunión de cierre Semana 2: demo local y plan Semana 3 | Equipo | Todos | 0,5 h c/u | Por hacer |
@@ -192,7 +192,7 @@ React → Nest (BFF) → Supabase Auth
 
 | Integrante | Tareas | En desarrollo ahora | Total estimado | ¿≤ 4 h? |
 |------------|--------|---------------------|----------------|---------|
-| **P1** Patricio | S2-T07✓, S2-T08✓, S2-T13, S2-T16 | S2-T13 | **3,5 h** | ✓ |
+| **P1** Patricio | S2-T07✓, S2-T08✓, S2-T13✓, S2-T16 | — | **3,5 h** | ✓ |
 | **P2** Bruno | S2-T02✓ … S2-T06✓, S2-T09✓ | — | **7 h** | Ajustar² |
 | **P3** Lucas | S2-T01, S2-T10✓, S2-T11, S2-T12, S2-T16 | S2-T11 | **4,5 h** | ✓ |
 | **P4** Matias | S2-T14, S2-T15, S2-T16 | S2-T14 | **2 h** | ✓ (puede ayudar a P2) |
@@ -211,7 +211,7 @@ Con eso P2 baja a **5 h** y P1/P4 suben — repartir en pair programming si hace
 | Semana | ID tareas | En desarrollo ahora | Total |
 |--------|-----------|--------------------|-------|
 | 1 | S1-T01✓, S1-T05✓, S1-T06✓, S1-T09✓, S1-T10✓, S1-T11✓ | — | 5,5 h |
-| 2 | S2-T07✓, S2-T08✓, S2-T13, S2-T16 | S2-T13 | 3,5 h |
+| 2 | S2-T07✓, S2-T08✓, S2-T13✓, S2-T16 | — | 3,5 h |
 | **Total 2 semanas** | | | **9 h** |
 
 ### P2 — Bruno Conti (Backend Developer)

@@ -1,19 +1,37 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
+import { EventEmitterModule } from '@nestjs/event-emitter';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { SupabaseModule } from './supabase/supabase.module';
 import { AuthModule } from './auth/auth.module';
 import { HealthModule } from './health/health.module';
-import { SedesModule } from './sedes/sedes.module'; // <-- Agregado
+import { SedesModule } from './sedes/sedes.module';
+import { NotificacionesModule } from './notificaciones/notificaciones.module';
+import { MembresiasModule } from './membresias/membresias.module';
+import { ClasesModule } from './clases/clases.module';
+import { PreciosModule } from './canchas/precios/precios.module';
+import { ReservasCanchaModule } from './canchas/reservas/reservas-cancha.module';
+import { PagosModule } from './pagos/pagos.module';
+import { PerfilesModule } from './perfiles/perfiles.module';
+import { AccesoModule } from './acceso/acceso.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
+    EventEmitterModule.forRoot(),
     SupabaseModule,
     HealthModule,
     AuthModule,
-    SedesModule, // <-- Agregado
+    SedesModule,
+    PerfilesModule,
+    NotificacionesModule,
+    MembresiasModule,
+    ClasesModule,
+    PreciosModule,
+    PagosModule,
+    ReservasCanchaModule,
+    AccesoModule,
   ],
   controllers: [AppController],
   providers: [AppService],

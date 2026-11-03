@@ -26,12 +26,26 @@ describe('Health y Swagger (e2e)', () => {
     expect(typeof res.body.uptime).toBe('number');
   });
 
-  it('documenta /health en el JSON de Swagger', async () => {
+  it('documenta health, login y sedes en el JSON de Swagger', async () => {
     const res = await request(app.getHttpServer())
       .get(`/${SWAGGER_PATH}-json`)
       .expect(200);
+    const { paths, components } = res.body;
 
-    expect(res.body.paths['/health']).toBeDefined();
+    expect(paths['/health'].get).toBeDefined();
+    expect(paths['/auth/login'].post.requestBody.content['application/json'].schema.$ref)
+      .toBe('#/components/schemas/LoginDto');
+    expect(paths['/auth/login'].post.responses['401']).toBeDefined();
+    expect(paths['/sedes'].get.responses['200'].content['application/json'].schema.items.$ref)
+      .toBe('#/components/schemas/SedeDto');
+    expect(Object.keys(components.schemas.SedeDto.properties)).toEqual([
+      'id',
+      'nombre',
+      'direccion',
+      'aforo_max',
+      'activa',
+      'created_at',
+    ]);
   });
 
   afterEach(async () => {

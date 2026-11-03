@@ -320,12 +320,12 @@ Hay **dos offlines distintos** (acordado en documentación; enfoque técnico a v
 |------------|--------------------------|
 | Frontend Web (resto de roles / flujos) | Online-first (reservas, pagos, reportes, login JWT) |
 | Backend Nest | Online; requiere conectividad hacia Supabase |
-| Acceso en sede (RNF-01) | Con red caída: validación **local** + **cola de check-ins**; al volver internet → sync a Nest / Supabase |
+| Acceso en sede (RNF-01) | **MVP (2026-11-01):** cola local de check-ins en la web de recepción → sync a Nest con errores tipados ([ADR-007](./adr/ADR-007-acceso-totp-cola-offline.md)). Validación definitiva (membresía, TOTP, RN-01) al sincronizar |
 | App Móvil (Unidad VI) | Cache del **seed / QR** del socio (no sustituye el offline de sede) |
 | BD (Supabase) | Centralizada en la nube; la sede no escribe ahí mientras está offline |
 
-**Enfoque candidato (pendiente de validación docente):** nodo por sede + paquete de acceso + QR dinámico tipo **TOTP** + cola + sync. Detalle en [Decisiones pendientes §8](./Decisiones_Pendientes_y_Cosas_a_Definir.md) y [Acta 2026-09-02](./Acta_Reunion_2026-09-02_Semana1.md).  
-**RN-01 offline:** consistencia eventual al sincronizar (TOTP solo no garantiza “una sede a la vez”).
+**MVP adoptado (ADR-007 Propuesto):** QR **TOTP** + check-in online en Nest + **cola + sync** en sede. El enfoque “fuerte” (nodo por sede + paquete de seeds para validar TOTP sin API) queda **diferido**. Detalle: [Decisiones §8](./Decisiones_Pendientes_y_Cosas_a_Definir.md) · [Plan M2](./Plan_M2_Acceso_QR_Patricio.md) · [Acta 2026-09-02](./Acta_Reunion_2026-09-02_Semana1.md).  
+**RN-01:** como RN-02 — unique en `presencias`; Nest solo mapea el error de BD. Offline = consistencia eventual al sync (conflicto → error anotado, sin auto-resolver).
 
 Reservas, clases, pagos y reportes **no** se piden offline.
 
@@ -358,8 +358,8 @@ Reservas, clases, pagos y reportes **no** se piden offline.
 2. Diseñar pantallas web por rol (A1–A4) en Unidad IV.
 3. Revisar ADR ya redactados — [Índice de ADR](./ADR_Indice.md).
 4. ~~React Native vs Flutter~~ — **cerrado:** React Native.
-5. ~~Actualizar alcance offline (RNF-01 sede vs móvil)~~ — **hecho 2026-09-04** (§5); falta validar TOTP/nodo con el docente y, si se adopta, dibujar diagrama D5 + ADR.
-6. Al implementar M2: diagrama de acceso offline sede (si el docente valida el enfoque).
+5. ~~Actualizar alcance offline (RNF-01 sede vs móvil)~~ — **hecho 2026-09-04** (§5); ~~borrador ADR TOTP + cola~~ — **ADR-007 Propuesto (2026-11-01)**; validación docente del nodo/paquete fuerte sigue abierta.
+6. Al implementar M2 (Fases 1–4 del Plan): pasar ADR-007 a Aceptado; opcional diagrama D5 de cola + sync.
 7. A medida que se desarrolle: ir sumando **ER** y **diagrama de clases** al paquete de arquitectura (entrega formal al cierre).
 8. Exportar diagramas a imagen/PDF cuando se arme el entregable final.
 

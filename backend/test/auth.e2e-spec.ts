@@ -3,6 +3,7 @@ import { INestApplication } from '@nestjs/common';
 import request from 'supertest';
 import { App } from 'supertest/types';
 import { AppModule } from './../src/app.module';
+import { PerfilesRolRepository } from './../src/auth/perfiles-rol.repository';
 import { SUPABASE_JWKS } from './../src/auth/supabase-jwt.service';
 import { createTestSigner, type TestSigner } from './support/supabase-jwt';
 
@@ -20,6 +21,8 @@ describe('Auth /auth/me (e2e)', () => {
     })
       .overrideProvider(SUPABASE_JWKS)
       .useValue(signer.jwks)
+      .overrideProvider(PerfilesRolRepository)
+      .useValue({ findRol: jest.fn().mockResolvedValue('gerente') })
       .compile();
 
     app = moduleFixture.createNestApplication();
@@ -52,6 +55,7 @@ describe('Auth /auth/me (e2e)', () => {
       id: '3f1c2a9e-8b7d-4c6e-9a1f-2b3c4d5e6f70',
       email: 'gerente@fitzone.com',
       role: 'authenticated',
+      rol: 'gerente',
     });
   });
 

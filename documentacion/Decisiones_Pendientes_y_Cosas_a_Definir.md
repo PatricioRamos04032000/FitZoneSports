@@ -7,7 +7,7 @@ Documento de trabajo para el equipo: qué **ya está cerrado**, qué **falta dec
 - [Trabajo Integrador](./Trabajo_Integrador_FitZone_Sports.md)
 - [Stack tecnológico y herramientas](./Stack_Tecnologico_y_Herramientas.md)
 - [Funcionalidades por actor](./Funcionalidades_por_Actor.md)
-- [Índice de ADR](./ADR_Indice.md) (decisiones ya aceptadas)
+- [Índice de ADR](./ADR_Indice.md) (vigentes y reemplazados; un ADR aceptado no se reescribe)
 - [Bitácora LOG.md](./LOG.md)
 
 **Cómo usar este documento:** marcar `[x]` cuando el equipo cierre cada ítem y anotar la decisión en la columna o en una nota al pie. No hace falta decidir todo al inicio; varias cosas se resuelven en la unidad correspondiente del cronograma.
@@ -87,7 +87,7 @@ Pendiente de detalle de implementación:
 
 - [ ] Cliente en Nest: `@supabase/supabase-js` con `SUPABASE_URL` + `SUPABASE_SERVICE_ROLE_KEY` (solo backend; nunca en el front)
 - [ ] Esquema SQL / migraciones: ¿Supabase SQL editor + scripts versionados en el repo?
-- [ ] Cómo modelar transacciones ACID (RN-02 reservas) vía API vs funciones SQL/RPC en Supabase
+- [x] Cómo modelar transacciones ACID (RN-02 reservas) vía API vs funciones SQL/RPC en Supabase — **2026-10-15:** función SQL con `FOR UPDATE` + `UNIQUE (cancha_id, inicio)`, llamada por RPC (igual que `inscribir_en_clase`)
 - [ ] Tipado de respuestas (interfaces/DTOs en Nest aunque no haya ORM)
 - [ ] Row Level Security (RLS): ¿políticas en Supabase además de guards en Nest?
 
@@ -128,13 +128,181 @@ Estas no son “librerías”, pero hay que **acordar el enfoque** cuando se imp
 
 | Tema | Pregunta a resolver | Cuándo |
 |------|---------------------|--------|
-| Concurrencia de canchas (RN-02) | ¿Transacción + unique constraint? ¿Lock? | Al implementar reservas |
-| Socio en una sola sede (RN-01) | Orientación 2026-09-02: **híbrido** (Nest + BD). Pendiente cerrar: checkout vs timeout; doble turno; conflicto offline. **Consultar docente.** → [Propuesta RN-01](./Propuesta_RN01_Presencia_Una_Sede.md) · [Acta](./Acta_Reunion_2026-09-02_Semana1.md) | Tras consulta docente / al implementar acceso |
+| Concurrencia de canchas (RN-02) | **Decidido (2026-10-15 / M4):** índice único parcial `(cancha_id, inicio)` donde `estado in ('pendiente','confirmada')` + RPC `reservar_cancha` con `FOR UPDATE`. Ver [S4-T09](./Propuesta_Reglas_Negocio_S4-T09.md) (P2) | Hecho en M4 |
+| Hold de reserva pendiente (pago) | **Enfoque acordado 2026-10-31 (aún no implementado):** ventana de confirmación + limpieza **lazy + cron** (opción robusta). Detalle en [§3.4.1](#341-hold-de-pendiente--ventana--limpieza-lazy--cron-s7). Solo lazy se descartó: una reserva abandonada dejaría el turno perdido hasta que otro cliente intente exactamente ese horario. | Al cerrar S7 (tras o junto a S7-T01/T02) |
+| Socio en una sola sede (RN-01) | **Elección 2026-11-01 (como RN-02):** `presencias` UNIQUE(`perfil_id`); Nest inserta y mapea `unique_violation` (sin `if` de unicidad). Checkout timeout + salida opcional; conflicto offline → rechazar y anotar. ADR-007 Propuesto. → [Propuesta RN-01](./Propuesta_RN01_Presencia_Una_Sede.md) · [ADR-007](./adr/ADR-007-acceso-totp-cola-offline.md) | Al implementar M2 / al Aceptar ADR-007 |
 | Mora (RN-03) | ¿El backend bloquea descuento o solo avisa? | Al implementar precios/pagos |
 | QR dinámico (RF-04) | ¿TOTP por socio (ver §8.3)? ¿También se muestra en web? ¿Cómo se valida sin API? | Al implementar acceso |
-| Lista de espera (RF-08) | ¿Notificación por email, in-app, o solo log en demo? | Al aplicar Observer |
+| Lista de espera (RF-08) — canales | **Resuelto (2026-10-06):** in-app + log; email simulado si el socio lo activa en su perfil. Ver [Diseño Observer](./Diseno_Observer_S4-T02_Notificaciones.md) | — |
+| Lista de espera — avance automático del plazo | **Problema abierto (2026-10-15):** no hay timer/job; el vencimiento solo se procesa si alguien vuelve a llamar a `procesar_lista_espera`. En la realidad la lista se estanca. Ver [Problema_Lista_Espera_Sin_Timer](./Problema_Lista_Espera_Sin_Timer.md) | Después / al cerrar M3 |
 | Pasarela mock (RF-13) | ¿Endpoint propio que simula MercadoPago? ¿Respuestas fijas? | Semana 4+ |
 | PDF de comprobante (RF-14) | ¿Librería (p. ej. PDFKit) y dónde se guarda el archivo? | Al implementar pagos |
+
+### 3.4.1 Hold de `pendiente` — ventana + limpieza lazy + cron (S7)
+
+**Contexto (S7-T01):** el Facade inserta la reserva en `pendiente`, cobra y recién ahí confirma. Mientras está `pendiente`, el índice RN-02 **bloquea** el turno (correcto: nadie más lo vende). Si el proceso se cae o el usuario abandona el pago, el turno quedaría trabado para siempre sin una ventana ni limpieza.
+
+**Decisión de diseño (2026-10-31, Patricio):** no bajar a “solo `confirmada` ocupa el turno”. Mantener el hold en `pendiente`, con **ventana de confirmación** y la opción **más robusta de limpieza: lazy + cron**. Solo lazy no alcanza: otro cliente puede no intentar ese horario y el slot se pierde igual.
+
+**Números a fijar al implementar** (sugeridos, no cerrados):
+
+| Parámetro | Sugerencia |
+|-----------|------------|
+| Ventana de hold | 10 minutos desde `created_at` (o columna `vence_en`) |
+| Intervalo del cron | 5 minutos (`*/5 * * * *`) |
+| Dónde vive el valor | `configuracion_cadena.minutos_hold_reserva` (default 10) |
+
+#### Cómo implementarlo (receta)
+
+1. **Ventana en confirmación**  
+   En `confirmar_reserva_cancha`: si `estado = pendiente` y `now() > created_at + hold`, cancelar esa fila (o dejarla y fallar) y `raise exception 'RESERVA_VENCIDA'`. Nest mapea a 400/409. Así no se confirma un hold muerto aunque el stub/pasarela diga “ok”.
+
+2. **Lazy (defensa en el camino caliente)**  
+   Al inicio de `reservar_cancha`, antes del `INSERT`: cancelar `pendiente` vencidas de ese `(cancha_id, inicio)` (opcionalmente de toda la cancha). Así, si B llega al mismo turno y el hold de A venció, B no choca con el índice. No reemplaza al cron: solo acelera el caso “alguien pide ese turno”.
+
+3. **Cron (libera sin depender de demanda)**  
+   Job periódico que ejecuta algo equivalente a:
+
+   ```sql
+   update public.reservas_cancha
+   set estado = 'cancelada'
+   where estado = 'pendiente'
+     and created_at < now() - make_interval(mins => :minutos_hold);
+   ```
+
+   Opciones de dónde correrlo (elegir una al implementar):
+
+   | Opción | Cuándo conviene |
+   |--------|-----------------|
+   | **Nest** `@nestjs/schedule` + llamada RPC/`UPDATE` con service role | Mismo deploy que la API (Render); fácil de loguear; el job no corre si el servicio está dormido |
+   | **`pg_cron` en Supabase** | Limpia aunque Nest esté caído; hay que habilitar la extensión en el proyecto |
+   | Edge Function / GitHub Action cada minuto | Solo si las anteriores no entran; más frágil para demo |
+
+   **Decisión S7-T02b:** limpieza periódica con **`pg_cron` en Supabase** (no Nest schedule), para que corra aunque Render free duerma. Función `cancelar_reservas_pendientes_vencidas()`. Habilitar extensión `pg_cron` en Dashboard → Extensions si hace falta.
+
+4. **State / Facade**  
+   - `PendienteDePago.pagar`: si la RPC responde `RESERVA_VENCIDA`, no reintentar confirm.  
+   - Listados “mis reservas”: filtrar o marcar vencidas; tras el cron deberían verse `cancelada`.  
+   - No hace falta endpoint público de “limpiar”; el job es interno.
+
+5. **Pruebas mínimas**  
+   - SQL: hold fresco → segundo `reservar` = `TURNO_OCUPADO`.  
+   - SQL: hold vencido + lazy en `reservar` → segundo insert ok.  
+   - SQL: `confirmar` tarde → `RESERVA_VENCIDA` y fila no queda confirmada.  
+   - Job: tras correr el cron, no quedan `pendiente` viejas.  
+   - Nest: un test del Facade/State con reloj mockeado o fila `created_at` vieja.
+
+6. **Docs al cerrar el código**  
+   Actualizar matriz State en [Justificación §5](./Justificacion_Patrones_Unidad_III.md#5-state--ciclo-de-la-reserva-de-cancha) (“Confirmada: cancelar; Pendiente: pagar/cancelar dentro de N min”), [LOG.md](./LOG.md) y esta tabla (§3.4) a `[x]`.
+
+- [x] Implementar ventana + lazy en RPCs + `pg_cron` (S7-T02b, migración `20261101200000_hold_reserva_pendiente.sql`)
+- [x] Fijar minutos de hold en `configuracion_cadena.minutos_hold_reserva` (default 10)
+- [x] Tests Nest del hold / `RESERVA_VENCIDA` (Facade)
+- [x] Actualizar justificación State / LOG (S7-T02b)
+
+### 3.4.2 Flujo de pago de cancha — MVP actual vs mejora (MercadoPago)
+
+**Actualización S7-T02b (2026-11-01):** el Facade quedó **partido** con checkout HTML simulado (estilo MercadoPago): `POST /canchas/reservas` solo crea `pendiente`; `POST .../pagar` devuelve `checkoutUrl`; el cobro se confirma en `/pasarela-simulada/checkout/:pagoId` (sin guardar tarjeta). MercadoPago real / webhook IPN sigue pendiente.
+
+**Decisión histórica 2026-10-31 (superada por S7-T02b):** el MVP atómico con stub quedó reemplazado por el flujo partido del simulacro.
+
+**Por qué anotamos mejora:** una pasarela tipo MercadoPago (Checkout Pro / redirect) **saca al usuario de FitZone**. El cobro no puede vivir en el mismo request HTTP que “iniciar reserva”; hace falta `pendiente` visible, retorno/webhook y reintento de pago. Aunque usemos Bricks embebido, el aviso de acreditación suele ser asíncrono.
+
+**MVP (ahora — no cambiar):**
+
+| Pieza | Comportamiento |
+|-------|----------------|
+| `POST /canchas/reservas` | Atómico: crea + cobra stub + confirma |
+| Salir de la página antes del POST | No hay fila |
+| Pago rechazado | Cancela en el mismo request |
+| Crash entre insert y confirm | `pendiente` huérfana (mitigar después con §3.4.1) |
+| GET / pagar aparte | No existen |
+
+**Mejora futura (cuando entre Adapter MP / S7-T02+ o post-demo):**
+
+1. Separar el caso de uso:
+   - `POST /canchas/reservas` → solo crea `pendiente` + hold (RN-02) y devuelve `id`, precio, `venceEn`.
+   - `POST /canchas/reservas/:id/pagar` (o “crear preferencia MP”) → inicia cobro; **no** confirma hasta aprobado.
+2. Confirmación asíncrona: webhook/IPN (o return URL + verificación server-side) → State `pagar()` / `confirmar_reserva_cancha`.
+3. Lectura para retomar: `GET /canchas/reservas/me` (y/o `GET :id`) filtrando propias; el front puede reabrir checkout si sigue `pendiente` y dentro de la ventana.
+4. Implementar §3.4.1 (ventana + lazy + cron) **antes o junto** con el redirect, para no dejar holds eternos si el usuario no vuelve de MP.
+5. Adapter: `PasarelaStub` / simulacro sigue para tests; `AdaptadorMercadoPago` traduce preferencia + notificación → `ResultadoCobro` / confirmación.
+
+- [x] Flujo partido + checkout simulado + GET me + hold §3.4.1 (S7-T02b)
+- [ ] Al implementar MP real: `AdaptadorMercadoPago` + webhook/IPN (reusa el mismo flujo partido)
+
+### 3.4.3 Revisar columnas “lista” / JSON — `configuracion_pico` y `notificaciones`
+
+**Anotado 2026-10-31 (Patricio), sin cambio de código aún.** Al mirar tablas en Supabase tras S7-T01, conviene revisar si el modelado o el uso Nest de estas columnas es el adecuado (se ven como listas / JSON en el Table Editor):
+
+| Tabla | Columna | Tipo | Nota a revisar |
+|-------|---------|------|----------------|
+| `configuracion_pico` | `dias` | `smallint[]` | Array de días ISO 1–7. ¿Seguimos con array o preferimos otra forma (tabla hija, bitmask, etc.)? Hoy Strategy lo consume bien. |
+| `notificaciones` | `datos` | `jsonb` | Payload libre del Observer. ¿Convención de claves (snake vs camel), forma estable por tipo de aviso, o sobra flexibilidad? |
+
+Relacionado (mismo tema, no pedido explícito pero ya detectado): `reservas_cancha.detalle` (`jsonb`) se escribe desde el Facade con claves **camelCase** (`precioBase`, `reglasAplicadas`, …) mientras el resto del schema es snake_case — alinear cuando se toque.
+
+- [ ] Revisar `configuracion_pico.dias` (¿array OK o cambiar modelo?)
+- [ ] Revisar `notificaciones.datos` (contrato JSON / naming)
+- [ ] Opcional: snake_case en `reservas_cancha.detalle`
+
+### 3.4.4 Desglose de precio de cancha como ítems de la reserva (mejora UX / API)
+
+**Anotado 2026-10-31 (Patricio). No implementar ahora** — el MVP S7-T01 sigue con `detalle` jsonb plano (`precioBase`, `precioFinal`, `reglasAplicadas[]` solo nombres).
+
+**Problema:** hoy el cliente (y Supabase) ven un blob: una lista de nombres de Strategy sin explicar **cuánto** aportó cada regla al pasar del `precio_hora` de la cancha al `precio` de la reserva. Antes de pagar, el socio debería ver un desglose legible.
+
+**Idea:** presentar el precio como **ítems de la reserva** (líneas de liquidación), no como metadata opaca. Cada ítem = una razón por la que el precio estándar se modificó (o la línea base).
+
+#### Forma deseada (contrato conceptual)
+
+Ejemplo socio en pico, base $20.000, pico +20 %, descuento socio −15 % (orden Strategy actual: Standard → Peak → Member):
+
+| # | Código / regla | Descripción (UI) | Efecto | Monto tras aplicar |
+|---|----------------|------------------|--------|--------------------|
+| 1 | `precio_base` / StandardPricing | Precio hora de la cancha | +20000 | 20000 |
+| 2 | `recargo_pico` / PeakHourPricing | Horario pico 19–21 (+20 %) | +4000 | 24000 |
+| 3 | `descuento_socio` / MemberDiscountPricing | Membresía activa (−15 %) | −3600 | 20400 |
+
+Total a pagar = última fila (o `precio_final` redondeado como hoy P7).
+
+Si el socio **no** tiene membresía vigente el día del turno: no aparece ítem de descuento; opcionalmente un ítem informativo `sin_descuento_socio` con efecto 0 y motivo `MEMBRESIA_NO_ACTIVA` (aviso, no mueve el precio).
+
+#### Persistencia (a decidir al implementar)
+
+| Opción | Pros | Contras |
+|--------|------|---------|
+| **A — `detalle` jsonb estructurado** (`items: [...]`) | Sin migración de tablas; un solo campo ya existe | Sigue siendo JSON; conviene snake_case y schema versionado |
+| **B — tabla `reserva_cancha_items`** | Consultable, 3FN, claro en Table Editor | Más joins; migración + repo |
+
+Recomendación tentativa: **A** para el front/API rápido; subir a **B** solo si hace falta reportes por regla.
+
+Campos sugeridos por ítem (snake_case):
+
+```ts
+{
+  orden: number;
+  codigo: 'precio_base' | 'recargo_pico' | 'descuento_socio' | string;
+  regla: string;           // nombre Strategy o 'base'
+  descripcion: string;     // texto UI
+  pct?: number;            // si aplica (20, 15, …)
+  efecto: number;          // delta en pesos (puede ser negativo)
+  subtotal: number;        // precio acumulado después de esta línea
+}
+```
+
+Más `precio_base`, `precio_final` a nivel reserva (como hoy).
+
+#### Cambios de código cuando se haga
+
+1. **`PreciosService` / Strategy:** además de `reglasAplicadas: string[]`, devolver `items` (o `lineas`) con delta y subtotal por estrategia aplicada. StandardPricing aporta la línea base; las demás el delta respecto al precio entrante.
+2. **Facade `reservar`:** persistir ese arreglo en `detalle` (o tabla items) **antes** del cobro, para que un futuro checkout (§3.4.2) pueda mostrar el desglose sin recalcular.
+3. **API / DTO:** exponer `items` (o `desglose`) en la respuesta de reserva; el front los lista “antes de pagar”.
+4. **Docs:** actualizar justificación Strategy “cómo se prueba” + ejemplo de liquidación; alinear con §3.4.3 (naming snake_case en `detalle`).
+5. **No bloquea** S7-T01 ni el stub atómico actual; encaja natural con el flujo partido (crear hold → ver ítems → pagar).
+
+- [ ] Diferir; no tocar S7-T01 entregado
+- [ ] Al retomar: ampliar `PrecioCalculado` con ítems + contrato API + persistencia (A o B)
 
 ### 3.5 Documentación de API
 
@@ -143,6 +311,8 @@ Estas no son “librerías”, pero hay que **acordar el enfoque** cuando se imp
 - [ ] Formato de errores JSON unificado
 
 ### 3.6 Resiliencia — Circuit Breaker (mencionado por el docente, 2026-08-28)
+
+**Decidido (2026-10-15):** se usa en M5, solo alrededor de MercadoPago (`AdaptadorMercadoPago` / `PasarelaPago`). No se usa sobre Supabase ni sobre el simulacro. El reintento (Decorator, anotado) va antes de abrir el circuito. Detalle en la [justificación §15](./Justificacion_Patrones_Unidad_III.md). Umbrales al implementar.
 
 **Contexto:** con Nest como **BFF** hacia **Supabase Auth** y **Supabase API**, un fallo o lentitud prolongada de Supabase podría propagarse a toda la API (timeouts, hilos bloqueados, cascada de errores). El docente mencionó el patrón **Circuit Breaker** como mecanismo de resiliencia.
 
@@ -165,9 +335,9 @@ Estas no son “librerías”, pero hay que **acordar el enfoque** cuando se imp
 - **Offline de sede (RNF-01 / TOTP):** problema de conectividad en el torno; el Circuit Breaker protege Nest cuando Supabase falla en la nube.
 - **Retry simple:** reintentar siempre; el breaker **deja de llamar** cuando ya no tiene sentido.
 
-**Pendiente (a definir al integrar Supabase en Unidad II+):**
+**Pendiente al implementar M5** (la adopción ya está decidida; faltan los números):
 
-- [ ] ¿Adoptamos Circuit Breaker en el cliente Supabase del BFF?
+- [x] ¿Adoptamos Circuit Breaker en el cliente Supabase del BFF? — **No.** Solo MercadoPago (2026-10-15)
 - [ ] Umbrales: cantidad de fallos, timeout por llamada, tiempo en estado Open.
 - [ ] Respuesta al frontend cuando el circuito está abierto (mensaje claro vs error genérico).
 - [ ] Librería en Node/Nest (ej. `opossum`, `cockatiel`) o implementación mínima propia.
@@ -176,22 +346,58 @@ Estas no son “librerías”, pero hay que **acordar el enfoque** cuando se imp
 
 **Cuándo:** no bloquea el scaffolding inicial; evaluar al tener llamadas reales a Supabase desde Nest (Semanas 3–4 en adelante).
 
+### 3.7 CQRS nivel 2 — reportes del gerente (pendiente)
+
+**Anotado 2026-10-27.** No implementar hasta tener reservas (M4) y el alcance de reportes del gerente. Detalle en [Justificación §16](./Justificacion_Patrones_Unidad_III.md#16-cqrs-nivel-2--reportes-del-gerente).
+
+La cátedra (Unidad III clase 2) pide separar lectura de escritura en **escalones**. FitZone, para el tablero/reportes del gerente, apunta al **nivel 2**: misma base, pero las consultas de ocupación/consolidados **no** pasan por el modelo/repositorio de dominio de reservas; usan **SQL propio o vistas** y DTOs de lectura.
+
+- [ ] Definir qué reportes mínimos muestra el gerente (ocupación por sede/mes, totales de cadena, etc.)
+- [ ] Crear vista(s) o consulta agregada en migraciones (`ocupacion_por_sede_mes` o equivalente)
+- [ ] Puerto de lectura (`OcupacionQuery` / query repository) + endpoint `GET` con `@RequiereRol('gerente')`
+- [ ] No reutilizar el repositorio/Facade de reserva para armar el reporte
+- [ ] Nivel 3 (otra base / eventual) descartado salvo acuerdo de negocio
+
+**Cuándo:** al implementar reportes A4 / cuando M4 tenga datos de ocupación suficientes para demo.
+
+### 3.8 Mejora — respuesta cuando la base / Supabase no responde (anotado 2026-10-29)
+
+**Hoy:** si un repositorio recibe un error de Supabase y el service no lo traduce, `RepositoryErrorFilter` responde **500** con el mensaje genérico `"Error al acceder a los datos"`. No hay un caso dedicado a “base offline” / servicio de datos caído. Además:
+
+- Un fallo de **red puro** (timeout, `fetch failed`, DNS) puede **no** pasar por `RepositoryError` y caer en el 500 default de Nest.
+- En **login**, un fallo de Auth/red puede confundirse con **401** `"Credenciales inválidas"`.
+- **Circuit Breaker sobre Supabase** sigue descartado (§3.6); esta mejora es solo de **clasificación y mensaje HTTP**, no de cortar llamadas.
+
+**Mejora a tener en cuenta (no urgente):**
+
+- [ ] Detectar indisponibilidad / timeout / error de red hacia Supabase (datos y, si aplica, Auth).
+- [ ] Responder **503 Service Unavailable** (o similar) con mensaje claro, p. ej. `"Servicio de datos no disponible"`, en lugar de un 500 genérico o un 401 engañoso en login.
+- [ ] Mantener el 500 `"Error al acceder a los datos"` para fallos de datos “internos” ya tipados como `RepositoryError` que no sean indisponibilidad.
+- [ ] Alinear con §3.5 (formato de errores JSON unificado) cuando se unifique el contrato de errores.
+
+**Cuándo:** mejora de DX/resiliencia de API; no bloquea M1–M5. Conviene al tocar errores globales, Auth o al preparar Demo Day (mensajes claros si Supabase falla en la demo).
+
+**Referencias de código:** `repository-error.filter.ts`, `supabase.repository.ts` (`unwrap`), `auth.service.ts` (login).
+
 ---
 
 ## 4. Frontend web (React) — qué falta definir
 
 ### 4.1 Tooling
 
-- [ ] Bundler: **Vite** (recomendado) u otro
+- [x] Bundler: **Vite** (ya en `frontend/`)
 - [ ] Estilos: Tailwind CSS vs CSS Modules vs otra opción
 - [ ] Componentes UI: biblioteca (p. ej. MUI, shadcn) o componentes propios (Atomic Design)
-- [ ] Cliente HTTP: `fetch` nativo vs axios
+- [ ] Cliente HTTP: `fetch` nativo vs axios — cerrar al hacer **S4-T12**
 - [ ] Librería de formularios y validación (opcional)
 
-### 4.2 Estado y pantallas
+### 4.2 Estado, capas de UI y pantallas
 
-- [ ] Librería de estado global: Zustand vs Redux Toolkit vs Context puro
-- [ ] Routing: React Router
+- [ ] Separar **estado de servidor** (datos de la API: perfil, canchas, etc.) vs **estado de cliente** (sesión UI, formularios, filtros). La clase pide no guardar la respuesta HTTP en el store global ([Notas Unidad II §3](./Notas_Correcciones_Unidad_II.md)).
+- [ ] Estado de servidor: adoptar **TanStack Query** (u equivalente) al conectar pantallas reales — va con **S4-T12** / **S4-T13** / **S4-T11**.
+- [ ] Estado de cliente / sesión: **Zustand vs Context** (Redux Toolkit solo si hace falta) — decisión abierta; implementar en **S4-T12** (token, usuario, rol, rutas protegidas).
+- [ ] **MVVM en React (pendiente / a futuro):** hoy no hay ViewModel. Evaluar hooks por pantalla (`useLoginViewModel`, `useCanchasViewModel`, …) que concentren estado + llamadas y dejen la vista “tonta”. Encaja al armar Login real (**S3-T05**), cliente/sesión (**S4-T12**) y Canchas/Perfil conectados (**S4-T13**, **S4-T11**). No bloquea el scaffolding actual; decidirlo cuando Lucas toque esas tareas, y documentar la convención si se adopta (carpeta `hooks/` o `viewmodels/`).
+- [x] Routing: **React Router** (ya en `App.tsx`)
 - [ ] Pantallas mínimas por actor (**A1 socio, A2 externo, A3 recepcionista, A4 gerente**)
 - [ ] Cómo se muestra el aforo en “tiempo real” (polling cada N segundos vs WebSocket — puede quedar polling para el MVP)
 
@@ -201,7 +407,7 @@ Estas no son “librerías”, pero hay que **acordar el enfoque** cuando se imp
 - [ ] Diseño visual: ¿hay marca/colores definidos o se define en Unidad IV?
 - [ ] Responsive: ¿prioridad desktop primero, con uso razonable en móvil navegador?
 
-**Cuándo:** Semanas 8–10 (Unidad IV).
+**Cuándo:** Semanas 8–10 (Unidad IV). Arranque práctico: **S3-T05 → S4-T12 → S4-T11 / S4-T13**.
 
 ---
 
@@ -216,9 +422,9 @@ Estas no son “librerías”, pero hay que **acordar el enfoque** cuando se imp
 ### 5.2 Datos de prueba
 
 - [x] Cantidad de sedes de demo — **2 o 3** (acuerdo 2026-09-02; no 25)
-- [ ] Usuarios seed: 1 gerente, 1 recepcionista, 2 socios, 1 externo
-- [ ] Canchas y clases de ejemplo por sede
-- [ ] Script o comando para cargar datos (`npm run seed`)
+- [x] Usuarios seed: 1 gerente, 1 admin_sede, 1 socio, 1 externo — ver [Seed_Demo_S5.md](./Seed_Demo_S5.md) (`npm run seed` en `backend/`)
+- [x] Canchas de ejemplo (1 paddle + 1 fútbol 5) en el seed S5; clases de ejemplo: pendiente (fuera del seed mínimo)
+- [x] Script o comando para cargar datos (`npm run seed` en `backend/`)
 
 ### 5.3 Variables de entorno (checklist, sin valores secretos)
 
@@ -226,11 +432,11 @@ Definir **nombres** de variables; los valores viven solo en Vercel / Render / lo
 
 **Backend (Render / local):**
 
-- [ ] `SUPABASE_URL`
-- [ ] `SUPABASE_SERVICE_ROLE_KEY` (solo backend; nunca en el frontend)
+- [x] `SUPABASE_URL`
+- [x] `SUPABASE_SERVICE_ROLE_KEY` (solo backend; nunca en el frontend)
 - [ ] `DATABASE_URL` (opcional: scripts SQL / migraciones / admin; no como acceso principal en runtime)
-- [ ] URL del frontend para CORS (`CORS_ORIGIN`)
-- [ ] `PORT`
+- [x] URL del frontend para CORS (`CORS_ORIGIN`, separados por coma; por defecto `http://localhost:5173`). Falta el valor de producción: la URL de Vercel
+- [x] `PORT`
 - [ ] `NODE_ENV`
 
 **Frontend (Vercel / local):**
@@ -264,8 +470,9 @@ Pendiente solo al llegar a Semanas 13–14 (lado **socio** — distinto del offl
 - [ ] Pipeline GitHub Actions: lint → test → build
 - [ ] ¿Deploy automático a Render/Vercel en cada push a `main`, o deploy manual?
 - [ ] Docker: solo local, solo CI, o también en Render
+- [ ] **SonarCloud** (opcional, post-CI): org creada por P1; compañeros crean cuenta con GitHub; P1 invita; Matias conecta el scan en S6. Guía: [Guia_SonarCloud_FitZone.md](./Guia_SonarCloud_FitZone.md)
 
-**Cuándo:** Semanas 11–12.
+**Cuándo:** Semanas 11–12 (CI). Sonar: cuentas ya; cableado con el pipeline de Matias.
 
 ---
 
@@ -299,9 +506,11 @@ Patrón de **nodo de borde por sede**:
 
 **Estado 2026-09-02:** el equipo ve el enfoque como **plausible**, pero **no lo cierra formalmente** hasta validarlo con el docente (ver [Acta](./Acta_Reunion_2026-09-02_Semana1.md) Q2).
 
-- [ ] ¿Aceptamos cache/cola local + sync como base operativa de RNF-01? — pendiente validación docente
-- [ ] ¿Dónde vive el nodo local? (app de recepción instalada en sede, servicio local, PWA, etc.)
-- [ ] ¿Formato de la cola de check-ins? (entrada/salida, `sedeId`, timestamp, `socioId`, estado sync)
+**Actualización 2026-11-01 (Patricio) — plan de implementación M2:** ver [Plan_M2_Acceso_QR_Patricio.md](./Plan_M2_Acceso_QR_Patricio.md). Para el MVP de sede el offline se **acota**: la recepción **acumula** check-ins en cola local; al volver la red **intenta registrarlos** vía Nest y **anota errores** por ítem (sin resolución automática de conflictos). Validación definitiva (membresía, TOTP, RN-01) en el sync online. Formato de cola y endpoints quedan en ese plan.
+
+- [x] ¿Aceptamos cache/cola local + sync como base operativa de RNF-01? — **sí para MVP** (cola + sync + errores); validación docente del enfoque TOTP completo sigue abierta
+- [x] ¿Dónde vive el nodo local? — **UI de recepción web** (cola en `localStorage` / IndexedDB); sin servicio local por sede en esta iteración
+- [x] ¿Formato de la cola de check-ins? — ver plan M2 (`clientEventId`, `perfilId`, `code`, `sedeId`, `ocurrioEn`, `tipo`, estado sync)
 
 ### 8.3 Opción candidata: QR dinámico tipo Authenticator (TOTP) — validación local
 
@@ -337,11 +546,11 @@ Patrón de **nodo de borde por sede**:
 
 #### Checklist de cierre
 
-- [ ] ¿Adoptamos TOTP por socio como mecanismo de QR dinámico (RF-04) + validación local (RNF-01)? — **2026-09-02:** orientación favorable; **consultar docente** antes de ADR
-- [ ] Período y ventana de reloj
-- [ ] Qué viaja en el QR vs qué se muestra en pantalla — orientación: QR en **móvil** (Unidad VI); poco sentido en web para demos
-- [ ] Política de sync / TTL / revocados
-- [ ] Si se confirma: redactar ADR (p. ej. “Acceso offline con TOTP y nodo por sede”)
+- [x] ¿Adoptamos TOTP por socio como mecanismo de QR dinámico (RF-04)? — **sí para implementar** ([Plan M2](./Plan_M2_Acceso_QR_Patricio.md)); validación local offline “fuerte” (paquete de seeds en sede) queda **diferida**; MVP offline = cola + sync
+- [x] Período y ventana de reloj — **60 s · ±1 período** (plan M2; ajustable)
+- [x] Qué viaja en el QR vs qué se muestra en pantalla — QR: `{ v, perfilId, code }`; nombre solo UI; **web socio** primero para demo, móvil después
+- [x] Política de sync — cola local → `POST .../sync` → ok/error tipado por ítem; sin TTL de cache de seeds en MVP
+- [x] Borrador ADR — [ADR-007](./adr/ADR-007-acceso-totp-cola-offline.md) **Propuesto** (2026-11-01); pasar a Aceptado al cerrar Fases 1–3 / 5 del plan M2
 
 ### 8.4 Qué NO hace falta offline
 
@@ -357,9 +566,9 @@ Explicitar para la defensa y para no overengineerar:
 
 Cuando se cierre el enfoque:
 
-- [x] Actualizar [C4_Arquitectura_FitZone.md](./C4_Arquitectura_FitZone.md): alcance offline **sede vs móvil** (2026-09-04); diagrama TOTP/nodo pendiente de validación docente
-- [ ] Revisar [Stack_Tecnologico_y_Herramientas.md](./Stack_Tecnologico_y_Herramientas.md) (aún puede decir que RNF-01 se resuelve solo en Unidad VI)
-- [ ] Anotar la decisión en [LOG.md](./LOG.md) y, si aplica, un ADR nuevo (tras validar con el docente)
+- [x] Actualizar [C4_Arquitectura_FitZone.md](./C4_Arquitectura_FitZone.md): alcance offline **sede vs móvil** (2026-09-04); MVP cola + sync anotado (2026-11-01); diagrama nodo/paquete fuerte diferido
+- [x] Revisar [Stack_Tecnologico_y_Herramientas.md](./Stack_Tecnologico_y_Herramientas.md) — RNF-01 sede vs móvil alineado (2026-11-01)
+- [x] Anotar en [LOG.md](./LOG.md) + borrador [ADR-007](./adr/ADR-007-acceso-totp-cola-offline.md) (Propuesto; Aceptado tras implementación / feedback docente del enfoque fuerte)
 
 **Cuándo:** cerrar el **enfoque** en Semanas 1–2 (arquitectura); implementación al trabajar M2 (acceso); QR en celular del socio en Unidad VI (React Native).
 

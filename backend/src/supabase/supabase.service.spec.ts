@@ -28,4 +28,11 @@ describe('SupabaseService', () => {
   it('should be defined', () => {
     expect(service).toBeDefined();
   });
+
+  it('createAuthClient devuelve un cliente nuevo, distinto del compartido', () => {
+    const authClient = service.createAuthClient();
+
+    expect(authClient).not.toBe(service.getClient());
+    expect(service.createAuthClient()).not.toBe(authClient);
+  });
 });
