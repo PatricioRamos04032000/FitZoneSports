@@ -14,9 +14,7 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-
         <Route element={<Layout />}>
-
           {/* Rutas públicas */}
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
@@ -28,9 +26,7 @@ function App() {
             <Route path="/perfil" element={<Perfil />} />
             <Route path="/canchas" element={<Canchas />} />
           </Route>
-
         </Route>
-
       </Routes>
     </BrowserRouter>
   );

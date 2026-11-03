@@ -1,6 +1,6 @@
 import type { RolUsuario } from '../auth/rol-usuario';
 
-/** Fila de `public.perfiles` (campos expuestos por la API). */
+/** Fila de public.perfiles. */
 export interface Perfil {
   id: string;
   rol: RolUsuario;
@@ -14,7 +14,16 @@ export interface Perfil {
   created_at: string;
 }
 
-/** Campos que el propio usuario puede editar con PATCH /perfiles/me. */
+/** Campos que el propio usuario puede editar. */
 export type ActualizarPerfil = Partial<
-  Pick<Perfil, 'dni' | 'nombre' | 'apellido' | 'telefono' | 'foto_url' | 'sede_home_id'>
+  Pick<
+    Perfil,
+    | 'dni'
+    | 'nombre'
+    | 'apellido'
+    | 'telefono'
+    | 'foto_url'
+    | 'sede_home_id'
+    | 'notificar_por_email'
+  >
 >;

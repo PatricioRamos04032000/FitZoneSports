@@ -32,7 +32,7 @@ export class PerfilDto implements Perfil {
   sede_home_id: string | null;
 
   @ApiProperty({
-    description: 'Preferencia de aviso por email (también en PATCH /notificaciones/preferencias)',
+    description: 'Preferencia de aviso por email',
     example: true,
   })
   notificar_por_email: boolean;
@@ -41,19 +41,14 @@ export class PerfilDto implements Perfil {
   created_at: string;
 }
 
-/** Respuesta de GET/PATCH /perfiles/me: fila de perfil + email del token. */
 export class PerfilMeDto extends PerfilDto {
   @ApiPropertyOptional({
     example: 'socio@fitzone.com',
-    description: 'Email de Supabase Auth (claim del JWT); no vive en perfiles',
+    description: 'Email de Supabase Auth (claim del JWT)',
   })
   email?: string;
 }
 
-/**
- * Body de PATCH /perfiles/me. Todos los campos son opcionales (parcial).
- * No se pueden cambiar id, rol, created_at ni notificar_por_email.
- */
 export class ActualizarPerfilDto implements ActualizarPerfil {
   @ApiPropertyOptional({ example: '12345678' })
   dni?: string;
@@ -76,4 +71,10 @@ export class ActualizarPerfilDto implements ActualizarPerfil {
 
   @ApiPropertyOptional({ format: 'uuid', nullable: true, type: String })
   sede_home_id?: string | null;
+
+  @ApiPropertyOptional({
+    example: true,
+    description: 'Activar o desactivar notificaciones por email',
+  })
+  notificar_por_email?: boolean;
 }

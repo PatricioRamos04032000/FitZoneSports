@@ -13,7 +13,7 @@ function Login() {
     const auth = useAuth();
 
     if (auth.isAuthenticated) {
-        return <Navigate to="/dashboard" replace />;
+        return <Navigate to="/" replace />;
     }
 
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {

@@ -40,11 +40,11 @@ export class PerfilesController {
   @ApiOperation({
     summary: 'Actualiza el perfil propio',
     description:
-      'Solo dni, nombre, apellido, telefono, foto_url y sede_home_id. No cambia rol ni preferencias de email.',
+      'Permite modificar datos personales, sede habitual y preferencia de notificaciones por email. No permite cambiar el rol.',
   })
   @ApiOkResponse({ type: PerfilMeDto })
   @ApiBadRequestResponse({
-    description: 'Body vacío, campos inválidos o sede inexistente',
+    description: 'Body vacío o campos inválidos',
   })
   @ApiConflictResponse({ description: 'DNI ya usado por otro perfil' })
   @ApiNotFoundResponse({ description: 'El usuario no tiene perfil' })

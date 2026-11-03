@@ -19,33 +19,45 @@ export class PerfilesService {
     return this.conPerfil(await this.perfiles.findById(perfilId));
   }
 
-  async actualizarMio(perfilId: string, body: ActualizarPerfil): Promise<Perfil> {
+  async actualizarMio(
+    perfilId: string,
+    body: ActualizarPerfil,
+  ): Promise<Perfil> {
     const cambios = this.sanitizar(body);
+
     if (Object.keys(cambios).length === 0) {
       throw new BadRequestException(
-        'Debés enviar al menos un campo editable: dni, nombre, apellido, telefono, foto_url o sede_home_id',
+        'Debés enviar al menos un campo editable del perfil',
       );
     }
 
     try {
-      return this.conPerfil(await this.perfiles.actualizar(perfilId, cambios));
+      return this.conPerfil(
+        await this.perfiles.actualizar(perfilId, cambios),
+      );
     } catch (e) {
       if (e instanceof RepositoryError && e.code === '23505') {
         throw new ConflictException('Ya existe un perfil con ese DNI');
       }
+
       if (e instanceof RepositoryError && e.code === '23503') {
-        throw new BadRequestException('sede_home_id no corresponde a una sede existente');
+        throw new BadRequestException(
+          'sede_home_id no corresponde a una sede existente',
+        );
       }
+
       throw e;
     }
   }
 
   private conPerfil(perfil: Perfil | null): Perfil {
-    if (!perfil) throw new NotFoundException('El usuario no tiene perfil');
+    if (!perfil) {
+      throw new NotFoundException('El usuario no tiene perfil');
+    }
+
     return perfil;
   }
 
-  /** Whitelist + tipado básico (no hay ValidationPipe global). */
   private sanitizar(body: ActualizarPerfil): ActualizarPerfil {
     if (body == null || typeof body !== 'object' || Array.isArray(body)) {
       throw new BadRequestException('Body inválido');
@@ -88,8 +100,20 @@ export class PerfilesService {
       ) {
         cambios.sede_home_id = body.sede_home_id;
       } else {
-        throw new BadRequestException('sede_home_id debe ser un UUID o null');
+        throw new BadRequestException(
+          'sede_home_id debe ser un UUID o null',
+        );
       }
+    }
+
+    if ('notificar_por_email' in body) {
+      if (typeof body.notificar_por_email !== 'boolean') {
+        throw new BadRequestException(
+          'notificar_por_email debe ser true o false',
+        );
+      }
+
+      cambios.notificar_por_email = body.notificar_por_email;
     }
 
     return cambios;
@@ -97,10 +121,12 @@ export class PerfilesService {
 
   private textoONull(valor: unknown, campo: string): string | null {
     if (valor === null) return null;
+
     if (typeof valor === 'string') {
       const t = valor.trim();
       return t === '' ? null : t;
     }
+
     throw new BadRequestException(`${campo} debe ser string o null`);
   }
 }
