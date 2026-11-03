@@ -16,6 +16,9 @@ const SEDE_NORTE_ID = 'a1000000-0000-4000-8000-000000000002';
 const CANCHA_PADDLE_ID = 'a3000000-0000-4000-8000-000000000001';
 const CANCHA_FUTBOL_ID = 'a3000000-0000-4000-8000-000000000002';
 
+/** Secreto TOTP base32 del socio demo (período 60 s). Fase 1: en claro en seed_cifrado. */
+const SOCIO_TOTP_SEED_BASE32 = 'JBSWY3DPEHPK3PXP';
+
 type RolSeed = 'gerente' | 'admin_sede' | 'socio' | 'externo';
 
 type UsuarioSeed = {
@@ -242,6 +245,23 @@ async function seedMembresiaSocio(
   console.log(`  membresias: socio activo ${desde} → ${hasta}`);
 }
 
+async function seedTotpSocio(
+  supabase: SupabaseClient,
+  ids: Record<string, string>,
+): Promise<void> {
+  const socioId = ids['socio@fitzone.com'];
+  const { error } = await supabase.from('totp_seeds').upsert(
+    {
+      perfil_id: socioId,
+      seed_cifrado: SOCIO_TOTP_SEED_BASE32,
+      activo: true,
+    },
+    { onConflict: 'perfil_id' },
+  );
+  fail('totp_seeds', error);
+  console.log('  totp_seeds: socio demo (base32 documentado en Seed_Demo_S5)');
+}
+
 async function seedCanchas(supabase: SupabaseClient): Promise<void> {
   const { error } = await supabase.from('canchas').upsert(
     [
@@ -289,6 +309,7 @@ async function main(): Promise<void> {
   await seedPerfiles(supabase, ids);
   await seedAdminSede(supabase, ids);
   await seedMembresiaSocio(supabase, ids);
+  await seedTotpSocio(supabase, ids);
   await seedCanchas(supabase);
 
   console.log('Listo.');

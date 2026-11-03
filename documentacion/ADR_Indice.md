@@ -12,7 +12,7 @@
 | [ADR-001](./adr/ADR-001-monolito-modular.md) | Adopción de arquitectura de monolito modular | Aceptado |
 | [ADR-005](./adr/ADR-005-bff-supabase-auth.md) | Uso de Supabase Auth con NestJS como pasarela (BFF) | Aceptado |
 | [ADR-006](./adr/ADR-006-supabase-api-sin-orm.md) | Acceso a datos vía API de Supabase sin ORM | Aceptado |
-| [ADR-007](./adr/ADR-007-acceso-totp-cola-offline.md) | Acceso TOTP + cola offline (sede) + RN-01 por unique en BD | Propuesto |
+| [ADR-007](./adr/ADR-007-acceso-totp-cola-offline.md) | Acceso TOTP + cola offline (sede) + RN-01 por unique en BD | Aceptado |
 | [ADR-008](./adr/ADR-008-postgresql.md) | Uso de PostgreSQL como base de datos relacional | Aceptado |
 | [ADR-009](./adr/ADR-009-stack-nestjs-react.md) | Adopción de NestJS y React web multi-rol con TypeScript | Aceptado |
 | [ADR-010](./adr/ADR-010-hosting-vercel-render-supabase.md) | Despliegue en Vercel, Render y Supabase | Aceptado |

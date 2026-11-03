@@ -1,11 +1,15 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException, forwardRef } from '@nestjs/common';
+import { AccesoService } from '../acceso/acceso.service';
 import { MembresiasRepository } from './membresias.repository';
 import { Membresia } from './membresia.model';
 
 @Injectable()
 export class MembresiasService {
-  // El servicio le pide cosas al repositorio
-  constructor(private readonly repository: MembresiasRepository) {}
+  constructor(
+    private readonly repository: MembresiasRepository,
+    @Inject(forwardRef(() => AccesoService))
+    private readonly acceso: AccesoService,
+  ) {}
 
   async findAll(): Promise<Membresia[]> {
     return this.repository.findAll();
@@ -13,7 +17,7 @@ export class MembresiasService {
 
   async findActivaPorPerfil(perfilId: string): Promise<Membresia> {
     const membresia = await this.repository.findActivaPorPerfil(perfilId);
-    
+
     if (!membresia) {
       throw new NotFoundException('El usuario no tiene una membresía activa');
     }
@@ -28,13 +32,13 @@ export class MembresiasService {
 
     return membresia;
   }
-  
+
   // Método POST para crear una nueva membresía
   async crear(membresiaData: Partial<Membresia>): Promise<Membresia> {
     // Calculo de las fechas: arranca hoy
     const vigenteDesde = new Date();
     const vigenteHasta = new Date();
-    
+
     // Si es mensual le sumamos 1 mes, si es trimestral 3, etc.
     if (membresiaData.plan === 'mensual') vigenteHasta.setMonth(vigenteHasta.getMonth() + 1);
     else if (membresiaData.plan === 'trimestral') vigenteHasta.setMonth(vigenteHasta.getMonth() + 3);
@@ -56,6 +60,12 @@ export class MembresiasService {
 
     if (error) {
       throw new Error(`Error al crear la membresía en la base de datos: ${error.message}`);
+    }
+
+    // Acceso M2: socio con membresía activa recibe seed TOTP cifrado (si aún no tiene).
+    const perfilId = data?.perfil_id as string | undefined;
+    if (perfilId) {
+      await this.acceso.ensureTotpSeed(perfilId);
     }
 
     return data;

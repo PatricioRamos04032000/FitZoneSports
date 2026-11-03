@@ -1,4 +1,11 @@
-import { Controller, Post, Body, HttpCode, HttpStatus } from '@nestjs/common';
+import {
+  BadRequestException,
+  Body,
+  Controller,
+  HttpCode,
+  HttpStatus,
+  Post,
+} from '@nestjs/common';
 import {
   ApiBadRequestResponse,
   ApiConflictResponse,
@@ -21,6 +28,11 @@ export class AuthController {
   @ApiCreatedResponse({ type: LoginResponseDto })
   @ApiUnauthorizedResponse({ description: 'Credenciales inválidas' })
   async login(@Body() body: LoginDto) {
+    if (!body?.email || !body?.password) {
+      throw new BadRequestException(
+        'Body JSON requerido: { "email": "...", "password": "..." }',
+      );
+    }
     return this.authService.login(body.email, body.password);
   }
 

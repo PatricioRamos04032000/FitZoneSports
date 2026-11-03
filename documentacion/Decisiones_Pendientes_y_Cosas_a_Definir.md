@@ -130,7 +130,7 @@ Estas no son “librerías”, pero hay que **acordar el enfoque** cuando se imp
 |------|---------------------|--------|
 | Concurrencia de canchas (RN-02) | **Decidido (2026-10-15 / M4):** índice único parcial `(cancha_id, inicio)` donde `estado in ('pendiente','confirmada')` + RPC `reservar_cancha` con `FOR UPDATE`. Ver [S4-T09](./Propuesta_Reglas_Negocio_S4-T09.md) (P2) | Hecho en M4 |
 | Hold de reserva pendiente (pago) | **Enfoque acordado 2026-10-31 (aún no implementado):** ventana de confirmación + limpieza **lazy + cron** (opción robusta). Detalle en [§3.4.1](#341-hold-de-pendiente--ventana--limpieza-lazy--cron-s7). Solo lazy se descartó: una reserva abandonada dejaría el turno perdido hasta que otro cliente intente exactamente ese horario. | Al cerrar S7 (tras o junto a S7-T01/T02) |
-| Socio en una sola sede (RN-01) | Orientación 2026-09-02: **híbrido** (Nest + BD). Pendiente cerrar: checkout vs timeout; doble turno; conflicto offline. **Consultar docente.** → [Propuesta RN-01](./Propuesta_RN01_Presencia_Una_Sede.md) · [Acta](./Acta_Reunion_2026-09-02_Semana1.md) | Tras consulta docente / al implementar acceso |
+| Socio en una sola sede (RN-01) | **Elección 2026-11-01 (como RN-02):** `presencias` UNIQUE(`perfil_id`); Nest inserta y mapea `unique_violation` (sin `if` de unicidad). Checkout timeout + salida opcional; conflicto offline → rechazar y anotar. ADR-007 Propuesto. → [Propuesta RN-01](./Propuesta_RN01_Presencia_Una_Sede.md) · [ADR-007](./adr/ADR-007-acceso-totp-cola-offline.md) | Al implementar M2 / al Aceptar ADR-007 |
 | Mora (RN-03) | ¿El backend bloquea descuento o solo avisa? | Al implementar precios/pagos |
 | QR dinámico (RF-04) | ¿TOTP por socio (ver §8.3)? ¿También se muestra en web? ¿Cómo se valida sin API? | Al implementar acceso |
 | Lista de espera (RF-08) — canales | **Resuelto (2026-10-06):** in-app + log; email simulado si el socio lo activa en su perfil. Ver [Diseño Observer](./Diseno_Observer_S4-T02_Notificaciones.md) | — |
@@ -506,9 +506,11 @@ Patrón de **nodo de borde por sede**:
 
 **Estado 2026-09-02:** el equipo ve el enfoque como **plausible**, pero **no lo cierra formalmente** hasta validarlo con el docente (ver [Acta](./Acta_Reunion_2026-09-02_Semana1.md) Q2).
 
-- [ ] ¿Aceptamos cache/cola local + sync como base operativa de RNF-01? — pendiente validación docente
-- [ ] ¿Dónde vive el nodo local? (app de recepción instalada en sede, servicio local, PWA, etc.)
-- [ ] ¿Formato de la cola de check-ins? (entrada/salida, `sedeId`, timestamp, `socioId`, estado sync)
+**Actualización 2026-11-01 (Patricio) — plan de implementación M2:** ver [Plan_M2_Acceso_QR_Patricio.md](./Plan_M2_Acceso_QR_Patricio.md). Para el MVP de sede el offline se **acota**: la recepción **acumula** check-ins en cola local; al volver la red **intenta registrarlos** vía Nest y **anota errores** por ítem (sin resolución automática de conflictos). Validación definitiva (membresía, TOTP, RN-01) en el sync online. Formato de cola y endpoints quedan en ese plan.
+
+- [x] ¿Aceptamos cache/cola local + sync como base operativa de RNF-01? — **sí para MVP** (cola + sync + errores); validación docente del enfoque TOTP completo sigue abierta
+- [x] ¿Dónde vive el nodo local? — **UI de recepción web** (cola en `localStorage` / IndexedDB); sin servicio local por sede en esta iteración
+- [x] ¿Formato de la cola de check-ins? — ver plan M2 (`clientEventId`, `perfilId`, `code`, `sedeId`, `ocurrioEn`, `tipo`, estado sync)
 
 ### 8.3 Opción candidata: QR dinámico tipo Authenticator (TOTP) — validación local
 
@@ -544,11 +546,11 @@ Patrón de **nodo de borde por sede**:
 
 #### Checklist de cierre
 
-- [ ] ¿Adoptamos TOTP por socio como mecanismo de QR dinámico (RF-04) + validación local (RNF-01)? — **2026-09-02:** orientación favorable; **consultar docente** antes de ADR
-- [ ] Período y ventana de reloj
-- [ ] Qué viaja en el QR vs qué se muestra en pantalla — orientación: QR en **móvil** (Unidad VI); poco sentido en web para demos
-- [ ] Política de sync / TTL / revocados
-- [ ] Si se confirma: redactar ADR (p. ej. “Acceso offline con TOTP y nodo por sede”)
+- [x] ¿Adoptamos TOTP por socio como mecanismo de QR dinámico (RF-04)? — **sí para implementar** ([Plan M2](./Plan_M2_Acceso_QR_Patricio.md)); validación local offline “fuerte” (paquete de seeds en sede) queda **diferida**; MVP offline = cola + sync
+- [x] Período y ventana de reloj — **60 s · ±1 período** (plan M2; ajustable)
+- [x] Qué viaja en el QR vs qué se muestra en pantalla — QR: `{ v, perfilId, code }`; nombre solo UI; **web socio** primero para demo, móvil después
+- [x] Política de sync — cola local → `POST .../sync` → ok/error tipado por ítem; sin TTL de cache de seeds en MVP
+- [x] Borrador ADR — [ADR-007](./adr/ADR-007-acceso-totp-cola-offline.md) **Propuesto** (2026-11-01); pasar a Aceptado al cerrar Fases 1–3 / 5 del plan M2
 
 ### 8.4 Qué NO hace falta offline
 
@@ -564,9 +566,9 @@ Explicitar para la defensa y para no overengineerar:
 
 Cuando se cierre el enfoque:
 
-- [x] Actualizar [C4_Arquitectura_FitZone.md](./C4_Arquitectura_FitZone.md): alcance offline **sede vs móvil** (2026-09-04); diagrama TOTP/nodo pendiente de validación docente
-- [ ] Revisar [Stack_Tecnologico_y_Herramientas.md](./Stack_Tecnologico_y_Herramientas.md) (aún puede decir que RNF-01 se resuelve solo en Unidad VI)
-- [ ] Anotar la decisión en [LOG.md](./LOG.md) y, si aplica, un ADR nuevo (tras validar con el docente)
+- [x] Actualizar [C4_Arquitectura_FitZone.md](./C4_Arquitectura_FitZone.md): alcance offline **sede vs móvil** (2026-09-04); MVP cola + sync anotado (2026-11-01); diagrama nodo/paquete fuerte diferido
+- [x] Revisar [Stack_Tecnologico_y_Herramientas.md](./Stack_Tecnologico_y_Herramientas.md) — RNF-01 sede vs móvil alineado (2026-11-01)
+- [x] Anotar en [LOG.md](./LOG.md) + borrador [ADR-007](./adr/ADR-007-acceso-totp-cola-offline.md) (Propuesto; Aceptado tras implementación / feedback docente del enfoque fuerte)
 
 **Cuándo:** cerrar el **enfoque** en Semanas 1–2 (arquitectura); implementación al trabajar M2 (acceso); QR en celular del socio en Unidad VI (React Native).
 

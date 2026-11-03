@@ -10,7 +10,7 @@ Carga datos de demo para que el equipo pruebe login, sedes y canchas sin inventa
 
 ## Requisitos
 
-1. Migraciones aplicadas en el Supabase de desarrollo hasta M4 (`20261027200000_canchas_m4.sql`). La de pagos M5 (`20261028210000_pagos_m5.sql`) no es requerida por este seed.
+1. Migraciones aplicadas en el Supabase de desarrollo hasta M4 (`20261027200000_canchas_m4.sql`). Para el seed TOTP del socio hace falta Acceso M2 (`20261101210000_acceso_m2.sql`). Pagos M5 y hold de reserva no son requeridos por este seed.
 2. En `backend/.env` (ver [`.env.example`](../backend/.env.example)):
    - `SUPABASE_URL`
    - `SUPABASE_SERVICE_ROLE_KEY`
@@ -36,7 +36,7 @@ Contraseña: la de `SEED_PASSWORD`.
 |-------|-----|--------|
 | `gerente@fitzone.com` | `gerente` | Mismo email que el seed documentado en S3-T06 §7 |
 | `admin.central@fitzone.com` | `admin_sede` | Ligado a FitZone Central en `admins_sede` |
-| `socio@fitzone.com` | `socio` | Membresía mensual `activo` del mes corriente (DNI `30000001`) |
+| `socio@fitzone.com` | `socio` | Membresía mensual `activo` del mes corriente (DNI `30000001`); seed TOTP demo (ver abajo) |
 | `externo@fitzone.com` | `externo` | Sin membresía |
 
 Si el usuario Auth ya existe, el script reutiliza el id y actualiza la contraseña a `SEED_PASSWORD`.
@@ -51,15 +51,26 @@ Si el usuario Auth ya existe, el script reutiliza el id y actualiza la contrase�
 | `admins_sede` | Admin → Central |
 | `membresias` | Una `activo` del socio (no inserta otra si ya hay) |
 | `canchas` | Paddle 1 en Central ($20000/h), Fútbol 5 1 en Norte ($25000/h) |
+| `totp_seeds` | 1 fila del socio: secreto base32 `JBSWY3DPEHPK3PXP` (período **60 s**, ventana ±1). Sigue en claro en `seed_cifrado` para demo; Nest lee plaintext o `enc:v1:…` si se emitió con `TOTP_SEED_ENCRYPTION_KEY` |
 
-No carga clases ni reservas.
+No carga clases, reservas, `presencias` ni `check_ins`.
 
 ## Verificación
 
 1. `npm run seed` dos veces seguidas sin error.
-2. En Supabase: 2 sedes del seed, 2 canchas, 4 perfiles, 1 membresía activa del socio, 1 fila en `admins_sede`.
+2. En Supabase: 2 sedes del seed, 2 canchas, 4 perfiles, 1 membresía activa del socio, 1 fila en `admins_sede`, **1 fila en `totp_seeds` del socio**.
 3. Login con cada email + `SEED_PASSWORD` vía `POST /auth/login`.
 4. `GET /sedes` responde con las sedes del seed.
+
+### TOTP demo (M2 / S8-T1)
+
+| Campo | Valor |
+|-------|--------|
+| Socio | `socio@fitzone.com` |
+| Secreto base32 | `JBSWY3DPEHPK3PXP` |
+| Período | 60 segundos |
+
+Sirve para probar códigos con cualquier generador TOTP (o Nest en Fase 2) sin inventar seeds a mano.
 
 ## UUIDs fijos
 

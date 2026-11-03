@@ -235,8 +235,8 @@ Guía corta para mostrar el sistema en local (equipo, docente o Demo Day interno
 
 ### 6.1 Preparación (una vez)
 
-1. Configurar `backend/.env` y `frontend/.env.local` (§3).
-2. Tener aplicadas en Supabase las migraciones del repo (`supabase/migrations/`), al menos hasta canchas M4 para el seed.
+1. Configurar `backend/.env` y `frontend/.env` con `VITE_API_URL=http://localhost:3000` (§3).
+2. Tener aplicadas en Supabase las migraciones del repo (`supabase/migrations/`), al menos hasta canchas M4 y Acceso M2 (`20261101210000_acceso_m2.sql`) para el seed TOTP.
 3. Cargar datos de demo:
 
 ```bash
@@ -305,21 +305,28 @@ Authorize en Swagger: botón **Authorize**, pegar el JWT (sin la palabra `Bearer
 
 ### 6.4 Demo por UI (estado actual del frontend)
 
-Rutas disponibles: `/`, `/login`, `/perfil`, `/canchas`.
+Rutas: `/`, `/login`, `/signup`, `/perfil`, `/canchas`, `/dashboard`, **`/mi-qr`** (socio), **`/acceso`** (admin_sede / gerente).
 
-> El frontend todavía tiene páginas **placeholder** o parcialmente conectadas. Para una demo estable de negocio, priorizar Swagger (§6.3) y usar la UI como recorrido visual de la SPA.
+Configurar `frontend/.env` con al menos `VITE_API_URL=http://localhost:3000` (reiniciar Vite si se cambia).
 
-Recorrido visual sugerido:
+#### Acceso M2 (QR + recepción) — ~5 min
 
-1. Home en `http://localhost:5173`
-2. Login en `/login` (cuando esté cableado al BFF, usar un usuario del seed)
-3. Navegación a `/perfil` y `/canchas` para mostrar el esqueleto multi-página
+Requiere migración Acceso M2 aplicada y `npm run seed` (socio con TOTP). Detalle: [Plan M2](documentacion/Plan_M2_Acceso_QR_Patricio.md) · Postman [`postman/FitZoneSports_Acceso.postman_collection.json`](postman/FitZoneSports_Acceso.postman_collection.json).
+
+1. **Socio** — login `socio@fitzone.com` → menú **Mi QR**: código de 6 dígitos + QR (`{ v:1, perfilId, code }`), se renueva ~cada 60 s.
+2. **Recepción** — otra ventana/perfil: login `admin.central@fitzone.com` → **Acceso**.
+3. Pegá el JSON del QR (o perfilId + código actual) → **Registrar check-in** → el socio aparece en **Presencias**.
+4. **Offline (RNF-01 acotado):** DevTools → Network → Offline → registrar de nuevo → ítem en **Cola offline** → Online → **Sincronizar** (o el evento `online`) → `ok` o error tipado (`YA_DENTRO`, etc.).
+5. Check-out: por ahora vía API/Swagger `POST /acceso/check-outs` (la UI de recepción aún no tiene botón de salida).
+
+Recorrido general: Home → Login → Perfil / Canchas según rol.
 
 ### 6.5 Qué no esperar aún en la demo
 
 - Flujos completos de reserva de cancha / pago en la UI (módulos en evolución; precios Strategy están en backend bajo `canchas/precios`).
-- App móvil ni check-in offline (Unidad VI / RNF-01).
-- Que el seed cree clases o reservas (solo usuarios, sedes, membresía del socio y canchas).
+- Cámara para escanear QR; check-out amigable en la pantalla Acceso; app móvil nativa (Unidad VI).
+- Nodo/servidor por sede ni validación TOTP 100 % offline en recepción (MVP = cola local + sync; [ADR-007](documentacion/adr/ADR-007-acceso-totp-cola-offline.md)).
+- Que el seed cree clases o reservas (solo usuarios, sedes, membresía/TOTP del socio y canchas).
 
 ---
 

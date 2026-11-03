@@ -2,12 +2,12 @@
 
 **Proyecto:** FitZone Sports · Programación V · UNER  
 **Responsable:** Patricio Ramos (P1)  
-**Fecha:** 2026-10-06 (actualizado 2026-11-01)  
+**Fecha:** 2026-10-06 (actualizado 2026-11-03)  
 **Entregable:** Unidad III — código refactorizado con patrones + justificación
 
 | Patrón | Dónde | Requisito | Estado |
 |--------|-------|-----------|--------|
-| [Repository](#1-repository--acceso-a-datos) | Toda la capa de datos del backend | ADR-006 | **Implementado** (S3-T11) |
+| [Repository](#1-repository--acceso-a-datos) | Toda la capa de datos del backend (incl. Acceso M2) | ADR-006 · ADR-007 | **Implementado** (S3-T11); Acceso `AccesoRepository` (S8-T1) |
 | [Observer](#2-observer--lista-de-espera-de-clases) | Clases / lista de espera | RF-08 | **Implementado** (S4-T02) |
 | [Strategy](#3-strategy--precio-de-canchas) | Canchas / precios | RF-11, RN-03 | **Implementado** (S4-T01); **en uso** desde Facade `reservar` (S7-T01) |
 | [Factory Method](#4-factory-method--descartado) | Candidato del docente (canales de aviso) | — | **Descartado** (2026-10-15) |
@@ -17,7 +17,7 @@
 | [Facade](#8-facade--reservar-cancha-y-membresia) | Reservar cancha y alta o renovación de membresía | RF-10, RF-02, RF-13 | **Implementado** cancha partido (S7-T02b); membresía `renovar` pendiente |
 | [Builder](#9-builder--descartado) | Candidato del docente (armar una reserva) | — | **Descartado** (2026-10-15); no se planifica |
 | [Decorator](#10-decorator--descartado) | Candidato del docente (caché, log, reintentos) | — | **Descartado** (2026-10-15). Reintento de MercadoPago queda anotado para M5 |
-| [Command](#11-command--no-implementado) | Cola de acciones sin conexión | RNF-01, Unidad VI | **No implementado** (2026-10-15). Candidato cuando existan offline y app móvil |
+| [Command](#11-command--no-implementado) | Cola de acciones sin conexión | RNF-01, Unidad VI | **No implementado** como patrón GoF. El offline de sede M2 (ADR-007) usa cola en `localStorage` + `POST /acceso/check-ins/sync`, sin objetos Command en Nest |
 | [Singleton](#12-singleton--descartado) | Instancia única de servicios | — | **Descartado** (2026-10-15). Lo resuelve el contenedor de Nest |
 | [Abstract Factory](#13-abstract-factory--descartado) | Familias de objetos (pasarela por país) | — | **Descartado** (2026-10-15). Una pasarela y un solo país |
 | [Composite](#14-composite--descartado) | Árbol red, región, sede y cancha | Reportes | **Descartado** (2026-10-15). No hay árbol; el total es una consulta |
@@ -104,12 +104,13 @@ En FitZone es igual:
 | Sin sobreventa de cupos de clase | La función SQL bloquea la fila de la clase (`FOR UPDATE`) antes de inscribir |
 | Una inscripción vigente por socio y clase | Índice único parcial |
 | Dos reservas del mismo turno de cancha (RN-02, decidido 2026-10-15) | Índice `UNIQUE (cancha_id, inicio)` **y** función SQL con `FOR UPDATE`, igual que las clases |
+| Un socio en una sola sede a la vez (RN-01, ADR-007) | PK/`UNIQUE(perfil_id)` en `presencias`; RPC `registrar_check_in` traduce a `YA_DENTRO` / `YA_EN_OTRA_SEDE` |
 | Repository | El servicio llama `rpc` o `findById` y no conoce ese lock |
 
 ### Dónde está
 
 - Base: `backend/src/supabase/supabase.repository.ts`, `repository.error.ts`, `repository-error.filter.ts`
-- Concretos: `sedes/sedes.repository.ts`, `notificaciones/notificaciones.repository.ts`, `notificaciones/preferencias.repository.ts`, `auth/perfiles-rol.repository.ts`
+- Concretos: `sedes/sedes.repository.ts`, `notificaciones/notificaciones.repository.ts`, `notificaciones/preferencias.repository.ts`, `auth/perfiles-rol.repository.ts`, `acceso/acceso.repository.ts` (TOTP seeds, RPC check-in/out, presencias; S8-T1 / ADR-007)
 - Guía para el equipo: [Guia_Patron_Repository.md](./Guia_Patron_Repository.md)
 
 ### Consecuencias

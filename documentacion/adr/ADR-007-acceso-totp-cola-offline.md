@@ -1,7 +1,7 @@
-﻿# ADR-007: Acceso en sede con QR TOTP y cola offline
+# ADR-007: Acceso en sede con QR TOTP y cola offline
 
-Estado: Propuesto  
-Fecha: 2026-11-01
+Estado: Aceptado  
+Fecha: 2026-11-01 · **Aceptado:** 2026-11-03
 
 ## Contexto
 
@@ -26,7 +26,7 @@ Vamos a implementar el acceso MVP así:
 
 Queda **fuera del MVP:** paquete de seeds en sede, nodo/servicio local por sede, tornos físicos, aforo duro, app móvil instalable.
 
-Estado de este ADR: **Propuesto**. Schema Fase 1 listo (`20261101210000_acceso_m2.sql`). Pasar a **Aceptado** cuando existan API Nest de check-in/sync (Fases 2–3 del plan M2).
+Estado de este ADR: **Aceptado** (2026-11-03). Entregado: migración `20261101210000_acceso_m2.sql`; Nest `acceso/` (TOTP, check-in/out, `POST /acceso/check-ins/sync`); UI `/mi-qr` y `/acceso` con cola `localStorage` (Plan M2 Fases 0–4). Stretch fuera del ADR: cámara, check-out rico en UI, nodo por sede, app móvil.
 
 ## Consecuencias
 
