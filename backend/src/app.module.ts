@@ -12,6 +12,7 @@ import { MembresiasModule } from './membresias/membresias.module';
 import { ClasesModule } from './clases/clases.module';
 import { PreciosModule } from './canchas/precios/precios.module';
 import { ReservasCanchaModule } from './canchas/reservas/reservas-cancha.module';
+import { CanchasModule } from './canchas/canchas.module';
 import { PagosModule } from './pagos/pagos.module';
 import { PerfilesModule } from './perfiles/perfiles.module';
 import { AccesoModule } from './acceso/acceso.module';
@@ -31,6 +32,7 @@ import { AccesoModule } from './acceso/acceso.module';
     PreciosModule,
     PagosModule,
     ReservasCanchaModule,
+    CanchasModule,
     AccesoModule,
   ],
   controllers: [AppController],
