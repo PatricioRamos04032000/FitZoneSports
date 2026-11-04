@@ -741,4 +741,26 @@ Quedó [Plan_M2_Acceso_UX_V2.md](./Plan_M2_Acceso_UX_V2.md): sede(s) asignadas +
 
 ---
 
+## 2026-11-04 — S4-T10: Seguridad, reglas de negocio y refactor de olores en Membresías y Clases
+
+**Tipo:** backend / M1 membresías y M3 clases / Unidad II y III  
+**Registrado por:** Bruno Conti (P2)  
+**Cierre:** endpoints protegidos con `JwtAuthGuard` y `@RequiereRol`, identidad tomada exclusivamente del JWT, ventana de 48 h (D5), RN-03, D1, D3, D6 desde BD, conexión Observer (RF-08) y cierre de los olores #1–#5 de la planilla de Unidad III.
+
+### Entregado
+
+- **Seguridad y autorización (ADR-005, Correcciones puntos 1–5):**
+  - `GET /membresias/planes` (catálogo público), `GET /membresias/mia` (`@RequiereRol('socio')`, identidad desde `@CurrentUser()`), `GET /membresias`, `GET /membresias/activas/:perfilId` y `POST /membresias` (`@RequiereRol('admin_sede', 'gerente')`).
+  - `GET /clases?sedeId=...` (`JwtAuthGuard`), `GET /clases/inscripciones/mias` (`@RequiereRol('socio')`), `POST /clases/inscripciones` (`@RequiereRol('socio')`, sin `perfilId` en el body) y `DELETE /clases/inscripciones/:id` (`@RequiereRol('socio', 'admin_sede', 'gerente')`, validando titularidad `403` si un socio intenta cancelar la inscripción de otro usuario).
+- **Reglas de negocio y decisiones de diseño:**
+  - **D1 y D2 (`MembresiasService.crear`):** duración leída desde `planes_membresia.duracion_meses` (cierra olor #2), cierre previo de membresías activas antes de insertar la renovación y preservación de `ensureTotpSeed` para Acceso M2.
+  - **D3 y zona horaria Argentina (Correcciones punto 9):** comparación y alta en calendario `America/Argentina/Buenos_Aires` (`YYYY-MM-DD`), manteniendo vigencia durante todo el último día en Argentina y calculando `estado: 'vencido'` en `GET /membresias/mia`.
+  - **RN-03 y D5 (`ClasesService.inscribir`):** verificación previa de membresía activa vigente (`403` si no tiene o venció) y rechazo con `400` cuando restan menos de 48 horas para `clase.inicio`.
+  - **D6 y RF-08 Observer (`ClasesService.cancelar`):** eliminación de `inicioClase` del body (cierra olor #4), cálculo de cancelación tardía (`< 2 h`) desde la base de datos y emisión desacoplada mediante `ListaEsperaPublisher.notificarLugaresLiberados`.
+- **Cierre de olores #1–#5 (Unidad III) y pruebas:**
+  - `MembresiasRepository.crear` con `unwrap` eliminando `(this.repository as any).client` (olor #1), `traducirErrorRepositorio` unificado con mapeo `P0001`, `23505` → `409` y `22P02` → `400` (olor #3) y constantes de módulo documentadas (olor #5).
+  - DTOs con `@ApiProperty` para Swagger, tests unitarios (`membresias.service.spec.ts`, `clases.service.spec.ts`) y e2e (`test/membresias-clases.e2e-spec.ts`).
+
+---
+
 *FitZone Sports · Programación V · UNER*
