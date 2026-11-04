@@ -32,9 +32,13 @@ import { CurrentUser } from '../auth/current-user.decorator';
 import { JwtAuthGuard, type AuthenticatedRequest } from '../auth/jwt-auth.guard';
 import { RequiereRol } from '../auth/roles.decorator';
 import {
+  AnotarseListaEsperaDto,
   ClaseConCupoResponseDto,
+  EntradaListaEsperaResponseDto,
+  EsperaConClaseResponseDto,
   InscribirClaseDto,
   InscripcionClaseResponseDto,
+  InscripcionConClaseResponseDto,
 } from './clase.dto';
 import { ClasesService } from './clases.service';
 
@@ -58,7 +62,7 @@ export class ClasesController {
   @Get('inscripciones/mias')
   @RequiereRol('socio')
   @ApiOperation({ summary: 'Listar las inscripciones a clases del socio autenticado' })
-  @ApiOkResponse({ type: InscripcionClaseResponseDto, isArray: true })
+  @ApiOkResponse({ type: InscripcionConClaseResponseDto, isArray: true })
   listarMisInscripciones(@CurrentUser() user: AuthUserDto) {
     return this.clasesService.listarMisInscripciones(user.id);
   }
@@ -66,7 +70,8 @@ export class ClasesController {
   @Post('inscripciones')
   @RequiereRol('socio')
   @ApiOperation({
-    summary: 'Inscribir al socio autenticado en una clase (RN-03 membresía vigente + D5 ventana 48 h)',
+    summary:
+      'Inscribir al socio autenticado en una clase (RN-03 membresía vigente + D5 ventana 48 h)',
   })
   @ApiCreatedResponse({ type: InscripcionClaseResponseDto })
   @ApiBadRequestResponse({
@@ -104,5 +109,84 @@ export class ClasesController {
     @Req() req: AuthenticatedRequest,
   ) {
     return this.clasesService.cancelar(inscripcionId, user.id, req.rol);
+  }
+
+  @Get('lista-espera/mias')
+  @RequiereRol('socio')
+  @ApiOperation({
+    summary: 'Listar los registros en lista de espera del socio autenticado (D7)',
+  })
+  @ApiOkResponse({ type: EsperaConClaseResponseDto, isArray: true })
+  listarMiListaEspera(@CurrentUser() user: AuthUserDto) {
+    return this.clasesService.listarMiListaEspera(user.id);
+  }
+
+  @Post('lista-espera')
+  @RequiereRol('socio')
+  @ApiOperation({
+    summary:
+      'Anotarse en la lista de espera de una clase sin cupo o con cola activa (RN-03 y D7)',
+  })
+  @ApiCreatedResponse({ type: EntradaListaEsperaResponseDto })
+  @ApiBadRequestResponse({ description: 'claseId inválido o la clase ya comenzó' })
+  @ApiForbiddenResponse({
+    description: 'Rol no permitido o socio sin membresía activa vigente (RN-03)',
+  })
+  @ApiNotFoundResponse({ description: 'La clase solicitada no existe' })
+  @ApiConflictResponse({
+    description:
+      'La clase tiene cupos disponibles sin lista de espera, está cancelada o el socio ya está inscripto/en espera',
+  })
+  anotarseEnListaEspera(
+    @Body() dto: AnotarseListaEsperaDto,
+    @CurrentUser() user: AuthUserDto,
+  ) {
+    return this.clasesService.anotarseEnListaEspera(dto?.claseId, user.id);
+  }
+
+  @Post('lista-espera/:id/confirmar')
+  @HttpCode(HttpStatus.OK)
+  @RequiereRol('socio')
+  @ApiOperation({
+    summary:
+      'Confirmar dentro del plazo el lugar liberado en una clase (D7, invocado desde notificación in-app)',
+  })
+  @ApiParam({ name: 'id', format: 'uuid', description: 'UUID del registro en lista_espera' })
+  @ApiOkResponse({ type: InscripcionClaseResponseDto })
+  @ApiBadRequestResponse({ description: 'ID con formato UUID inválido' })
+  @ApiForbiddenResponse({
+    description: 'El registro pertenece a otro usuario o la membresía no está vigente',
+  })
+  @ApiNotFoundResponse({ description: 'Registro en lista de espera inexistente' })
+  @ApiConflictResponse({
+    description: 'El lugar aún no fue notificado o venció el plazo de confirmación',
+  })
+  confirmarLugarEspera(
+    @Param('id', ParseUUIDPipe) esperaId: string,
+    @CurrentUser() user: AuthUserDto,
+  ) {
+    return this.clasesService.confirmarLugarEspera(esperaId, user.id);
+  }
+
+  @Delete('lista-espera/:id')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @RequiereRol('socio', 'admin_sede', 'gerente')
+  @ApiOperation({
+    summary:
+      'Retirarse de la lista de espera (si tenía cupo notificado, promueve y avisa al siguiente por Observer)',
+  })
+  @ApiParam({ name: 'id', format: 'uuid', description: 'UUID del registro en lista_espera' })
+  @ApiNoContentResponse({ description: 'Retirado de la lista de espera correctamente' })
+  @ApiBadRequestResponse({ description: 'ID inválido o registro ya procesado/vencido' })
+  @ApiForbiddenResponse({
+    description: 'Un socio no puede retirar a otro usuario de la lista de espera',
+  })
+  @ApiNotFoundResponse({ description: 'Registro en lista de espera inexistente' })
+  retirarDeListaEspera(
+    @Param('id', ParseUUIDPipe) esperaId: string,
+    @CurrentUser() user: AuthUserDto,
+    @Req() req: AuthenticatedRequest,
+  ) {
+    return this.clasesService.retirarDeListaEspera(esperaId, user.id, req.rol);
   }
 }

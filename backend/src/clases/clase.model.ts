@@ -1,5 +1,11 @@
 export type EstadoClase = 'programada' | 'cancelada';
 export type EstadoInscripcion = 'inscripto' | 'cancelada';
+export type EstadoEspera =
+  | 'esperando'
+  | 'notificado'
+  | 'inscripto'
+  | 'retirado'
+  | 'vencido';
 
 export interface Clase {
   id: string;
@@ -41,6 +47,22 @@ export interface InscripcionConClase {
   created_at?: string;
   cancelada_en?: string | null;
   cancelacion_tardia?: boolean;
+  clase: ClaseResumenInscripcion;
+}
+
+/** Fila de la tabla `public.lista_espera` (decisión D7, RF-08). */
+export interface EntradaListaEspera {
+  id: string;
+  clase_id: string;
+  perfil_id: string;
+  estado: EstadoEspera;
+  created_at: string;
+  notificado_en?: string | null;
+  vence_en?: string | null;
+}
+
+/** Entrada de lista de espera enriquecida con los datos de la clase. */
+export interface EsperaConClase extends EntradaListaEspera {
   clase: ClaseResumenInscripcion;
 }
 

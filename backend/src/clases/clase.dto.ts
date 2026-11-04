@@ -1,7 +1,10 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import type {
   ClaseConCupo,
+  ClaseResumenInscripcion,
+  EntradaListaEspera,
   EstadoClase,
+  EstadoEspera,
   EstadoInscripcion,
   InscripcionClase,
 } from './clase.model';
@@ -13,6 +16,36 @@ export class InscribirClaseDto {
     description: 'UUID de la clase a reservar (el socio se obtiene del token JWT)',
   })
   claseId!: string;
+}
+
+export class AnotarseListaEsperaDto {
+  @ApiProperty({
+    format: 'uuid',
+    example: 'c1000000-0000-4000-8000-000000000001',
+    description:
+      'UUID de la clase sin cupo o con lista de espera activa (el socio se obtiene del token JWT)',
+  })
+  claseId!: string;
+}
+
+export class ClaseResumenDto implements ClaseResumenInscripcion {
+  @ApiProperty({ format: 'uuid', example: 'c1000000-0000-4000-8000-000000000001' })
+  id!: string;
+
+  @ApiProperty({ format: 'uuid', example: '42363e91-8c03-4d52-b160-5c1345be8656' })
+  sede_id!: string;
+
+  @ApiProperty({ example: 'Spinning' })
+  tipo!: string;
+
+  @ApiPropertyOptional({ example: 'Lucía Fernández' })
+  instructor?: string;
+
+  @ApiProperty({ format: 'date-time', example: '2026-11-10T18:00:00-03:00' })
+  inicio!: string;
+
+  @ApiPropertyOptional({ format: 'date-time', example: '2026-11-10T19:00:00-03:00' })
+  fin?: string;
 }
 
 export class ClaseConCupoResponseDto implements ClaseConCupo {
@@ -43,10 +76,16 @@ export class ClaseConCupoResponseDto implements ClaseConCupo {
   @ApiProperty({ format: 'date-time', example: '2026-11-01T12:00:00Z' })
   created_at!: string;
 
-  @ApiProperty({ example: 5, description: 'Lugares disponibles descontando inscriptos y notificados vigentes' })
+  @ApiProperty({
+    example: 5,
+    description: 'Lugares disponibles descontando inscriptos y notificados vigentes',
+  })
   cupos_libres!: number;
 
-  @ApiProperty({ example: 0, description: 'Cantidad de socios aguardando en lista de espera' })
+  @ApiProperty({
+    example: 0,
+    description: 'Cantidad de socios aguardando en lista de espera',
+  })
   en_espera!: number;
 }
 
@@ -69,6 +108,50 @@ export class InscripcionClaseResponseDto implements InscripcionClase {
   @ApiPropertyOptional({ format: 'date-time', nullable: true, example: null })
   cancelada_en?: string | null;
 
-  @ApiProperty({ example: false, description: 'True si se canceló con menos de 2 h de anticipación (D6)' })
+  @ApiProperty({
+    example: false,
+    description: 'True si se canceló con menos de 2 h de anticipación (D6)',
+  })
   cancelacion_tardia!: boolean;
+}
+
+export class InscripcionConClaseResponseDto extends InscripcionClaseResponseDto {
+  @ApiProperty({ type: ClaseResumenDto })
+  clase!: ClaseResumenDto;
+}
+
+export class EntradaListaEsperaResponseDto implements EntradaListaEspera {
+  @ApiProperty({ format: 'uuid', example: 'e1000000-0000-4000-8000-000000000001' })
+  id!: string;
+
+  @ApiProperty({ format: 'uuid', example: 'c1000000-0000-4000-8000-000000000001' })
+  clase_id!: string;
+
+  @ApiProperty({ format: 'uuid', example: 'a1000000-0000-4000-8000-000000000001' })
+  perfil_id!: string;
+
+  @ApiProperty({
+    enum: ['esperando', 'notificado', 'inscripto', 'retirado', 'vencido'],
+    example: 'esperando',
+  })
+  estado!: EstadoEspera;
+
+  @ApiProperty({ format: 'date-time', example: '2026-11-04T20:00:00Z' })
+  created_at!: string;
+
+  @ApiPropertyOptional({ format: 'date-time', nullable: true, example: null })
+  notificado_en?: string | null;
+
+  @ApiPropertyOptional({
+    format: 'date-time',
+    nullable: true,
+    example: null,
+    description: 'Fecha y hora límite para confirmar cuando estado es notificado (D7)',
+  })
+  vence_en?: string | null;
+}
+
+export class EsperaConClaseResponseDto extends EntradaListaEsperaResponseDto {
+  @ApiProperty({ type: ClaseResumenDto })
+  clase!: ClaseResumenDto;
 }

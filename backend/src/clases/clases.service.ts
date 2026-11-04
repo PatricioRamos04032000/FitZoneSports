@@ -11,6 +11,8 @@ import { ListaEsperaPublisher } from '../notificaciones/lista-espera.publisher';
 import { RepositoryError } from '../supabase/repository.error';
 import {
   ClaseConCupo,
+  EntradaListaEspera,
+  EsperaConClase,
   InscripcionClase,
   InscripcionConClase,
 } from './clase.model';
@@ -46,6 +48,11 @@ export class ClasesService {
     return this.repository.findInscripcionesPorPerfil(perfilId);
   }
 
+  async listarMiListaEspera(perfilId: string): Promise<EsperaConClase[]> {
+    this.validarUuid(perfilId, 'perfilId');
+    return this.repository.findListaEsperaPorPerfil(perfilId);
+  }
+
   async inscribir(
     claseId: string,
     perfilId: string,
@@ -54,17 +61,7 @@ export class ClasesService {
     this.validarUuid(claseId, 'claseId');
     this.validarUuid(perfilId, 'perfilId');
 
-    // RN-03: solo socios con membresía activa y vigente pueden reservar clases grupales.
-    try {
-      await this.membresias.findActivaPorPerfil(perfilId, ahora);
-    } catch (e) {
-      if (e instanceof NotFoundException) {
-        throw new ForbiddenException(
-          'Necesitás una membresía activa vigente para inscribirte a una clase',
-        );
-      }
-      throw e;
-    }
+    await this.asegurarMembresiaActiva(perfilId, ahora);
 
     const clase = await this.repository.findById(claseId);
     if (!clase) {
@@ -83,6 +80,9 @@ export class ClasesService {
         'Solo se puede reservar una clase con al menos 48 horas de anticipación',
       );
     }
+
+    // D7: resuelve en forma lazy eventuales plazos vencidos antes de evaluar cupo libre.
+    await this.procesarYNotificarListaEspera(clase);
 
     try {
       return await this.repository.inscribir(claseId, perfilId);
@@ -133,6 +133,168 @@ export class ClasesService {
     this.listaEspera.notificarLugaresLiberados(inscripcion.clase, notificados);
   }
 
+  async anotarseEnListaEspera(
+    claseId: string,
+    perfilId: string,
+    ahora: Date = new Date(),
+  ): Promise<EntradaListaEspera> {
+    this.validarUuid(claseId, 'claseId');
+    this.validarUuid(perfilId, 'perfilId');
+
+    await this.asegurarMembresiaActiva(perfilId, ahora);
+
+    const claseInicial = await this.repository.findConCupoById(claseId);
+    if (!claseInicial) {
+      throw new NotFoundException('La clase solicitada no existe');
+    }
+    if (claseInicial.estado !== 'programada') {
+      throw new ConflictException(
+        'La clase ha sido cancelada y no admite lista de espera',
+      );
+    }
+    if (new Date(claseInicial.inicio).getTime() <= ahora.getTime()) {
+      throw new BadRequestException(
+        'No es posible anotarse en una clase que ya comenzó',
+      );
+    }
+
+    // Resuelve primero notificados vencidos antes de verificar si hay cupo libre.
+    await this.procesarYNotificarListaEspera(claseInicial);
+
+    if (await this.repository.tieneInscripcionVigente(claseId, perfilId)) {
+      throw new ConflictException('Ya estás inscripto en esta clase');
+    }
+
+    const claseActual =
+      (await this.repository.findConCupoById(claseId)) ?? claseInicial;
+    if (claseActual.cupos_libres > 0 && claseActual.en_espera === 0) {
+      throw new ConflictException(
+        'La clase tiene cupos disponibles; podés inscribirte directamente',
+      );
+    }
+
+    try {
+      return await this.repository.crearEntradaListaEspera(claseId, perfilId);
+    } catch (e) {
+      if (e instanceof RepositoryError && e.code === '23505') {
+        throw new ConflictException(
+          'Ya estás anotado en la lista de espera de esta clase',
+        );
+      }
+      this.traducirErrorRepositorio(e);
+    }
+  }
+
+  async confirmarLugarEspera(
+    esperaId: string,
+    perfilId: string,
+    ahora: Date = new Date(),
+  ): Promise<InscripcionClase> {
+    this.validarUuid(esperaId, 'esperaId');
+    this.validarUuid(perfilId, 'perfilId');
+
+    const espera = await this.repository.findEsperaConClase(esperaId);
+    if (!espera) {
+      throw new NotFoundException(
+        'El registro en lista de espera no fue encontrado',
+      );
+    }
+    if (espera.perfil_id !== perfilId) {
+      throw new ForbiddenException(
+        'No podés confirmar el lugar de otro usuario',
+      );
+    }
+
+    await this.asegurarMembresiaActiva(perfilId, ahora);
+
+    try {
+      return await this.repository.confirmarLugarEspera(esperaId);
+    } catch (e) {
+      if (
+        e instanceof RepositoryError &&
+        e.code === 'P0001' &&
+        e.message === 'PLAZO_VENCIDO'
+      ) {
+        // Avanza la cola inmediatamente para notificar al siguiente socio (D7 + RF-08).
+        await this.procesarYNotificarListaEspera(espera.clase);
+        throw new ConflictException(
+          'El plazo para confirmar tu lugar venció y el cupo pasó al siguiente en la lista',
+        );
+      }
+      this.traducirErrorRepositorio(e);
+    }
+  }
+
+  async retirarDeListaEspera(
+    esperaId: string,
+    perfilId: string,
+    rol?: RolUsuario,
+  ): Promise<void> {
+    this.validarUuid(esperaId, 'esperaId');
+    this.validarUuid(perfilId, 'perfilId');
+
+    const espera = await this.repository.findEsperaConClase(esperaId);
+    if (!espera) {
+      throw new NotFoundException(
+        'El registro en lista de espera no fue encontrado',
+      );
+    }
+
+    const esStaff = rol === 'admin_sede' || rol === 'gerente';
+    if (!esStaff && espera.perfil_id !== perfilId) {
+      throw new ForbiddenException(
+        'No podés retirar a otro usuario de la lista de espera',
+      );
+    }
+
+    if (espera.estado !== 'esperando' && espera.estado !== 'notificado') {
+      throw new BadRequestException(
+        'El registro en lista de espera ya no se encuentra vigente',
+      );
+    }
+
+    const retirada = await this.repository.retirarEspera(esperaId);
+    if (!retirada) {
+      throw new BadRequestException(
+        'El registro en lista de espera ya no se encuentra vigente',
+      );
+    }
+
+    // Si tenía un cupo reservado ('notificado'), se libera para el siguiente en la cola.
+    if (espera.estado === 'notificado') {
+      await this.procesarYNotificarListaEspera(espera.clase);
+    }
+  }
+
+  private async asegurarMembresiaActiva(
+    perfilId: string,
+    ahora: Date,
+  ): Promise<void> {
+    // RN-03: solo socios con membresía activa y vigente pueden reservar clases grupales.
+    try {
+      await this.membresias.findActivaPorPerfil(perfilId, ahora);
+    } catch (e) {
+      if (e instanceof NotFoundException) {
+        throw new ForbiddenException(
+          'Necesitás una membresía activa vigente para inscribirte a una clase',
+        );
+      }
+      throw e;
+    }
+  }
+
+  private async procesarYNotificarListaEspera(clase: {
+    id: string;
+    tipo: string;
+    inicio: string;
+  }): Promise<void> {
+    const notificados = await this.repository.procesarListaEspera(
+      clase.id,
+      PLAZO_CONFIRMACION_ESPERA,
+    );
+    this.listaEspera.notificarLugaresLiberados(clase, notificados);
+  }
+
   private validarUuid(valor: string | undefined, campo: string): void {
     if (!valor || typeof valor !== 'string' || !UUID_REGEX.test(valor)) {
       throw new BadRequestException(`${campo} debe ser un UUID válido`);
@@ -168,6 +330,14 @@ export class ClasesService {
           case 'INSCRIPCION_NO_VIGENTE':
             throw new BadRequestException(
               'La inscripción ya se encontraba cancelada o vencida',
+            );
+          case 'ESPERA_NO_EXISTE':
+            throw new NotFoundException(
+              'El registro en lista de espera no fue encontrado',
+            );
+          case 'ESPERA_NO_NOTIFICADA':
+            throw new ConflictException(
+              'Todavía no tenés un lugar asignado para confirmar o ya fue procesado',
             );
         }
       }
