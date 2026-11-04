@@ -719,4 +719,26 @@ Quedó [Plan_M2_Acceso_UX_V2.md](./Plan_M2_Acceso_UX_V2.md): sede(s) asignadas +
 
 ---
 
+## 2026-11-04 — S4-T06: API REST de Canchas (catálogo, grilla de disponibilidad, mantenimientos y configuración de precios)
+
+**Tipo:** backend / M4 canchas / Unidad II y III  
+**Registrado por:** Bruno Conti (P2)  
+**Cierre:** endpoints de listado, grilla horaria con precios Strategy, mantenimiento y configuración pico/descuento socio operativos con Swagger, tests unitarios y Supertest e2e.
+
+### Entregado
+
+- Módulo [`backend/src/canchas/`](../backend/src/canchas/) (`CanchasModule`, `CanchasController`, `ConfiguracionPreciosController`, `CanchasService`, `CanchasRepository`, DTOs y modelos).
+- **Lectura y grilla (RF-10, RF-11, RNF-03):**
+  - `GET /canchas?sedeId=...&incluirInactivas=...` (canchas de la sede con tipo y `precioHora`).
+  - `GET /canchas/disponibilidad?sedeId=...&fecha=YYYY-MM-DD`: turnos de 60 minutos en hora en punto (`08:00`–`22:00`, zona `America/Argentina/Buenos_Aires`), cruzando reservas (`confirmada` y `pendiente` con ventana de hold vigente) y períodos de `mantenimientos_cancha`, y calculando `precioExterno`, `precioSocio` y `esHorarioPico` mediante `PreciosService` (Strategy).
+- **Gestión y mantenimiento (RF-09, RF-12, S4-T09 P1):**
+  - `POST /canchas` y `PATCH /canchas/:id` (`gerente` en cualquier sede; `admin_sede` solo en sedes asignadas en `admins_sede`).
+  - `GET /canchas/:id/mantenimientos`, `POST /canchas/:id/mantenimientos` y `DELETE /canchas/:id/mantenimientos/:mantenimientoId`.
+- **Configuración de precios (S4-T09 P3 y P8):**
+  - `GET /sedes/:id/configuracion-pico` (público) y `PUT /sedes/:id/configuracion-pico` (`gerente` o `admin_sede` de esa sede).
+  - `GET /configuracion/descuento-socio` (público) y `PUT /configuracion/descuento-socio` (`gerente`).
+- Tests unitarios (`canchas.service.spec.ts`), e2e (`test/canchas.e2e-spec.ts`) y ampliación de colección Postman de canchas.
+
+---
+
 *FitZone Sports · Programación V · UNER*
