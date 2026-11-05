@@ -763,4 +763,23 @@ Quedó [Plan_M2_Acceso_UX_V2.md](./Plan_M2_Acceso_UX_V2.md): sede(s) asignadas +
 
 ---
 
+## 2026-11-04 — S4-T14: Endpoints de Lista de Espera, flujo completo Observer y Swagger al día
+
+**Tipo:** backend / M3 clases y notificaciones / Unidad III  
+**Registrado por:** Bruno Conti (P2)  
+**Cierre:** ciclo completo de lista de espera (`anotarse`, `mias`, `confirmar`, `retirarse` y resolución lazy de vencidos) integrado con `ListaEsperaPublisher` (Observer) y documentado en OpenAPI/Swagger y Postman.
+
+### Entregado
+
+- **API de Lista de Espera en [`backend/src/clases/`](../backend/src/clases/) (D7 y RF-08):**
+  - `GET /clases/lista-espera/mias` (`@RequiereRol('socio')`): lista las esperas del socio autenticado junto con el resumen de la clase.
+  - `POST /clases/lista-espera` (`@RequiereRol('socio')`): valida membresía activa (`RN-03`), procesa vencidos previos, verifica que el socio no esté ya inscripto y que la clase no tenga cupos directos disponibles, e inserta en `lista_espera`.
+  - `POST /clases/lista-espera/:id/confirmar` (`@RequiereRol('socio')`): valida titularidad (`403` si pertenece a otro usuario) e invoca el RPC `confirmar_lugar_espera`. Si el plazo expiró (`PLAZO_VENCIDO`), ejecuta inmediatamente `procesar_lista_espera` y publica al siguiente por Observer antes de responder `409`.
+  - `DELETE /clases/lista-espera/:id` (`@RequiereRol('socio', 'admin_sede', 'gerente')`): pasa el registro a `'retirado'` y, si ocupaba un cupo reservado (`'notificado'`), promueve y notifica al siguiente en la cola mediante `ListaEsperaPublisher`.
+  - Procesamiento lazy de vencidos (`procesar_lista_espera`) previo a `inscribir` y `anotarseEnListaEspera`.
+- **Swagger y pruebas:**
+  - DTOs OpenAPI completos y verificación automática de rutas en `/api/docs-json` (`test/membresias-clases.e2e-spec.ts`), más ampliación de `postman/FitZoneSports_API.postman_collection.json`.
+
+---
+
 *FitZone Sports · Programación V · UNER*
