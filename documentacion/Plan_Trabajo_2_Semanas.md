@@ -1,10 +1,10 @@
-# Plan de trabajo — Próximas 2 semanas
+# Plan de trabajo — 3 semanas (S5–S7)
 
 **Proyecto:** FitZone Sports · Programación V · UNER  
 **Equipo:** 4 integrantes  
-**Período de referencia:** 2026-10-22 al 2026-11-05
-**Última actualización:** 2026-10-27
-**Unidad en curso:** III (Patrones), con integración del frontend y avance de módulos de negocio
+**Período de referencia:** 2026-10-27 al 2026-11-16  
+**Última actualización:** 2026-11-05  
+**Unidad en curso:** S5 — esquema M4 + seguridad + login + shell del front
 
 **Referencias:** [Trabajo Integrador](./Trabajo_Integrador_FitZone_Sports.md) · [Acta 2026-10-21](./Acta_Reunion_2026-10-21_Seguimiento.md) · [Decisiones pendientes](./Decisiones_Pendientes_y_Cosas_a_Definir.md) · [Correcciones de Membresías y Clases](./Correcciones_S3-T03_S3-T04_Membresias_Clases.md) · [LOG](./LOG.md)
 
@@ -39,14 +39,34 @@
 
 > Fase A (`sedes`, `perfiles`, `membresias` y enums): versionada en `supabase/migrations/20260915000000_fase_a_nucleo.sql` (**S5-T01 Finalizado**, 2026-10-27). Encima siguen `20261005220000_membresias_clases.sql` y `20261006190000_notificaciones.sql`.
 
-## Trabajo en curso confirmado en la reunión del 2026-10-21
+## Trabajo en curso (ahora — S5)
 
-| Integrante | Tarea | Trabajo / estado |
-| --- | --- | --- |
-| Patricio Ramos (P1) | Actualización del plan y documentación de seguimiento | **En desarrollo** según el compromiso de actualizar el plan para el docente. La justificación de patrones ya se dio por finalizada. |
-| Bruno Conti (P2) | S4-T06 — API REST de Canchas | **En desarrollo.** Es la tarea actual; la API todavía no está presente en el código. |
-| Lucas Coquet (P3) | S3-T05 — Conectar Login con `POST /auth/login` | **En desarrollo.** La página existe, pero el formulario todavía no está integrado y actualmente imprime credenciales en consola; hay que quitar ese comportamiento. |
-| Matias Goncevat (P4) | Checklist de cuentas (GitHub, Supabase y Vercel) | **En desarrollo**, según el acta. Después debe preparar el plan siguiente y actualizar el LOG. |
+Con la adopción del plan de 3 semanas, el trabajo activo del equipo coincide con la semana 5 de la propuesta. Los IDs, responsables y estados se mantienen alineados con [Propuesta_Continuacion_Semanas.md](./Propuesta_Continuacion_Semanas.md).
+
+| Integrante | ID | Tarea | Estado |
+| --- | --- | --- | --- |
+| Patricio Ramos (P1) | S5-T02 | Migración M4: canchas, reservas, configuraciones y admin_sede | **En desarrollo** |
+| Patricio Ramos (P1) | S5-T03 | Seed mínimo de demo | **Por hacer** |
+| Bruno Conti (P2) | S5-T04 | Guards en Clases y Membresías | **En desarrollo** |
+| Bruno Conti (P2) | S5-T05 | Ventana 48 h en inscripción | **Por hacer** |
+| Lucas Coquet (P3) | S5-T06 | Login real con token y validación | **En desarrollo** |
+| Lucas Coquet (P3) | S5-T07 | Cliente HTTP base + sesión de usuario | **En desarrollo** |
+| Lucas Coquet (P3) | S5-T08 | Layout post-login y rutas protegidas | **Por hacer** |
+| Lucas Coquet (P3) | S5-T09 | Átomos de UI para Login | **Por hacer** |
+| Matias Goncevat (P4) | S5-T10 | Adoptar el plan de 3 semanas y actualizar el seguimiento | **Finalizado** |
+| Matias Goncevat (P4) | S5-T11 | Checklist de cuentas GitHub / Supabase / Vercel | **Finalizado** |
+
+> La propuesta de continuidad se toma como plan activo para S5–S7. El resto del backlog previo queda como historial y soporte documental, no como eje de la semana actual.
+
+### Checklist de cuentas del equipo
+
+| Servicio | Administrador | Contacto / acceso | Estado |
+| --- | --- | --- | --- |
+| GitHub | Patricio Ramos (P1) | Pedir acceso a la organización o repositorio `FitZoneSports` por usuario de GitHub | **Confirmado** |
+| Supabase | Lucas Coquet (P3) | Pedir invitación al proyecto y permisos de desarrollo/demo desde la administración de Supabase | **Confirmado** |
+| Vercel | Patricio Ramos (P1) | Pedir invitación al proyecto y permisos de despliegue desde la cuenta del equipo | **Confirmado** |
+
+> Si falta acceso, el primer contacto es la persona responsable del servicio; los secretos y variables de entorno siguen en `.env` local y canales seguros del equipo, no en el repositorio.
 
 ## Hitos finalizados
 

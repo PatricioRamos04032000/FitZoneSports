@@ -53,11 +53,12 @@ Documento de trabajo para el equipo: qué **ya está cerrado**, qué **falta dec
 
 ### 2.3 Cuentas y accesos
 
-- [x] Organización o cuenta GitHub del equipo — Patricio administra el repo por ahora
-- [ ] Quién crea y administra el proyecto en Vercel — Patricio cuando haga falta (aún sin deploy)
-- [ ] Quién crea y administra el servicio en Render — Patricio cuando haga falta
-- [x] Quién crea el proyecto en Supabase — **Lucas Coquet** (inicializa y da permisos al resto)
+- [x] Organización o cuenta GitHub del equipo — **Patricio Ramos** administra el repo por ahora.
+- [x] Proyecto en Vercel — **Patricio Ramos** administra el despliegue y puede invitar al resto del equipo.
+- [ ] Quién crea y administra el servicio en Render — Patricio cuando haga falta.
+- [x] Proyecto en Supabase — **Lucas Coquet** inicializa y administra el proyecto, y invita al resto.
 - [x] Cómo se comparten secrets — `.env` local; Discord / Drive; **nunca** en commits (acuerdo 2026-09-02)
+- [x] Checklist de acceso del equipo — GitHub, Supabase y Vercel quedan documentados para pedir accesos y permisos.
 
 ---
 

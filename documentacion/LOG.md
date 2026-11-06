@@ -427,6 +427,36 @@ Reconstruir un “antes” falso solo para generar historial no aporta evidencia
 
 ---
 
+## 2026-11-05 — S5-T10: Adoptar el plan de 3 semanas
+
+**Tipo:** planificación / seguimiento  
+**Registrado por:** Matias Goncevat (P4)  
+**Cierre:** el trabajo en curso se alinea con S5 y el plan activo queda actualizado con los IDs, responsables y estados de [Propuesta_Continuacion_Semanas.md](./Propuesta_Continuacion_Semanas.md).
+
+### Entregado
+
+- Se adoptó la propuesta de 3 semanas como plan vigente del equipo.
+- Se actualizó [Plan_Trabajo_2_Semanas.md](./Plan_Trabajo_2_Semanas.md) con la sección de Trabajo en curso y los IDs S5-T02 a S5-T11.
+- Se registraron responsables y estados alineados a la propuesta: Patricio en migración/seed, Bruno en guards y validaciones, Lucas en login y front shell, Matias en coordinación y checklist de accesos.
+- La semana activa quedó sincronizada con S5, sin mezclar el backlog viejo de la reunión anterior con la nueva propuesta.
+
+---
+
+## 2026-11-05 — S5-T11: Checklist de cuentas
+
+**Tipo:** planificación / accesos del equipo  
+**Registrado por:** Matias Goncevat (P4)  
+**Cierre:** el equipo sabe a quién pedir acceso a GitHub, Supabase y Vercel, y queda registrado el responsable de cada cuenta.
+
+### Entregado
+
+- **GitHub:** Patricio Ramos (P1) administra el repositorio y puede invitar al resto del equipo.
+- **Supabase:** Lucas Coquet (P3) administra el proyecto y puede invitar a quienes necesiten acceso.
+- **Vercel:** Patricio Ramos (P1) administra el proyecto y puede dar permisos de despliegue al equipo.
+- Se dejó asentado el checklist en [Plan_Trabajo_2_Semanas.md](./Plan_Trabajo_2_Semanas.md) para que quede visible y accesible durante S5.
+
+---
+
 ## 2026-10-28 — S6-T01: GET/PATCH /perfiles/me
 
 **Tipo:** backend / API  
