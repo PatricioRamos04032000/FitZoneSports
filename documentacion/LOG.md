@@ -812,4 +812,37 @@ Quedó [Plan_M2_Acceso_UX_V2.md](./Plan_M2_Acceso_UX_V2.md): sede(s) asignadas +
 
 ---
 
+## 2026-11-07 — S4-T04: Patricio toma el estado global (antes Lucas)
+
+**Tipo:** asignación / frontend  
+**Registrado por:** Patricio Ramos (P1)  
+**Tarea:** S4-T04 — React: estado global básico (Zustand o Context). En Trello está en «por hacer».
+
+Patricio Ramos (P1) toma la tarea que estaba a cargo de Lucas Coquet (P3).  
+Rama de trabajo: `S4-T04`, creada desde `desarrollo` (`88a9a89`).
+
+### Alcance
+
+Configurar el estado global básico de usuario, token y rol. Todavía no hay implementación en esta rama: esta entrada solo deja constancia del cambio de responsable.
+
+---
+
+## 2026-11-07 — S4-T04: la sesión queda en React Context
+
+**Tipo:** frontend / estado de sesión  
+**Registrado por:** Patricio Ramos (P1)  
+**Cierre:** token, usuario y rol siguen en el Context existente; el rol de FitZone queda tipado y un 401 con Bearer cierra la sesión en un solo lugar.
+
+### Decisión
+
+No se adopta Zustand. La sesión cambia poco (login, logout, 401) y ya alimenta `ProtectedRoute`, `RoleRoute` y el menú. Las respuestas de perfil, canchas, sedes y QR no entran a ese store. TanStack Query queda para S4-T12 / S4-T13.
+
+### Entregado
+
+- `RolUsuario` (`socio | externo | admin_sede | gerente`) en el front, alineado al enum del backend. Si `/auth/me` trae otro valor, `rol` queda `null`.
+- `setUser` sale del contrato público: la identidad la escribe solo el provider.
+- `apiRequest` llama a `logout` cuando la respuesta es 401 y el request llevaba `Authorization: Bearer`. Login y registro no mandan ese header.
+
+---
+
 *FitZone Sports · Programación V · UNER*

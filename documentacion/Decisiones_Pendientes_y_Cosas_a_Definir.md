@@ -394,9 +394,9 @@ La cátedra (Unidad III clase 2) pide separar lectura de escritura en **escalone
 
 ### 4.2 Estado, capas de UI y pantallas
 
-- [ ] Separar **estado de servidor** (datos de la API: perfil, canchas, etc.) vs **estado de cliente** (sesión UI, formularios, filtros). La clase pide no guardar la respuesta HTTP en el store global ([Notas Unidad II §3](./Notas_Correcciones_Unidad_II.md)).
+- [x] Separar **estado de servidor** (datos de la API: perfil, canchas, etc.) vs **estado de cliente** (sesión UI, formularios, filtros). La clase pide no guardar la respuesta HTTP en el store global ([Notas Unidad II §3](./Notas_Correcciones_Unidad_II.md)). **Cerrado 2026-11-07 (Patricio, S4-T04):** la sesión (token, usuario y rol) vive en React Context; perfil, canchas, sedes y QR siguen en cada pantalla y no entran a ese store.
 - [ ] Estado de servidor: adoptar **TanStack Query** (u equivalente) al conectar pantallas reales — va con **S4-T12** / **S4-T13** / **S4-T11**.
-- [ ] Estado de cliente / sesión: **Zustand vs Context** (Redux Toolkit solo si hace falta) — decisión abierta; implementar en **S4-T12** (token, usuario, rol, rutas protegidas).
+- [x] Estado de cliente / sesión: **Context** (no Zustand ni Redux Toolkit). **Cerrado 2026-11-07 (Patricio, S4-T04):** la sesión cambia poco (login, logout y un 401 con Bearer) y ya alimenta rutas protegidas y el menú. `rol` es `socio | externo | admin_sede | gerente | null`. Un 401 con `Authorization: Bearer` llama a `logout` desde `apiRequest`; login y registro no mandan Bearer, así que una clave inválida no cierra sesión. TanStack Query sigue pendiente para las pantallas reales.
 - [ ] **MVVM en React (pendiente / a futuro):** hoy no hay ViewModel. Evaluar hooks por pantalla (`useLoginViewModel`, `useCanchasViewModel`, …) que concentren estado + llamadas y dejen la vista “tonta”. Encaja al armar Login real (**S3-T05**), cliente/sesión (**S4-T12**) y Canchas/Perfil conectados (**S4-T13**, **S4-T11**). No bloquea el scaffolding actual; decidirlo cuando Lucas toque esas tareas, y documentar la convención si se adopta (carpeta `hooks/` o `viewmodels/`).
 - [x] Routing: **React Router** (ya en `App.tsx`)
 - [ ] Pantallas mínimas por actor (**A1 socio, A2 externo, A3 recepcionista, A4 gerente**)
