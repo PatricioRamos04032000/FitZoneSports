@@ -254,9 +254,9 @@ describe('PreciosService — Casos de negocio S4-T09 (S4-T01)', () => {
     });
   });
 
-  describe('Redondeo (P7)', () => {
-    it('redondea al peso entero con Math.round después de aplicar todas las reglas', () => {
-      // 15.555 * 1.15 = 17.888,25 -> 17.888
+  describe('Redondeo hacia arriba (P7, S4-T15)', () => {
+    it('redondea hacia arriba al peso entero (Math.ceil) incluso con fracción menor a 0,50', () => {
+      // 15.555 * 1.15 = 17.888,25 -> con Math.ceil sube a 17.889 (antes 17.888 con Math.round)
       const resultado = service.calcular(
         crearContexto({
           precioBase: 15_555,
@@ -266,7 +266,37 @@ describe('PreciosService — Casos de negocio S4-T09 (S4-T01)', () => {
         }),
       );
 
-      expect(resultado.precioFinal).toBe(17_888);
+      expect(resultado.precioFinal).toBe(17_889);
+    });
+
+    it('redondea una única vez al final luego de encadenar todas las reglas (P4 + P7)', () => {
+      // Sin redondeo intermedio: 10.005 * 1,10 = 11.005,5 -> * 0,90 = 9.904,95 -> ceil = 9.905
+      // (Si redondeara en cada paso: ceil(11.005,5) = 11.006 -> * 0,90 = 9.905,4 -> ceil = 9.906)
+      const resultado = service.calcular(
+        crearContexto({
+          precioBase: 10_005,
+          esSocioActivo: true,
+          descuentoSocioPct: 10,
+          inicio: MARTES_19_HS,
+          pico: { ...CONFIGURACION_PICO_DEFAULT, recargoPct: 10 },
+        }),
+      );
+
+      expect(resultado.precioFinal).toBe(9_905);
+    });
+
+    it('no incrementa montos enteros exactos afectados por imprecisión de punto flotante IEEE-754', () => {
+      // En JS: 20.000 * (1 + 14 / 100) === 22800.000000000004; debe mantenerse en $22.800
+      const resultado = service.calcular(
+        crearContexto({
+          precioBase: 20_000,
+          esSocioActivo: false,
+          inicio: MARTES_19_HS,
+          pico: { ...CONFIGURACION_PICO_DEFAULT, recargoPct: 14 },
+        }),
+      );
+
+      expect(resultado.precioFinal).toBe(22_800);
     });
   });
 
