@@ -1,4 +1,4 @@
-﻿# Justificación de patrones de diseño — Unidad III (S4-T05)
+# Justificación de patrones de diseño — Unidad III (S4-T05)
 
 **Proyecto:** FitZone Sports · Programación V · UNER  
 **Responsable:** Patricio Ramos (P1)  
@@ -335,7 +335,7 @@ classDiagram
 
 - `backend/src/canchas/precios/precios.service.spec.ts`:
   - Pruebas unitarias aisladas de `StandardPricing`, `PeakHourPricing` (límites de franja `[desde, hasta)` y días de la semana en hora Argentina) y `MemberDiscountPricing` (socio activo vs. cuota vencida RN-03).
-  - Pruebas integradas con `PreciosModule` verificando las tres tablas de casos acordadas en [S4-T09](./Propuesta_Reglas_Negocio_S4-T09.md) (base $20.000 con valores por defecto, sede con pico personalizado 30% lun–vie 18–22 hs, cambio de descuento de cadena a 10%) y el redondeo al peso entero (`Math.round`, P7):
+  - Pruebas integradas con `PreciosModule` verificando las tres tablas de casos acordadas en [S4-T09](./Propuesta_Reglas_Negocio_S4-T09.md) (base $20.000 con valores por defecto, sede con pico personalizado 30% lun–vie 18–22 hs, cambio de descuento de cadena a 10%) y el redondeo hacia arriba al peso entero (`Math.ceil`, P7 / S4-T15):
 
 | Cliente | Turno | Precio |
 |---------|-------|--------|

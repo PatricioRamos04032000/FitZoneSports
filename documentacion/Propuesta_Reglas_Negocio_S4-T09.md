@@ -138,9 +138,9 @@ Esto cierra la pregunta pendiente "Mora (RN-03): ¿bloquea descuento o solo avis
 
 **Horizonte de reserva (Decidido por P1, 2026-10-21):** se puede reservar una cancha hasta **1 mes calendario** hacia adelante. El inicio del turno no puede quedar después de la misma fecha del mes siguiente, contada desde el momento de la reserva. Más allá de ese plazo, la reserva se rechaza. El precio se calcula y se guarda en ese momento (opción a).
 
-### P7 — Redondeo
+### P7 — Redondeo (Decidido en reunión 2026-10-21)
 
-**R:** al peso entero (`Math.round`) después de aplicar todas las reglas.
+**Decisión:** redondeo **hacia arriba al peso entero (`Math.ceil`)** después de aplicar todas las reglas (reemplaza la recomendación inicial con `Math.round`).
 
 ### P8 — Dónde vive cada parámetro (Decidido por P1, 2026-10-06)
 
