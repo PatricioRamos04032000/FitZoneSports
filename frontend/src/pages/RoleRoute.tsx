@@ -1,8 +1,9 @@
 import { Navigate, Outlet } from "react-router-dom";
 import { useAuth } from "../auth/useAuth";
+import type { RolUsuario } from "../auth/rol";
 
 type RoleRouteProps = {
-  allowedRoles: string[];
+  allowedRoles: RolUsuario[];
 };
 
 function RoleRoute({ allowedRoles }: RoleRouteProps) {

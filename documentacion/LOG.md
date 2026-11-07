@@ -827,4 +827,22 @@ Configurar el estado global básico de usuario, token y rol. Todavía no hay imp
 
 ---
 
+## 2026-11-07 — S4-T04: la sesión queda en React Context
+
+**Tipo:** frontend / estado de sesión  
+**Registrado por:** Patricio Ramos (P1)  
+**Cierre:** token, usuario y rol siguen en el Context existente; el rol de FitZone queda tipado y un 401 con Bearer cierra la sesión en un solo lugar.
+
+### Decisión
+
+No se adopta Zustand. La sesión cambia poco (login, logout, 401) y ya alimenta `ProtectedRoute`, `RoleRoute` y el menú. Las respuestas de perfil, canchas, sedes y QR no entran a ese store. TanStack Query queda para S4-T12 / S4-T13.
+
+### Entregado
+
+- `RolUsuario` (`socio | externo | admin_sede | gerente`) en el front, alineado al enum del backend. Si `/auth/me` trae otro valor, `rol` queda `null`.
+- `setUser` sale del contrato público: la identidad la escribe solo el provider.
+- `apiRequest` llama a `logout` cuando la respuesta es 401 y el request llevaba `Authorization: Bearer`. Login y registro no mandan ese header.
+
+---
+
 *FitZone Sports · Programación V · UNER*

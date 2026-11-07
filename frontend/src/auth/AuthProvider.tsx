@@ -1,9 +1,8 @@
-
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import type { ReactNode } from "react";
-import { AuthContext } from "./auth";
+import { AuthContext, normalizarUsuario } from "./auth";
 import type { AuthUser } from "./auth";
-import { apiRequest } from "../services/api";
+import { apiRequest, registrarCierreDeSesion } from "../services/api";
 
 interface AuthProviderProps {
   children: ReactNode;
@@ -22,6 +21,17 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   const isAuthenticated = accessToken !== null;
 
+  const logout = useCallback(() => {
+    sessionStorage.removeItem("access_token");
+    setAccessToken(null);
+    setUser(null);
+    setIsLoading(false);
+  }, []);
+
+  useEffect(() => {
+    registrarCierreDeSesion(logout);
+  }, [logout]);
+
   useEffect(() => {
     if (!accessToken) {
       return;
@@ -29,13 +39,13 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
     const validateSession = async () => {
       try {
-        const data: AuthUser = await apiRequest("/auth/me", {
+        const data: unknown = await apiRequest("/auth/me", {
           headers: {
             Authorization: `Bearer ${accessToken}`,
           },
         });
 
-        setUser(data);
+        setUser(normalizarUsuario(data));
       } catch {
         sessionStorage.removeItem("access_token");
         setAccessToken(null);
@@ -54,13 +64,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
     setAccessToken(token);
   };
 
-  const logout = () => {
-    sessionStorage.removeItem("access_token");
-    setAccessToken(null);
-    setUser(null);
-    setIsLoading(false);
-  };
-
   return (
     <AuthContext.Provider
       value={{
@@ -70,7 +73,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
         user,
         login,
         logout,
-        setUser,
       }}
     >
       {children}
