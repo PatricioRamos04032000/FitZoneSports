@@ -23,6 +23,8 @@ function Layout() {
         <div className="navbar-links">
           <Link to="/">Inicio</Link>
           <Link to="/canchas">Canchas</Link>
+          <Link to="/clases">Clases</Link>
+          <Link to="/notificaciones">Notificaciones</Link>
           <Link to="/perfil">Mi Perfil</Link>
           <Link to="/dashboard">Dashboard</Link>
           {rol === "socio" && <Link to="/mi-qr">Mi QR</Link>}

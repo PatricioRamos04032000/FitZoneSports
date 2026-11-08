@@ -9,6 +9,8 @@ import Signup from "./pages/Login/Signup";
 import Dashboard from "./pages/Login/Dashboard";
 import Perfil from "./pages/Perfil/Perfil";
 import Canchas from "./pages/Canchas/Canchas";
+import Clases from "./pages/Clases/Clases";
+import Notificaciones from "./pages/Notificaciones/Notificaciones";
 import MiQr from "./pages/MiQr/MiQr";
 import Acceso from "./pages/Acceso/Acceso";
 
@@ -27,6 +29,8 @@ function App() {
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/perfil" element={<Perfil />} />
             <Route path="/canchas" element={<Canchas />} />
+            <Route path="/clases" element={<Clases />} />
+            <Route path="/notificaciones" element={<Notificaciones />} />
 
             <Route element={<RoleRoute allowedRoles={["socio"]} />}>
               <Route path="/mi-qr" element={<MiQr />} />

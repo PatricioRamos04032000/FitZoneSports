@@ -845,4 +845,21 @@ No se adopta Zustand. La sesión cambia poco (login, logout, 401) y ya alimenta 
 
 ---
 
+## 2026-11-07 — S5-T08: Patricio toma el layout post-login (antes Lucas)
+
+**Tipo:** frontend / rutas  
+**Registrado por:** Patricio Ramos (P1)  
+**Tarea:** S5-T08 — Layout post-login y rutas protegidas. En Trello está en «por hacer».
+
+Patricio Ramos (P1) toma la tarea que estaba a cargo de Lucas Coquet (P3).  
+Rama de trabajo: `S5-T08`, creada desde `desarrollo` (`0002fe3`).
+
+### Entregado
+
+- El menú suma **Clases** (`/clases`) y **Notificaciones** (`/notificaciones`).
+- Ambas rutas quedan dentro de `ProtectedRoute`: sin sesión redirigen a `/login`.
+- Cada pantalla muestra el título y un texto de que el listado llega después. Todavía no consultan la API.
+
+---
+
 *FitZone Sports · Programación V · UNER*

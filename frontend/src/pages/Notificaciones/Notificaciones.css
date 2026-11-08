@@ -1,0 +1,19 @@
+.notificaciones-container {
+  max-width: 900px;
+  margin: 40px auto;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+  color: #14283f;
+}
+
+.notificaciones-container h1 {
+  margin-top: 0;
+  margin-bottom: 12px;
+  font-size: 30px;
+}
+
+.notificaciones-container p {
+  margin: 0;
+  line-height: 1.6;
+  color: #475467;
+}
