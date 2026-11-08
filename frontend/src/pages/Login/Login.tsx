@@ -1,6 +1,7 @@
-import { useAuth } from "../../auth/useAuth";
 import { useState } from "react";
 import { Link, Navigate } from "react-router-dom";
+import { useAuth } from "../../auth/useAuth";
+import { Button, Input, Spinner } from "../../components/atoms";
 import { apiRequest } from "../../services/api";
 import "./Login.css";
 
@@ -54,9 +55,9 @@ function Login() {
 
                 <form onSubmit={handleSubmit}>
 
-                    <label htmlFor="email">Email</label>
-                    <input
+                    <Input
                         id="email"
+                        label="Email"
                         type="email"
                         placeholder="Ingresá tu email"
                         value={email}
@@ -64,9 +65,9 @@ function Login() {
                         required
                     />
 
-                    <label htmlFor="clave">Contraseña</label>
-                    <input
+                    <Input
                         id="clave"
+                        label="Contraseña"
                         type="password"
                         placeholder="Ingresá tu contraseña"
                         value={clave}
@@ -76,9 +77,10 @@ function Login() {
 
                     {error && <p className="login-error">{error}</p>}
 
-                    <button type="submit" disabled={cargando}>
+                    <Button type="submit" disabled={cargando} aria-busy={cargando}>
+                        {cargando && <Spinner label="Ingresando" />}
                         {cargando ? "Ingresando..." : "Ingresar"}
-                    </button>
+                    </Button>
 
                 </form>
 
