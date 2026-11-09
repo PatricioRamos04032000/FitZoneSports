@@ -862,4 +862,22 @@ Rama de trabajo: `S5-T08`, creada desde `desarrollo` (`0002fe3`).
 
 ---
 
+## 2026-11-08 — C-06: ensayo corto del guion, sin errores de flujo
+
+**Tipo:** defensa / ensayo  
+**Registrado por:** Patricio Ramos (P1)  
+**Cierre:** el recorrido API + UI se completó sin errores de flujo. C-06 se da por cerrada. El pulido visual no reabre la tarea.
+
+### Resultado
+
+- Login socio, perfil, membresía por `GET /membresias/mia`, reserva y checkout simulado, Mi QR y check-in en recepción (segundo ingreso `YA_DENTRO`).
+- Guion y hoja: [`Guion_Ensayo_C-06.md`](./Guion_Ensayo_C-06.md).
+
+### Fuera de este cierre
+
+- Pulido visto en el ensayo: el inicio sin sesión no redirige al login y repite los botones del menú; Acceso muestra JSON, UUID, perfilId y el mensaje crudo `[YA_DENTRO] El socio ya figura dentro de esta sede.`; Presencias lista el UUID en lugar del nombre y el apellido. El resto (dashboard, canchas maqueta, clases, notificaciones, membresía invisible en perfil) sigue en C-01, C-02, C-03 y, si entran, C-11 y C-12.
+- Ensayo de 5 minutos con plan B: C-24.
+
+---
+
 *FitZone Sports · Programación V · UNER*
