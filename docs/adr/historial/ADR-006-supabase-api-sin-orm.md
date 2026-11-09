@@ -1,3 +1,5 @@
+> **Histórico, congelado el 2026-11-09 (C-14).** No es la decisión vigente. Índice: [docs/adr/README.md](../README.md).
+
 # ADR-006: Acceso a datos vía API de Supabase sin ORM
 
 Estado: Aceptado  

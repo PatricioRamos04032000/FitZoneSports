@@ -77,7 +77,8 @@ Estas C-xx / S* no compiten entre sí por el mismo entregable; la observación e
 | **C-07** | Docker. Nueva para entrega; no duplica S5–S7. |
 | **C-08** | Seed 25 sedes. Extiende **S5-T03** (seed mínimo finalizado), no es lo mismo. |
 | **C-10** | Cobertura/umbral ADR. Relacionada con **S7-T10** (reporte cobertura finalizado): C-10 actualiza umbral + suite. |
-| **C-13…C-21, C-23, C-25…C-27** | Docs/admisibilidad del cierre; sin par S5–S7 equivalente. |
+| **C-13, C-15…C-21, C-23, C-25…C-27** | Docs/admisibilidad del cierre; sin par S5–S7 equivalente. |
+| **C-14** | Diez ADR obligatorios escritos el 2026-11-09 (rama `c-14`, `docs/adr/`, ninguno Propuesto). El 60 % lo hace cumplir **C-10**; el Compose, **C-07**. Falta pasarla a finalizada en Trello. |
 | **S7-T12** | Stretch móvil. Distinto de **C-03** (web responsive). |
 
 ---
@@ -120,7 +121,8 @@ S7-T04 → Observación: relacionada con S4-T14 hecha en desarrollo (lista esper
 S7-T05 → Observación: relacionada parcialmente con C-09 (Swagger UI vs export swagger.json).
 C-09 → Observación: relacionada parcialmente con S7-T05 (export archivo OpenAPI).
 C-08 → Observación: relacionada con S5-T03 (seed mínimo); C-08 pide >=25 sedes.
-C-10 → Observación: relacionada con S7-T10 (amplía cobertura + umbral ADR).
+C-10 → Observación: relacionada con S7-T10 (amplía cobertura + umbral ADR). El umbral del 60 % ya está declarado en ADR-008 (C-14); C-10 lo mide y lo hace cumplir en CI.
+C-14 → Observación: sin par S5–S7. Diez ADR en docs/adr/ (2026-11-09, rama c-14). Umbral: C-10. Compose: C-07. Falta moverla a finalizada en Trello.
 ```
 
 ---

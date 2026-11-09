@@ -1,47 +1,51 @@
-# ADR-007: Acceso en sede con QR TOTP y cola offline
+# ADR-007 — Sincronización del terminal de sede
 
-Estado: Aceptado  
-Fecha: 2026-11-01 · **Aceptado:** 2026-11-03
+- **Estado:** Aceptado
+- **Fecha:** 2026-11-03
+- **Autor:** Equipo FitZone Sports. Redacción al Anexo B: Patricio Ramos (P1), 2026-11-09
+- **Sprint:** 8
+- **Lineamientos:** §5.2.1 ADR-007
+
+La estrategia (qué se hace cuando cae la red) está en ADR-003. Este registro dice qué queda en el navegador de recepción, cada cuánto se manda y cómo se resuelve un choque al reconectar. El texto que mezclaba las dos decisiones está en `historial/ADR-007-acceso-totp-cola-offline.md`.
 
 ## Contexto
 
-FitZone Sports debe cubrir el ingreso a gimnasio con **QR dinámico** (RF-04) y el **acceso en sede aunque falle internet** (RNF-01). Hay dos offlines distintos: el de **recepción/sede** (validar y registrar check-in) y el del **socio** (mostrar su QR; entregable Unidad VI).
+Con la estrategia de cola ya elegida, faltaba definir el contenido del terminal. Replicar seeds TOTP, membresías y presencias hubiera permitido validar el QR sin API, y también hubiera dejado secretos en el navegador de la sede. El equipo no iba a operar esa réplica.
 
-El plan de tres semanas dejó M2 fuera del camino crítico de Demo Day (canchas). Aun así hace falta un diseño implementable para Acceso. El enfoque “fuerte” (nodo por sede + paquete de seeds TOTP en el dispositivo de recepción) sigue pendiente de validación docente y es costoso para el MVP.
+El check-in online ya entraba por `POST /acceso/check-ins`. Hacía falta un camino para los eventos acumulados, sin doble ingreso si el recepcionista reintenta, y sin cerrar solo la presencia de otra sede cuando el segundo ingreso pierde.
 
-También aplica **RN-01** (un socio no puede figurar “dentro” de dos sedes a la vez). Online se puede garantizar con integridad en BD; offline solo se consolida al sincronizar.
-
-Referencias: Decisiones §8 · Plan M2 Acceso · [Propuesta RN-01](../rnf/Propuesta_RN01_Presencia_Una_Sede.md) · [C4 §5](../diagramas/C4_Arquitectura_FitZone.md).
-
-## Decisión
-
-Vamos a implementar el acceso MVP así:
-
-1. **QR regenerativo con TOTP** por socio (tabla `totp_seeds`): período **60 s**, ventana de aceptación **±1 período**. Payload del QR: `{ v:1, perfilId, code }` (sin nombre en el código).
-2. **Check-in online en Nest** (módulo Acceso): membresía activa → verificar TOTP → aplicar presencia → historial en `check_ins`. Fuente de verdad = API.
-3. **Offline de sede acotado:** la UI de recepción **acumula** eventos en cola local (`localStorage` / IndexedDB). Al volver la red, **flush** a Nest (`POST /acceso/check-ins/sync`); cada ítem responde `ok` o `error` tipado. Sin resolución automática de conflictos.
-4. **RN-01 como RN-02:** la unicidad la impone PostgreSQL (`presencias` con `UNIQUE(perfil_id)` o PK). Nest **no** garantiza la regla con un `if` previo: intenta el `INSERT` (idealmente vía RPC que traduzca `unique_violation` a un código de negocio, igual que `reservar_cancha` → `TURNO_OCUPADO`) y mapea el error a `YA_EN_OTRA_SEDE` / `YA_DENTRO`. Offline: consistencia eventual; conflicto al sync → mismo error anotado, sin auto-cerrar la presencia previa.
-5. **Checkout de presencia:** timeout (p. ej. 3 h) + salida explícita opcional. **Aforo (RF-05):** soft (aviso), no bloqueo duro.
-6. **Emisión del seed** al activar/renovar membresía; demo web del socio (`/mi-qr`) antes que React Native.
-
-Queda **fuera del MVP:** paquete de seeds en sede, nodo/servicio local por sede, tornos físicos, aforo duro, app móvil instalable.
-
-Estado de este ADR: **Aceptado** (2026-11-03). Entregado: migración `20261101210000_acceso_m2.sql`; Nest `acceso/` (TOTP, check-in/out, `POST /acceso/check-ins/sync`); UI `/mi-qr` y `/acceso` con cola `localStorage` (Plan M2 Fases 0–4). Stretch fuera del ADR: cámara, check-out rico en UI, nodo por sede, app móvil.
-
-## Consecuencias
-
-Positivas: desbloquea RF-04 y un RNF-01 demostrable sin infraestructura por sede; reutiliza el BFF Nest y Supabase (ADR-005/006); RN-01 online queda fuerte como RN-02; errores de sync visibles para defensa y operación.
-
-Negativas: offline no valida membresía/TOTP/RN-01 hasta el sync (un ingreso “local” puede rechazarse después); no hay cache de seeds en recepción (revocación offline “fuerte” diferida); el timeout de presencia es una convención de equipo, no aún feedback docente; hay que cifrar el seed en BD y definir idempotencia (`client_event_id`).
+RN-01 se impone con la clave primaria de `presencias` (`perfil_id`) dentro de `registrar_check_in`. La migración es `supabase/migrations/20261101210000_acceso_m2.sql`.
 
 ## Alternativas consideradas
 
-(a) Solo check-in online, sin cola: descartada porque no cubre RNF-01 en sede.
+| Alternativa | A favor | En contra | Por qué se descartó |
+|---|---|---|---|
+| Réplica local de seeds, membresías y presencias, refresca cada N minutos | La sede valida y rechaza sin red | Secretos en el navegador, revocación atrasada y conflictos de dos copias de la presencia | Es el nodo que ADR-003 dejó fuera |
+| Timer fijo (por ejemplo cada 30 s) aunque nadie esté mirando la pantalla | Vacía la cola sin un clic | Despierta la API en el free tier y reintenta errores de negocio en loop | El evento de red y el botón alcanzan para la demo |
+| Last-write-wins: el sync pisa la presencia anterior | El ingreso encolado «gana» siempre | Un socio quedaría dentro de la sede equivocada, o en dos, según el orden de llegada | RN-01 no se negocia en el cliente |
+| Borrar la presencia vieja y aceptar el ingreso nuevo | La cola no muestra errores | Cierra una visita que quizá sigue abierta en la otra sede, sin cajero de por medio | El conflicto se anota y lo resuelve una persona |
 
-(b) Nodo/servicio local por sede + paquete de seeds (validación TOTP offline fuerte): diferida; plausible a largo plazo, fuera del MVP.
+## Decisión
 
-(c) RN-01 solo en lógica Nest con `if` (sin unique en `presencias`): descartada; no aguanta concurrencia (mismo motivo que no resolver RN-02 solo en Nest).
+El terminal no replica catálogo, seeds ni membresías. En `localStorage`, clave `fitzone.acceso.cola`, solo persiste la cola de ingresos todavía no confirmados. Cada ítem lleva `clientEventId`, `perfilId`, `code`, `sedeId` y `ocurrioEn`.
 
-(d) Unique en BD sin mapear el error en Nest: descartada como única entrega al cliente; Nest debe traducir `unique_violation` a códigos claros (`YA_EN_OTRA_SEDE`, etc.), igual que `TURNO_OCUPADO` en canchas. Eso no es un segundo juez de unicidad.
+No hay frecuencia periódica. La cola se envía en dos momentos: cuando el navegador dispara el evento `online`, y cuando recepción pulsa sincronizar. El POST es `/acceso/check-ins/sync`, de a lo sumo 50 ítems.
 
-(e) Aforo duro bloqueando ingreso: descartado en MVP (soft).
+El servidor es la fuente de verdad:
+
+- El mismo `clientEventId` (`check_ins.client_event_id`, único) es idempotente: el reintento responde ok y no vuelve a validar el TOTP.
+- Cada ítem nuevo pasa por membresía activa, TOTP y `registrar_check_in`.
+- Si la presencia ya existe, la base responde `YA_DENTRO` o `YA_EN_OTRA_SEDE`. Nest traduce ese error. El ítem queda en la cola con estado `error`. No se cierra sola la presencia anterior.
+- Los ítems aceptados se quitan de la cola. Los que fallan por red siguen `pendiente`.
+
+El criterio determinante fue no tener dos copias de la presencia: lo que no confirmó la API no es un ingreso.
+
+## Consecuencias
+
+- **Positivas:** no hay secretos TOTP en el puesto de recepción; un reintento no duplica el check-in; el recepcionista ve el ok y el error por ítem; RN-01 se resuelve con la misma clave primaria que en el check-in online.
+- **Negativas:** hasta el sync, el aforo de la sede no incluye a quien está solo en la cola; un código TOTP de 60 s puede vencer mientras el puesto sigue offline y el sync lo va a rechazar; la cola es de ese navegador, no de la sede, y se pierde si se limpia el storage.
+- **Deuda asumida:** no hay cierre de presencia por tiempo (el registro viejo mencionaba unas 3 horas como ejemplo; no está en la base). No hay copia de la cola en otro medio. El puesto no avisa a otras sedes hasta que la API acepta el ingreso.
+
+## Requisitos relacionados
+
+RNF-01, RN-01, RF-04, RF-05

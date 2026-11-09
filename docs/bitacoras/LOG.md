@@ -880,4 +880,29 @@ Rama de trabajo: `S5-T08`, creada desde `desarrollo` (`0002fe3`).
 
 ---
 
+## 2026-11-09 — C-14: diez ADR obligatorios con la numeración de la cátedra
+
+**Tipo:** documentación / arquitectura  
+**Registrado por:** Patricio Ramos (P1)  
+**Cierre:** ADR-001 a ADR-010 en `docs/adr/`, todos Aceptados, con alternativas. Índice en `docs/adr/README.md`. Rama `c-14`.
+
+### Decisión
+
+La numeración vigente pasa a ser la de §5.2.1. El texto anterior no se reescribe: queda en `docs/adr/historial/`. ADR-011 conserva el BFF, que antes era el ADR-005.
+
+Siete registros reescriben decisiones que ya estaban aceptadas (monolito, PostgreSQL, offline, Nest y datos, sincronización del terminal, React, despliegue). Tres no tenían ADR de origen y se escribieron desde el código: concurrencia de la reserva (ADR-004), pirámide de pruebas con umbral del 60 % de sentencias (ADR-008) y token del pago simulado sin persistir la tarjeta (ADR-010).
+
+### Problema
+
+ADR-001 a ADR-010 ya estaban usados con otros temas, tres de ellos reemplazados. Renumerar para la entrega y a la vez no presentar como registro viejo un tema que nunca se había decidido por escrito.
+
+### Fuera de este cierre
+
+- El 60 % todavía no está en `jest.config.ts` ni en el CI. Lo hace cumplir C-10. Si la medición queda debajo, no se baja el número en el ADR: se agregan tests o se supera el registro.
+- No hay `docker-compose.yml`. El ADR-009 fija Compose de API y frontend, con PostgreSQL en Supabase. El archivo es C-07.
+- El checkout simulado recibe el número de prueba en el POST y no lo guarda. La pasarela real queda afuera.
+- Falta mover la tarjeta C-14 a finalizada en Trello.
+
+---
+
 *FitZone Sports · Programación V · UNER*
