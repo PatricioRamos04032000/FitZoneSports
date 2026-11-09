@@ -43,7 +43,7 @@ Excel hermano (mismas filas + columna Observación):
 | **S7-T09** | Componentes documentados (Unidad IV) | por hacer | Relacionada con **S5-T09** y con evidencia en manual/README. Más amplia que tres átomos. | Parcial → S5-T09 |
 | **S6-T06** | Cliente API completo | por hacer | Relacionada con **S5-T07** (finalizada). Base api/sesión ya está; revisar si falta tipado/401 sedes y cerrar. | Casi cubierta por S5-T07 |
 | **S7-T03** | Ensayo demo + checklist del guion | Blocked | Relacionada con **C-06** / **C-24** y bloqueada por **C-01**. Smoke API **S7-T11** ya finalizado ≠ ensayo UI. | Parcial → C-06/C-24 |
-| **C-06** | Ensayo corto guion API+UI | por hacer | Relacionada con **S7-T03** (Blocked) y con **C-01**. Ensayo T1 sin cronómetro. | Sí (versión T1 de S7-T03) |
+| **C-06** | Ensayo corto guion API+UI | por hacer | Relacionada con **S7-T03** (Blocked) y con **C-01**. Ensayo del 2026-11-08 sin errores de flujo; el pulido visual queda fuera de esta tarjeta. Falta pasarla a finalizada en el tablero. | Sí (versión T1 de S7-T03) |
 | **C-24** | Ensayo demo 5 min + plan B | por hacer | Relacionada con **S7-T03** / **C-06**. Versión final cronometrada (T3). | Sí (cierre de S7-T03) |
 
 ---
@@ -101,7 +101,7 @@ S6-T09 → Observación: relacionada con C-12 (mismo trabajo; priorizar C-12).
 S5-T08 → Observación: relacionada con S5-T06/S5-T07; revisar si ya está hecha en repo.
 S6-T06 → Observación: relacionada con S5-T07; revisar cierre (cliente API).
 S7-T03 → Observación: relacionada con C-06/C-24; bloqueada por C-01 (no por falta de API; S7-T11 ok).
-C-06 → Observación: relacionada con S7-T03 (ensayo T1).
+C-06 → Observación: relacionada con S7-T03 (ensayo T1). Ensayo 2026-11-08 sin errores de flujo; pulido visual fuera de la tarjeta. Falta moverla a finalizada en Trello.
 C-24 → Observación: relacionada con S7-T03/C-06 (ensayo final 5 min).
 ```
 
