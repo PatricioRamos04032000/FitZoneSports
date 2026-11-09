@@ -1,30 +1,42 @@
-# ADR-001: Adopción de arquitectura de monolito modular
+# ADR-001 — Monolito modular frente a microservicios, SOA y serverless
 
-Estado: Aceptado  
-Fecha: 2026-08-25
+- **Estado:** Aceptado
+- **Fecha:** 2026-08-25
+- **Autor:** Equipo FitZone Sports (P1–P4). Alineación al Anexo B: Patricio Ramos (P1), 2026-11-09
+- **Sprint:** 1
+- **Lineamientos:** §5.2.1 ADR-001
+
+La decisión no cambió el 2026-11-09. Se completaron los campos del Anexo B y se explicitaron SOA y serverless, que el registro anterior no nombraba. El texto previo está en `historial/ADR-001-monolito-modular.md`.
 
 ## Contexto
 
-FitZone Sports debe gestionar membresías, acceso por QR, clases grupales y alquiler de canchas en más de 25 sedes, con reglas fuertes de consistencia. Si dos usuarios reservan la misma cancha en el mismo horario, solo uno debe tener éxito (RN-02). Un usuario no puede figurar dentro de dos sedes a la vez (RN-01). Los pagos y comprobantes deben quedar ligados a las reservas (M5).
+FitZone Sports tenía que gestionar membresías, acceso por QR, clases y alquiler de canchas en más de 25 sedes. Dos reglas no admitían un resultado intermedio: si dos personas reservan la misma cancha en el mismo horario, solo una reserva vale (RN-02), y un socio no puede figurar dentro de dos sedes a la vez (RN-01). Los pagos tenían que quedar ligados a la reserva.
 
-El equipo son cuatro personas, con dieciséis semanas de trabajo y entregables acumulativos: frameworks backend, patrones de diseño, frontend, CI/CD y app móvil. La cátedra sugiere contenedores backend tipo Spring Boot o NestJS y plantea la tensión entre transacciones ACID locales y arquitecturas distribuidas. El trabajo integrador pide justificar explícitamente por qué no se adoptan microservicios.
-
-## Decisión
-
-Vamos a adoptar un monolito modular: una sola aplicación backend desplegable (API REST), con módulos internos por dominio (usuarios, acceso, clases, canchas, pagos, sedes) y una base de datos compartida (ADR-008). El camino crítico es una aplicación web multi-rol; la app móvil queda diferida a la Unidad VI (ADR-009).
-
-No adoptaremos microservicios ni bases de datos separadas por módulo en este proyecto. La lógica de negocio y los patrones GoF (Repository, Strategy, Observer) vivirán dentro del monolito NestJS, no en un BaaS que reemplace el backend del curso.
-
-## Consecuencias
-
-Positivas: las transacciones ACID locales facilitan reservas y reglas de concurrencia (RN-02); hay un solo deploy de API y un contrato REST/Swagger claro; el enfoque encaja con el tamaño del equipo y el plazo académico; los módulos internos permiten repartir trabajo entre integrantes sin fragmentar el runtime.
-
-Negativas: el despliegue escala la API entera, no un módulo aislado; hace falta disciplina para respetar los límites entre módulos y no acoplar todo; si el sistema creciera mucho en el futuro, podría evaluarse extraer módulos, pero eso queda fuera del alcance actual.
+El equipo eran cuatro personas, con un cuatrimestre y entregables acumulativos de backend, patrones, frontend, integración continua y una app móvil al final. La cátedra pedía justificar el estilo arquitectónico frente a microservicios y dejaba abierta la tensión entre transacciones locales y un sistema distribuido. Sumar una sede tenía que ser configuración, no un deploy nuevo (RNF-04).
 
 ## Alternativas consideradas
 
-(a) Microservicios (reservas, pagos y usuarios como servicios separados): descartada por la complejidad de transacciones distribuidas (sagas, 2PC) para evitar sobreventa, y por el overhead de operaciones (deploy, redes, observabilidad) desproporcionado para cuatro desarrolladores y dieciséis semanas.
+| Alternativa | A favor | En contra | Por qué se descartó |
+|---|---|---|---|
+| Microservicios (reservas, pagos y usuarios por separado) | Escalar y desplegar un módulo sin tocar el resto | RN-02 pasa a ser una saga o un 2PC; hacen falta varios deploys, red y observabilidad | El costo de operación no cierra con cuatro personas y el plazo del cuatrimestre |
+| SOA, con servicios de dominio detrás de un bus | Reutiliza capacidades si ya hay sistemas para integrar | La transacción del turno sigue distribuida, y aparece un bus que nadie más va a consumir | No había legados que integrar. El problema de la sobreventa no se simplifica |
+| Serverless y BaaS (funciones sueltas, lógica en el proveedor de la base) | Menos servidores propios y escala a cero | El límite transaccional de RN-02 queda partido entre funciones; el arranque en frío molesta en la demo; los patrones del curso no tienen un proceso donde vivir | Se descartó como estilo del sistema. Supabase queda como base e identidad, no como reemplazo del backend |
+| Monolito sin módulos | Un solo deploy y menos carpetas | No hay límite para Repository, Strategy y Observer, ni una forma clara de repartir el trabajo | Se descartó por el riesgo de acoplar todo el dominio en un solo paquete |
 
-(b) Monolito sin módulos (“big ball of mud”): descartado porque dificulta aplicar Repository, Strategy y Observer y escalar el trabajo en paralelo dentro del equipo.
+## Decisión
 
-(c) Backend BaaS puro (toda la lógica en Supabase, sin Nest): descartado porque la lógica de negocio y los patrones del curso deben vivir en el backend NestJS (ver también ADR-009 y ADR-005).
+Se adopta un monolito modular: una sola API REST desplegable, con módulos internos por dominio (usuarios, acceso, clases, canchas, pagos y sedes) y una base de datos compartida (ADR-002).
+
+El criterio determinante fue poder cerrar RN-02 en una transacción local, con un equipo chico y un solo contrato HTTP.
+
+La app móvil, si entra, es otro cliente de esa API. No es otro estilo arquitectónico.
+
+## Consecuencias
+
+- **Positivas:** las transacciones locales alcanzan para la reserva y para la presencia en sede; hay un solo deploy de API y un Swagger; los módulos permiten repartir el trabajo sin partir el runtime; una sede nueva es una fila, no un servicio (RNF-04).
+- **Negativas:** no se escala un módulo aislado; hace falta disciplina para no cruzar dominios por imports oportunos; un fallo grave del proceso afecta a todos los módulos.
+- **Deuda asumida:** extraer un módulo a otro proceso, si el sistema creciera, es una decisión nueva y otro ADR. No está previsto en esta entrega.
+
+## Requisitos relacionados
+
+RN-02, RN-01, RNF-04

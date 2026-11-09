@@ -86,7 +86,7 @@ Después del tag: solo ensayo Demo Day.
 | ID | Tarea | Quién | h | Cierra cuando | Anexo G |
 |----|-------|-------|---|---------------|---------|
 | C-13 | Reorganizar a `docs/` según la estructura del punto 4 | Patricio | 2–3 | Cátedra encuentra ADR/diagramas/manuales/bitácoras/plan | Estructura carpetas |
-| C-14 | **10 ADR obligatorios** (§5.2.1): mapear existentes + crear faltantes (concurrencia, offline, pruebas/umbral, despliegue/Docker, tokenización, FE/estado, …) | Patricio | 5–6 | 10 archivos, ninguno «Propuesto», con alternativas | ADR ×10 |
+| C-14 | **10 ADR obligatorios** (§5.2.1): mapear existentes + crear faltantes (concurrencia, offline, pruebas/umbral, despliegue/Docker, tokenización, FE/estado, …). **Cerrada 2026-11-09**, rama `c-14`, índice `docs/adr/README.md` | Patricio | 5–6 | 10 archivos, ninguno «Propuesto», con alternativas | ADR ×10 |
 | C-15 | **14 diagramas** + fuente editable + PNG/SVG (C4×4, UML, DER, despliegue, pipeline) | Patricio + Bruno | 8–10 | Carpeta `docs/diagramas/` completa | Diagramas ×14 |
 | C-16 | Manual usuario (Anexo D) + capturas del sistema **entregado** | Lucas + Patricio | 4–5 | Secciones socio / recepción / gerente | Manuales |
 | C-17 | Manual instalación/operación (Anexo E) | Matias | 3–4 | Incluye Docker/env/seed/rollback | Manuales |

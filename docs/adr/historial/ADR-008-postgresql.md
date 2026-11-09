@@ -1,3 +1,5 @@
+> **Histórico, congelado el 2026-11-09 (C-14).** No es la decisión vigente. Índice: [docs/adr/README.md](../README.md).
+
 # ADR-008: Uso de PostgreSQL como base de datos relacional
 
 Estado: Aceptado  
