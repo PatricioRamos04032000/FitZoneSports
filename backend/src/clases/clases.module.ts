@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
-import { AuthModule } from '../auth/auth.module';
-import { MembresiasModule } from '../membresias/membresias.module';
-import { NotificacionesModule } from '../notificaciones/notificaciones.module';
+import { AuthModule } from '../usuarios/auth/auth.module';
+import { MembresiasModule } from '../usuarios/membresias/membresias.module';
+import { NotificacionesModule } from './notificaciones/notificaciones.module';
 import { ClasesController } from './clases.controller';
 import { ClasesRepository } from './clases.repository';
 import { ClasesService } from './clases.service';

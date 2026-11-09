@@ -10,8 +10,8 @@
 import { config as loadDotenv } from 'dotenv';
 import { resolve } from 'path';
 import { Test, TestingModule } from '@nestjs/testing';
-import { AuthController } from '../src/auth/auth.controller';
-import { MembresiasController } from '../src/membresias/membresias.controller';
+import { AuthController } from '../src/usuarios/auth/auth.controller';
+import { MembresiasController } from '../src/usuarios/membresias/membresias.controller';
 import { ReservasCanchaController } from '../src/canchas/reservas/reservas-cancha.controller';
 import { AppModule } from '../src/app.module';
 import { SupabaseService } from '../src/supabase/supabase.service';

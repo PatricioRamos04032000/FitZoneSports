@@ -4,17 +4,17 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { SupabaseModule } from './supabase/supabase.module';
-import { AuthModule } from './auth/auth.module';
+import { AuthModule } from './usuarios/auth/auth.module';
 import { HealthModule } from './health/health.module';
-import { SedesModule } from './sedes/sedes.module';
-import { NotificacionesModule } from './notificaciones/notificaciones.module';
-import { MembresiasModule } from './membresias/membresias.module';
+import { SedesModule } from './usuarios/sedes/sedes.module';
+import { NotificacionesModule } from './clases/notificaciones/notificaciones.module';
+import { MembresiasModule } from './usuarios/membresias/membresias.module';
 import { ClasesModule } from './clases/clases.module';
 import { PreciosModule } from './canchas/precios/precios.module';
 import { ReservasCanchaModule } from './canchas/reservas/reservas-cancha.module';
 import { CanchasModule } from './canchas/canchas.module';
 import { PagosModule } from './pagos/pagos.module';
-import { PerfilesModule } from './perfiles/perfiles.module';
+import { PerfilesModule } from './usuarios/perfiles/perfiles.module';
 import { AccesoModule } from './acceso/acceso.module';
 
 @Module({

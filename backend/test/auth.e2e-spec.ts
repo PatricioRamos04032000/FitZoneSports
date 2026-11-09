@@ -3,8 +3,8 @@ import { INestApplication } from '@nestjs/common';
 import request from 'supertest';
 import { App } from 'supertest/types';
 import { AppModule } from './../src/app.module';
-import { PerfilesRolRepository } from './../src/auth/perfiles-rol.repository';
-import { SUPABASE_JWKS } from './../src/auth/supabase-jwt.service';
+import { PerfilesRolRepository } from './../src/common/perfiles-rol.repository';
+import { SUPABASE_JWKS } from './../src/common/supabase-jwt.service';
 import { createTestSigner, type TestSigner } from './support/supabase-jwt';
 
 describe('Auth /auth/me (e2e)', () => {

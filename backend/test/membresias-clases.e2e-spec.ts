@@ -3,10 +3,10 @@ import { Test } from '@nestjs/testing';
 import request from 'supertest';
 import { App } from 'supertest/types';
 import { AppModule } from './../src/app.module';
-import { PerfilesRolRepository } from './../src/auth/perfiles-rol.repository';
-import { SUPABASE_JWKS } from './../src/auth/supabase-jwt.service';
+import { PerfilesRolRepository } from './../src/common/perfiles-rol.repository';
+import { SUPABASE_JWKS } from './../src/common/supabase-jwt.service';
 import { ClasesService } from './../src/clases/clases.service';
-import { MembresiasService } from './../src/membresias/membresias.service';
+import { MembresiasService } from './../src/usuarios/membresias/membresias.service';
 import { setupSwagger } from './../src/swagger';
 import { createTestSigner, type TestSigner } from './support/supabase-jwt';
 

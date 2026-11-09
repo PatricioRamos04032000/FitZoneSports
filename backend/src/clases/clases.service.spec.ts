@@ -4,11 +4,11 @@ import {
   ForbiddenException,
   NotFoundException,
 } from '@nestjs/common';
-import { MembresiasService } from '../membresias/membresias.service';
+import { MembresiasService } from '../usuarios/membresias/membresias.service';
 import {
   EsperaNotificada,
   ListaEsperaPublisher,
-} from '../notificaciones/lista-espera.publisher';
+} from './notificaciones/lista-espera.publisher';
 import { RepositoryError } from '../supabase/repository.error';
 import {
   Clase,

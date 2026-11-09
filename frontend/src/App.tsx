@@ -1,18 +1,18 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
-import Layout from "./components/Layout/Layout";
-import ProtectedRoute from "./pages/ProtectedRoute";
-import RoleRoute from "./pages/RoleRoute";
-import Home from "./pages/Home/Home";
-import Login from "./pages/Login/Login";
-import Signup from "./pages/Login/Signup";
-import Dashboard from "./pages/Login/Dashboard";
-import Perfil from "./pages/Perfil/Perfil";
-import Canchas from "./pages/Canchas/Canchas";
-import Clases from "./pages/Clases/Clases";
-import Notificaciones from "./pages/Notificaciones/Notificaciones";
-import MiQr from "./pages/MiQr/MiQr";
-import Acceso from "./pages/Acceso/Acceso";
+import Layout from "./components/organisms/Layout/Layout";
+import ProtectedRoute from "./routes/ProtectedRoute";
+import RoleRoute from "./routes/RoleRoute";
+import Home from "./portal/Home/Home";
+import Login from "./portal/Login/Login";
+import Signup from "./portal/Login/Signup";
+import Dashboard from "./portal/Login/Dashboard";
+import Perfil from "./portal/Perfil/Perfil";
+import Canchas from "./portal/Canchas/Canchas";
+import Clases from "./portal/Clases/Clases";
+import Notificaciones from "./portal/Notificaciones/Notificaciones";
+import MiQr from "./portal/MiQr/MiQr";
+import Acceso from "./admin/Acceso/Acceso";
 
 function App() {
   return (

@@ -5,7 +5,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
-import { MembresiasService } from '../membresias/membresias.service';
+import { MembresiasService } from '../usuarios/membresias/membresias.service';
 import { RepositoryError } from '../supabase/repository.error';
 import { AccesoRepository } from './acceso.repository';
 import { AccesoService } from './acceso.service';

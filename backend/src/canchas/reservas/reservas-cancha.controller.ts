@@ -21,9 +21,9 @@ import {
   ApiTags,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
-import { AuthUserDto } from '../../auth/auth-user.dto';
-import { CurrentUser } from '../../auth/current-user.decorator';
-import { JwtAuthGuard } from '../../auth/jwt-auth.guard';
+import { AuthUserDto } from '../../common/auth-user.dto';
+import { CurrentUser } from '../../common/current-user.decorator';
+import { JwtAuthGuard } from '../../common/jwt-auth.guard';
 import {
   IniciarPagoResponseDto,
   ReservarCanchaDto,

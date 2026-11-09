@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { EsperaNotificada } from '../notificaciones/lista-espera.publisher';
+import { EsperaNotificada } from './notificaciones/lista-espera.publisher';
 import { SupabaseRepository } from '../supabase/supabase.repository';
 import {
   Clase,

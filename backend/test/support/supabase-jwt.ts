@@ -7,7 +7,7 @@ import {
   type JWTPayload,
   type JWTVerifyGetKey,
 } from 'jose';
-import { supabaseIssuer } from '../../src/auth/supabase-jwt.service';
+import { supabaseIssuer } from '../../src/common/supabase-jwt.service';
 
 export const TEST_SUPABASE_URL = 'https://fitzone-test.supabase.co';
 export const TEST_ISSUER = supabaseIssuer(TEST_SUPABASE_URL);

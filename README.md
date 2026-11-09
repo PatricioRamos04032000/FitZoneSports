@@ -56,14 +56,7 @@ git clone https://github.com/PatricioRamos04032000/FitZoneSports.git
 cd FitZoneSports
 ```
 
-El repositorio contiene tres carpetas principales:
-
-```
-FitZoneSports/
-├── backend/       # API NestJS (monolito modular)
-├── frontend/      # SPA React + Vite
-└── documentacion/ # Documentación académica del proyecto
-```
+El repositorio contiene el backend NestJS, el frontend React y la documentación de entrega en `docs/`.
 
 ---
 
@@ -231,7 +224,7 @@ npm run preview
 
 ## 6. Guía de demostración
 
-Guía corta para mostrar el sistema en local (equipo, docente o Demo Day interno). Detalle del seed: [`documentacion/Seed_Demo_S5.md`](documentacion/Seed_Demo_S5.md).
+Guía corta para mostrar el sistema en local (equipo, docente o Demo Day interno).
 
 ### 6.1 Preparación (una vez)
 
@@ -311,7 +304,7 @@ Configurar `frontend/.env` con al menos `VITE_API_URL=http://localhost:3000` (re
 
 #### Acceso M2 (QR + recepción) — ~5 min
 
-Requiere migración Acceso M2 aplicada y `npm run seed` (socio con TOTP). Detalle: [Plan M2](documentacion/Plan_M2_Acceso_QR_Patricio.md) · Postman [`postman/FitZoneSports_Acceso.postman_collection.json`](postman/FitZoneSports_Acceso.postman_collection.json).
+Requiere migración Acceso M2 aplicada y `npm run seed` (socio con TOTP). Colección Postman: [`postman/FitZoneSports_Acceso.postman_collection.json`](postman/FitZoneSports_Acceso.postman_collection.json).
 
 1. **Socio** — login `socio@fitzone.com` → menú **Mi QR**: código de 6 dígitos + QR (`{ v:1, perfilId, code }`), se renueva ~cada 60 s.
 2. **Recepción** — otra ventana/perfil: login `admin.central@fitzone.com` → **Acceso**.
@@ -325,7 +318,7 @@ Recorrido general: Home → Login → Perfil / Canchas según rol.
 
 - Flujos completos de reserva de cancha / pago en la UI (módulos en evolución; precios Strategy están en backend bajo `canchas/precios`).
 - Cámara para escanear QR; check-out amigable en la pantalla Acceso; app móvil nativa (Unidad VI).
-- Nodo/servidor por sede ni validación TOTP 100 % offline en recepción (MVP = cola local + sync; [ADR-007](documentacion/adr/ADR-007-acceso-totp-cola-offline.md)).
+- Nodo/servidor por sede ni validación TOTP 100 % offline en recepción (MVP = cola local + sync; [ADR-007](docs/adr/ADR-007-acceso-totp-cola-offline.md)).
 - Que el seed cree clases o reservas (solo usuarios, sedes, membresía/TOTP del socio y canchas).
 
 ---
@@ -366,39 +359,40 @@ npm run lint             # Linting con ESLint
 FitZoneSports/
 ├── backend/                      # API NestJS (monolito modular, BFF)
 │   ├── src/
-│   │   ├── main.ts               # Arranque: CORS, Swagger, puerto
-│   │   ├── app.module.ts         # Módulo raíz
-│   │   ├── cors.ts / swagger.ts  # CORS y docs OpenAPI
-│   │   ├── supabase/             # Cliente Supabase + Repository + filtro de errores
-│   │   ├── auth/                 # Login, JWT, guards, roles
-│   │   ├── health/               # GET /health
-│   │   ├── sedes/                # GET /sedes
-│   │   ├── perfiles/             # GET/PATCH /perfiles/me
-│   │   ├── notificaciones/       # In-app + Observer (lista de espera)
-│   │   ├── membresias/           # Membresías del socio
-│   │   ├── clases/               # Clases, cupos, inscripciones
-│   │   └── canchas/
-│   │       └── precios/          # Strategy de precios (M4)
-│   ├── test/                     # Tests HTTP (Jest + Supertest)
-│   ├── scripts/                  # seed-demo.ts (npm run seed)
-│   ├── .env.example              # Plantilla de variables (sin secretos)
-│   ├── jest.config.ts            # Coverage / unitarios
-│   └── package.json
+│   │   ├── common/               # Guards, decoradores y verificación del JWT
+│   │   ├── usuarios/             # M1: auth, perfiles, membresías y sedes
+│   │   ├── acceso/               # M2: QR, check-in y aforo
+│   │   ├── clases/               # M3: clases, cupos y notificaciones
+│   │   ├── canchas/              # M4: canchas, precios y reservas
+│   │   ├── pagos/                # M5: pasarela simulada
+│   │   ├── supabase/             # Cliente Supabase y Repository
+│   │   └── health/               # GET /health
+│   ├── test/                     # Tests e2e
+│   └── .env.example
 ├── frontend/                     # SPA React + Vite
-│   ├── src/
-│   │   ├── main.tsx              # Entrada React
-│   │   ├── App.tsx               # React Router
-│   │   ├── pages/                # Home, Login, Canchas, Perfil
-│   │   └── components/           # Layout y UI compartida
-│   ├── package.json
-│   └── vite.config.ts
-├── supabase/
-│   └── migrations/               # SQL versionado (núcleo, M3–M5, etc.)
-├── documentacion/                # C4, ADR, actas, guías, seed demo, etc.
-└── README.md                     # Este archivo
+│   └── src/
+│       ├── portal/               # Socio: login, perfil, canchas, clases, QR
+│       ├── admin/                # Recepción y gerencia: acceso
+│       ├── components/           # Átomos y organismos
+│       ├── services/             # Cliente HTTP de la API
+│       ├── store/                # Sesión
+│       └── routes/               # Rutas protegidas por rol
+├── docs/
+│   ├── adr/
+│   ├── diagramas/
+│   ├── bitacoras/
+│   ├── manuales/
+│   ├── planificacion/
+│   ├── rnf/
+│   └── entregables/
+├── supabase/migrations/          # SQL versionado
+├── postman/                      # Colecciones de la API
+├── .github/                      # CI del backend
+├── .env.example                  # Nombres de variables; los valores están en las plantillas
+└── README.md
 ```
 
-Más detalle del backend: [`documentacion/Estructura_Backend.md`](documentacion/Estructura_Backend.md).
+`supabase/`, `postman/` y `.github/` quedan en la raíz porque no son el backend, el frontend ni `docs/`.
 
 ---
 
@@ -469,15 +463,6 @@ NODE_OPTIONS=--use-system-ca npm run start:dev
 ### Estado del frontend
 
 El frontend tiene el esqueleto de rutas (Home, Login, Perfil, Canchas). Parte de la UI sigue siendo placeholder o no está totalmente cableada al BFF; para demos de negocio usar Swagger (§6.3).
-
-### Documentación extra
-
-| Tema | Documento |
-|------|-----------|
-| Seed de demo | [`documentacion/Seed_Demo_S5.md`](documentacion/Seed_Demo_S5.md) |
-| Estructura Nest | [`documentacion/Estructura_Backend.md`](documentacion/Estructura_Backend.md) |
-| Plan de tests | [`documentacion/Guia_Implementacion_Tests.md`](documentacion/Guia_Implementacion_Tests.md) |
-| Decisiones / mejoras | [`documentacion/Decisiones_Pendientes_y_Cosas_a_Definir.md`](documentacion/Decisiones_Pendientes_y_Cosas_a_Definir.md) |
 
 ### Soporte
 

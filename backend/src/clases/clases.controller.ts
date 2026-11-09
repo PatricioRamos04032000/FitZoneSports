@@ -27,10 +27,10 @@ import {
   ApiTags,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
-import { AuthUserDto } from '../auth/auth-user.dto';
-import { CurrentUser } from '../auth/current-user.decorator';
-import { JwtAuthGuard, type AuthenticatedRequest } from '../auth/jwt-auth.guard';
-import { RequiereRol } from '../auth/roles.decorator';
+import { AuthUserDto } from '../common/auth-user.dto';
+import { CurrentUser } from '../common/current-user.decorator';
+import { JwtAuthGuard, type AuthenticatedRequest } from '../common/jwt-auth.guard';
+import { RequiereRol } from '../common/roles.decorator';
 import {
   AnotarseListaEsperaDto,
   ClaseConCupoResponseDto,

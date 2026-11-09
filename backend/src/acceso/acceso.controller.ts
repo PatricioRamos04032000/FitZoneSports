@@ -21,11 +21,11 @@ import {
   ApiTags,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
-import { AuthUserDto } from '../auth/auth-user.dto';
-import { CurrentUser } from '../auth/current-user.decorator';
-import type { AuthenticatedRequest } from '../auth/jwt-auth.guard';
-import { RequiereRol } from '../auth/roles.decorator';
-import type { RolUsuario } from '../auth/rol-usuario';
+import { AuthUserDto } from '../common/auth-user.dto';
+import { CurrentUser } from '../common/current-user.decorator';
+import type { AuthenticatedRequest } from '../common/jwt-auth.guard';
+import { RequiereRol } from '../common/roles.decorator';
+import type { RolUsuario } from '../common/rol-usuario';
 import {
   CheckInRequestDto,
   CheckInResponseDto,
