@@ -10,9 +10,9 @@ import {
   UnauthorizedException,
   forwardRef,
 } from '@nestjs/common';
-import { MembresiasService } from '../membresias/membresias.service';
+import { MembresiasService } from '../usuarios/membresias/membresias.service';
 import { RepositoryError } from '../supabase/repository.error';
-import type { RolUsuario } from '../auth/rol-usuario';
+import type { RolUsuario } from '../common/rol-usuario';
 import { AccesoRepository } from './acceso.repository';
 import {
   CheckInResponseDto,

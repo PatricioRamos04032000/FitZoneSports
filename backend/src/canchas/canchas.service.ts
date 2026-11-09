@@ -5,7 +5,7 @@ import {
   NotFoundException,
   ServiceUnavailableException,
 } from '@nestjs/common';
-import type { RolUsuario } from '../auth/rol-usuario';
+import type { RolUsuario } from '../common/rol-usuario';
 import { PreciosService } from './precios/precios.service';
 import { ConfiguracionPico } from './precios/pricing.strategy';
 import {

@@ -3,9 +3,9 @@ import { INestApplication } from '@nestjs/common';
 import request from 'supertest';
 import { App } from 'supertest/types';
 import { AppModule } from './../src/app.module';
-import { SUPABASE_JWKS } from './../src/auth/supabase-jwt.service';
-import { PerfilesRepository } from './../src/perfiles/perfiles.repository';
-import type { Perfil } from './../src/perfiles/perfil.model';
+import { SUPABASE_JWKS } from './../src/common/supabase-jwt.service';
+import { PerfilesRepository } from './../src/usuarios/perfiles/perfiles.repository';
+import type { Perfil } from './../src/usuarios/perfiles/perfil.model';
 import { createTestSigner, type TestSigner } from './support/supabase-jwt';
 
 const PERFIL_ID = '3f1c2a9e-8b7d-4c6e-9a1f-2b3c4d5e6f70';

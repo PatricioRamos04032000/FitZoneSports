@@ -3,8 +3,8 @@ import { Test, TestingModule } from '@nestjs/testing';
 import request from 'supertest';
 import { App } from 'supertest/types';
 import { AppModule } from './../src/app.module';
-import { PerfilesRolRepository } from './../src/auth/perfiles-rol.repository';
-import { SUPABASE_JWKS } from './../src/auth/supabase-jwt.service';
+import { PerfilesRolRepository } from './../src/common/perfiles-rol.repository';
+import { SUPABASE_JWKS } from './../src/common/supabase-jwt.service';
 import { CanchasRepository } from './../src/canchas/canchas.repository';
 import { createTestSigner, type TestSigner } from './support/supabase-jwt';
 

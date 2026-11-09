@@ -5,9 +5,9 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import type { RolUsuario } from '../auth/rol-usuario';
-import { MembresiasService } from '../membresias/membresias.service';
-import { ListaEsperaPublisher } from '../notificaciones/lista-espera.publisher';
+import type { RolUsuario } from '../common/rol-usuario';
+import { MembresiasService } from '../usuarios/membresias/membresias.service';
+import { ListaEsperaPublisher } from './notificaciones/lista-espera.publisher';
 import { RepositoryError } from '../supabase/repository.error';
 import {
   ClaseConCupo,

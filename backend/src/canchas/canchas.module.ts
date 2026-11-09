@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { AuthModule } from '../auth/auth.module';
+import { AuthModule } from '../usuarios/auth/auth.module';
 import { PreciosModule } from './precios/precios.module';
 import { CanchasController } from './canchas.controller';
 import { ConfiguracionPreciosController } from './configuracion-precios.controller';
