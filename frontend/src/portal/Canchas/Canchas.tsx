@@ -1,6 +1,5 @@
-
 import { useEffect, useState } from "react";
-
+import "./Canchas.css";
 import {
   obtenerSedes,
   obtenerDisponibilidad,

@@ -1,4 +1,3 @@
-
 .perfil-container {
   max-width: 1000px;
   margin: 0 auto;
@@ -214,6 +213,50 @@
   cursor: not-allowed;
 }
 
+/* Membresía */
+.membresia-info {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 22px;
+}
+
+.membresia-dato {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  padding: 20px;
+  background: #f5f7fa;
+  border: 1px solid #e5eaf0;
+  border-radius: 10px;
+}
+
+.membresia-dato span {
+  color: #667085;
+  font-size: 14px;
+}
+
+.membresia-dato strong {
+  color: #14283f;
+  font-size: 17px;
+}
+
+.membresia-estado.activo {
+  color: #168044;
+}
+
+.membresia-estado.vencido {
+  color: #c0392b;
+}
+
+.membresia-estado.suspendido {
+  color: #a15c00;
+}
+
+.perfil-membresia-mensaje {
+  color: #667085;
+  line-height: 1.6;
+}
+
 /* Mensajes */
 .perfil-success {
   color: #168044;
@@ -259,5 +302,10 @@
   .perfil-preferencia {
     padding: 18px;
     gap: 15px;
+  }
+
+  .membresia-info {
+    grid-template-columns: 1fr;
+    gap: 14px;
   }
 }

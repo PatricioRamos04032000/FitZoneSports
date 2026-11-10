@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { useAuth } from "../../store/useAuth";
 import { apiRequest } from "../../services/api";
@@ -25,6 +24,15 @@ interface Sede {
   activa: boolean;
 }
 
+interface MembresiaData {
+  id: string;
+  perfil_id: string;
+  plan: "mensual" | "trimestral" | "anual";
+  estado: "activo" | "vencido" | "suspendido";
+  vigente_desde: string;
+  vigente_hasta: string;
+}
+
 function Perfil() {
   const { accessToken } = useAuth();
 
@@ -32,11 +40,39 @@ function Perfil() {
   const [sedes, setSedes] = useState<Sede[]>([]);
   const [preferenciaEmail, setPreferenciaEmail] = useState(false);
 
+  const [membresia, setMembresia] = useState<MembresiaData | null>(null);
+  const [cargandoMembresia, setCargandoMembresia] = useState(false);
+  const [errorMembresia, setErrorMembresia] = useState("");
+
   const [cargando, setCargando] = useState(true);
   const [guardando, setGuardando] = useState(false);
   const [guardandoPreferencia, setGuardandoPreferencia] = useState(false);
   const [error, setError] = useState("");
   const [mensaje, setMensaje] = useState("");
+
+  async function cargarMembresia(token: string) {
+    setCargandoMembresia(true);
+    setErrorMembresia("");
+
+    try {
+      const data = (await apiRequest("/membresias/mia", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })) as MembresiaData;
+
+      setMembresia(data);
+    } catch (err) {
+      setMembresia(null);
+      setErrorMembresia(
+        err instanceof Error
+          ? err.message
+          : "No se pudo cargar la membresía."
+      );
+    } finally {
+      setCargandoMembresia(false);
+    }
+  }
 
   useEffect(() => {
     if (!accessToken) return;
@@ -56,6 +92,10 @@ function Perfil() {
         setPerfil(perfilData);
         setPreferenciaEmail(perfilData.notificar_por_email);
         setSedes(sedesData.filter((sede) => sede.activa));
+
+        if (perfilData.rol === "socio") {
+          void cargarMembresia(accessToken);
+        }
       } catch (err) {
         setError(
           err instanceof Error
@@ -118,38 +158,38 @@ function Perfil() {
   }
 
   async function guardarPreferenciaEmail(nuevaPreferencia: boolean) {
-  if (!perfil || !accessToken) return;
+    if (!perfil || !accessToken) return;
 
-  const preferenciaAnterior = perfil.notificar_por_email;
+    const preferenciaAnterior = perfil.notificar_por_email;
 
-  setPreferenciaEmail(nuevaPreferencia);
-  setGuardandoPreferencia(true);
-  setError("");
+    setPreferenciaEmail(nuevaPreferencia);
+    setGuardandoPreferencia(true);
+    setError("");
 
-  try {
-    const perfilActualizado = (await apiRequest("/perfiles/me", {
-      method: "PATCH",
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-      body: JSON.stringify({
-        notificar_por_email: nuevaPreferencia,
-      }),
-    })) as PerfilData;
+    try {
+      const perfilActualizado = (await apiRequest("/perfiles/me", {
+        method: "PATCH",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify({
+          notificar_por_email: nuevaPreferencia,
+        }),
+      })) as PerfilData;
 
-    setPerfil(perfilActualizado);
-    setPreferenciaEmail(perfilActualizado.notificar_por_email);
-  } catch (err) {
-    setPreferenciaEmail(preferenciaAnterior);
-    setError(
-      err instanceof Error
-        ? err.message
-        : "No se pudo actualizar la preferencia de email."
-    );
-  } finally {
-    setGuardandoPreferencia(false);
+      setPerfil(perfilActualizado);
+      setPreferenciaEmail(perfilActualizado.notificar_por_email);
+    } catch (err) {
+      setPreferenciaEmail(preferenciaAnterior);
+      setError(
+        err instanceof Error
+          ? err.message
+          : "No se pudo actualizar la preferencia de email."
+      );
+    } finally {
+      setGuardandoPreferencia(false);
+    }
   }
-}
 
   if (cargando) {
     return <p className="perfil-estado">Cargando perfil...</p>;
@@ -223,6 +263,7 @@ function Perfil() {
               }
             >
               <option value="">Sin sede habitual</option>
+
               {sedes.map((sede) => (
                 <option key={sede.id} value={sede.id}>
                   {sede.nombre}
@@ -277,19 +318,74 @@ function Perfil() {
               <span className="perfil-switch-nombre">
                 Notificaciones por email
               </span>
+
               <input
                 type="checkbox"
                 checked={preferenciaEmail}
                 disabled={guardandoPreferencia}
-                onChange={(e) => guardarPreferenciaEmail(e.target.checked)}
+                onChange={(e) =>
+                  guardarPreferenciaEmail(e.target.checked)
+                }
               />
+
               <span className="perfil-switch-slider"></span>
             </label>
           </div>
-
-
         </div>
       </div>
+
+      {perfil.rol === "socio" && (
+        <div className="perfil-card">
+          <h2>Mi membresía</h2>
+
+          {cargandoMembresia ? (
+            <p className="perfil-estado">Cargando membresía...</p>
+          ) : membresia ? (
+            <div className="membresia-info">
+              <div className="membresia-dato">
+                <span>Plan contratado</span>
+                <strong>
+                  {membresia.plan.charAt(0).toUpperCase() +
+                    membresia.plan.slice(1)}
+                </strong>
+              </div>
+
+              <div className="membresia-dato">
+                <span>Estado</span>
+                <strong
+                  className={`membresia-estado ${membresia.estado}`}
+                >
+                  {membresia.estado.charAt(0).toUpperCase() +
+                    membresia.estado.slice(1)}
+                </strong>
+              </div>
+
+              <div className="membresia-dato">
+                <span>Vigente desde</span>
+                <strong>
+                  {new Date(
+                    `${membresia.vigente_desde}T12:00:00`
+                  ).toLocaleDateString("es-AR")}
+                </strong>
+              </div>
+
+              <div className="membresia-dato">
+                <span>Vigente hasta</span>
+                <strong>
+                  {new Date(
+                    `${membresia.vigente_hasta}T12:00:00`
+                  ).toLocaleDateString("es-AR")}
+                </strong>
+              </div>
+            </div>
+          ) : (
+            <p className="perfil-membresia-mensaje">
+              {errorMembresia ||
+                "No tenés una membresía registrada."}
+            </p>
+          )}
+        </div>
+      )}
 
       {mensaje && <p className="perfil-success">{mensaje}</p>}
       {error && <p className="perfil-error">{error}</p>}
