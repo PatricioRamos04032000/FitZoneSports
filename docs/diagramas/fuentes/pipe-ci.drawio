@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="app.diagrams.net" agent="Cursor" version="22.1.0" type="device">
+  <diagram id="pipe-ci" name="Pipeline">
+    <mxGraphModel dx="1500" dy="600" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1560" pageHeight="420" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <mxCell id="titulo" value="GitHub Actions · ubuntu-latest · job ci-backend · carpeta backend" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=14;fontColor=#333333;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="30" y="24" width="900" height="28" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="pr" value="Pull request&lt;br&gt;hacia desarrollo" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontColor=#333333;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="30" y="80" width="160" height="80" as="geometry"/>
+        </mxCell>
+        <mxCell id="checkout" value="Checkout" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontColor=#333333;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="240" y="80" width="150" height="80" as="geometry"/>
+        </mxCell>
+        <mxCell id="node" value="Node.js 24" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontColor=#333333;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="440" y="80" width="150" height="80" as="geometry"/>
+        </mxCell>
+        <mxCell id="npm" value="npm ci" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontColor=#333333;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="640" y="80" width="150" height="80" as="geometry"/>
+        </mxCell>
+        <mxCell id="lint" value="Lint&lt;br&gt;oxlint" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontColor=#333333;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="840" y="80" width="150" height="80" as="geometry"/>
+        </mxCell>
+        <mxCell id="test" value="Tests unitarios&lt;br&gt;Jest" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontColor=#333333;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="1040" y="80" width="160" height="80" as="geometry"/>
+        </mxCell>
+        <mxCell id="build" value="Build&lt;br&gt;nest build" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontColor=#333333;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="1250" y="80" width="150" height="80" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="e1" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;rounded=0;strokeColor=#333333;endArrow=block;endFill=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="pr" target="checkout">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e2" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;rounded=0;strokeColor=#333333;endArrow=block;endFill=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="checkout" target="node">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e3" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;rounded=0;strokeColor=#333333;endArrow=block;endFill=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="node" target="npm">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e4" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;rounded=0;strokeColor=#333333;endArrow=block;endFill=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="npm" target="lint">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e5" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;rounded=0;strokeColor=#333333;endArrow=block;endFill=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="lint" target="test">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e6" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;rounded=0;strokeColor=#333333;endArrow=block;endFill=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="test" target="build">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="nota" value="No corre la cobertura, ni los tests HTTP, ni el SQL de canchas, ni el frontend. No despliega. Las variables de Supabase del workflow son de relleno y no llaman al proyecto real." style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;fontSize=13;fontColor=#333333;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry x="30" y="200" width="1370" height="50" as="geometry"/>
+        </mxCell>
+        <mxCell id="pie" value="Autor: Patricio Ramos. Fecha: 2026-11-11. Versión: 1.0. ADR-008. Fuente: .github/workflows/ci-backend.yml." style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=13;fontColor=#333333;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="30" y="260" width="1100" height="24" as="geometry"/>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

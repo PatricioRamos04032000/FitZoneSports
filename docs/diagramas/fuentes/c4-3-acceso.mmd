@@ -1,0 +1,67 @@
+C4Component
+    title FitZone Sports — Componentes de Acceso
+
+    UpdateLayoutConfig($c4ShapeInRow="1", $c4BoundaryInRow="2")
+
+    Boundary(actores, " ", "") {
+        Person(socio, "Socio activo", "Consulta su QR en el portal")
+        Person(recep, "Recepcionista / administrador de sede", "Ingreso y aforo de su sede")
+    }
+
+    Container_Boundary(fitzone, "FitZone Sports") {
+        Boundary(frente, " ", "") {
+            Container(portal, "Portal del socio", "React", "Muestra el QR rotativo.")
+            Container_Boundary(terminal, "Terminal de sede") {
+                Component(mostrador, "Check-in", "React", "Con red llama a la API.")
+                Component(cola, "Cola local", "localStorage", "Sin red guarda el check-in.")
+            }
+        }
+        Container_Boundary(m2, "M2 Acceso") {
+            Boundary(entrada, " ", "") {
+                Component(acceso, "AccesoService", "NestJS", "Check-in online y sincronización de la cola.")
+            }
+            Boundary(servicios, " ", "") {
+                Component(totp, "TotpService", "NestJS", "Genera y verifica el código. Solo corre en la API.")
+                Component(membresias, "MembresiasService", "NestJS", "Membresía activa al ingresar o al sincronizar.")
+                Component(repo, "AccesoRepository", "Supabase", "RPC registrar_check_in. La base impone RN-01.")
+            }
+        }
+    }
+
+    Boundary(leyenda, "Leyenda", "") {
+        Person(legPersona, "Persona", "Quien usa el portal o el terminal")
+        Container(legCont, "Contenedor", "Aplicación", "Portal o terminal")
+        Component(legComp, "Componente", "Pieza de un contenedor", "Servicio, check-in o cola")
+    }
+
+    UpdateElementStyle(actores, $bgColor="none", $fontColor="none", $borderColor="none")
+    UpdateElementStyle(frente, $bgColor="none", $fontColor="none", $borderColor="none")
+    UpdateElementStyle(entrada, $bgColor="none", $fontColor="none", $borderColor="none")
+    UpdateElementStyle(servicios, $bgColor="none", $fontColor="none", $borderColor="none")
+
+    Rel_R(socio, portal, "Consulta su QR")
+    Rel_R(recep, mostrador, "Registra ingresos")
+    Rel_R(portal, acceso, "Pide el QR", "HTTPS, GET /acceso/totp/me")
+    Rel_R(mostrador, acceso, "Check-in", "HTTPS, POST /acceso/check-ins")
+    Rel_D(mostrador, cola, "Sin red, encola")
+    Rel_R(cola, acceso, "Al reconectar", "HTTPS, POST /acceso/check-ins/sync")
+    Rel_R(acceso, totp, "Verifica el código")
+    Rel_R(acceso, membresias, "Consulta la membresía")
+    Rel_R(acceso, repo, "Registra el ingreso", "RPC registrar_check_in")
+
+    UpdateRelStyle(socio, portal, $offsetY="-20")
+    UpdateRelStyle(recep, mostrador, $offsetY="-16")
+    UpdateRelStyle(portal, acceso, $offsetY="-36")
+    UpdateRelStyle(mostrador, cola, $offsetX="40")
+    UpdateRelStyle(acceso, totp, $offsetX="-46", $offsetY="-22")
+    UpdateRelStyle(acceso, membresias, $offsetX="-36", $offsetY="-10")
+    UpdateRelStyle(acceso, repo, $offsetX="-70", $offsetY="-36")
+
+%% C4-3 Componentes — Acceso — FitZone Sports
+%% Autor: Patricio Ramos
+%% Fecha: 2026-11-10
+%% Versión: 1.0
+%% No hay validación TOTP en el navegador. ADR-003 y ADR-007 validan el código al sincronizar con la API.
+%% Las personas quedan en una columna, fuera del límite. FitZone está a su derecha.
+%% El portal queda arriba del terminal. AccesoService queda a la izquierda de los otros servicios de M2.
+%% La leyenda es el bloque de abajo.

@@ -1,0 +1,50 @@
+sequenceDiagram
+    title FitZone Sports — Reserva de cancha con pago
+    actor Socio
+    participant Portal
+    participant Canchas as CanchasService
+    participant Reservas as ReservasCanchaService
+    participant Precios as PreciosService
+    participant Estrategia as PricingStrategy
+    participant Repo as ReservasCanchaRepository
+    participant Pasarela as PasarelaSimulada
+
+    Socio->>Portal: Elige sede y fecha
+    Portal->>Canchas: GET /canchas/disponibilidad
+    Canchas-->>Portal: Grilla de turnos
+    Portal-->>Socio: Muestra los turnos
+
+    Socio->>Portal: Elige un turno
+    Portal->>Reservas: POST /canchas/reservas
+    Reservas->>Repo: Cancha, pico, descuento y membresía
+    Repo-->>Reservas: ContextoPrecio
+    Reservas->>Precios: calcular(ctx)
+    Precios->>Estrategia: aplica y calcular
+    Estrategia-->>Precios: Precio de la regla
+    Precios-->>Reservas: PrecioCalculado
+    Reservas->>Repo: reservar_cancha
+    Repo-->>Reservas: Reserva pendiente
+    Reservas-->>Portal: Reserva pendiente
+    Portal-->>Socio: Turno en hold
+
+    Socio->>Portal: Paga el hold
+    Portal->>Reservas: POST /canchas/reservas/:id/pagar
+    Reservas->>Pasarela: crearPreferencia
+    Note over Pasarela: Guarda el pago pendiente. No guarda la tarjeta.
+    Pasarela-->>Reservas: checkoutUrl
+    Reservas-->>Portal: checkoutUrl
+    Portal->>Pasarela: Checkout simulado aprueba
+    Pasarela->>Pasarela: confirmarPago, token simulado
+    Pasarela->>Reservas: aplicarResultadoPago
+    Reservas->>Repo: Reserva.pagar confirma
+    Repo-->>Reservas: Reserva confirmada
+    Reservas-->>Pasarela: Confirmada
+    Pasarela-->>Portal: Pago aprobado
+    Portal-->>Socio: Reserva confirmada
+
+%% Secuencia — Reserva de cancha con pago — FitZone Sports
+%% Autor: Patricio Ramos
+%% Fecha: 2026-11-10
+%% Versión: 1.0
+%% La pasarela es simulada. No hay Mercado Pago ni comprobante PDF.
+%% El cierre es la fila de pagos aprobada, con token, y la reserva confirmada.

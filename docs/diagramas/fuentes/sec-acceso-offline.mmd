@@ -1,0 +1,38 @@
+sequenceDiagram
+    title FitZone Sports — Acceso offline
+    actor Socio
+    participant Portal
+    participant Totp as TotpService
+    actor Recep as Recepcionista
+    participant Terminal
+    participant Cola as Cola local
+    participant Acceso as AccesoService
+    participant Rpc as registrar_check_in
+
+    Socio->>Portal: Pide su QR
+    Portal->>Totp: GET /acceso/totp/me/codigo
+    Note over Totp: El código se genera en la API, no en el navegador.
+    Totp-->>Portal: Código rotativo
+    Portal-->>Socio: Muestra el QR
+
+    Note over Terminal, Cola: Sin red, el terminal no llama a la API.
+    Recep->>Terminal: Registra el ingreso
+    Terminal->>Cola: Encola el check-in
+    Note over Cola: localStorage, clave fitzone.acceso.cola
+
+    Note over Terminal, Acceso: Al reconectar
+    Terminal->>Acceso: POST /acceso/check-ins/sync
+    Acceso->>Totp: Verifica el código
+    Totp-->>Acceso: Código válido
+    Acceso->>Acceso: Consulta la membresía
+    Acceso->>Rpc: registrar_check_in
+    Note over Rpc: RN-01, una sede a la vez
+    Rpc-->>Acceso: Check-in registrado
+    Acceso-->>Terminal: Ítem ok
+
+%% Secuencia — Acceso offline — FitZone Sports
+%% Autor: Patricio Ramos
+%% Fecha: 2026-11-10
+%% Versión: 1.0
+%% Sin red no hay validación TOTP en el navegador. ADR-003 y ADR-007.
+%% El código se verifica al sincronizar con la API.

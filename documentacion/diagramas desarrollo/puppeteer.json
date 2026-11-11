@@ -1,0 +1,9 @@
+{
+  "headless": true,
+  "defaultViewport": {
+    "width": 3200,
+    "height": 1800,
+    "deviceScaleFactor": 2
+  },
+  "args": ["--window-size=3200,1800"]
+}

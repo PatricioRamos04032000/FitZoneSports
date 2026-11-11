@@ -1,0 +1,69 @@
+C4Context
+    title FitZone Sports — Contexto del sistema
+
+    UpdateLayoutConfig($c4ShapeInRow="1", $c4BoundaryInRow="4")
+
+    Boundary(actores, " ", "") {
+        Person(socio, "Socio activo", "Membresía, clases, canchas con descuento, QR y pagos")
+        Person(externo, "Cliente externo", "Alquila canchas a tarifa plena y paga")
+        Person(recep, "Recepcionista / administrador de sede", "Ingreso, aforo y operación de su sede")
+        Person(gerente, "Gerente central", "Precios, descuento de socio, horario pico y canchas")
+    }
+
+    Boundary(nucleo, " ", "") {
+        Person(hueco, " ", " ")
+        Person(huecoB, " ", " ")
+        System(fitzone, "FitZone Sports", "Gestión multi-sede de acceso, clases, canchas y pagos")
+    }
+
+    Boundary(puente, " ", "") {
+        System(puenteSys, "············", " ")
+    }
+
+    Boundary(afuera, " ", "") {
+        Person(hueco2, " ", " ")
+        Person(hueco2b, " ", " ")
+        System_Ext(pasarela, "Pasarela de pago", "Simulada en esta entrega. Autoriza el cobro y devuelve un token")
+    }
+
+    Boundary(leyendaPersona, " ", "") {
+        Person(legPersona, "Persona", "Quien usa el sistema")
+    }
+
+    Boundary(leyendaSistema, " ", "") {
+        System(legSistema, "Sistema", "FitZone Sports")
+    }
+
+    Boundary(leyendaExterno, " ", "") {
+        System_Ext(legExterno, "Sistema externo", "Pasarela de pago, fuera de FitZone")
+    }
+
+    UpdateElementStyle(actores, $bgColor="none", $fontColor="none", $borderColor="none")
+    UpdateElementStyle(nucleo, $bgColor="none", $fontColor="none", $borderColor="none")
+    UpdateElementStyle(puente, $bgColor="none", $fontColor="none", $borderColor="none")
+    UpdateElementStyle(afuera, $bgColor="none", $fontColor="none", $borderColor="none")
+    UpdateElementStyle(leyendaPersona, $bgColor="none", $fontColor="none", $borderColor="none")
+    UpdateElementStyle(leyendaSistema, $bgColor="none", $fontColor="none", $borderColor="none")
+    UpdateElementStyle(leyendaExterno, $bgColor="none", $fontColor="none", $borderColor="none")
+    UpdateElementStyle(hueco, $bgColor="#ffffff", $fontColor="#ffffff", $borderColor="#ffffff")
+    UpdateElementStyle(huecoB, $bgColor="#ffffff", $fontColor="#ffffff", $borderColor="#ffffff")
+    UpdateElementStyle(hueco2, $bgColor="#ffffff", $fontColor="#ffffff", $borderColor="#ffffff")
+    UpdateElementStyle(hueco2b, $bgColor="#ffffff", $fontColor="#ffffff", $borderColor="#ffffff")
+    UpdateElementStyle(puenteSys, $bgColor="#ffffff", $fontColor="#ffffff", $borderColor="#ffffff")
+
+    Rel_R(socio, fitzone, "Gestiona su membresía, reserva y paga")
+    Rel_R(externo, fitzone, "Reserva canchas<br/>y paga")
+    Rel_R(recep, fitzone, "Registra ingresos y consulta el aforo")
+    Rel_R(gerente, fitzone, "Configura precios y canchas")
+    Rel_R(fitzone, pasarela, "Solicita el cobro<br/>y recibe el token")
+
+    UpdateRelStyle(externo, fitzone, $offsetX="-55", $offsetY="-22")
+    UpdateRelStyle(fitzone, pasarela, $offsetY="-18")
+
+%% Cuatro columnas invisibles: actores, sistema, un hueco y la pasarela.
+%% hueco, huecoB, hueco2 y hueco2b bajan el sistema y la pasarela. puenteSys abre la flecha. No se dibujan.
+%% La segunda fila es la leyenda: persona, sistema y sistema externo.
+%% Autor: Patricio Ramos
+%% Fecha: 2026-11-10
+%% Versión: 1.0
+%% Nota: la pasarela de esta entrega no es un proveedor externo real; ver ADR-010.
