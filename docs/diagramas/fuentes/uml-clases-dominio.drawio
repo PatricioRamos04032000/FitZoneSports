@@ -1,0 +1,152 @@
+<mxfile host="app.diagrams.net" agent="Cursor" version="22.1.0" type="device">
+  <diagram id="clases-dominio" name="Clases del dominio">
+    <mxGraphModel dx="1600" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2520" pageHeight="1140" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <mxCell id="zonaStrategy" value="Strategy — Canchas" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f7f9fc;strokeColor=#999999;dashed=1;verticalAlign=top;align=center;spacingTop=8;fontStyle=1;fontSize=14;fontColor=#333333;" vertex="1" parent="1">
+          <mxGeometry x="40" y="30" width="760" height="820" as="geometry"/>
+        </mxCell>
+        <mxCell id="zonaRepo" value="Repository" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f7f9fc;strokeColor=#999999;dashed=1;verticalAlign=top;align=center;spacingTop=8;fontStyle=1;fontSize=14;fontColor=#333333;" vertex="1" parent="1">
+          <mxGeometry x="860" y="30" width="700" height="820" as="geometry"/>
+        </mxCell>
+        <mxCell id="zonaObserver" value="Observer — Lista de espera" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f7f9fc;strokeColor=#999999;dashed=1;verticalAlign=top;align=center;spacingTop=8;fontStyle=1;fontSize=14;fontColor=#333333;" vertex="1" parent="1">
+          <mxGeometry x="1620" y="30" width="860" height="820" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="precios" value="&lt;p style=&quot;margin:0px;margin-top:6px;text-align:center;&quot;&gt;&lt;b&gt;PreciosService&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0px;margin-left:6px;text-align:left;&quot;&gt;estrategias: PricingStrategy[]&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0px;margin-left:6px;text-align:left;&quot;&gt;calcular(ctx): PrecioCalculado&lt;/p&gt;" style="shape=umlClass;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontColor=#333333;fontSize=12;align=center;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="70" y="100" width="250" height="110" as="geometry"/>
+        </mxCell>
+        <mxCell id="reservas" value="&lt;p style=&quot;margin:0px;margin-top:6px;text-align:center;&quot;&gt;&lt;b&gt;ReservasCanchaService&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0px;margin-left:6px;text-align:left;&quot;&gt;precios: PreciosService&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0px;margin-left:6px;text-align:left;&quot;&gt;reservar()&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:6px;text-align:left;&quot;&gt;iniciarPago()&lt;/p&gt;" style="shape=umlClass;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontColor=#333333;fontSize=12;align=center;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="460" y="100" width="280" height="120" as="geometry"/>
+        </mxCell>
+        <mxCell id="pricing" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;i&gt;&amp;laquo;interface&amp;raquo;&lt;/i&gt;&lt;br&gt;&lt;b&gt;PricingStrategy&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0px;margin-left:6px;text-align:left;&quot;&gt;nombre: string&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0px;margin-left:6px;text-align:left;&quot;&gt;aplica(ctx): boolean&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:6px;text-align:left;&quot;&gt;calcular(precio, ctx): number&lt;/p&gt;" style="shape=umlClass;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#333333;fontSize=12;align=center;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="70" y="290" width="280" height="140" as="geometry"/>
+        </mxCell>
+        <mxCell id="contexto" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;i&gt;&amp;laquo;datatype&amp;raquo;&lt;/i&gt;&lt;br&gt;&lt;b&gt;ContextoPrecio&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0px;margin-left:6px;text-align:left;&quot;&gt;precioBase&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:6px;text-align:left;&quot;&gt;esSocioActivo&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:6px;text-align:left;&quot;&gt;pico&lt;/p&gt;" style="shape=umlClass;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontColor=#333333;fontSize=12;align=center;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="460" y="310" width="180" height="110" as="geometry"/>
+        </mxCell>
+        <mxCell id="standard" value="&lt;p style=&quot;margin:0px;margin-top:6px;text-align:center;&quot;&gt;&lt;b&gt;StandardPricing&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0px;margin-left:6px;text-align:left;&quot;&gt;aplica(ctx): boolean&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:6px;text-align:left;&quot;&gt;calcular(precio, ctx): number&lt;/p&gt;" style="shape=umlClass;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontColor=#333333;fontSize=12;align=center;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="70" y="530" width="210" height="100" as="geometry"/>
+        </mxCell>
+        <mxCell id="peak" value="&lt;p style=&quot;margin:0px;margin-top:6px;text-align:center;&quot;&gt;&lt;b&gt;PeakHourPricing&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0px;margin-left:6px;text-align:left;&quot;&gt;aplica(ctx): boolean&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:6px;text-align:left;&quot;&gt;calcular(precio, ctx): number&lt;/p&gt;" style="shape=umlClass;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontColor=#333333;fontSize=12;align=center;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="310" y="530" width="220" height="100" as="geometry"/>
+        </mxCell>
+        <mxCell id="member" value="&lt;p style=&quot;margin:0px;margin-top:6px;text-align:center;&quot;&gt;&lt;b&gt;MemberDiscountPricing&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0px;margin-left:6px;text-align:left;&quot;&gt;aplica(ctx): boolean&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:6px;text-align:left;&quot;&gt;calcular(precio, ctx): number&lt;/p&gt;" style="shape=umlClass;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontColor=#333333;fontSize=12;align=center;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="560" y="530" width="210" height="100" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="supabaseSvc" value="&lt;p style=&quot;margin:0px;margin-top:6px;text-align:center;&quot;&gt;&lt;b&gt;SupabaseService&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0px;margin-left:6px;text-align:left;&quot;&gt;getClient()&lt;/p&gt;" style="shape=umlClass;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontColor=#333333;fontSize=12;align=center;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="1080" y="100" width="200" height="80" as="geometry"/>
+        </mxCell>
+        <mxCell id="supabaseRepo" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;i&gt;&amp;laquo;abstract&amp;raquo;&lt;/i&gt;&lt;br&gt;&lt;b&gt;SupabaseRepository&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0px;margin-left:6px;text-align:left;&quot;&gt;table: string&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0px;margin-left:6px;text-align:left;&quot;&gt;findAll(): T[]&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:6px;text-align:left;&quot;&gt;findById(id): T | null&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:6px;text-align:left;&quot;&gt;rpc(fn, args): R&lt;/p&gt;" style="shape=umlClass;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#333333;fontSize=12;align=center;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="1020" y="250" width="280" height="150" as="geometry"/>
+        </mxCell>
+        <mxCell id="repoReservas" value="&lt;p style=&quot;margin:0px;margin-top:6px;text-align:center;&quot;&gt;&lt;b&gt;ReservasCanchaRepository&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0px;margin-left:6px;text-align:left;&quot;&gt;reservar()&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:6px;text-align:left;&quot;&gt;confirmar()&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:6px;text-align:left;&quot;&gt;cancelar()&lt;/p&gt;" style="shape=umlClass;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontColor=#333333;fontSize=12;align=center;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="880" y="680" width="230" height="110" as="geometry"/>
+        </mxCell>
+        <mxCell id="repoAcceso" value="&lt;p style=&quot;margin:0px;margin-top:6px;text-align:center;&quot;&gt;&lt;b&gt;AccesoRepository&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0px;margin-left:6px;text-align:left;&quot;&gt;registrarCheckIn()&lt;/p&gt;" style="shape=umlClass;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontColor=#333333;fontSize=12;align=center;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="1140" y="700" width="190" height="80" as="geometry"/>
+        </mxCell>
+        <mxCell id="repoClases" value="&lt;p style=&quot;margin:0px;margin-top:6px;text-align:center;&quot;&gt;&lt;b&gt;ClasesRepository&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0px;margin-left:6px;text-align:left;&quot;&gt;inscribir()&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:6px;text-align:left;&quot;&gt;cancelar()&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:6px;text-align:left;&quot;&gt;procesarListaEspera()&lt;/p&gt;" style="shape=umlClass;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontColor=#333333;fontSize=12;align=center;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="1360" y="680" width="180" height="120" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="clases" value="&lt;p style=&quot;margin:0px;margin-top:6px;text-align:center;&quot;&gt;&lt;b&gt;ClasesService&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0px;margin-left:6px;text-align:left;&quot;&gt;listaEspera: ListaEsperaPublisher&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0px;margin-left:6px;text-align:left;&quot;&gt;cancelar()&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:6px;text-align:left;&quot;&gt;procesarListaEspera()&lt;/p&gt;" style="shape=umlClass;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontColor=#333333;fontSize=12;align=center;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="1660" y="100" width="260" height="120" as="geometry"/>
+        </mxCell>
+        <mxCell id="publisher" value="&lt;p style=&quot;margin:0px;margin-top:6px;text-align:center;&quot;&gt;&lt;b&gt;ListaEsperaPublisher&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0px;margin-left:6px;text-align:left;&quot;&gt;notificarLugaresLiberados(clase, esperas)&lt;/p&gt;" style="shape=umlClass;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontColor=#333333;fontSize=12;align=center;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="2020" y="100" width="300" height="100" as="geometry"/>
+        </mxCell>
+        <mxCell id="evento" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;i&gt;&amp;laquo;event&amp;raquo;&lt;/i&gt;&lt;br&gt;&lt;b&gt;LugarLiberadoEvent&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0px;margin-left:6px;text-align:left;&quot;&gt;esperaId&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:6px;text-align:left;&quot;&gt;perfilId&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:6px;text-align:left;&quot;&gt;venceEn&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:6px;text-align:left;&quot;&gt;clase&lt;/p&gt;" style="shape=umlClass;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontColor=#333333;fontSize=12;align=center;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="2060" y="280" width="220" height="130" as="geometry"/>
+        </mxCell>
+        <mxCell id="inapp" value="&lt;p style=&quot;margin:0px;margin-top:6px;text-align:center;&quot;&gt;&lt;b&gt;InAppObserver&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0px;margin-left:6px;text-align:left;&quot;&gt;update(evento)&lt;/p&gt;" style="shape=umlClass;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontColor=#333333;fontSize=12;align=center;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="1660" y="520" width="180" height="80" as="geometry"/>
+        </mxCell>
+        <mxCell id="email" value="&lt;p style=&quot;margin:0px;margin-top:6px;text-align:center;&quot;&gt;&lt;b&gt;EmailSimuladoObserver&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0px;margin-left:6px;text-align:left;&quot;&gt;update(evento)&lt;/p&gt;" style="shape=umlClass;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontColor=#333333;fontSize=12;align=center;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="1900" y="520" width="210" height="80" as="geometry"/>
+        </mxCell>
+        <mxCell id="logobs" value="&lt;p style=&quot;margin:0px;margin-top:6px;text-align:center;&quot;&gt;&lt;b&gt;LogObserver&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0px;margin-left:6px;text-align:left;&quot;&gt;update(evento)&lt;/p&gt;" style="shape=umlClass;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontColor=#333333;fontSize=12;align=center;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="2170" y="520" width="170" height="80" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="eUsaPrecio" value="usa" style="endArrow=open;endFill=0;html=1;rounded=0;strokeColor=#333333;fontSize=12;fontColor=#333333;labelBackgroundColor=#ffffff;exitX=0;exitY=0.5;entryX=1;entryY=0.5;" edge="1" parent="1" source="reservas" target="precios">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="eEstrategias" value="estrategias" style="startArrow=diamond;startFill=0;endArrow=open;endFill=0;html=1;rounded=0;strokeColor=#333333;fontSize=12;fontColor=#333333;labelBackgroundColor=#ffffff;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="precios" target="pricing">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="eCtx" value="ctx" style="dashed=1;endArrow=open;endFill=0;html=1;rounded=0;strokeColor=#333333;fontSize=12;fontColor=#333333;labelBackgroundColor=#ffffff;exitX=1;exitY=0.35;entryX=0;entryY=0.5;" edge="1" parent="1" source="pricing" target="contexto">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="eStandard" value="" style="endArrow=block;endFill=0;endSize=14;dashed=1;html=1;rounded=0;strokeColor=#333333;exitX=0.5;exitY=0;entryX=0.2;entryY=1;" edge="1" parent="1" source="standard" target="pricing">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="ePeak" value="" style="endArrow=block;endFill=0;endSize=14;dashed=1;html=1;rounded=0;strokeColor=#333333;exitX=0.5;exitY=0;entryX=0.55;entryY=1;" edge="1" parent="1" source="peak" target="pricing">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="eMember" value="" style="endArrow=block;endFill=0;endSize=14;dashed=1;html=1;rounded=0;strokeColor=#333333;exitX=0.25;exitY=0;entryX=1;entryY=0.75;" edge="1" parent="1" source="member" target="pricing">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="eRepoUsa" value="usa" style="dashed=1;endArrow=open;endFill=0;html=1;rounded=0;strokeColor=#333333;fontSize=12;fontColor=#333333;labelBackgroundColor=#ffffff;exitX=0.5;exitY=0;entryX=0.5;entryY=1;" edge="1" parent="1" source="supabaseRepo" target="supabaseSvc">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="eExtReservas" value="" style="endArrow=block;endFill=0;endSize=14;html=1;rounded=0;strokeColor=#333333;exitX=0.5;exitY=0;entryX=0.2;entryY=1;" edge="1" parent="1" source="repoReservas" target="supabaseRepo">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="eExtAcceso" value="" style="endArrow=block;endFill=0;endSize=14;html=1;rounded=0;strokeColor=#333333;exitX=0.5;exitY=0;entryX=0.55;entryY=1;" edge="1" parent="1" source="repoAcceso" target="supabaseRepo">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="eExtClases" value="" style="endArrow=block;endFill=0;endSize=14;html=1;rounded=0;strokeColor=#333333;exitX=0.5;exitY=0;entryX=0.85;entryY=1;" edge="1" parent="1" source="repoClases" target="supabaseRepo">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="eNotifica" value="notifica" style="endArrow=open;endFill=0;html=1;rounded=0;strokeColor=#333333;fontSize=12;fontColor=#333333;labelBackgroundColor=#ffffff;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="clases" target="publisher">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="eEmite" value="emite" style="endArrow=open;endFill=0;html=1;rounded=0;strokeColor=#333333;fontSize=12;fontColor=#333333;labelBackgroundColor=#ffffff;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="publisher" target="evento">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="eEscuchaInapp" value="escucha" style="dashed=1;endArrow=open;endFill=0;html=1;rounded=0;strokeColor=#333333;fontSize=12;fontColor=#333333;labelBackgroundColor=#ffffff;exitX=0.85;exitY=0;entryX=0.1;entryY=1;" edge="1" parent="1" source="inapp" target="evento">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="eEscuchaEmail" value="escucha" style="dashed=1;endArrow=open;endFill=0;html=1;rounded=0;strokeColor=#333333;fontSize=12;fontColor=#333333;labelBackgroundColor=#ffffff;exitX=0.5;exitY=0;entryX=0.4;entryY=1;" edge="1" parent="1" source="email" target="evento">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="eEscuchaLog" value="escucha" style="dashed=1;endArrow=open;endFill=0;html=1;rounded=0;strokeColor=#333333;fontSize=12;fontColor=#333333;labelBackgroundColor=#ffffff;exitX=0.4;exitY=0;entryX=0.9;entryY=1;" edge="1" parent="1" source="logobs" target="evento">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="ePersiste" value="usa" style="edgeStyle=orthogonalEdgeStyle;endArrow=open;endFill=0;html=1;rounded=0;strokeColor=#333333;fontSize=12;fontColor=#333333;labelBackgroundColor=#ffffff;exitX=1;exitY=0.75;entryX=0;entryY=0.5;" edge="1" parent="1" source="reservas" target="repoReservas">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="830" y="190"/>
+              <mxPoint x="830" y="735"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="eConsulta" value="usa" style="edgeStyle=orthogonalEdgeStyle;endArrow=open;endFill=0;html=1;rounded=0;strokeColor=#333333;fontSize=12;fontColor=#333333;labelBackgroundColor=#ffffff;exitX=0;exitY=0.75;entryX=1;entryY=0.5;" edge="1" parent="1" source="clases" target="repoClases">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1590" y="190"/>
+              <mxPoint x="1590" y="740"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="pieAutor" value="Autor: Patricio Ramos. Fecha: 2026-11-10. Versión: 1.0." style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=13;fontColor=#333333;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="40" y="870" width="700" height="30" as="geometry"/>
+        </mxCell>
+        <mxCell id="pieRepo" value="Los demás repositorios (sedes, perfiles, membresías, pagos, canchas, notificaciones y preferencias) también extienden SupabaseRepository y no se dibujan." style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=13;fontColor=#333333;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry x="40" y="910" width="2400" height="30" as="geometry"/>
+        </mxCell>
+        <mxCell id="pieObserver" value="ListaEsperaPublisher no guarda observadores. InAppObserver, EmailSimuladoObserver y LogObserver se anotan con @OnEvent(lista-espera.lugar-liberado). El código usa EventEmitter2." style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=13;fontColor=#333333;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry x="40" y="950" width="2400" height="30" as="geometry"/>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

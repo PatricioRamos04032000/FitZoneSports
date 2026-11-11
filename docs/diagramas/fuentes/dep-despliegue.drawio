@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="app.diagrams.net" agent="Cursor" version="22.1.0" type="device">
+  <diagram id="dep-despliegue" name="Despliegue">
+    <mxGraphModel dx="1400" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1280" pageHeight="640" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <mxCell id="nav" value="&lt;b&gt;Navegador&lt;/b&gt;&lt;br&gt;&lt;br&gt;Aplicación web&lt;br&gt;portal y terminal de sede" style="shape=cube;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=12;fillColor=#dae8fc;strokeColor=#6c8ebf;fontColor=#333333;fontSize=13;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="40" y="180" width="280" height="160" as="geometry"/>
+        </mxCell>
+        <mxCell id="vercel" value="&lt;b&gt;Vercel&lt;/b&gt;&lt;br&gt;&lt;br&gt;Sitio estático&lt;br&gt;build de Vite" style="shape=cube;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=12;fillColor=#d5e8d4;strokeColor=#82b366;fontColor=#333333;fontSize=13;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="480" y="40" width="280" height="130" as="geometry"/>
+        </mxCell>
+        <mxCell id="render" value="&lt;b&gt;Render&lt;/b&gt;&lt;br&gt;&lt;br&gt;API NestJS&lt;br&gt;PasarelaSimulada en el mismo proceso" style="shape=cube;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=12;fillColor=#fff2cc;strokeColor=#d6b656;fontColor=#333333;fontSize=13;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="480" y="240" width="320" height="160" as="geometry"/>
+        </mxCell>
+        <mxCell id="supabase" value="&lt;b&gt;Supabase&lt;/b&gt;&lt;br&gt;&lt;br&gt;PostgreSQL y Auth" style="shape=cube;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=12;fillColor=#e1d5e7;strokeColor=#9673a6;fontColor=#333333;fontSize=13;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="920" y="240" width="280" height="160" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="eWeb" value="HTTPS" style="edgeStyle=orthogonalEdgeStyle;html=1;rounded=0;strokeColor=#333333;fontSize=12;fontColor=#333333;labelBackgroundColor=#ffffff;endArrow=block;endFill=1;exitX=0.5;exitY=0;entryX=0.5;entryY=0;" edge="1" parent="1" source="nav" target="vercel">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="180" y="16"/>
+              <mxPoint x="620" y="16"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="eApi" value="HTTPS, REST JSON" style="edgeStyle=orthogonalEdgeStyle;html=1;rounded=0;strokeColor=#333333;fontSize=12;fontColor=#333333;labelBackgroundColor=#ffffff;endArrow=block;endFill=1;exitX=1;exitY=0.62;entryX=0;entryY=0.5;" edge="1" parent="1" source="nav" target="render">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="eDatos" value="HTTPS, Auth y RPC" style="edgeStyle=orthogonalEdgeStyle;html=1;rounded=0;strokeColor=#333333;fontSize=12;fontColor=#333333;labelBackgroundColor=#ffffff;endArrow=block;endFill=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="render" target="supabase">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="nota" value="Sin red, el terminal no llama a la API: encola en localStorage, fitzone.acceso.cola. GitHub Actions construye y testea el backend, y no despliega. El Compose de la cátedra corre estos mismos dos artefactos y sigue usando Supabase. Ese archivo es C-07 y todavía no está en el repo." style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;fontSize=13;fontColor=#333333;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry x="40" y="450" width="1160" height="70" as="geometry"/>
+        </mxCell>
+        <mxCell id="pie" value="Autor: Patricio Ramos. Fecha: 2026-11-11. Versión: 1.0. ADR-009." style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=13;fontColor=#333333;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="40" y="530" width="800" height="24" as="geometry"/>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

@@ -1,13 +1,13 @@
 # Modelado C4 — FitZone Sports (propuesta)
 
-Propuesta de arquitectura con el modelo **C4** (Context, Containers, Components). Documento **vivo** hasta el cierre del curso (C4 + ADR se entregan con la demo; ver [LOG 2026-09-04](../bitacoras/LOG.md)).
+Propuesta de arquitectura con el modelo **C4** (Context, Containers, Components). Documento **vivo** hasta el cierre del curso (C4 + ADR se entregan con la demo; ver [LOG 2026-09-04](../../docs/bitacoras/LOG.md)).
 
 **Estado:** actualizado 2026-09-04 (offline sede; feedback 2026-08-28; reunión 2026-09-02)  
 **Arquitectura:** monolito modular Nest  
 **Canal principal:** aplicación **web multi-rol** (A1–A4)  
 **Móvil:** React Native · diferido a Unidad VI  
-**Datos:** PostgreSQL en Supabase vía **API de Supabase** (sin ORM) — [ADR-006](../adr/ADR-006-supabase-api-sin-orm.md)  
-**Auth:** Supabase Auth vía pasarela Nest (BFF) — [ADR-005](../adr/ADR-005-bff-supabase-auth.md)  
+**Datos:** PostgreSQL en Supabase vía **API de Supabase** (sin ORM) — [ADR-006](../../docs/adr/ADR-006-supabase-api-sin-orm.md)  
+**Auth:** Supabase Auth vía pasarela Nest (BFF) — [ADR-005](../../docs/adr/ADR-005-bff-supabase-auth.md)  
 **Stack de referencia:** Stack tecnológico y herramientas  
 **Decisiones formales:** Índice de ADR
 
@@ -32,17 +32,17 @@ Propuesta de arquitectura con el modelo **C4** (Context, Containers, Components)
 
 **FitZone Sports** es una plataforma integral de gestión para una cadena de gimnasios (25+ sedes). Unifica horarios de gimnasio, clases grupales y alquiler de canchas.
 
-El canal de uso previsto para el desarrollo y la demo del curso es la **aplicación web**: todos los roles (socio, cliente externo, recepcionista y gerente) operan por web. La **app móvil** del enunciado se aborda recién en **Unidad VI** (cerca del cierre) y no condiciona el diseño ni el MVP del resto del cuatrimestre.
+El canal de esta entrega es la **aplicación web**: socio, cliente externo, recepcionista y gerente operan por web. La app móvil no entra en este diagrama. Las notificaciones de lista de espera son internas al sistema; no hay un proveedor de correo.
 
 ### Personas (actores)
 
 
-| ID  | Actor                          | Relación con el sistema                                                                          |
-| --- | ------------------------------ | ------------------------------------------------------------------------------------------------ |
-| A1  | Socio Activo                   | Usa la **web**: membresía, clases, canchas con descuento, pagos; QR (web y/o móvil en Unidad VI) |
-| A2  | Cliente Externo                | Usa la **web**: alquiler de canchas a tarifa plena y pagos                                       |
-| A3  | Recepcionista / Admin. de Sede | Usa la **web**: acceso QR, aforo, operación diaria de su sede                                    |
-| A4  | Gerente Central                | Usa la **web**: sedes, precios, reportes consolidados                                            |
+| ID  | Actor                                 | Relación con el sistema                                                                                                      |
+| --- | ------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| A1  | Socio activo                          | Gestiona su membresía, reserva clases y canchas con descuento, obtiene el QR y paga                                         |
+| A2  | Cliente externo                       | Reserva canchas a tarifa plena y paga                                                                                       |
+| A3  | Recepcionista / administrador de sede | Registra ingresos y consulta el aforo de su sede. En el código el rol es `admin_sede`                                       |
+| A4  | Gerente central                       | Configura precios, el descuento de socio, el horario pico y las canchas. No hay alta de sedes ni reportes en el código entregado |
 
 
 
@@ -50,69 +50,22 @@ El canal de uso previsto para el desarrollo y la demo del curso es la **aplicaci
 ### Sistemas externos
 
 
-| Sistema                          | Rol                                                                      |
-| -------------------------------- | ------------------------------------------------------------------------ |
-| Pasarela de pago simulada        | Mock tipo MercadoPago / Modo: autoriza pagos y devuelve token (RNF-02)   |
-| (Opcional) Canal de notificación | Email / in-app para lista de espera (RF-08); puede ser mock o log en MVP |
+| Sistema          | Rol                                                                                                                                                                                                 |
+| ---------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Pasarela de pago | Límite del puerto `PasarelaPago`. En esta entrega el adaptador es `PasarelaSimulada`, dentro de la API: autoriza el cobro y devuelve un token, sin llamar a Mercado Pago ([ADR-010](../../docs/adr/ADR-010-tokenizacion-medios-de-pago.md), RNF-02) |
 
 
 
 
 ### Diagrama — Context
 
-```mermaid
-C4Context
-    title FitZone Sports — Contexto del sistema
+Fuente editable: [fuentes/c4-1-contexto.mmd](../../docs/diagramas/fuentes/c4-1-contexto.mmd).
 
-    Person(socio, "Socio Activo", "Web: membresía, clases, canchas, QR")
-    Person(externo, "Cliente Externo", "Web: alquiler de canchas")
-    Person(recep, "Recepcionista", "Web: acceso y operación de sede")
-    Person(gerente, "Gerente Central", "Web: precios, sedes y reportes")
+![C4-1 Contexto](../../docs/diagramas/img/c4-1-contexto.svg)
 
-    System(fitzone, "FitZone Sports", "Gestión multi-sede: acceso, clases, canchas y pagos")
+Autor: Patricio Ramos. Fecha: 2026-11-10. Versión: 1.0.
 
-    System_Ext(pasarela, "Pasarela de pago (mock)", "Autorización simulada; solo token")
-    System_Ext(notif, "Notificaciones (opcional)", "Aviso de cupo liberado")
-
-    Rel(socio, fitzone, "Usa la web")
-    Rel(externo, fitzone, "Usa la web")
-    Rel(recep, fitzone, "Usa la web")
-    Rel(gerente, fitzone, "Usa la web")
-    Rel(fitzone, pasarela, "Solicita cobro / obtiene token")
-    Rel(fitzone, notif, "Notifica lista de espera", "si aplica")
-```
-
-
-
-> Si el visor no renderiza `C4Context`, usar el diagrama equivalente en flowchart más abajo.
-
-
-
-### Diagrama — Context (Mermaid flowchart, compatible)
-
-```mermaid
-flowchart TB
-    subgraph personas [Personas]
-        A1[Socio Activo]
-        A2[Cliente Externo]
-        A3[Recepcionista / Admin sede]
-        A4[Gerente Central]
-    end
-
-    FZ[FitZone Sports<br/>Plataforma multi-sede]
-
-    subgraph externos [Sistemas externos]
-        PAY[Pasarela de pago mock]
-        NOT[Notificaciones opcionales]
-    end
-
-    A1 -->|Web: reservas, membresía, QR, pagos| FZ
-    A2 -->|Web: reserva y pago de canchas| FZ
-    A3 -->|Web: acceso y aforo| FZ
-    A4 -->|Web: sedes y reportes| FZ
-    FZ -->|Cobro simulado / token| PAY
-    FZ -.->|Aviso lista de espera| NOT
-```
+La pasarela de esta entrega no es un proveedor externo real; ver [ADR-010](../../docs/adr/ADR-010-tokenizacion-medios-de-pago.md). Supabase, la API y el terminal de sede son contenedores y no aparecen en este nivel.
 
 
 
@@ -127,52 +80,24 @@ flowchart TB
 ### Contenedores propuestos
 
 
-| Contenedor      | Tecnología                      | Hosting  | Prioridad                 | Responsabilidad                                            |
-| --------------- | ------------------------------- | -------- | ------------------------- | ---------------------------------------------------------- |
-| Frontend Web    | React + TypeScript              | Vercel   | **Alta (camino crítico)** | UI multi-rol: A1, A2, A3 y A4                              |
-| Backend API     | NestJS (monolito modular) · BFF | Render   | **Alta**                  | Reglas de negocio, REST, pasarela a Supabase Auth, Swagger |
-| Persistencia    | PostgreSQL vía **Supabase API** | Supabase | **Alta**                  | Tablas de dominio; Nest usa cliente SDK (no ORM)           |
-| Identidad       | Supabase Auth                   | Supabase | **Alta**                  | Login/tokens; solo a través de Nest (BFF)                  |
-| App Móvil Socio | React Native                    | APK demo | **Baja — Unidad VI**      | QR dinámico / seed TOTP; no bloquea el resto               |
+| Contenedor | Tecnología | Dónde | Responsabilidad |
+| --- | --- | --- | --- |
+| Aplicación web | React + Vite | Vercel | Portal del socio y consola de administración. Un solo build |
+| Terminal de sede | La misma SPA | Navegador de recepción | Check-in. Sin red, la cola queda en `localStorage` |
+| API | NestJS | Render | Monolito modular y BFF. La pasarela simulada corre en este proceso |
+| Base de datos | PostgreSQL y Supabase Auth | Supabase | Dominio e identidad. No entra en el Compose |
 
-
-**Fuera de contenedores de runtime pero parte del ecosistema de desarrollo:** GitHub (código + CI).
+La app móvil no entra en este diagrama. El Compose de la entrega (C-07, [ADR-009](../../docs/adr/ADR-009-despliegue-contenedores-reversion.md)) empaqueta solo la web y la API.
 
 ### Diagrama — Containers
 
-```mermaid
-flowchart TB
-    subgraph clientes [Clientes — todos por web]
-        A1[Socio]
-        A2[Cliente externo]
-        A3[Recepcionista]
-        A4[Gerente]
-    end
+Fuente editable: [fuentes/c4-2-contenedores.mmd](../../docs/diagramas/fuentes/c4-2-contenedores.mmd).
 
-    subgraph fitzone [FitZone Sports]
-        WEB[Frontend Web multi-rol<br/>React · Vercel]
-        API[Backend API BFF<br/>NestJS · Render]
-        DB[(Supabase<br/>PostgreSQL + Auth)]
-        MOB[App Móvil<br/>Unidad VI · React Native]
-    end
+![C4-2 Contenedores](../../docs/diagramas/img/c4-2-contenedores.svg)
 
-    PAY[Pasarela pago mock]
+Autor: Patricio Ramos. Fecha: 2026-11-10. Versión: 1.0.
 
-    A1 --> WEB
-    A2 --> WEB
-    A3 --> WEB
-    A4 --> WEB
-
-    WEB -->|HTTPS REST JSON| API
-    API -->|Supabase Auth| DB
-    API -->|Supabase API<br/>cliente SDK| DB
-    API -->|Token de pago| PAY
-    MOB -.->|Futuro: misma API| API
-```
-
-
-
-
+Las cuatro personas quedan en una columna, fuera del límite. FitZone está a su derecha, en una grilla de dos por dos: arriba la web y la API, abajo el terminal y la base. La pasarela queda a la derecha de FitZone. La leyenda está debajo del diagrama.
 
 ### Flujos principales entre contenedores
 
@@ -184,7 +109,7 @@ flowchart TB
 | Precio dinámico                     | Nest (Strategy)                                         | Socio −15%, externo tarifa plena, pico 19–21 hs                       |
 | Pago                                | Nest → Pasarela mock → Nest → Supabase API              | Sin datos de tarjeta (RNF-02)                                         |
 | Validación de acceso / aforo        | Web (A3) → Nest → Supabase API                          | Membresía activa; RN-01                                               |
-| QR del socio                        | Web (A1); móvil en Unidad VI                            | TOTP / generación; ver Decisiones pendientes §8                       |
+| QR del socio | Portal web → API | `GET /acceso/totp/me`. El terminal valida al sincronizar, no en el navegador |
 | Lista de espera                     | Nest (Observer)                                         | Notifica al liberar cupo                                              |
 | Nueva sede                          | Web (A4) → Nest → Supabase API                          | Sin redeploy (RNF-04)                                                 |
 
@@ -196,9 +121,9 @@ flowchart TB
 - **Un solo backend:** monolito modular Nest (no microservicios), como **BFF**.
 - **Persistencia:** PostgreSQL en Supabase; acceso por **API de Supabase** (no ORM).
 - **Auth:** Supabase Auth vía pasarela Nest.
-- **Web first multi-rol:** React cubre A1–A4.
-- **Móvil diferido:** React Native en Unidad VI.
-- **Hosting:** Vercel (front) · Render (API) · Supabase (BD + Auth).
+- **Web y terminal:** el mismo build React. El terminal es el navegador de recepción.
+- **Móvil:** no entra en este diagrama.
+- **Hosting:** Vercel (web) · Render (API) · Supabase (BD + Auth).
 
 ---
 
@@ -225,44 +150,29 @@ Propuesta de módulos internos del monolito. Cada módulo agrupa controllers, se
 
 
 
-### Diagrama — Components (Backend)
+### Diagramas — Components
 
-```mermaid
-flowchart TB
-    subgraph api [Backend API — NestJS]
-        AUTH[Auth / JWT / Roles]
-        USR[Usuarios y Membresías]
-        ACC[Gimnasio y Acceso]
-        CLS[Clases Grupales]
-        CAN[Canchas Deportivas]
-        PAG[Pagos y Facturación]
-        SED[Sedes / Config]
-        REPO[Capa Repository]
-    end
+El panorama de módulos de arriba no es uno de los 14 diagramas. Los dos C4-3 obligatorios son Canchas y Acceso.
 
-    DB[(Supabase<br/>PostgreSQL + Auth)]
-    PAY[Pasarela mock]
+#### Canchas (M4)
 
-    AUTH -->|Supabase Auth| DB
-    AUTH --> USR
-    ACC --> USR
-    CLS --> USR
-    CAN --> USR
-    PAG --> CAN
-    PAG --> USR
-    CAN --> SED
-    CLS --> SED
-    ACC --> SED
+Fuente editable: [fuentes/c4-3-canchas.mmd](../../docs/diagramas/fuentes/c4-3-canchas.mmd).
 
-    USR --> REPO
-    ACC --> REPO
-    CLS --> REPO
-    CAN --> REPO
-    PAG --> REPO
-    SED --> REPO
-    REPO -->|Supabase API| DB
-    PAG --> PAY
-```
+![C4-3 Canchas](../../docs/diagramas/img/c4-3-canchas.svg)
+
+Autor: Patricio Ramos. Fecha: 2026-11-10. Versión: 1.0.
+
+El gestor de bloqueos no es una clase. Es la RPC `reservar_cancha` y el índice único parcial `reservas_cancha_sin_sobreventa`. El socio y el cliente externo quedan en una columna, fuera del límite. FitZone está a su derecha: PreciosService arriba a la izquierda y ReservasCanchaService a su derecha, junto a la pasarela. El repositorio y el gestor de bloqueos quedan debajo del servicio de reservas. La leyenda está debajo.
+
+#### Acceso (M2)
+
+Fuente editable: [fuentes/c4-3-acceso.mmd](../../docs/diagramas/fuentes/c4-3-acceso.mmd).
+
+![C4-3 Acceso](../../docs/diagramas/img/c4-3-acceso.svg)
+
+Autor: Patricio Ramos. Fecha: 2026-11-10. Versión: 1.0.
+
+Sin red, el terminal guarda el check-in en `localStorage` y lo manda con `POST /acceso/check-ins/sync`. El código TOTP se verifica en la API, no en el navegador ([ADR-003](../../docs/adr/ADR-003-estrategia-offline-acceso.md), [ADR-007](../../docs/adr/ADR-007-acceso-totp-cola-offline.md)). El socio y la recepcionista quedan en una columna, fuera del límite. FitZone está a su derecha: el portal arriba del terminal, y dentro de M2 el servicio de acceso a la izquierda de TOTP, membresías y el repositorio. La leyenda está debajo.
 
 
 
@@ -320,11 +230,11 @@ Hay **dos offlines distintos** (acordado en documentación; enfoque técnico a v
 |------------|--------------------------|
 | Frontend Web (resto de roles / flujos) | Online-first (reservas, pagos, reportes, login JWT) |
 | Backend Nest | Online; requiere conectividad hacia Supabase |
-| Acceso en sede (RNF-01) | **MVP (2026-11-01):** cola local de check-ins en la web de recepción → sync a Nest con errores tipados ([ADR-007](../adr/ADR-007-acceso-totp-cola-offline.md)). Validación definitiva (membresía, TOTP, RN-01) al sincronizar |
+| Acceso en sede (RNF-01) | **MVP (2026-11-01):** cola local de check-ins en la web de recepción → sync a Nest con errores tipados ([ADR-007](../../docs/adr/ADR-007-acceso-totp-cola-offline.md)). Validación definitiva (membresía, TOTP, RN-01) al sincronizar |
 | App Móvil (Unidad VI) | Cache del **seed / QR** del socio (no sustituye el offline de sede) |
 | BD (Supabase) | Centralizada en la nube; la sede no escribe ahí mientras está offline |
 
-**MVP adoptado (ADR-007 Propuesto):** QR **TOTP** + check-in online en Nest + **cola + sync** en sede. El enfoque “fuerte” (nodo por sede + paquete de seeds para validar TOTP sin API) queda **diferido**. Detalle: Decisiones §8 · Plan M2 · [Acta 2026-09-02](../planificacion/Acta_Reunion_2026-09-02_Semana1.md).  
+**MVP adoptado (ADR-007 Propuesto):** QR **TOTP** + check-in online en Nest + **cola + sync** en sede. El enfoque “fuerte” (nodo por sede + paquete de seeds para validar TOTP sin API) queda **diferido**. Detalle: Decisiones §8 · Plan M2 · [Acta 2026-09-02](../../docs/planificacion/Acta_Reunion_2026-09-02_Semana1.md).  
 **RN-01:** como RN-02 — unique en `presencias`; Nest solo mapea el error de BD. Offline = consistencia eventual al sync (conflicto → error anotado, sin auto-resolver).
 
 Reservas, clases, pagos y reportes **no** se piden offline.

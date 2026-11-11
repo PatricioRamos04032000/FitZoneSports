@@ -23,7 +23,7 @@ Reunión para alinear avances individuales y revisar el estado de la documentaci
 
 | Tema | Decisión |
 |------|----------|
-| Documentación C4 | El equipo considera que [`C4_Arquitectura_FitZone.md`](../diagramas/C4_Arquitectura_FitZone.md) está **bien elaborada** como base del entregable de Unidad I. |
+| Documentación C4 | El equipo considera que [`C4_Arquitectura_FitZone.md`](../../documentacion/diagramas%20desarrollo/C4_Arquitectura_FitZone.md) está **bien elaborada** como base del entregable de Unidad I. |
 | Documentación ADR | Los ADR en [`adr/`](./adr/) y el `ADR_Indice.md` fueron evaluados de forma **positiva** en conjunto. |
 | Revisión anti-alucinaciones | **Cada integrante** debe revisar la documentación C4 y ADR para detectar posibles **alucinaciones o imprecisiones de la IA** (datos inventados, supuestos no acordados, inconsistencias con el enunciado). |
 | Stack móvil | Se define **React Native** como tecnología de la aplicación móvil (Unidad VI). Cierra la alternativa Flutter que figuraba como TBD en la documentación previa. |
@@ -36,7 +36,7 @@ Reunión para alinear avances individuales y revisar el estado de la documentaci
 
 ### Documentos relacionados
 
-- [`C4_Arquitectura_FitZone.md`](../diagramas/C4_Arquitectura_FitZone.md)
+- [`C4_Arquitectura_FitZone.md`](../../documentacion/diagramas%20desarrollo/C4_Arquitectura_FitZone.md)
 - `ADR_Indice.md`
 - `Stack_Tecnologico_y_Herramientas.md`
 - `Trabajo_Integrador_FitZone_Sports.md`
@@ -187,7 +187,7 @@ A medida que el equipo desarrolla, debe **seguir actualizando el modelo**, incor
 ### Relacionado
 
 - Pregunta abierta en reunión 2026-09-02 (¿PDF Unidad I incluye ER/clases?) → queda respondida en el sentido de que **van entrando al paquete de arquitectura a lo largo del curso**, con entrega formal al final.
-- [Acta_Reunion_2026-09-02_Semana1.md](../planificacion/Acta_Reunion_2026-09-02_Semana1.md) · [Propuesta_Inventario_Diagramas.md](../diagramas/Propuesta_Inventario_Diagramas.md) · [Propuesta_ER_FitZone.md](../diagramas/Propuesta_ER_FitZone.md) (borrador ER Fase A + visión completa, 2026-09-04)
+- [Acta_Reunion_2026-09-02_Semana1.md](../planificacion/Acta_Reunion_2026-09-02_Semana1.md) · [Propuesta_Inventario_Diagramas.md](../../documentacion/diagramas%20desarrollo/Propuesta_Inventario_Diagramas.md) · [Propuesta_ER_FitZone.md](../../documentacion/diagramas%20desarrollo/Propuesta_ER_FitZone.md) (borrador ER Fase A + visión completa, 2026-09-04)
 
 ---
 

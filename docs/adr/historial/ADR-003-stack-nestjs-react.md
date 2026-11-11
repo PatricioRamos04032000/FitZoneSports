@@ -11,7 +11,7 @@
 | **Reemplazado el** | 2026-11-02 |
 | **Actualizado** | 2026-08-25 (web multi-rol; móvil diferido) |
 | **Decisores** | Equipo FitZone Sports (P1–P4) |
-| **Relacionado** | [ADR-001](./ADR-001-monolito-modular.md) · [C4 Containers](../diagramas/C4_Arquitectura_FitZone.md) · Stack |
+| **Relacionado** | [ADR-001](./ADR-001-monolito-modular.md) · [C4 Containers](../../../documentacion/diagramas%20desarrollo/C4_Arquitectura_FitZone.md) · Stack |
 
 > Documento histórico. No editar el cuerpo. Auth (JWT previsto) y ORM quedaron como decisiones hijas; cerradas después en [ADR-005](./ADR-005-bff-supabase-auth.md) y [ADR-006](./ADR-006-supabase-api-sin-orm.md). El stack vigente es ADR-009.
 

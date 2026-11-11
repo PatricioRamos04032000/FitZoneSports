@@ -1,0 +1,65 @@
+C4Container
+    title FitZone Sports — Contenedores
+
+    UpdateLayoutConfig($c4ShapeInRow="1", $c4BoundaryInRow="3")
+
+    Boundary(actores, " ", "") {
+        Person(socio, "Socio activo", "Membresía, clases, canchas y QR")
+        Person(externo, "Cliente externo", "Alquila canchas a tarifa plena")
+        Person(gerente, "Gerente central", "Precios, descuento y canchas")
+        Person(recep, "Recepcionista / administrador de sede", "Ingreso y aforo de su sede")
+    }
+
+    Container_Boundary(fitzone, "FitZone Sports") {
+        Boundary(colIzq, " ", "") {
+            Container(web, "Aplicación web", "React, Vite", "Portal y consola. Vercel.")
+            Container(terminal, "Terminal de sede", "La misma SPA", "Sin red, cola en localStorage.")
+        }
+        Boundary(colDer, " ", "") {
+            Container(api, "API", "NestJS", "BFF. Render.")
+            ContainerDb(db, "Base de datos", "PostgreSQL, Supabase", "Auth y tablas. Fuera del Compose.")
+        }
+    }
+
+    Boundary(afuera, " ", "") {
+        System_Ext(pasarela, "Pasarela de pago", "Simulada en esta entrega. Autoriza el cobro y devuelve un token.")
+    }
+
+    Boundary(leyenda, "Leyenda", "") {
+        Person(legPersona, "Persona", "Quien usa un contenedor")
+        Container(legCont, "Contenedor", "Aplicación", "Web, terminal o API")
+        ContainerDb(legDb, "Base de datos", "PostgreSQL", "Datos e identidad")
+        System_Ext(legExt, "Sistema externo", "Fuera del límite de FitZone")
+    }
+
+    UpdateElementStyle(actores, $bgColor="none", $fontColor="none", $borderColor="none")
+    UpdateElementStyle(colIzq, $bgColor="none", $fontColor="none", $borderColor="none")
+    UpdateElementStyle(colDer, $bgColor="none", $fontColor="none", $borderColor="none")
+    UpdateElementStyle(afuera, $bgColor="none", $fontColor="none", $borderColor="none")
+
+    Rel_R(socio, web, "Usa el portal")
+    Rel_R(externo, web, "Reserva y paga")
+    Rel_R(recep, terminal, "Registra ingresos")
+    Rel_R(gerente, web, "Usa la consola")
+    Rel_R(web, api, "Usa", "HTTPS, REST JSON")
+    Rel_U(terminal, api, "Check-in y sync", "HTTPS, REST JSON")
+    Rel_D(api, db, "Autentica y persiste", "HTTPS, Auth y RPC")
+    Rel_R(api, pasarela, "Solicita el cobro", "Simulado")
+
+    UpdateRelStyle(socio, web, $offsetY="-18")
+    UpdateRelStyle(web, api, $offsetY="-48")
+    UpdateRelStyle(terminal, api, $offsetX="-40", $offsetY="16")
+    UpdateRelStyle(api, db, $offsetX="90")
+    UpdateRelStyle(api, pasarela, $offsetY="-44")
+
+%% C4-2 Contenedores — FitZone Sports
+%% Autor: Patricio Ramos
+%% Fecha: 2026-11-10
+%% Versión: 1.0
+%% El límite es el Container_Boundary FitZone Sports. Las personas y la pasarela quedan afuera.
+%% El Compose (C-07, ADR-009) empaqueta solo la web y la API. La base sigue en Supabase.
+%% Sin red, el terminal no llama a la API: la cola queda en el navegador.
+%% La pasarela de esta entrega no es un proveedor real: el adaptador corre dentro de la API. ADR-010.
+%% La flecha API → base es HTTPS: Supabase Auth y RPC.
+%% FitZone queda a la derecha de las personas, en grilla de dos por dos.
+%% La pasarela queda a la derecha de FitZone. La leyenda es el bloque de abajo.

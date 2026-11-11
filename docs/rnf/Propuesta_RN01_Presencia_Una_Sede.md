@@ -3,7 +3,7 @@
 **Para:** próxima reunión de equipo  
 **Estado:** elección de trabajo **unique en BD + Nest mapea error** (como RN-02; 2026-11-01) · ratificación de equipo / docente pendiente  
 **Fecha del documento:** 2026-08-31 · **Actualizado:** 2026-11-01  
-**Relacionado:** Trabajo Integrador (RN-01) · Decisiones pendientes §3.4 / §8 · [C4 Acceso](../diagramas/C4_Arquitectura_FitZone.md) · [ADR-007](../adr/ADR-007-acceso-totp-cola-offline.md) · Plan M2 Acceso · ADR-001 / ADR-008 / ADR-006
+**Relacionado:** Trabajo Integrador (RN-01) · Decisiones pendientes §3.4 / §8 · [C4 Acceso](../../documentacion/diagramas%20desarrollo/C4_Arquitectura_FitZone.md) · [ADR-007](../adr/ADR-007-acceso-totp-cola-offline.md) · Plan M2 Acceso · ADR-001 / ADR-008 / ADR-006
 
 ### Elección de trabajo (2026-11-01, Patricio)
 

@@ -1,0 +1,28 @@
+sequenceDiagram
+    title FitZone Sports — Reserva concurrente
+    actor A as Socio A
+    actor B as Socio B
+    participant API as ReservasCanchaService
+    participant RPC as reservar_cancha
+
+    Note over A, RPC: Los dos piden el mismo turno y los dos pasan PreciosService.calcular.
+
+    par Mismo turno
+        A->>API: POST /canchas/reservas
+        API->>RPC: reservar_cancha
+        Note over RPC: Índice reservas_cancha_sin_sobreventa
+        RPC-->>API: Reserva pendiente
+        API-->>A: 201, turno en hold
+    and
+        B->>API: POST /canchas/reservas
+        API->>RPC: reservar_cancha
+        RPC-->>API: TURNO_OCUPADO
+        API-->>B: 409, ese turno ya está reservado
+    end
+
+%% Secuencia — Reserva concurrente — FitZone Sports
+%% Autor: Patricio Ramos
+%% Fecha: 2026-11-10
+%% Versión: 1.0
+%% No hay una clase gestor de bloqueos.
+%% El índice único parcial rechaza la segunda reserva del mismo turno. RN-02.

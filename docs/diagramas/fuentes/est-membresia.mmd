@@ -1,0 +1,20 @@
+stateDiagram-v2
+    direction TB
+
+    [*] --> Activo: Alta o renovación<br/>POST /membresias
+    Activo --> Vencido: Vence vigente_hasta (D3)<br/>o se cierra al renovar (D1)
+    Vencido --> [*]
+
+    state "Suspendido" as Suspendido
+    note right of Suspendido
+        Está en el enum.
+        Esta entrega no lo asigna.
+    end note
+
+%% Estados — Membresía — FitZone Sports
+%% Autor: Patricio Ramos
+%% Fecha: 2026-11-11
+%% Versión: 1.0
+%% RF-02. La renovación abre otra fila en activo y marca la anterior como vencida.
+%% El vencimiento también se calcula al consultar, si vigente_hasta ya pasó.
+%% Suspendido existe en el tipo, sin un disparador en el código de esta entrega.

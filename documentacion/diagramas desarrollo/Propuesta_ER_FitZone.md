@@ -4,7 +4,7 @@
 **Actualización 2026-10-05:** Fase A implementada en Supabase. Fase C (clases) y los ajustes de membresías están definidos e implementados en Diseño BD S3-T06, que reemplaza a esta propuesta para esas tablas.  
 **Fecha:** 2026-09-04  
 **Alcance:** modelo de datos de dominio en PostgreSQL (Supabase)  
-**Referencias:** [C4](./C4_Arquitectura_FitZone.md) · [ADR-008](../adr/ADR-008-postgresql.md) · [ADR-005](../adr/ADR-005-bff-supabase-auth.md) · [ADR-006](../adr/ADR-006-supabase-api-sin-orm.md) · [Acta 2026-09-02](../planificacion/Acta_Reunion_2026-09-02_Semana1.md) · [Propuesta RN-01](../rnf/Propuesta_RN01_Presencia_Una_Sede.md) · [Inventario diagramas](./Propuesta_Inventario_Diagramas.md)
+**Referencias:** [C4](./C4_Arquitectura_FitZone.md) · [ADR-008](../../docs/adr/ADR-008-postgresql.md) · [ADR-005](../../docs/adr/ADR-005-bff-supabase-auth.md) · [ADR-006](../../docs/adr/ADR-006-supabase-api-sin-orm.md) · [Acta 2026-09-02](../../docs/planificacion/Acta_Reunion_2026-09-02_Semana1.md) · [Propuesta RN-01](../../docs/rnf/Propuesta_RN01_Presencia_Una_Sede.md) · [Inventario diagramas](./Propuesta_Inventario_Diagramas.md)
 
 ---
 
@@ -251,7 +251,7 @@ erDiagram
 | Inscripción única a clase | `UNIQUE (clase_id, perfil_id)` en `inscripciones_clase` |
 | Lista espera única | `UNIQUE (clase_id, perfil_id)` en `lista_espera` |
 
-Checkout / timeout de presencia: pendiente de consulta al docente (ver [Propuesta RN-01](../rnf/Propuesta_RN01_Presencia_Una_Sede.md)).
+Checkout / timeout de presencia: pendiente de consulta al docente (ver [Propuesta RN-01](../../docs/rnf/Propuesta_RN01_Presencia_Una_Sede.md)).
 
 ---
 

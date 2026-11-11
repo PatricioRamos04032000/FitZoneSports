@@ -13,7 +13,7 @@ El plan de tres semanas dejó M2 fuera del camino crítico de Demo Day (canchas)
 
 También aplica **RN-01** (un socio no puede figurar “dentro” de dos sedes a la vez). Online se puede garantizar con integridad en BD; offline solo se consolida al sincronizar.
 
-Referencias: Decisiones §8 · Plan M2 Acceso · [Propuesta RN-01](../rnf/Propuesta_RN01_Presencia_Una_Sede.md) · [C4 §5](../diagramas/C4_Arquitectura_FitZone.md).
+Referencias: Decisiones §8 · Plan M2 Acceso · [Propuesta RN-01](../rnf/Propuesta_RN01_Presencia_Una_Sede.md) · [C4 §5](../../../documentacion/diagramas%20desarrollo/C4_Arquitectura_FitZone.md).
 
 ## Decisión
 

@@ -1,0 +1,65 @@
+C4Component
+    title FitZone Sports — Componentes de Canchas
+
+    UpdateLayoutConfig($c4ShapeInRow="1", $c4BoundaryInRow="3")
+
+    Boundary(actores, " ", "") {
+        Person(hueco, " ", " ")
+        Person(socio, "Socio activo", "Reserva canchas con descuento de socio")
+        Person(externo, "Cliente externo", "Alquila canchas a tarifa plena")
+    }
+
+    Container_Boundary(fitzone, "FitZone Sports") {
+        Container_Boundary(m4, "M4 Canchas") {
+            Boundary(colIzq, " ", "") {
+                Component(precios, "PreciosService", "Strategy", "Estándar, descuento de socio y horario pico.")
+            }
+            Boundary(colDer, " ", "") {
+                Person(huecoDer, " ", " ")
+                Component(reservas, "ReservasCanchaService", "NestJS", "Servicio de reservas. Facade del caso de uso.")
+                Component(repo, "ReservasCanchaRepository", "Supabase", "Llama a la RPC reservar_cancha.")
+                ComponentDb(bloqueo, "Gestor de bloqueos", "PostgreSQL", "Índice único parcial reservas_cancha_sin_sobreventa.")
+            }
+        }
+    }
+
+    Container_Boundary(m5, "M5 Pagos") {
+        Person(huecoExt, " ", " ")
+        Component(pasarela, "PasarelaPago", "Puerto", "Cobro simulado. No se descompone en este diagrama.")
+    }
+
+    Boundary(leyenda, "Leyenda", "") {
+        Person(legPersona, "Persona", "Quien reserva una cancha")
+        Component(legComp, "Componente", "Servicio", "Reservas, precios, repositorio o pasarela")
+        ComponentDb(legDb, "Base de datos", "PostgreSQL", "El bloqueo del turno")
+    }
+
+    UpdateElementStyle(actores, $bgColor="none", $fontColor="none", $borderColor="none")
+    UpdateElementStyle(colIzq, $bgColor="none", $fontColor="none", $borderColor="none")
+    UpdateElementStyle(colDer, $bgColor="none", $fontColor="none", $borderColor="none")
+    UpdateElementStyle(hueco, $bgColor="#ffffff", $fontColor="#ffffff", $borderColor="#ffffff")
+    UpdateElementStyle(huecoDer, $bgColor="#ffffff", $fontColor="#ffffff", $borderColor="#ffffff")
+    UpdateElementStyle(huecoExt, $bgColor="#ffffff", $fontColor="#ffffff", $borderColor="#ffffff")
+
+    Rel_R(socio, reservas, "Reserva su turno")
+    Rel_R(externo, reservas, "Reserva a tarifa plena")
+    Rel_L(reservas, precios, "Calcula el precio")
+    Rel_D(reservas, repo, "Persiste el hold")
+    Rel_D(repo, bloqueo, "Rechaza el turno tomado", "unique_violation, RN-02")
+    Rel_R(reservas, pasarela, "Cobra", "Simulado")
+
+    UpdateRelStyle(socio, reservas, $offsetY="-20")
+    UpdateRelStyle(externo, reservas, $offsetY="16")
+    UpdateRelStyle(reservas, precios, $offsetX="-30", $offsetY="-18")
+    UpdateRelStyle(repo, bloqueo, $offsetX="55")
+    UpdateRelStyle(reservas, pasarela, $offsetY="-24")
+
+%% C4-3 Componentes — Canchas — FitZone Sports
+%% Autor: Patricio Ramos
+%% Fecha: 2026-11-10
+%% Versión: 1.0
+%% El gestor de bloqueos no es una clase: es la RPC reservar_cancha y el índice único parcial
+%% sobre (cancha_id, inicio) donde el estado es pendiente o confirmada.
+%% PreciosService queda arriba a la izquierda. ReservasCanchaService queda a su derecha, junto a la pasarela.
+%% hueco, huecoDer y huecoExt alinean al socio con el servicio de reservas. No se dibujan.
+%% Las personas quedan fuera del límite. La pasarela queda a la derecha de FitZone. La leyenda es el bloque de abajo.
