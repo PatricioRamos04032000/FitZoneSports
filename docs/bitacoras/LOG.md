@@ -901,7 +901,51 @@ ADR-001 a ADR-010 ya estaban usados con otros temas, tres de ellos reemplazados.
 - El 60 % todavía no está en `jest.config.ts` ni en el CI. Lo hace cumplir C-10. Si la medición queda debajo, no se baja el número en el ADR: se agregan tests o se supera el registro.
 - No hay `docker-compose.yml`. El ADR-009 fija Compose de API y frontend, con PostgreSQL en Supabase. El archivo es C-07.
 - El checkout simulado recibe el número de prueba en el POST y no lo guarda. La pasarela real queda afuera.
-- Falta mover la tarjeta C-14 a finalizada en Trello.
+- La tarjeta C-14 pasó a finalizado en Trello el 2026-11-09 a la noche (quedó anotado al día siguiente, en la entrada del 2026-11-11).
+
+---
+
+## 2026-11-11 — Reunión de equipo: estados del tablero y trabajo en curso
+
+**Tipo:** reunión de equipo  
+**Participantes:** Patricio Ramos (P1), Bruno Conti (P2), Lucas Coquet (P3), Matias Goncevat (P4)  
+**Fuente:** tablero Trello, export `documentacion/eBn68vRC - programacion5 (2).json`  
+**Unidad / semana:** cierre TIF (6–19/11) · tramo T2
+
+### Qué está trabajando cada uno
+
+Lista del tablero: «tambien en desarrollo». «en desarrollo» y «Blocked» estaban vacías.
+
+| Integrante | Ahora | Estado |
+| --- | --- | --- |
+| **Patricio (P1)** | **C-22** — recorrer el Anexo G casilla por casilla (bugs solo críticos del guion) | En desarrollo |
+| **Bruno (P2)** | **C-09** — exportar `backend/swagger.json` y dejar el link en el README. La fecha de la tarjeta quedó marcada como completa y la lista sigue en «tambien en desarrollo» | En desarrollo |
+| **Lucas (P3)** | **C-02** — membresía en la UI (`GET /membresias/mia`: plan, estado, vigencia). **S6-T09** — notificaciones in-app (listar y marcar leída). C-12, la tarjeta hermana del cierre, sigue en por hacer | En desarrollo |
+| **Matias (P4)** | **C-19d** — bitácora individual (`docs/bitacoras/LOG-goncevat.md`) | En desarrollo |
+
+### Cerrado en el tablero en esta pasada
+
+| Tarjeta | Quién | Pasa a |
+| --- | --- | --- |
+| C-15 — 14 diagramas | Patricio | Finalizado |
+| C-18 — manual técnico (Anexo F) | Patricio | Finalizado |
+| C-19a — bitácora de Patricio | Patricio | Finalizado |
+| S7-T12 — stretch QR/móvil | Matias | Finalizado |
+| Revisión cruzada del PDF (S1-T17) | Bruno | Finalizado |
+
+La tarjeta homónima de Lucas (S1-T16) sigue archivada en «por hacer». No se la tomó como finalizada.
+
+### Dónde quedó el resto
+
+S5 está cerrada (S5-T01 a S5-T11). De S6 queda abierta solo S6-T09. De S7 siguen en por hacer S7-T06, S7-T07, S7-T08 y S7-T09 (Lucas). El plan de cierre tiene en por hacer, entre otras, C-04 (Bruno), C-07, C-08, C-10, C-17, C-20 y C-21 (Matias), C-11, C-12, C-16 y C-19c (Lucas), y C-23 a C-27 (Patricio).
+
+Queda suelta, en por hacer y sin responsable, la tarjeta «Preparar API REST del módulo perfil». S6-T01 (`GET`/`PATCH /perfiles/me`) ya está finalizada.
+
+Estados copiados a [Plan_Cierre_Entrega_6_19_Nov.md](../planificacion/Plan_Cierre_Entrega_6_19_Nov.md), [Plan_Trabajo_2_Semanas.md](../planificacion/Plan_Trabajo_2_Semanas.md) y [Propuesta_Continuacion_Semanas.md](../planificacion/Propuesta_Continuacion_Semanas.md).
+
+### Commits vinculados
+
+_Sin commits asociados a esta entrada._
 
 ---
 

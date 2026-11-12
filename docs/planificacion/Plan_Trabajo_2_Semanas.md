@@ -3,8 +3,8 @@
 **Proyecto:** FitZone Sports · Programación V · UNER  
 **Equipo:** 4 integrantes  
 **Período de referencia:** 2026-10-27 al 2026-11-16  
-**Última actualización:** 2026-11-05  
-**Unidad en curso:** S5 — esquema M4 + seguridad + login + shell del front
+**Última actualización:** 2026-11-11 (reunión de equipo; tablero Trello)  
+**Unidad en curso:** cierre TIF (6–19/11). S5 está cerrada en el tablero. Sigue abierta S6-T09.
 
 **Referencias:** Trabajo Integrador · [Acta 2026-10-21](./Acta_Reunion_2026-10-21_Seguimiento.md) · Decisiones pendientes · Correcciones de Membresías y Clases · [LOG](../bitacoras/LOG.md)
 
@@ -27,6 +27,8 @@
 
 ## Estado general al 2026-10-22
 
+> Relevamiento de esa fecha. El estado vigente de cada tarea está en las tablas de más abajo, alineadas al tablero del 2026-11-11.
+
 | Área | Estado real observado |
 | --- | --- |
 | Arquitectura y decisiones | C4 y ADRs documentados. En la reunión del 21/10 se acordaron las reglas principales de canchas; falta asegurar que la propuesta y los cambios derivados queden integrados en la rama de trabajo. |
@@ -39,24 +41,34 @@
 
 > Fase A (`sedes`, `perfiles`, `membresias` y enums): versionada en `supabase/migrations/20260915000000_fase_a_nucleo.sql` (**S5-T01 Finalizado**, 2026-10-27). Encima siguen `20261005220000_membresias_clases.sql` y `20261006190000_notificaciones.sql`.
 
-## Trabajo en curso (ahora — S5)
+## Trabajo en curso (ahora — 2026-11-11)
 
-Con la adopción del plan de 3 semanas, el trabajo activo del equipo coincide con la semana 5 de la propuesta. Los IDs, responsables y estados se mantienen alineados con [Propuesta_Continuacion_Semanas.md](./Propuesta_Continuacion_Semanas.md).
+Reunión de equipo. Fuente: tablero Trello, lista «tambien en desarrollo». Las listas «en desarrollo» y «Blocked» no tenían tarjetas. El detalle del cierre C-01…C-27 está en [Plan_Cierre_Entrega_6_19_Nov.md](./Plan_Cierre_Entrega_6_19_Nov.md).
 
 | Integrante | ID | Tarea | Estado |
 | --- | --- | --- | --- |
-| Patricio Ramos (P1) | S5-T02 | Migración M4: canchas, reservas, configuraciones y admin_sede | **En desarrollo** |
-| Patricio Ramos (P1) | S5-T03 | Seed mínimo de demo | **Por hacer** |
-| Bruno Conti (P2) | S5-T04 | Guards en Clases y Membresías | **En desarrollo** |
-| Bruno Conti (P2) | S5-T05 | Ventana 48 h en inscripción | **Por hacer** |
-| Lucas Coquet (P3) | S5-T06 | Login real con token y validación | **En desarrollo** |
-| Lucas Coquet (P3) | S5-T07 | Cliente HTTP base + sesión de usuario | **En desarrollo** |
-| Lucas Coquet (P3) | S5-T08 | Layout post-login y rutas protegidas | **Por hacer** |
-| Lucas Coquet (P3) | S5-T09 | Átomos de UI para Login | **Por hacer** |
+| Patricio Ramos (P1) | C-22 | Recorrer el Anexo G casilla por casilla | **En desarrollo** |
+| Bruno Conti (P2) | C-09 | Exportar `backend/swagger.json` y enlazarlo en el README | **En desarrollo** |
+| Lucas Coquet (P3) | C-02 | Membresía en UI (`GET /membresias/mia`) | **En desarrollo** |
+| Lucas Coquet (P3) | S6-T09 | Notificaciones in-app (listar y marcar leída) | **En desarrollo** |
+| Matias Goncevat (P4) | C-19d | Bitácora individual (`docs/bitacoras/LOG-goncevat.md`) | **En desarrollo** |
+
+### Semana 5 — cerrada en el tablero
+
+| Integrante | ID | Tarea | Estado |
+| --- | --- | --- | --- |
+| Patricio Ramos (P1) | S5-T02 | Migración M4: canchas, reservas, configuraciones y admin_sede | **Finalizado** |
+| Patricio Ramos (P1) | S5-T03 | Seed mínimo de demo | **Finalizado** |
+| Bruno Conti (P2) | S5-T04 | Guards en Clases y Membresías | **Finalizado** |
+| Bruno Conti (P2) | S5-T05 | Ventana 48 h en inscripción | **Finalizado** |
+| Lucas Coquet (P3) | S5-T06 | Login real con token y validación | **Finalizado** |
+| Lucas Coquet (P3) | S5-T07 | Cliente HTTP base + sesión de usuario | **Finalizado** |
+| Lucas Coquet (P3) | S5-T08 | Layout post-login y rutas protegidas | **Finalizado** |
+| Lucas Coquet (P3) | S5-T09 | Átomos de UI para Login | **Finalizado** |
 | Matias Goncevat (P4) | S5-T10 | Adoptar el plan de 3 semanas y actualizar el seguimiento | **Finalizado** |
 | Matias Goncevat (P4) | S5-T11 | Checklist de cuentas GitHub / Supabase / Vercel | **Finalizado** |
 
-> La propuesta de continuidad se toma como plan activo para S5–S7. El resto del backlog previo queda como historial y soporte documental, no como eje de la semana actual.
+> La propuesta de continuidad sigue como respaldo de S5–S7, con los mismos estados. El eje de estas dos semanas es el [plan de cierre](./Plan_Cierre_Entrega_6_19_Nov.md).
 
 ### Checklist de cuentas del equipo
 
@@ -97,19 +109,19 @@ Con la adopción del plan de 3 semanas, el trabajo activo del equipo coincide co
 
 | ID | Tarea | Responsable propuesto | Estado | Dependencias / criterio de cierre |
 | --- | --- | --- | --- | --- |
-| S4-T06 | Implementar la API REST de Canchas: esquema/migración, repositorio, servicio y endpoints de disponibilidad y reserva; aplicar reglas acordadas para turnos, mantenimiento y concurrencia. | Bruno (P2) | **En desarrollo** | Reglas de S4-T09. Cierra cuando los endpoints y persistencia puedan probarse sin datos ficticios y sin sobreventa. |
-| S4-T10 | Asegurar Membresías y Clases: guards y roles, identidad del socio tomada del JWT, control de pertenencia al cancelar, fecha de clase consultada desde la base y DTO/validación para altas de membresía. | Backend (P2; confirmar con el equipo) | **Por hacer** | No requiere esperar a S4-T06. Usar como guía los puntos de prioridad alta de Correcciones S3-T03 / S3-T04. |
-| S4-T11 | Crear endpoint de perfil propio (`GET /perfiles/me`) y conectar Mi Perfil a datos reales. | Backend P2 + Frontend P3 (asignación a confirmar) | **Por hacer** | El endpoint no existe; no exponer un perfil arbitrario indicado por el cliente. |
-| S3-T05 | Conectar el formulario de Login con `POST /auth/login`, manejar errores y sesión, y eliminar cualquier impresión de contraseña/token en consola. | Lucas (P3) | **En desarrollo** | Backend de autenticación ya disponible. Cierra con prueba real de login y respuesta de credenciales inválidas. Primer lugar natural para un hook ViewModel de pantalla si el equipo adopta esa convención (ver S4-T12 / Decisiones §4.2). |
+| S4-T06 | Implementar la API REST de Canchas: esquema/migración, repositorio, servicio y endpoints de disponibilidad y reserva; aplicar reglas acordadas para turnos, mantenimiento y concurrencia. | Bruno (P2) | **Finalizado** | Tarjeta en finalizado. Lectura y reserva también cerradas como S6-T04 y S6-T05. |
+| S4-T10 | Asegurar Membresías y Clases: guards y roles, identidad del socio tomada del JWT, control de pertenencia al cancelar, fecha de clase consultada desde la base y DTO/validación para altas de membresía. | Bruno (P2) | **Finalizado** | Sin tarjeta S4-T10. Cierre en S5-T04 (finalizado) y en el LOG del 2026-11-04. |
+| S4-T11 | Crear endpoint de perfil propio (`GET /perfiles/me`) y conectar Mi Perfil a datos reales. | Patricio (P1) + Lucas (P3) | **Finalizado** | S6-T01 y S6-T08 en finalizado. |
+| S3-T05 | Conectar el formulario de Login con `POST /auth/login`, manejar errores y sesión, y eliminar cualquier impresión de contraseña/token en consola. | Lucas (P3) | **Finalizado** | Tarjeta en finalizado. |
 
 ### Prioridad 2 — completar los flujos de usuario
 
 | ID | Tarea | Responsable propuesto | Estado | Dependencias / criterio de cierre |
 | --- | --- | --- | --- | --- |
-| S4-T12 | Crear cliente de API del frontend y estado de sesión (token/usuario/rol); proteger las rutas que requieran autenticación. | Lucas (P3) | **Por hacer** | S3-T05. Mantener al frontend comunicándose con Nest, no directamente con Supabase Auth. Al implementarlo: separar estado de servidor (TanStack Query) vs sesión de cliente (Zustand/Context); evaluar hooks tipo ViewModel por pantalla (Decisiones §4.2). |
-| S4-T13 | Conectar la pantalla de Canchas a disponibilidad y reserva reales; mostrar precio calculado, reglas aplicadas y resultado de reserva. | Lucas (P3) | **Por hacer** | Bloqueada por S4-T06 y por el cliente API de S4-T12. |
-| S4-T14 | Integrar el Observer con la cancelación/procesamiento de lista de espera y probar el aviso in-app. Revisar también confirmación y expiración del lugar notificado. | Backend (P2; confirmar con el equipo) | **Por hacer** | El publisher y los observers ya existen, pero el servicio de Clases todavía no los invoca. |
-| S4-T15 | Alinear regla de redondeo: la reunión acordó redondear hacia arriba, mientras la propuesta y `PreciosService` actualmente indican/usan `Math.round`; actualizar implementación, pruebas y documentación. | Backend P2 + P1 | **Por hacer** | Regla acordada en el acta del 21/10. |
+| S4-T12 | Crear cliente de API del frontend y estado de sesión (token/usuario/rol); proteger las rutas que requieran autenticación. | Lucas (P3) | **Finalizado** | S6-T06, S5-T07 y S4-T04 en finalizado. La sesión quedó en React Context (LOG 2026-11-07). |
+| S4-T13 | Conectar la pantalla de Canchas a disponibilidad y reserva reales; mostrar precio calculado, reglas aplicadas y resultado de reserva. | Lucas (P3) | **Finalizado** | C-01 y S6-T07 en finalizado. |
+| S4-T14 | Integrar el Observer con la cancelación/procesamiento de lista de espera y probar el aviso in-app. Revisar también confirmación y expiración del lugar notificado. | Bruno (P2) | **Finalizado** | S7-T04 en finalizado. LOG 2026-11-04. |
+| S4-T15 | Alinear regla de redondeo: la reunión acordó redondear hacia arriba. | Backend P2 + P1 | **Finalizado** | Sin tarjeta abierta. `PreciosService` usa `Math.ceil`. |
 
 ### Prioridad 3 — pruebas, documentación y seguimiento
 
@@ -121,32 +133,32 @@ Con la adopción del plan de 3 semanas, el trabajo activo del equipo coincide co
 
 ## Orden sugerido y bloqueos
 
-1. Continuar S4-T06 y S3-T05 en paralelo.
-2. Atender S4-T10 como prioridad de seguridad; hoy los controllers de Clases y Membresías todavía permiten operaciones sin los guards descritos en la guía de correcciones.
-3. Implementar S4-T11 para desbloquear el perfil real.
-4. Avanzar S4-T12; luego conectar Canchas en S4-T13 cuando S4-T06 esté disponible.
-5. Integrar S4-T14 y corregir el redondeo en S4-T15.
-6. Completar documentación, pruebas y demo (S4-T16 a S4-T18).
+Al 2026-11-11, S4-T06, S3-T05 y S4-T10 a S4-T15 están finalizadas. Siguen **Por hacer** en este plan S4-T16, S4-T17 y S4-T18: no tienen tarjeta propia.
+
+Lo que el tablero deja en **Por hacer** para el cierre está en el plan del 6–19/11. Por persona, además de lo que ya está en desarrollo:
+
+1. Patricio: C-23, C-24, C-25, C-26 y C-27, después de C-22.
+2. Bruno: C-04 (PDF comprobante) y C-19b (bitácora), en paralelo con C-09.
+3. Lucas: S7-T06 / C-11 (pantalla Clases), S7-T07 (la tarjeta hermana de C-02 sigue en por hacer), S7-T08, S7-T09, C-12 (hermana de S6-T09), C-16 y C-19c.
+4. Matias: C-07, C-08, C-10, C-17, C-20 y C-21, en paralelo con C-19d.
 
 ## Fuera del alcance inmediato
 
 | Tema | Motivo |
 | --- | --- |
-| App móvil React Native y QR/TOTP offline | Diferidos a la Unidad VI; la validación offline de acceso todavía tiene decisiones pendientes. |
-| Pagos reales o pasarela de pago | Módulo M5; no hay integración implementada. |
-| Membresías con pago/renovación completa | Requiere cerrar seguridad, lógica de renovación y módulo de pagos. |
-| Pipeline CI/CD, Docker y despliegue | No están configurados en el repositorio; planificar como trabajo específico de Unidad V. |
+| App móvil React Native | La app nativa sigue fuera de este plan. El stretch S7-T12 (QR/móvil) está finalizado en el tablero. |
+| Pagos reales o pasarela de pago | Módulo M5; el pago mock (S7-T02) está finalizado. La pasarela real no. |
+| Membresías con pago/renovación completa | Requiere lógica de renovación y módulo de pagos. La seguridad de altas ya está en S5-T04. |
+| Docker y despliegue | El CI de backend (S6-T10) está finalizado. Docker sigue en C-07, por hacer. |
 | Gestión integral de sedes, clases, reportes y acceso/aforo | Son funcionalidades pendientes de los módulos M1–M5; no se presentan como terminadas en este plan. |
 
 ## Control de avance
 
-En la próxima reunión:
+La reunión del 2026-11-11 dejó los estados de este archivo alineados al tablero. El seguimiento vivo está en la sección **Trabajo en curso** y en [LOG.md](../bitacoras/LOG.md) (entrada 2026-11-11).
 
-1. Confirmar responsables y estimaciones de S4-T10 a S4-T18.
-2. Actualizar estados con evidencia del código, pruebas o documentación.
-3. Verificar si S4-T09 quedó integrado en la rama de desarrollo.
-4. Probar primero los endpoints y después los flujos del frontend.
-5. Registrar bloqueos y cambios en [LOG.md](../bitacoras/LOG.md).
+1. S4-T10 a S4-T15 quedaron finalizadas. Siguen por hacer S4-T16, S4-T17 y S4-T18.
+2. El próximo corte de estados es el del plan de cierre (C-01…C-27).
+3. Registrar bloqueos y cambios en [LOG.md](../bitacoras/LOG.md).
 
 ---
 

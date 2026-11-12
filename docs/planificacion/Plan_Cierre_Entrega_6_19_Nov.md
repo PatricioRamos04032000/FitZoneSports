@@ -1,10 +1,13 @@
 # Plan de cierre — entrega TIF (6 al 19 de noviembre 2026)
 
 **Fecha del plan:** 2026-11-06  
+**Última alineación con Trello:** 2026-11-11 (reunión de equipo; export `documentacion/eBn68vRC - programacion5 (2).json`)  
 **Congelamiento / tag:** jueves **19/11/2026, 18:00** → `v1.0-entrega`  
 **Demo Day:** semana 23–29/11 (sin desarrollo)  
 **Fuente de orden:** [Lineamientos de Entrega](./Lineamientos_Entrega_TIF_FitZone_Sports_2do_Cuatrimestre_2026.pdf) · **Anexo G**  
 **Estado de partida:** relevado el 2026-11-06 sobre `desarrollo` (API canchas/clases/acceso fuertes; UI canchas mock; docs de entrega incompletas)
+
+**Estados** (lista Trello → este plan): `por hacer` → **Por hacer** · `tambien en desarrollo` → **En desarrollo** · `finalizado` → **Finalizado**. El 2026-11-11 las listas `en desarrollo` y `Blocked` estaban vacías.
 
 Este plan **no reemplaza** S5–S7 ni el track M2. Es el plan de las **dos semanas finales** hasta el tag. Si algo no entra, se corta lo de la sección 7, no lo de admisibilidad (§6.1).
 
@@ -55,14 +58,14 @@ Después del tag: solo ensayo Demo Day.
 
 ### T1 — 6 al 8/11 · Demo operable (~18–22 h)
 
-| ID | Tarea | Quién | h | Cierra cuando | Anexo G |
-|----|-------|-------|---|---------------|---------|
-| C-01 | **S4-T13** — `/canchas` real: sede → `GET /disponibilidad` → reservar → `POST .../pagar` → checkout | Lucas | 6–8 | Paddle del seed se reserva y confirma desde la UI | Funcionalidad / portal teléfono |
-| C-02 | Membresía en UI (`GET /membresias/mia` en Perfil o bloque propio) | Lucas | 1–2 | Se ve plan/estado/vigencia del socio seed | RF-02 demostrable |
-| C-03 | Lectura responsive: Login, Canchas, Mi QR usables en viewport móvil | Lucas | 2 | QR legible; reserva posible en teléfono | Portal desde teléfono |
-| C-04 | RF-14: PDF **comprobante FitZone** post-pago (cancha, horario, monto); no factura fiscal | Bruno o Patricio | 3–4 | Tras pagar se descarga/abre PDF con esos datos | RF-14 |
-| C-05 | Decisión escrita RNF-01: reforzar offline real **o** documentar MVP cola+sync + mail a cátedra (§7.2) | Patricio | 1 | ADR alineado + si hace falta aviso formal | RNF-01 |
-| C-06 | Ensayo corto API+UI del guion (sin cronómetro aún) | Todos 30–45 min | 1 | Lista de bugs del flujo | Defensa |
+| ID | Tarea | Quién | h | Estado | Cierra cuando | Anexo G |
+|----|-------|-------|---|--------|---------------|---------|
+| C-01 | **S4-T13** — `/canchas` real: sede → `GET /disponibilidad` → reservar → `POST .../pagar` → checkout | Lucas | 6–8 | **Finalizado** | Paddle del seed se reserva y confirma desde la UI | Funcionalidad / portal teléfono |
+| C-02 | Membresía en UI (`GET /membresias/mia` en Perfil o bloque propio) | Lucas | 1–2 | **En desarrollo** | Se ve plan/estado/vigencia del socio seed | RF-02 demostrable |
+| C-03 | Lectura responsive: Login, Canchas, Mi QR usables en viewport móvil | Lucas | 2 | **Finalizado** | QR legible; reserva posible en teléfono | Portal desde teléfono |
+| C-04 | RF-14: PDF **comprobante FitZone** post-pago (cancha, horario, monto); no factura fiscal | Bruno | 3–4 | **Por hacer** | Tras pagar se descarga/abre PDF con esos datos | RF-14 |
+| C-05 | Decisión escrita RNF-01: reforzar offline real **o** documentar MVP cola+sync + mail a cátedra (§7.2) | Patricio | 1 | **Finalizado** | ADR alineado + si hace falta aviso formal | RNF-01 |
+| C-06 | Ensayo corto API+UI del guion (sin cronómetro aún) | Todos 30–45 min | 1 | **Finalizado** | Lista de bugs del flujo | Defensa |
 
 **Salida T1:** el Demo Day se puede ensayar en local sin Swagger para el paso de cancha.
 
@@ -72,28 +75,30 @@ Después del tag: solo ensayo Demo Day.
 
 #### 4.1 Código / operación
 
-| ID | Tarea | Quién | h | Cierra cuando | Anexo G |
-|----|-------|-------|---|---------------|---------|
-| C-07 | `docker-compose.yml` (+ Dockerfiles) que levante API + front; BD Supabase documentada o Postgres local | Matias + Patricio | 6–8 | `docker compose up --build` o README de 5 pasos en máquina limpia | Código Docker |
-| C-08 | Seed ≥ **25 sedes** + canchas/clases mínimas + 4 roles (o script aparte `seed:entrega`) | Matias + Bruno | 4–5 | Cumple §5.4.1 carga de prueba | Seed 25 sedes |
-| C-09 | Exportar `backend/swagger.json`; link en README | Bruno | 0,5 | Archivo en repo + UI docs | swagger.json |
-| C-10 | Suite verde: unit + e2e críticos; actualizar reporte cobertura; declarar umbral en ADR-008 (cátedra) | Matias | 3–4 | CI verde + reporte | Cobertura / tests |
-| C-11 | Pantalla Clases mínima (listar + inscribir) **solo si C-01 está verde** | Lucas | 3–4 | RF-07 demoable en UI | 14 RF |
-| C-12 | Notificaciones in-app (lista + leída) stretch | Lucas | 1–2 | Si sobra | — |
+| ID | Tarea | Quién | h | Estado | Cierra cuando | Anexo G |
+|----|-------|-------|---|--------|---------------|---------|
+| C-07 | `docker-compose.yml` (+ Dockerfiles) que levante API + front; BD Supabase documentada o Postgres local | Matias | 6–8 | **Por hacer** | `docker compose up --build` o README de 5 pasos en máquina limpia | Código Docker |
+| C-08 | Seed ≥ **25 sedes** + canchas/clases mínimas + 4 roles (o script aparte `seed:entrega`) | Matias | 4–5 | **Por hacer** | Cumple §5.4.1 carga de prueba | Seed 25 sedes |
+| C-09 | Exportar `backend/swagger.json`; link en README | Bruno | 0,5 | **En desarrollo** | Archivo en repo + UI docs | swagger.json |
+| C-10 | Suite verde: unit + e2e críticos; actualizar reporte cobertura; declarar umbral en ADR-008 (cátedra) | Matias | 3–4 | **Por hacer** | CI verde + reporte | Cobertura / tests |
+| C-11 | Pantalla Clases mínima (listar + inscribir) **solo si C-01 está verde** | Lucas | 3–4 | **Por hacer** | RF-07 demoable en UI | 14 RF |
+| C-12 | Notificaciones in-app (lista + leída) stretch | Lucas | 1–2 | **Por hacer** | Si sobra | — |
 
 #### 4.2 Repositorio y docs (admisibilidad §6.1)
 
-| ID | Tarea | Quién | h | Cierra cuando | Anexo G |
-|----|-------|-------|---|---------------|---------|
-| C-13 | Reorganizar a `docs/` según la estructura del punto 4 | Patricio | 2–3 | Cátedra encuentra ADR/diagramas/manuales/bitácoras/plan | Estructura carpetas |
-| C-14 | **10 ADR obligatorios** (§5.2.1): mapear existentes + crear faltantes (concurrencia, offline, pruebas/umbral, despliegue/Docker, tokenización, FE/estado, …). **Cerrada 2026-11-09**, rama `c-14`, índice `docs/adr/README.md` | Patricio | 5–6 | 10 archivos, ninguno «Propuesto», con alternativas | ADR ×10 |
-| C-15 | **14 diagramas** + fuente editable + PNG/SVG (C4×4, UML, DER, despliegue, pipeline) | Patricio + Bruno | 8–10 | Carpeta `docs/diagramas/` completa | Diagramas ×14 |
-| C-16 | Manual usuario (Anexo D) + capturas del sistema **entregado** | Lucas + Patricio | 4–5 | Secciones socio / recepción / gerente | Manuales |
-| C-17 | Manual instalación/operación (Anexo E) | Matias | 3–4 | Incluye Docker/env/seed/rollback | Manuales |
-| C-18 | Manual técnico (Anexo F) + casos extensión tenis y Strategy | Patricio | 3–4 | Dos casos resueltos | Manual técnico |
-| C-19 | Bitácoras individuales `docs/bitacoras/LOG-<apellido>.md` ×4 (≥8 entradas c/u, commits, decisión, problema) | **Cada uno** | 3–4 c/u | Cuatro archivos distintos | Bitácoras |
-| C-20 | Planificación completa (§5.6 + Anexo H): plan, EDT, cronograma visual, trazabilidad RF/RN/RNF, seguimiento, riesgos, desvíos | Matias + Patricio | 6–8 | Paquete en `docs/planificacion/` | Planificación |
-| C-21 | Exportar tablero (Trello/GitHub/xlsx) con fechas de creación/cierre reales | Matias | 1–2 | Archivo `PROGV-2026-TIF-EquipoNN-Registro.xlsx` | Tablero |
+| ID | Tarea | Quién | h | Estado | Cierra cuando | Anexo G |
+|----|-------|-------|---|--------|---------------|---------|
+| C-13 | Reorganizar a `docs/` según la estructura del punto 4 | Patricio | 2–3 | **Finalizado** | Cátedra encuentra ADR/diagramas/manuales/bitácoras/plan | Estructura carpetas |
+| C-14 | **10 ADR obligatorios** (§5.2.1): mapear existentes + crear faltantes (concurrencia, offline, pruebas/umbral, despliegue/Docker, tokenización, FE/estado, …). **Cerrada 2026-11-09**, rama `c-14`, índice `docs/adr/README.md` | Patricio | 5–6 | **Finalizado** | 10 archivos, ninguno «Propuesto», con alternativas | ADR ×10 |
+| C-15 | **14 diagramas** + fuente editable + PNG/SVG (C4×4, UML, DER, despliegue, pipeline) | Patricio | 8–10 | **Finalizado** | Carpeta `docs/diagramas/` completa | Diagramas ×14 |
+| C-16 | Manual usuario (Anexo D) + capturas del sistema **entregado** | Lucas | 4–5 | **Por hacer** | Secciones socio / recepción / gerente | Manuales |
+| C-17 | Manual instalación/operación (Anexo E) | Matias | 3–4 | **Por hacer** | Incluye Docker/env/seed/rollback | Manuales |
+| C-18 | Manual técnico (Anexo F) + casos extensión tenis y Strategy | Patricio | 3–4 | **Finalizado** | Dos casos resueltos | Manual técnico |
+| C-19 | Bitácoras individuales `docs/bitacoras/LOG-<apellido>.md` ×4 (≥8 entradas c/u, commits, decisión, problema). En el tablero está partida en C-19a…d | **Cada uno** | 3–4 c/u | **Parcial** | Cuatro archivos distintos | Bitácoras |
+| C-20 | Planificación completa (§5.6 + Anexo H): plan, EDT, cronograma visual, trazabilidad RF/RN/RNF, seguimiento, riesgos, desvíos | Matias | 6–8 | **Por hacer** | Paquete en `docs/planificacion/` | Planificación |
+| C-21 | Exportar tablero (Trello/GitHub/xlsx) con fechas de creación/cierre reales | Matias | 1–2 | **Por hacer** | Archivo `PROGV-2026-TIF-EquipoNN-Registro.xlsx` | Tablero |
+
+**C-19 en el tablero (2026-11-11):** C-19a Patricio **Finalizado** · C-19d Matias **En desarrollo** · C-19b Bruno y C-19c Lucas **Por hacer**.
 
 **Salida T2:** checklist Anexo G de Documentación + Bitácoras + Planificación casi todo marcado.
 
@@ -101,14 +106,14 @@ Después del tag: solo ensayo Demo Day.
 
 ### T3 — 16 al 19/11 · Congelamiento (~8–12 h)
 
-| ID | Tarea | Quién | h | Cierra cuando | Anexo G |
-|----|-------|-------|---|---------------|---------|
-| C-22 | Recorrer Anexo G casilla por casilla; bugs solo críticos del guion | Todos | 3–4 | Lista residual aceptada | Checklist |
-| C-23 | README raíz según §4.1 (equipo, 5 pasos, seed users, links, cobertura) | Patricio | 2 | Máquina limpia sin preguntar | README |
-| C-24 | Ensayo demo **5 min cronometrado** + plan B sin red | Todos | 1–2 | Guion escrito + cronómetro OK | Defensa |
-| C-25 | Dossier PDF (Anexo A) + hash `git rev-parse` | Responsable de entrega | 2 | `PROGV-2026-TIF-EquipoNN-Dossier.pdf` | Moodle |
-| C-26 | Tag anotado y push **antes de las 18:00** | Responsable | 0,5 | `v1.0-entrega` en remoto | Tag |
-| C-27 | Subida Moodle (dossier + URL + tag + hash + plan/xlsx) | Responsable | 0,5 | Constancia de fecha | Canal entrega |
+| ID | Tarea | Quién | h | Estado | Cierra cuando | Anexo G |
+|----|-------|-------|---|--------|---------------|---------|
+| C-22 | Recorrer Anexo G casilla por casilla; bugs solo críticos del guion | Patricio | 3–4 | **En desarrollo** | Lista residual aceptada | Checklist |
+| C-23 | README raíz según §4.1 (equipo, 5 pasos, seed users, links, cobertura) | Patricio | 2 | **Por hacer** | Máquina limpia sin preguntar | README |
+| C-24 | Ensayo demo **5 min cronometrado** + plan B sin red | Patricio | 1–2 | **Por hacer** | Guion escrito + cronómetro OK | Defensa |
+| C-25 | Dossier PDF (Anexo A) + hash `git rev-parse` | Patricio | 2 | **Por hacer** | `PROGV-2026-TIF-EquipoNN-Dossier.pdf` | Moodle |
+| C-26 | Tag anotado y push **antes de las 18:00** | Patricio | 0,5 | **Por hacer** | `v1.0-entrega` en remoto | Tag |
+| C-27 | Subida Moodle (dossier + URL + tag + hash + plan/xlsx) | Patricio | 0,5 | **Por hacer** | Constancia de fecha | Canal entrega |
 
 **Prohibido en T3:** features nuevas, refactor cosmético, app móvil.
 
@@ -194,4 +199,4 @@ Cada integrante dedica **sesión fija a C-19** (bitácora propia) en T2: no se d
 
 ---
 
-*Plan de cierre · FitZone Sports · Programación V · UNER · 2026-11-06*
+*Plan de cierre · FitZone Sports · Programación V · UNER · estados alineados al tablero el 2026-11-11*
