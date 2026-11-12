@@ -1,7 +1,7 @@
 # Propuesta: plan de 3 semanas para llegar (rúbrica + Demo)
 
 **Fecha:** 2026-10-26  
-**Estado:** propuesta para que Matias la baje al plan de trabajo  
+**Estado:** adoptada en el plan de 3 semanas. Estados de cada tarea alineados al tablero el 2026-11-11.  
 **De dónde sale:** panorama, rúbrica del integrador, reunión del 2026-10-21 y atraso actual del equipo
 
 Con 3 semanas de desarrollo restantes, el objetivo es un **demo demostrable** (login → socio con membresía → reservar cancha con precio) más los entregables pesados de la rúbrica. Pagos mock mínimos si alcanza. QR/móvil es stretch de la última semana, no bloqueante.
@@ -64,51 +64,51 @@ Cada tarea tiene entregable, dependencia y criterio de cierre. Las horas son tec
    - Entregado: [`supabase/migrations/20260915000000_fase_a_nucleo.sql`](../../supabase/migrations/20260915000000_fase_a_nucleo.sql) con `sedes`, `perfiles`, `membresias` y enums. El stub local (`00_fase_a_simulada.sql`) solo arma `auth` y roles.  
    - Cierre: un Postgres vacío puede recrear el núcleo antes de las migraciones de clases y notificaciones.
 
-2. **Migración M4 (5 h)**  
+2. **Migración M4 (5 h) — Finalizado (S5-T02, tablero 2026-11-11)**  
    - Entregar: `canchas` (`precio_hora`, tipo, sede), `reservas_cancha` (inicio, fin, precio, detalle de reglas, estado pendiente/confirmada/cancelada), `configuracion_pico`, `configuracion_cadena`, `admins_sede`, períodos de mantenimiento (desde–hasta), renombre `recepcionista` → `admin_sede`.  
    - Incluir: índice único / RPC de reserva sin sobreventa (RN-02); defaults pico 20% 19–21 y descuento socio 15%.  
    - Depende de: [Propuesta_Reglas_Negocio_S4-T09.md](../rnf/Propuesta_Reglas_Negocio_S4-T09.md).  
    - Cierra cuando: migración aplicada en Supabase de desarrollo y mergeada a `desarrollo`.
 
-3. **Seed mínimo de demo (1 h)**  
+3. **Seed mínimo de demo (1 h) — Finalizado (S5-T03, tablero 2026-11-11)**  
    - Entregar: 2–3 sedes; 1 cancha paddle y 1 fútbol 5 con precio; 1 socio con membresía activa; 1 externo; 1 admin_sede; 1 gerente.  
    - Cierra cuando: Bruno puede probar la API de canchas sin inventar datos a mano.
 
 ### Bruno (4 h)
 
-1. **Guards en Clases y Membresías (2.5 h)**  
+1. **Guards en Clases y Membresías (2.5 h) — Finalizado (S5-T04, tablero 2026-11-11)**  
    - Entregar: JWT / `@RequiereRol` en rutas; `perfilId` del token; cancelar solo la propia inscripción; fecha de clase desde la base. Guía: Correcciones S3-T03/S3-T04.  
    - Cierra cuando: sin token → 401; otro usuario → 403.
 
-2. **Ventana 48 h en `inscribir` (1.5 h)**  
+2. **Ventana 48 h en `inscribir` (1.5 h) — Finalizado (S5-T05, tablero 2026-11-11)**  
    - Entregar: rechazo si faltan menos de 48 h para el inicio (D5).  
    - Cierra cuando: prueba “más de 48 h ok / menos de 48 h no”.
 
 ### Lucas (8 h)
 
-1. **Login real (2.5 h)**  
+1. **Login real (2.5 h) — Finalizado (S5-T06, tablero 2026-11-11)**  
    - Entregar: `POST /auth/login`; guarda token; redirige; saca password/token de `console.log`.  
    - Cierra cuando: credencial válida entra; inválida muestra error.
 
-2. **Cliente HTTP base + sesión (2 h)**  
+2. **Cliente HTTP base + sesión (2 h) — Finalizado (S5-T07, tablero 2026-11-11)**  
    - Entregar: módulo `api/` con `VITE_API_URL`; header `Authorization`; store/Context (token, usuario, rol).  
    - Cierra cuando: `GET /auth/me` post-login llena el store.
 
-3. **Layout post-login y rutas protegidas (2 h)**  
+3. **Layout post-login y rutas protegidas (2 h) — Finalizado (S5-T08, tablero 2026-11-11)**  
    - Entregar: menú (Inicio, Perfil, Canchas, Clases, Notificaciones); sin token → login.  
    - Cierra cuando: `/canchas` sin sesión manda a login.
 
-4. **Átomos de UI (1.5 h)**  
+4. **Átomos de UI (1.5 h) — Finalizado (S5-T09, tablero 2026-11-11)**  
    - Entregar: Botón, Input, Spinner usados en Login.  
    - Cierra cuando: hay carpeta `components/` (o Atomic Design) con esos tres.
 
 ### Matias (4 h)
 
-1. **Adoptar el plan (2 h)**  
+1. **Adoptar el plan (2 h) — Finalizado (S5-T10, tablero 2026-11-11)**  
    - Entregar: actualizar el plan de trabajo con IDs, responsables y estados de esta propuesta; entrada en [LOG.md](../bitacoras/LOG.md).  
    - Cierra cuando: “trabajo en curso” coincide con S5.
 
-2. **Checklist de cuentas (2 h)**  
+2. **Checklist de cuentas (2 h) — Finalizado (S5-T11, tablero 2026-11-11)**  
    - Entregar: quién administra GitHub / Supabase / Vercel, documentado.  
    - Cierra cuando: el equipo sabe a quién pedir acceso.
 
@@ -136,40 +136,40 @@ Cada tarea tiene entregable, dependencia y criterio de cierre. Las horas son tec
 
 ### Bruno (4 h)
 
-1. **API Canchas — lectura (1.5 h)**  
+1. **API Canchas — lectura (1.5 h) — Finalizado (S6-T04, tablero 2026-11-11)**  
    - Entregar: listar canchas por sede; grilla (turnos 60 min; reservas + mantenimiento); config pico pública.  
    - Depende de: migración M4 en `desarrollo`.  
    - Cierra cuando: los GET responden con datos del seed en Swagger.
 
-2. **API Canchas — reserva (2.5 h)**  
+2. **API Canchas — reserva (2.5 h) — Finalizado (S6-T05, tablero 2026-11-11)**  
    - Entregar: `POST` vía RPC (RN-02); `PreciosService` (Strategy); guarda precio + reglas; `Math.ceil`; tope 1 mes; socio vencido paga como externo y avisa.  
    - Cierra cuando: dos reservas del mismo turno → una ok y una conflicto; precios alineados a S4-T09.
 
 ### Lucas (8 h)
 
-1. **Cliente API completo (1.5 h)**  
+1. **Cliente API completo (1.5 h) — Finalizado (S6-T06, tablero 2026-11-11)**  
    - Entregar: 401 limpia sesión y manda a login; tipado mínimo; sedes desde `GET /sedes`.  
    - Cierra cuando: el selector de sede usa la API.
 
-2. **Pantalla Canchas real (3 h)**  
+2. **Pantalla Canchas real (3 h) — Finalizado (S6-T07 y C-01, tablero 2026-11-11)**  
    - Entregar: grilla desde API; precio y reglas; reservar; carga y error. Si el POST aún no está: grilla real y botón deshabilitado.  
    - Cierra cuando: se ve disponibilidad del seed; si hay POST, el turno queda ocupado.
 
-3. **Mi Perfil con datos reales (2 h)**  
+3. **Mi Perfil con datos reales (2 h) — Finalizado (S6-T08, tablero 2026-11-11)**  
    - Entregar: `GET /perfiles/me`, o mientras tanto `/auth/me` sin inventar DNI.  
    - Cierra cuando: no quedan datos hardcodeados.
 
-4. **Notificaciones in-app (1.5 h)**  
+4. **Notificaciones in-app (1.5 h) — En desarrollo (S6-T09). C-12, la tarjeta hermana del cierre, sigue en por hacer.**  
    - Entregar: listar, marcar leída, aviso en el layout.  
    - Cierra cuando: lista real (aunque vacía), no mock.
 
 ### Matias (4 h)
 
-1. **CI GitHub Actions (3 h)**  
+1. **CI GitHub Actions (3 h) — Finalizado (S6-T10, tablero 2026-11-11)**  
    - Entregar: workflow en PR a `desarrollo`: lint + test + build del backend.  
    - Cierra cuando: un PR de prueba queda verde (o falla por un test real).
 
-2. **Postman Canchas (1 h)**  
+2. **Postman Canchas (1 h) — Finalizado (S6-T11, tablero 2026-11-11)**  
    - Entregar: login → listar → reservar → conflicto de sobreventa.  
    - Cierra cuando: la colección corre contra el entorno documentado.
 
@@ -183,57 +183,57 @@ Cada tarea tiene entregable, dependencia y criterio de cierre. Las horas son tec
 
 ### Patricio (8 h)
 
-1. **Patrones en la reserva (4 h)**  
+1. **Patrones en la reserva (4 h) — Finalizado (S7-T01, tablero 2026-11-11)**  
    - Entregar: Facade `reservar`; State pendiente/confirmada/cancelada; actualizar Justificacion_Patrones_Unidad_III.md.  
    - Cierra cuando: la justificación marca Strategy (en uso), Facade y State con rutas de código.
 
-2. **Pago mock mínimo (2 h)**  
+2. **Pago mock mínimo (2 h) — Finalizado (S7-T02, tablero 2026-11-11)**  
    - Entregar: servicio/endpoint que guarda token falso en `pagos` (Adapter stub). Sin PDF.  
    - Cierra cuando: el guion puede decir “pagué” sin pasarela real.
 
-3. **Ensayo demo + docs (2 h)**  
+3. **Ensayo demo + docs (2 h) — Finalizado (S7-T03 y C-06, tablero 2026-11-11). El ensayo de 5 minutos cronometrado sigue en C-24, por hacer.**  
    - Entregar: checklist del guion; C4/ADR solo si el esquema cambió.  
    - Cierra cuando: el equipo hizo un pase completo una vez.
 
 ### Bruno (4 h)
 
-1. **Lista de espera + Observer (3 h)**  
+1. **Lista de espera + Observer (3 h) — Finalizado (S7-T04, tablero 2026-11-11)**  
    - Entregar: anotarse / confirmar; al cancelar se llama al publisher; aviso in-app.  
    - Cierra cuando: cancelar una inscripción llena notifica al primero de la lista.
 
-2. **Swagger al día (1 h)**  
+2. **Swagger al día (1 h) — Finalizado (S7-T05, tablero 2026-11-11). El export `swagger.json` es C-09 y está en desarrollo.**  
    - Entregar: canchas, perfil y lista de espera documentados.  
    - Cierra cuando: no quedan endpoints nuevos sin `@Api…` básico.
 
 ### Lucas (8 h)
 
-1. **Pantalla Clases (3 h)**  
+1. **Pantalla Clases (3 h) — Por hacer (S7-T06 y C-11)**  
    - Entregar: listar con cupo; inscribir; cancelar; lista de espera si Bruno la terminó.  
    - Cierra cuando: el socio seed hace listar → inscribir → ver cupo actualizado.
 
-2. **Membresía en UI (1.5 h)**  
+2. **Membresía en UI (1.5 h) — En desarrollo en C-02. S7-T07 sigue en por hacer.**  
    - Entregar: plan/estado/vigencia desde la API.  
    - Cierra cuando: el demo muestra “socio activo” en pantalla.
 
-3. **Pulido del flujo demo (1.5 h)**  
+3. **Pulido del flujo demo (1.5 h) — Por hacer (S7-T08). C-03 (responsive) ya está finalizado.**  
    - Entregar: menú alineado al guion; errores legibles; sin mock.  
    - Cierra cuando: un pase de 5 minutos se hace solo con la UI.
 
-4. **Componentes documentados (2 h) — entregable IV**  
+4. **Componentes documentados (2 h) — Por hacer (S7-T09, entregable IV)**  
    - Entregar: 5+ componentes + README Atomic Design o Storybook mínimo; responsive básico de Login y Canchas.  
    - Cierra cuando: hay evidencia clara para la Unidad IV (15%).
 
 ### Matias (4 h)
 
-1. **Cobertura (2 h) — entregable V**  
+1. **Cobertura (2 h) — Finalizado (S7-T10, tablero 2026-11-11). C-10 (suite verde + umbral en CI) sigue en por hacer.**  
    - Entregar: artifact/doc de `npm run test:cov` del backend.  
    - Cierra cuando: Unidad V tiene pipeline + cobertura (aunque no haya Docker).
 
-2. **Smoke del guion demo (1 h)**  
+2. **Smoke del guion demo (1 h) — Finalizado (S7-T11, tablero 2026-11-11)**  
    - Entregar: pasos en el LOG (login → membresía → reservar) ok/fail.  
    - Cierra cuando: al menos un pase registrado.
 
-3. **Stretch VI — QR/móvil (1 h, solo si lo anterior está verde)**  
+3. **Stretch VI — QR/móvil (1 h) — Finalizado (S7-T12, tablero 2026-11-11)**  
    - Entregar: scaffold RN o pantalla web “mi QR” estática.  
    - No bloquea: si no entra, defer escrito a Unidad VI.
 

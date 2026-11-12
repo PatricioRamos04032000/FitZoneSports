@@ -1,12 +1,12 @@
 # Plan de trabajo — Semanas 1 y 2 (histórico)
 
-> **Plan cerrado.** Registro de las semanas 1 y 2 con los estados finales tomados del tablero Trello (2026-10-01). El plan vigente (semanas 3 y 4) está en [`Plan_Trabajo_2_Semanas.md`](./Plan_Trabajo_2_Semanas.md).
+> **Plan cerrado.** Registro de las semanas 1 y 2. Los estados se alinearon al tablero Trello el 2026-11-11. El seguimiento vigente está en [`Plan_Cierre_Entrega_6_19_Nov.md`](./Plan_Cierre_Entrega_6_19_Nov.md) y [`Plan_Trabajo_2_Semanas.md`](./Plan_Trabajo_2_Semanas.md).
 
 **Proyecto:** FitZone Sports · Programación V · UNER  
 **Equipo:** 4 integrantes  
 **Dedicación mínima:** 4 h/semana por integrante → **16 h/semana de equipo** (~32 h en 2 semanas)  
 **Fecha de elaboración:** 2026-08-28  
-**Última actualización de estados:** 2026-10-01 (según tablero Trello)  
+**Última actualización de estados:** 2026-11-11 (tablero Trello, reunión de equipo)  
 **Unidad en curso:** I (Arquitectura) → transición a II (Frameworks)
 
 **Referencias:** Trabajo Integrador · Decisiones pendientes · [LOG](../bitacoras/LOG.md) · [Acta 2026-09-02](./Acta_Reunion_2026-09-02_Semana1.md)
@@ -37,14 +37,16 @@
 
 ## Trabajo en curso (ahora)
 
-Actualizado el **2026-10-01** según el tablero de Trello. Refleja lo que cada integrante **está trabajando**, no solo el backlog asignado.
+Actualizado el **2026-11-11** según el tablero. En este plan histórico no queda nadie trabajando: las tareas de las semanas 1 y 2 están en **Finalizado**, salvo S1-T16.
 
 | Integrante | Rol | Tarea en curso (ID) | Qué está haciendo | Estado |
 |------------|-----|---------------------|-------------------|--------|
-| Patricio Ramos | P1 | S2-T13 | Documentar login + health + sedes en Swagger | Finalizado (2026-10-05) |
-| Bruno Conti | P2 | — | Sin tarjeta en desarrollo; tareas backend de Semana 2 finalizadas | — |
-| Lucas Coquet | P3 | S2-T11 | Pantalla login + cliente HTTP hacia Nest | En desarrollo |
-| Matias Goncevat | P4 | S2-T14 | `README.md` para levantar back y front en local | En desarrollo |
+| Patricio Ramos | P1 | — | Sin tareas abiertas de este plan. El trabajo actual es C-22 (plan de cierre). | — |
+| Bruno Conti | P2 | — | Sin tareas abiertas de este plan. El trabajo actual es C-09 (plan de cierre). | — |
+| Lucas Coquet | P3 | S1-T16 | Revisión cruzada del PDF. La tarjeta está archivada en «por hacer», no en finalizado. | Por hacer |
+| Matias Goncevat | P4 | — | Sin tareas abiertas de este plan. El trabajo actual es C-19d (plan de cierre). | — |
+
+**Pasaron a Finalizado respecto del snapshot del 2026-10-01:** S1-T07, S1-T14, S1-T15, S1-T17, S2-T01, S2-T11, S2-T12, S2-T14, S2-T15, S2-T16.
 
 **Finalizado desde la actualización anterior (2026-09-04):**
 
@@ -93,7 +95,7 @@ React → Nest (BFF) → Supabase Auth
 
 | Entregable | Estado |
 |------------|--------|
-| PDF Unidad I (C4 + ADR) | Finalizado (revisión cruzada S1-T17: Por hacer) |
+| PDF Unidad I (C4 + ADR) | Finalizado (S1-T17 finalizado; S1-T16 sigue en por hacer, tarjeta archivada) |
 | Repo con estructura monorepo acordada | Finalizado |
 | `LOG.md` actualizado | Finalizado (acta + acuerdos 2026-09-02) |
 | Roles P1–P4 asignados por nombre | Finalizado |
@@ -117,26 +119,26 @@ React → Nest (BFF) → Supabase Auth
 | S1-T04 | Revisar `Decisiones_Pendientes_y_Cosas_a_Definir.md` (§1–§3) | Matias Goncevat | P4 | 1 h | Finalizado |
 | S1-T05 | Reunión grupal: cerrar decisiones (BFF, Supabase Auth, API Supabase, offline/TOTP propuesta) | Equipo | Todos | 0,5 h c/u | Finalizado |
 | S1-T06 | Registrar acuerdos de la reunión en `LOG.md` (+ acta) | Patricio Ramos | P1 | 0,5 h | Finalizado |
-| S1-T07 | Completar tabla de integrantes (nombres + roles P1–P4) en este plan y en README | Matias Goncevat | P4 | 0,5 h | Por hacer |
+| S1-T07 | Completar tabla de integrantes (nombres + roles P1–P4) en este plan y en README | Matias Goncevat | P4 | 0,5 h | Finalizado |
 | S1-T08 | Decidir monorepo, convención de ramas/PRs; crear carpetas `frontend/`, `backend/` | Matias Goncevat | P4 | 1 h | Finalizado |
 | S1-T09 | Actualizar C4: BFF, Supabase Auth, Supabase API, offline sede (si falta algo) | Patricio Ramos | P1 | 1,5 h | Finalizado |
 | S1-T10 | Redactar o actualizar ADR pendiente (ej. acceso offline TOTP) si el equipo lo requiere | Patricio Ramos | P1 | 1 h | Finalizado |
 | S1-T11 | Exportar diagramas C4 y compilar **PDF Unidad I** (C4 + índice ADR) | Patricio Ramos | P1 | 1,5 h | Finalizado |
 | S1-T12 | Borrador esquema SQL inicial: `sedes`, usuarios/perfiles, membresías (para Semana 2) | Bruno Conti | P2 | 2 h | Finalizado |
 | S1-T13 | Lista de pantallas mínimas por rol (A1–A4) — documento o issue, sin código | Lucas Coquet | P3 | 1,5 h | Finalizado |
-| S1-T14 | Checklist de cuentas: GitHub, Supabase, Vercel, Render (quién administra cada una) | Matias Goncevat | P4 | 1 h | Por hacer |
-| S1-T15 | Redactar `.env.example` con nombres de variables (sin valores secretos) | Matias Goncevat | P4 | 1 h | Por hacer |
+| S1-T14 | Checklist de cuentas: GitHub, Supabase, Vercel, Render (quién administra cada una) | Matias Goncevat | P4 | 1 h | Finalizado |
+| S1-T15 | Redactar `.env.example` con nombres de variables (sin valores secretos) | Matias Goncevat | P4 | 1 h | Finalizado |
 | S1-T16 | Revisión cruzada del PDF antes de entregar (lectura de otro integrante) | Lucas Coquet | P3 | 0,5 h | Por hacer |
-| S1-T17 | Revisión cruzada del PDF antes de entregar (lectura de otro integrante) | Bruno Conti | P2 | 0,5 h | Por hacer |
+| S1-T17 | Revisión cruzada del PDF antes de entregar (lectura de otro integrante) | Bruno Conti | P2 | 0,5 h | Finalizado |
 
 ### Carga por integrante — Semana 1
 
 | Integrante | Tareas | En desarrollo ahora | Total estimado | ¿≤ 4 h? |
 |------------|--------|---------------------|----------------|---------|
 | **P1** Patricio | S1-T01✓, S1-T05✓, S1-T06✓, S1-T09✓, S1-T10✓, S1-T11✓ | — | **5,5 h** | Ajustar¹ |
-| **P2** Bruno | S1-T02✓, S1-T12✓, S1-T17, S1-T05✓ | — | **4 h** | ✓ |
+| **P2** Bruno | S1-T02✓, S1-T12✓, S1-T17✓, S1-T05✓ | — | **4 h** | ✓ |
 | **P3** Lucas | S1-T03✓, S1-T13✓, S1-T16, S1-T05✓ | — | **4 h** | ✓ |
-| **P4** Matias | S1-T04✓, S1-T07, S1-T08✓, S1-T14, S1-T15, S1-T05✓ | — | **5 h** | Ajustar¹ |
+| **P4** Matias | S1-T04✓, S1-T07✓, S1-T08✓, S1-T14✓, S1-T15✓, S1-T05✓ | — | **5 h** | Ajustar¹ |
 
 ¹ **Ajuste sugerido:** P1 delega S1-T10 a P2 (1 h) si la semana se complica → P1 queda en 4,5 h; P2 en 5 h. O P4 toma S1-T06 (registro LOG) y P1 baja a 5 h.
 
@@ -151,10 +153,10 @@ React → Nest (BFF) → Supabase Auth
 | Entregable | Estado |
 |------------|--------|
 | `backend/` corre en local con Swagger | Finalizado |
-| `frontend/` con pantalla login → Nest → Supabase Auth | En desarrollo (S2-T11) |
-| Proyecto Supabase con tablas mínimas y Auth habilitado | Finalizado (tablas y seed: S2-T02, S2-T03) |
+| `frontend/` con pantalla login → Nest → Supabase Auth | Finalizado (S2-T11) |
+| Proyecto Supabase con tablas mínimas y Auth habilitado | Finalizado (tablas y seed: S2-T02, S2-T03; proyecto: S2-T01) |
 | `GET /health` y `GET /sedes` (o equivalente) funcionando | Finalizado |
-| `README.md` de desarrollo en la raíz del repo | En desarrollo (S2-T14) |
+| `README.md` de desarrollo en la raíz del repo | Finalizado (S2-T14) |
 
 ### Objetivos generales → tareas
 
@@ -169,7 +171,7 @@ React → Nest (BFF) → Supabase Auth
 
 | ID | Tarea | Asignado | Rol | Duración | Estado |
 |----|-------|----------|-----|----------|--------|
-| S2-T01 | Crear proyecto en Supabase; habilitar Auth | Lucas Coquet | P3 | 0,5 h | Por hacer |
+| S2-T01 | Crear proyecto en Supabase; habilitar Auth | Lucas Coquet | P3 | 0,5 h | Finalizado |
 | S2-T02 | Ejecutar SQL inicial: tablas `sedes`, `perfiles` (según borrador S1-T12) | Bruno Conti | P2 | 1,5 h | Finalizado |
 | S2-T03 | Cargar seed mínimo: 1–2 sedes, 1 usuario gerente de prueba | Bruno Conti | P2 | 1 h | Finalizado |
 | S2-T04 | Scaffolding NestJS en `backend/` (CLI, estructura base, `main.ts`) | Bruno Conti | P2 | 1 h | Finalizado |
@@ -179,12 +181,12 @@ React → Nest (BFF) → Supabase Auth
 | S2-T08 | Endpoint `GET /health` + documentación Swagger | Patricio Ramos | P1 | 0,5 h | Finalizado |
 | S2-T09 | Módulo `SedesModule`: `GET /sedes` vía Supabase API (primer Repository) | Bruno Conti | P2 | 1 h | Finalizado |
 | S2-T10 | Scaffolding React + Vite en `frontend/` | Lucas Coquet | P3 | 1 h | Finalizado |
-| S2-T11 | Pantalla login (formulario) + cliente HTTP hacia Nest (no Supabase directo) | Lucas Coquet | P3 | 1,5 h | En desarrollo |
-| S2-T12 | Router base y layout mínimo post-login (placeholder) | Lucas Coquet | P3 | 1 h | Por hacer |
+| S2-T11 | Pantalla login (formulario) + cliente HTTP hacia Nest (no Supabase directo) | Lucas Coquet | P3 | 1,5 h | Finalizado |
+| S2-T12 | Router base y layout mínimo post-login (placeholder) | Lucas Coquet | P3 | 1 h | Finalizado |
 | S2-T13 | Integrar Swagger: documentar login + health + sedes | Patricio Ramos | P1 | 0,5 h | Finalizado |
-| S2-T14 | `README.md`: clonar repo, `.env`, levantar back y front en local | Matias Goncevat | P4 | 1 h | En desarrollo |
-| S2-T15 | Prueba manual E2E: login + listar sedes; anotar resultado en `LOG.md` | Matias Goncevat | P4 | 0,5 h | Por hacer |
-| S2-T16 | Reunión de cierre Semana 2: demo local y plan Semana 3 | Equipo | Todos | 0,5 h c/u | Por hacer |
+| S2-T14 | `README.md`: clonar repo, `.env`, levantar back y front en local | Matias Goncevat | P4 | 1 h | Finalizado |
+| S2-T15 | Prueba manual E2E: login + listar sedes; anotar resultado en `LOG.md` | Matias Goncevat | P4 | 0,5 h | Finalizado |
+| S2-T16 | Reunión de cierre Semana 2: demo local y plan Semana 3 | Equipo | Todos | 0,5 h c/u | Finalizado |
 
 > **Nota 2026-09-02:** S2-T01 pasó de P4 a **Lucas (P3)** porque en la reunión se acordó que él crea e inicializa Supabase.
 
@@ -192,10 +194,10 @@ React → Nest (BFF) → Supabase Auth
 
 | Integrante | Tareas | En desarrollo ahora | Total estimado | ¿≤ 4 h? |
 |------------|--------|---------------------|----------------|---------|
-| **P1** Patricio | S2-T07✓, S2-T08✓, S2-T13✓, S2-T16 | — | **3,5 h** | ✓ |
+| **P1** Patricio | S2-T07✓, S2-T08✓, S2-T13✓, S2-T16✓ | — | **3,5 h** | ✓ |
 | **P2** Bruno | S2-T02✓ … S2-T06✓, S2-T09✓ | — | **7 h** | Ajustar² |
-| **P3** Lucas | S2-T01, S2-T10✓, S2-T11, S2-T12, S2-T16 | S2-T11 | **4,5 h** | ✓ |
-| **P4** Matias | S2-T14, S2-T15, S2-T16 | S2-T14 | **2 h** | ✓ (puede ayudar a P2) |
+| **P3** Lucas | S2-T01✓, S2-T10✓, S2-T11✓, S2-T12✓, S2-T16✓ | — | **4,5 h** | ✓ |
+| **P4** Matias | S2-T14✓, S2-T15✓, S2-T16✓ | — | **2 h** | ✓ (puede ayudar a P2) |
 
 ² **Ajuste sugerido para P2 (muchas tareas backend):**  
 - S2-T04 (scaffold Nest) → **P1** (1 h)  
@@ -211,14 +213,14 @@ Con eso P2 baja a **5 h** y P1/P4 suben — repartir en pair programming si hace
 | Semana | ID tareas | En desarrollo ahora | Total |
 |--------|-----------|--------------------|-------|
 | 1 | S1-T01✓, S1-T05✓, S1-T06✓, S1-T09✓, S1-T10✓, S1-T11✓ | — | 5,5 h |
-| 2 | S2-T07✓, S2-T08✓, S2-T13✓, S2-T16 | — | 3,5 h |
+| 2 | S2-T07✓, S2-T08✓, S2-T13✓, S2-T16✓ | — | 3,5 h |
 | **Total 2 semanas** | | | **9 h** |
 
 ### P2 — Bruno Conti (Backend Developer)
 
 | Semana | ID tareas | En desarrollo ahora | Total |
 |--------|-----------|--------------------|-------|
-| 1 | S1-T02✓, S1-T12✓, S1-T17, S1-T05✓ | — | 4 h |
+| 1 | S1-T02✓, S1-T12✓, S1-T17✓, S1-T05✓ | — | 4 h |
 | 2 | S2-T02✓, S2-T03✓, S2-T04✓, S2-T05✓, S2-T06✓, S2-T09✓ | — | 7 h |
 | **Total 2 semanas** | | | **11 h** |
 
@@ -226,16 +228,16 @@ Con eso P2 baja a **5 h** y P1/P4 suben — repartir en pair programming si hace
 
 | Semana | ID tareas | En desarrollo ahora | Total |
 |--------|-----------|--------------------|-------|
-| 1 | S1-T03✓, S1-T13✓, S1-T16, S1-T05✓ | — | 4 h |
-| 2 | S2-T01, S2-T10✓, S2-T11, S2-T12, S2-T16 | S2-T11 | 4,5 h |
+| 1 | S1-T03✓, S1-T13✓, S1-T16, S1-T05✓ | S1-T16 | 4 h |
+| 2 | S2-T01✓, S2-T10✓, S2-T11✓, S2-T12✓, S2-T16✓ | — | 4,5 h |
 | **Total 2 semanas** | | | **8,5 h** |
 
 ### P4 — Matias Goncevat (QA / DevOps / Mobile)
 
 | Semana | ID tareas | En desarrollo ahora | Total |
 |--------|-----------|--------------------|-------|
-| 1 | S1-T04✓, S1-T07, S1-T08✓, S1-T14, S1-T15, S1-T05✓ | — | 5 h |
-| 2 | S2-T14, S2-T15, S2-T16 | S2-T14 | 2 h |
+| 1 | S1-T04✓, S1-T07✓, S1-T08✓, S1-T14✓, S1-T15✓, S1-T05✓ | — | 5 h |
+| 2 | S2-T14✓, S2-T15✓, S2-T16✓ | — | 2 h |
 | **Total 2 semanas** | | | **7 h** |
 
 ---
