@@ -1,0 +1,3701 @@
+{
+  "openapi": "3.0.0",
+  "paths": {
+    "/": {
+      "get": {
+        "operationId": "AppController_getHello",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "App"
+        ]
+      }
+    },
+    "/health": {
+      "get": {
+        "operationId": "HealthController_check",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HealthResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Verifica que la API esté levantada",
+        "tags": [
+          "health"
+        ]
+      }
+    },
+    "/auth/me": {
+      "get": {
+        "operationId": "MeController_me",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MeResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token ausente, inválido o vencido"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Devuelve el usuario del token y su rol de FitZone",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/auth/login": {
+      "post": {
+        "operationId": "AuthController_login",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoginResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Credenciales inválidas"
+          }
+        },
+        "summary": "Inicia sesión con email y contraseña (pasarela a Supabase Auth)",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/auth/register": {
+      "post": {
+        "description": "Valida formato de email en Nest, crea el usuario en Supabase Auth (mail de confirmación) y la fila en perfiles con rol externo. No devuelve access_token hasta confirmar el email.",
+        "operationId": "AuthController_register",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RegisterResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Email con formato inválido u otros datos inválidos"
+          },
+          "409": {
+            "description": "Email o DNI ya registrados"
+          }
+        },
+        "summary": "Registro de cliente externo",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/sedes": {
+      "get": {
+        "operationId": "SedesController_findAll",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/SedeDto"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Error al consultar Supabase"
+          }
+        },
+        "summary": "Lista todas las sedes",
+        "tags": [
+          "sedes"
+        ]
+      }
+    },
+    "/perfiles/me": {
+      "get": {
+        "description": "Lee public.perfiles con el id del JWT (claim sub). No acepta perfilId del cliente.",
+        "operationId": "PerfilesController_me",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PerfilMeDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token ausente, inválido o vencido"
+          },
+          "404": {
+            "description": "El usuario no tiene perfil"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Perfil del usuario autenticado",
+        "tags": [
+          "perfiles"
+        ]
+      },
+      "patch": {
+        "description": "Permite modificar datos personales, sede habitual y preferencia de notificaciones por email. No permite cambiar el rol.",
+        "operationId": "PerfilesController_actualizar",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ActualizarPerfilDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PerfilMeDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Body vacío o campos inválidos"
+          },
+          "401": {
+            "description": "Token ausente, inválido o vencido"
+          },
+          "404": {
+            "description": "El usuario no tiene perfil"
+          },
+          "409": {
+            "description": "DNI ya usado por otro perfil"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Actualiza el perfil propio",
+        "tags": [
+          "perfiles"
+        ]
+      }
+    },
+    "/notificaciones": {
+      "get": {
+        "operationId": "NotificacionesController_listar",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/NotificacionDto"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token ausente, inválido o vencido"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Notificaciones del usuario, de la más nueva a la más vieja",
+        "tags": [
+          "notificaciones"
+        ]
+      }
+    },
+    "/notificaciones/preferencias": {
+      "get": {
+        "operationId": "NotificacionesController_getPreferencias",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PreferenciasNotificacionDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token ausente, inválido o vencido"
+          },
+          "404": {
+            "description": "El usuario no tiene perfil"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Preferencias de notificación del usuario",
+        "tags": [
+          "notificaciones"
+        ]
+      },
+      "patch": {
+        "operationId": "NotificacionesController_actualizarPreferencias",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PreferenciasNotificacionDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PreferenciasNotificacionDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "notificar_por_email debe ser booleano"
+          },
+          "401": {
+            "description": "Token ausente, inválido o vencido"
+          },
+          "404": {
+            "description": "El usuario no tiene perfil"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Activa o desactiva el aviso por email (simulado)",
+        "tags": [
+          "notificaciones"
+        ]
+      }
+    },
+    "/notificaciones/{id}/leida": {
+      "patch": {
+        "operationId": "NotificacionesController_marcarLeida",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotificacionDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token ausente, inválido o vencido"
+          },
+          "404": {
+            "description": "La notificación no existe o no es del usuario"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Marca una notificación como leída",
+        "tags": [
+          "notificaciones"
+        ]
+      }
+    },
+    "/membresias/planes": {
+      "get": {
+        "operationId": "MembresiasController_listarPlanes",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PlanMembresiaResponseDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Listar catálogo de planes de membresía activos (D2)",
+        "tags": [
+          "membresias"
+        ]
+      }
+    },
+    "/membresias/mia": {
+      "get": {
+        "operationId": "MembresiasController_obtenerMia",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MembresiaResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token ausente, inválido o vencido"
+          },
+          "403": {
+            "description": "Solo para: socio"
+          },
+          "404": {
+            "description": "El socio no tiene membresías registradas"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Consultar la membresía del socio autenticado (identidad tomada del JWT)",
+        "tags": [
+          "membresias"
+        ]
+      }
+    },
+    "/membresias": {
+      "get": {
+        "operationId": "MembresiasController_findAll",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/MembresiaResponseDto"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token ausente, inválido o vencido"
+          },
+          "403": {
+            "description": "Solo para: admin_sede, gerente"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Listar todas las membresías (recepción y gerencia)",
+        "tags": [
+          "membresias"
+        ]
+      },
+      "post": {
+        "operationId": "MembresiasController_crear",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CrearMembresiaDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MembresiaResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "perfil_id o plan inválidos"
+          },
+          "401": {
+            "description": "Token ausente, inválido o vencido"
+          },
+          "403": {
+            "description": "Solo para: admin_sede, gerente"
+          },
+          "404": {
+            "description": "El perfil indicado no existe"
+          },
+          "409": {
+            "description": "Conflicto de concurrencia al crear la membresía"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Dar de alta o renovar la membresía de un socio (cierra la activa anterior según D1)",
+        "tags": [
+          "membresias"
+        ]
+      }
+    },
+    "/membresias/activas/{perfilId}": {
+      "get": {
+        "operationId": "MembresiasController_findActivaPorPerfil",
+        "parameters": [
+          {
+            "name": "perfilId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MembresiaResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "perfilId con formato UUID inválido"
+          },
+          "401": {
+            "description": "Token ausente, inválido o vencido"
+          },
+          "403": {
+            "description": "Solo para: admin_sede, gerente"
+          },
+          "404": {
+            "description": "El socio no tiene membresía activa o está vencida"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Consultar la membresía activa y vigente de un socio (recepción y gerencia)",
+        "tags": [
+          "membresias"
+        ]
+      }
+    },
+    "/acceso/totp/me": {
+      "get": {
+        "description": "Devuelve el secreto base32 (period 60 s) para armar el QR regenerativo en el cliente.",
+        "operationId": "AccesoController_totpMe",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TotpMeResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token ausente, inválido o vencido"
+          },
+          "403": {
+            "description": "Solo para: socio"
+          },
+          "404": {
+            "description": "Sin seed TOTP activo"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Material TOTP del socio autenticado",
+        "tags": [
+          "acceso"
+        ]
+      }
+    },
+    "/acceso/totp/me/codigo": {
+      "get": {
+        "description": "Útil para probar check-in sin escanear QR.",
+        "operationId": "AccesoController_totpCodigo",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TotpCodigoResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token ausente, inválido o vencido"
+          },
+          "403": {
+            "description": "Solo para: socio"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Código TOTP actual (demo / debug)",
+        "tags": [
+          "acceso"
+        ]
+      }
+    },
+    "/acceso/totp/emitir": {
+      "post": {
+        "description": "Requiere TOTP_SEED_ENCRYPTION_KEY. El seed demo del socio ya viene del seed SQL.",
+        "operationId": "AccesoController_emitir",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EmitirTotpDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmitirTotpResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token ausente, inválido o vencido"
+          },
+          "403": {
+            "description": "Solo para: gerente, admin_sede"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Emite o rota el seed TOTP de un perfil",
+        "tags": [
+          "acceso"
+        ]
+      }
+    },
+    "/acceso/check-ins/sync": {
+      "post": {
+        "description": "Procesa la cola local. HTTP 200 siempre; cada ítem trae ok o code tipado. Reintento con el mismo clientEventId es idempotente (no revalida TOTP). Máx. 50 ítems.",
+        "operationId": "AccesoController_syncCheckIns",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SyncCheckInsRequestDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SyncCheckInsResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Batch inválido o > 50 ítems"
+          },
+          "401": {
+            "description": "Token ausente, inválido o vencido"
+          },
+          "403": {
+            "description": "Solo para: admin_sede, gerente"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Sync batch de check-ins offline",
+        "tags": [
+          "acceso"
+        ]
+      }
+    },
+    "/acceso/check-ins": {
+      "post": {
+        "description": "RN-01 lo impone la BD vía RPC registrar_check_in (unique en presencias).",
+        "operationId": "AccesoController_checkIn",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CheckInRequestDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CheckInResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Datos inválidos"
+          },
+          "401": {
+            "description": "TOTP inválido\n\nToken ausente, inválido o vencido"
+          },
+          "403": {
+            "description": "Membresía inactiva o sede no asignada\n\nSolo para: admin_sede, gerente"
+          },
+          "409": {
+            "description": "YA_DENTRO / YA_EN_OTRA_SEDE"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Check-in online (membresía + TOTP + presencia)",
+        "tags": [
+          "acceso"
+        ]
+      },
+      "get": {
+        "operationId": "AccesoController_listarCheckIns",
+        "parameters": [
+          {
+            "name": "sedeId",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CheckInResponseDto"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token ausente, inválido o vencido"
+          },
+          "403": {
+            "description": "Solo para: admin_sede, gerente"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Últimos check-ins de la sede (auditoría corta)",
+        "tags": [
+          "acceso"
+        ]
+      }
+    },
+    "/acceso/check-outs": {
+      "post": {
+        "operationId": "AccesoController_checkOut",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CheckOutRequestDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CheckInResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token ausente, inválido o vencido"
+          },
+          "403": {
+            "description": "Solo para: admin_sede, gerente"
+          },
+          "404": {
+            "description": "Sin presencia abierta"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Check-out: libera presencia e inserta historial",
+        "tags": [
+          "acceso"
+        ]
+      }
+    },
+    "/acceso/presencias": {
+      "get": {
+        "operationId": "AccesoController_listarPresencias",
+        "parameters": [
+          {
+            "name": "sedeId",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PresenciasResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token ausente, inválido o vencido"
+          },
+          "403": {
+            "description": "Solo para: admin_sede, gerente"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Quién está dentro de la sede (+ aforo soft)",
+        "tags": [
+          "acceso"
+        ]
+      }
+    },
+    "/clases": {
+      "get": {
+        "operationId": "ClasesController_findConCupoPorSede",
+        "parameters": [
+          {
+            "name": "sedeId",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ClaseConCupoResponseDto"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "sedeId ausente o con formato UUID inválido"
+          },
+          "401": {
+            "description": "Falta o es inválido el token Bearer"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Listar clases con cupos disponibles por sede",
+        "tags": [
+          "clases"
+        ]
+      }
+    },
+    "/clases/inscripciones/mias": {
+      "get": {
+        "operationId": "ClasesController_listarMisInscripciones",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/InscripcionConClaseResponseDto"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token ausente, inválido o vencido"
+          },
+          "403": {
+            "description": "Solo para: socio"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Listar las inscripciones a clases del socio autenticado",
+        "tags": [
+          "clases"
+        ]
+      }
+    },
+    "/clases/inscripciones": {
+      "post": {
+        "operationId": "ClasesController_inscribir",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/InscribirClaseDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InscripcionClaseResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "claseId inválido o faltan menos de 48 horas para el inicio de la clase (D5)"
+          },
+          "401": {
+            "description": "Token ausente, inválido o vencido"
+          },
+          "403": {
+            "description": "Rol no permitido o socio sin membresía activa vigente (RN-03)\n\nSolo para: socio"
+          },
+          "404": {
+            "description": "La clase solicitada no existe"
+          },
+          "409": {
+            "description": "Clase cancelada, sin cupo, con lista de espera activa o socio ya inscripto"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Inscribir al socio autenticado en una clase (RN-03 membresía vigente + D5 ventana 48 h)",
+        "tags": [
+          "clases"
+        ]
+      }
+    },
+    "/clases/inscripciones/{id}": {
+      "delete": {
+        "operationId": "ClasesController_cancelar",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "UUID de la inscripción",
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Inscripción cancelada correctamente"
+          },
+          "400": {
+            "description": "ID inválido o inscripción ya cancelada"
+          },
+          "401": {
+            "description": "Token ausente, inválido o vencido"
+          },
+          "403": {
+            "description": "Un socio no puede cancelar la inscripción de otro usuario\n\nSolo para: socio, admin_sede, gerente"
+          },
+          "404": {
+            "description": "La inscripción no fue encontrada"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Cancelar una inscripción a clase (valida titularidad, calcula D6 desde la BD y notifica lista de espera por Observer)",
+        "tags": [
+          "clases"
+        ]
+      }
+    },
+    "/clases/lista-espera/mias": {
+      "get": {
+        "operationId": "ClasesController_listarMiListaEspera",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/EsperaConClaseResponseDto"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token ausente, inválido o vencido"
+          },
+          "403": {
+            "description": "Solo para: socio"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Listar los registros en lista de espera del socio autenticado (D7)",
+        "tags": [
+          "clases"
+        ]
+      }
+    },
+    "/clases/lista-espera": {
+      "post": {
+        "operationId": "ClasesController_anotarseEnListaEspera",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AnotarseListaEsperaDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EntradaListaEsperaResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "claseId inválido o la clase ya comenzó"
+          },
+          "401": {
+            "description": "Token ausente, inválido o vencido"
+          },
+          "403": {
+            "description": "Rol no permitido o socio sin membresía activa vigente (RN-03)\n\nSolo para: socio"
+          },
+          "404": {
+            "description": "La clase solicitada no existe"
+          },
+          "409": {
+            "description": "La clase tiene cupos disponibles sin lista de espera, está cancelada o el socio ya está inscripto/en espera"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Anotarse en la lista de espera de una clase sin cupo o con cola activa (RN-03 y D7)",
+        "tags": [
+          "clases"
+        ]
+      }
+    },
+    "/clases/lista-espera/{id}/confirmar": {
+      "post": {
+        "operationId": "ClasesController_confirmarLugarEspera",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "UUID del registro en lista_espera",
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InscripcionClaseResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "ID con formato UUID inválido"
+          },
+          "401": {
+            "description": "Token ausente, inválido o vencido"
+          },
+          "403": {
+            "description": "El registro pertenece a otro usuario o la membresía no está vigente\n\nSolo para: socio"
+          },
+          "404": {
+            "description": "Registro en lista de espera inexistente"
+          },
+          "409": {
+            "description": "El lugar aún no fue notificado o venció el plazo de confirmación"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Confirmar dentro del plazo el lugar liberado en una clase (D7, invocado desde notificación in-app)",
+        "tags": [
+          "clases"
+        ]
+      }
+    },
+    "/clases/lista-espera/{id}": {
+      "delete": {
+        "operationId": "ClasesController_retirarDeListaEspera",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "UUID del registro en lista_espera",
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Retirado de la lista de espera correctamente"
+          },
+          "400": {
+            "description": "ID inválido o registro ya procesado/vencido"
+          },
+          "401": {
+            "description": "Token ausente, inválido o vencido"
+          },
+          "403": {
+            "description": "Un socio no puede retirar a otro usuario de la lista de espera\n\nSolo para: socio, admin_sede, gerente"
+          },
+          "404": {
+            "description": "Registro en lista de espera inexistente"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Retirarse de la lista de espera (si tenía cupo notificado, promueve y avisa al siguiente por Observer)",
+        "tags": [
+          "clases"
+        ]
+      }
+    },
+    "/canchas/reservas": {
+      "post": {
+        "description": "Facade: calcula precio (Strategy) y bloquea el turno en estado pendiente. No cobra: usar POST /:id/pagar y el checkout simulado.",
+        "operationId": "ReservasCanchaController_reservar",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReservarCanchaDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReservaCanchaResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Datos inválidos o turno fuera de reglas"
+          },
+          "401": {
+            "description": "Token ausente, inválido o vencido"
+          },
+          "404": {
+            "description": "Cancha o perfil inexistente"
+          },
+          "409": {
+            "description": "Turno ocupado, cancha inactiva o en mantenimiento"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Reservar una cancha (hold pendiente)",
+        "tags": [
+          "canchas"
+        ]
+      }
+    },
+    "/canchas/reservas/me": {
+      "get": {
+        "description": "Incluye pendientes (para retomar pago), confirmadas y canceladas del perfil del JWT.",
+        "operationId": "ReservasCanchaController_listarMias",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ReservaCanchaResponseDto"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token ausente, inválido o vencido"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Listar mis reservas",
+        "tags": [
+          "canchas"
+        ]
+      }
+    },
+    "/canchas/reservas/{id}/pagar": {
+      "post": {
+        "description": "Idempotente: reutiliza el pago pendiente existente y devuelve la URL del checkout simulado.",
+        "operationId": "ReservasCanchaController_iniciarPago",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID de la reserva",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IniciarPagoResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "La reserva no está pendiente"
+          },
+          "401": {
+            "description": "Token ausente, inválido o vencido"
+          },
+          "403": {
+            "description": "La reserva pertenece a otro usuario"
+          },
+          "404": {
+            "description": "Reserva inexistente"
+          },
+          "409": {
+            "description": "Hold vencido; reserva cancelada"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Iniciar o retomar pago de una reserva pendiente",
+        "tags": [
+          "canchas"
+        ]
+      }
+    },
+    "/canchas/reservas/{id}/cancelar": {
+      "post": {
+        "description": "Delega en el patrón State. Solo el dueño (perfilId del JWT) puede cancelar.",
+        "operationId": "ReservasCanchaController_cancelar",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID de la reserva a cancelar",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReservaCanchaResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "La reserva no admite cancelación"
+          },
+          "401": {
+            "description": "Token ausente, inválido o vencido"
+          },
+          "403": {
+            "description": "La reserva pertenece a otro usuario"
+          },
+          "404": {
+            "description": "Reserva inexistente"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Cancelar una reserva propia",
+        "tags": [
+          "canchas"
+        ]
+      }
+    },
+    "/canchas": {
+      "get": {
+        "description": "Devuelve por defecto las canchas activas de la sede indicada con su tipo y precio base por hora (RF-09).",
+        "operationId": "CanchasController_listarPorSede",
+        "parameters": [
+          {
+            "name": "sedeId",
+            "required": true,
+            "in": "query",
+            "description": "UUID de la sede",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "incluirInactivas",
+            "required": false,
+            "in": "query",
+            "description": "Si es true, incluye también canchas dadas de baja/inactivas",
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CanchaResponseDto"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "sedeId ausente o con formato inválido"
+          },
+          "404": {
+            "description": "La sede solicitada no existe"
+          }
+        },
+        "summary": "Listar canchas de una sede",
+        "tags": [
+          "canchas"
+        ]
+      },
+      "post": {
+        "description": "El gerente puede crear en cualquier sede; el administrador de sede solo en las sedes que tiene asignadas.",
+        "operationId": "CanchasController_crearCancha",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CrearCanchaDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CanchaResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Datos de alta inválidos"
+          },
+          "401": {
+            "description": "Token ausente, inválido o vencido"
+          },
+          "403": {
+            "description": "Solo para: gerente, admin_sede"
+          },
+          "404": {
+            "description": "La sede solicitada no existe"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Dar de alta una cancha en una sede (RF-09)",
+        "tags": [
+          "canchas"
+        ]
+      }
+    },
+    "/canchas/disponibilidad": {
+      "get": {
+        "description": "Arma turnos de 60 minutos en hora en punto (hora Argentina), cruza reservas vigentes y períodos de mantenimiento, y calcula precios externo/socio con el patrón Strategy (RF-10, RF-11, RNF-03).",
+        "operationId": "CanchasController_consultarDisponibilidad",
+        "parameters": [
+          {
+            "name": "sedeId",
+            "required": true,
+            "in": "query",
+            "description": "UUID de la sede",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "fecha",
+            "required": true,
+            "in": "query",
+            "description": "Fecha calendario en hora Argentina (YYYY-MM-DD)",
+            "schema": {
+              "example": "2026-11-15",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DisponibilidadSedeResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "sedeId o fecha inválidos"
+          },
+          "404": {
+            "description": "La sede solicitada no existe"
+          }
+        },
+        "summary": "Consultar grilla horaria de disponibilidad por sede y fecha",
+        "tags": [
+          "canchas"
+        ]
+      }
+    },
+    "/canchas/{id}": {
+      "patch": {
+        "description": "Los cambios de precio solo afectan reservas nuevas; las ya realizadas conservan su monto (S4-T09 P1 y P6).",
+        "operationId": "CanchasController_actualizarCancha",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "UUID de la cancha",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ActualizarCanchaDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CanchaResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Datos inválidos o body vacío"
+          },
+          "401": {
+            "description": "Token ausente, inválido o vencido"
+          },
+          "403": {
+            "description": "Solo para: gerente, admin_sede"
+          },
+          "404": {
+            "description": "Cancha inexistente"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Actualizar precio base, nombre o estado activo de una cancha",
+        "tags": [
+          "canchas"
+        ]
+      }
+    },
+    "/canchas/{id}/mantenimientos": {
+      "get": {
+        "operationId": "CanchasController_listarMantenimientos",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "UUID de la cancha",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/MantenimientoCanchaResponseDto"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "UUID inválido"
+          },
+          "404": {
+            "description": "Cancha inexistente"
+          }
+        },
+        "summary": "Listar períodos de mantenimiento de una cancha (RF-12)",
+        "tags": [
+          "canchas"
+        ]
+      },
+      "post": {
+        "description": "Bloquea reservas futuras dentro del rango [desde, hasta) sin cancelar las reservas ya tomadas.",
+        "operationId": "CanchasController_crearMantenimiento",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "UUID de la cancha",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CrearMantenimientoDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MantenimientoCanchaResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Rango de fechas inválido"
+          },
+          "401": {
+            "description": "Token ausente, inválido o vencido"
+          },
+          "403": {
+            "description": "Solo para: gerente, admin_sede"
+          },
+          "404": {
+            "description": "Cancha inexistente"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Programar un período de mantenimiento para una cancha (RF-12)",
+        "tags": [
+          "canchas"
+        ]
+      }
+    },
+    "/canchas/{id}/mantenimientos/{mantenimientoId}": {
+      "delete": {
+        "operationId": "CanchasController_eliminarMantenimiento",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "UUID de la cancha",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "mantenimientoId",
+            "required": true,
+            "in": "path",
+            "description": "UUID del mantenimiento",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Mantenimiento eliminado"
+          },
+          "401": {
+            "description": "Token ausente, inválido o vencido"
+          },
+          "403": {
+            "description": "Solo para: gerente, admin_sede"
+          },
+          "404": {
+            "description": "Cancha o mantenimiento inexistente"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Eliminar un período de mantenimiento de una cancha",
+        "tags": [
+          "canchas"
+        ]
+      }
+    },
+    "/sedes/{id}/configuracion-pico": {
+      "get": {
+        "description": "Público: permite mostrar en la grilla qué franja y días tienen recargo por horario pico.",
+        "operationId": "ConfiguracionPreciosController_obtenerConfiguracionPico",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "UUID de la sede",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConfiguracionPicoDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "UUID inválido"
+          },
+          "404": {
+            "description": "La sede solicitada no existe"
+          }
+        },
+        "summary": "Consultar configuración de horario pico de una sede (S4-T09 P3)",
+        "tags": [
+          "canchas"
+        ]
+      },
+      "put": {
+        "description": "Lo editan el administrador asignado a esa sede o el Gerente Central. Solo afecta reservas nuevas.",
+        "operationId": "ConfiguracionPreciosController_actualizarConfiguracionPico",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "UUID de la sede",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ActualizarConfiguracionPicoDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConfiguracionPicoDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Parámetros de horario pico inválidos"
+          },
+          "401": {
+            "description": "Token ausente, inválido o vencido"
+          },
+          "403": {
+            "description": "Solo para: gerente, admin_sede"
+          },
+          "404": {
+            "description": "La sede solicitada no existe"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Actualizar configuración de horario pico de una sede (S4-T09 P3)",
+        "tags": [
+          "canchas"
+        ]
+      }
+    },
+    "/configuracion/descuento-socio": {
+      "get": {
+        "operationId": "ConfiguracionPreciosController_obtenerDescuentoSocio",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DescuentoSocioResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Consultar porcentaje global de descuento de socio (S4-T09 P8)",
+        "tags": [
+          "canchas"
+        ]
+      },
+      "put": {
+        "description": "Único valor para toda la cadena; solo editable por el Gerente Central.",
+        "operationId": "ConfiguracionPreciosController_actualizarDescuentoSocio",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ActualizarDescuentoSocioDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DescuentoSocioResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Porcentaje fuera de rango (0 a 100)"
+          },
+          "401": {
+            "description": "Token ausente, inválido o vencido"
+          },
+          "403": {
+            "description": "Solo para: gerente"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Actualizar porcentaje global de descuento de socio (S4-T09 P8)",
+        "tags": [
+          "canchas"
+        ]
+      }
+    }
+  },
+  "info": {
+    "title": "FitZone Sports API",
+    "description": "API BFF de FitZone Sports (NestJS)",
+    "version": "0.0.1",
+    "contact": {}
+  },
+  "tags": [],
+  "servers": [],
+  "components": {
+    "securitySchemes": {
+      "bearer": {
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "type": "http"
+      }
+    },
+    "schemas": {
+      "HealthResponseDto": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "example": "ok"
+          },
+          "timestamp": {
+            "type": "string",
+            "example": "2026-09-26T22:00:00.000Z",
+            "description": "Fecha y hora del servidor (ISO 8601)"
+          },
+          "uptime": {
+            "type": "number",
+            "example": 123.45,
+            "description": "Segundos desde que arrancó el proceso"
+          }
+        },
+        "required": [
+          "status",
+          "timestamp",
+          "uptime"
+        ]
+      },
+      "MeResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "3f1c2a9e-8b7d-4c6e-9a1f-2b3c4d5e6f70",
+            "description": "ID del usuario en Supabase Auth (claim sub)"
+          },
+          "email": {
+            "type": "string",
+            "example": "socio@fitzone.com"
+          },
+          "role": {
+            "type": "string",
+            "example": "authenticated",
+            "description": "Rol de Supabase Auth, no el rol de la aplicación"
+          },
+          "rol": {
+            "type": "string",
+            "enum": [
+              "socio",
+              "externo",
+              "admin_sede",
+              "gerente"
+            ],
+            "nullable": true,
+            "example": "socio",
+            "description": "Rol de FitZone (perfiles.rol). null si el usuario todavía no tiene perfil"
+          }
+        },
+        "required": [
+          "id",
+          "role",
+          "rol"
+        ]
+      },
+      "LoginDto": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "example": "socio@fitzone.com"
+          },
+          "password": {
+            "type": "string",
+            "example": "Prueba12345",
+            "format": "password"
+          }
+        },
+        "required": [
+          "email",
+          "password"
+        ]
+      },
+      "LoginResponseDto": {
+        "type": "object",
+        "properties": {
+          "access_token": {
+            "type": "string",
+            "description": "JWT de Supabase Auth. Enviarlo como Authorization: Bearer <token>",
+            "example": "eyJhbGciOiJFUzI1NiIsImtpZCI6Ii4uLiJ9..."
+          },
+          "user": {
+            "type": "object",
+            "additionalProperties": true,
+            "description": "Usuario de Supabase Auth (objeto completo que devuelve Supabase)",
+            "example": {
+              "id": "3f1c2a9e-8b7d-4c6e-9a1f-2b3c4d5e6f70",
+              "email": "socio@fitzone.com",
+              "role": "authenticated"
+            }
+          }
+        },
+        "required": [
+          "access_token",
+          "user"
+        ]
+      },
+      "RegisterDto": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "example": "nuevo@ejemplo.com"
+          },
+          "password": {
+            "type": "string",
+            "example": "Prueba12345",
+            "format": "password"
+          },
+          "dni": {
+            "type": "string",
+            "example": "30111222"
+          },
+          "nombre": {
+            "type": "string",
+            "example": "Ana"
+          },
+          "apellido": {
+            "type": "string",
+            "example": "Pérez",
+            "nullable": true
+          },
+          "telefono": {
+            "type": "string",
+            "example": "343 5550000",
+            "nullable": true
+          }
+        },
+        "required": [
+          "email",
+          "password",
+          "dni",
+          "nombre"
+        ]
+      },
+      "RegisterUserDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "email": {
+            "type": "string",
+            "example": "nuevo@ejemplo.com"
+          }
+        },
+        "required": [
+          "id",
+          "email"
+        ]
+      },
+      "RegisterResponseDto": {
+        "type": "object",
+        "properties": {
+          "user": {
+            "$ref": "#/components/schemas/RegisterUserDto"
+          },
+          "message": {
+            "type": "string",
+            "example": "Revisá tu email para confirmar la cuenta",
+            "description": "No se emite access_token hasta confirmar el email (Supabase Auth)"
+          }
+        },
+        "required": [
+          "user",
+          "message"
+        ]
+      },
+      "SedeDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "example": "42363e91-8c03-4d52-b160-5c1345be8656"
+          },
+          "nombre": {
+            "type": "string",
+            "example": "FitZone Central"
+          },
+          "direccion": {
+            "type": "string",
+            "example": "San Martín 1234"
+          },
+          "aforo_max": {
+            "type": "number",
+            "example": 100,
+            "description": "Capacidad máxima de personas en la sede"
+          },
+          "activa": {
+            "type": "boolean",
+            "example": true
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-09-21T16:15:30.534949+00:00"
+          }
+        },
+        "required": [
+          "id",
+          "nombre",
+          "direccion",
+          "aforo_max",
+          "activa",
+          "created_at"
+        ]
+      },
+      "PerfilMeDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "rol": {
+            "type": "string",
+            "enum": [
+              "socio",
+              "externo",
+              "admin_sede",
+              "gerente"
+            ],
+            "example": "socio"
+          },
+          "dni": {
+            "type": "string",
+            "example": "12345678"
+          },
+          "nombre": {
+            "type": "string",
+            "example": "Lucas"
+          },
+          "apellido": {
+            "type": "string",
+            "example": "Coquet",
+            "nullable": true
+          },
+          "telefono": {
+            "type": "string",
+            "example": "343 1234567",
+            "nullable": true
+          },
+          "foto_url": {
+            "type": "string",
+            "example": "https://cdn.fitzone.example/fotos/lucas.jpg",
+            "nullable": true
+          },
+          "sede_home_id": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "notificar_por_email": {
+            "type": "boolean",
+            "description": "Preferencia de aviso por email",
+            "example": true
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "email": {
+            "type": "string",
+            "example": "socio@fitzone.com",
+            "description": "Email de Supabase Auth (claim del JWT)"
+          }
+        },
+        "required": [
+          "id",
+          "rol",
+          "dni",
+          "nombre",
+          "apellido",
+          "telefono",
+          "foto_url",
+          "sede_home_id",
+          "notificar_por_email",
+          "created_at"
+        ]
+      },
+      "ActualizarPerfilDto": {
+        "type": "object",
+        "properties": {
+          "dni": {
+            "type": "string",
+            "example": "12345678"
+          },
+          "nombre": {
+            "type": "string",
+            "example": "Lucas"
+          },
+          "apellido": {
+            "type": "string",
+            "example": "Coquet",
+            "nullable": true
+          },
+          "telefono": {
+            "type": "string",
+            "example": "343 1234567",
+            "nullable": true
+          },
+          "foto_url": {
+            "type": "string",
+            "example": "https://cdn.fitzone.example/fotos/lucas.jpg",
+            "nullable": true
+          },
+          "sede_home_id": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "notificar_por_email": {
+            "type": "boolean",
+            "example": true,
+            "description": "Activar o desactivar notificaciones por email"
+          }
+        }
+      },
+      "NotificacionDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "perfil_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "tipo": {
+            "type": "string",
+            "enum": [
+              "lugar_liberado"
+            ]
+          },
+          "titulo": {
+            "type": "string",
+            "example": "Se liberó un lugar en Spinning"
+          },
+          "mensaje": {
+            "type": "string",
+            "example": "Hay un lugar para vos en Spinning (7/10, 18:00). Confirmalo antes de 7/10, 16:30; si no, pasa al siguiente de la lista."
+          },
+          "datos": {
+            "type": "object",
+            "additionalProperties": true,
+            "description": "Para lugar_liberado: espera_id, clase_id y vence_en",
+            "example": {
+              "espera_id": "9b1d...",
+              "clase_id": "4c2e...",
+              "vence_en": "2026-10-07T19:30:00+00:00"
+            }
+          },
+          "leida_en": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "id",
+          "perfil_id",
+          "tipo",
+          "titulo",
+          "mensaje",
+          "datos",
+          "leida_en",
+          "created_at"
+        ]
+      },
+      "PreferenciasNotificacionDto": {
+        "type": "object",
+        "properties": {
+          "notificar_por_email": {
+            "type": "boolean",
+            "description": "Además del aviso in-app, recibir un email (simulado)",
+            "example": true
+          }
+        },
+        "required": [
+          "notificar_por_email"
+        ]
+      },
+      "PlanMembresiaResponseDto": {
+        "type": "object",
+        "properties": {
+          "plan": {
+            "type": "string",
+            "enum": [
+              "mensual",
+              "trimestral",
+              "anual"
+            ],
+            "example": "mensual"
+          },
+          "duracion_meses": {
+            "type": "number",
+            "example": 1,
+            "description": "Duración del plan en meses calendario"
+          },
+          "precio": {
+            "type": "number",
+            "example": 25000,
+            "description": "Precio vigente del plan en ARS"
+          },
+          "activo": {
+            "type": "boolean",
+            "example": true
+          }
+        },
+        "required": [
+          "plan",
+          "duracion_meses",
+          "precio",
+          "activo"
+        ]
+      },
+      "MembresiaResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "example": "b1000000-0000-4000-8000-000000000001"
+          },
+          "perfil_id": {
+            "type": "string",
+            "format": "uuid",
+            "example": "a1000000-0000-4000-8000-000000000001"
+          },
+          "plan": {
+            "type": "string",
+            "enum": [
+              "mensual",
+              "trimestral",
+              "anual"
+            ],
+            "example": "mensual"
+          },
+          "estado": {
+            "type": "string",
+            "enum": [
+              "activo",
+              "vencido",
+              "suspendido"
+            ],
+            "example": "activo"
+          },
+          "vigente_desde": {
+            "type": "string",
+            "format": "date",
+            "example": "2026-11-04"
+          },
+          "vigente_hasta": {
+            "type": "string",
+            "format": "date",
+            "example": "2026-12-04"
+          }
+        },
+        "required": [
+          "id",
+          "perfil_id",
+          "plan",
+          "estado",
+          "vigente_desde",
+          "vigente_hasta"
+        ]
+      },
+      "CrearMembresiaDto": {
+        "type": "object",
+        "properties": {
+          "perfil_id": {
+            "type": "string",
+            "format": "uuid",
+            "example": "a1000000-0000-4000-8000-000000000001",
+            "description": "UUID del perfil del socio al que se le da de alta o renueva la membresía"
+          },
+          "plan": {
+            "type": "string",
+            "enum": [
+              "mensual",
+              "trimestral",
+              "anual"
+            ],
+            "example": "mensual",
+            "description": "Plan contratado según catálogo de planes_membresia"
+          }
+        },
+        "required": [
+          "perfil_id",
+          "plan"
+        ]
+      },
+      "TotpMeResponseDto": {
+        "type": "object",
+        "properties": {
+          "perfilId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "periodSeconds": {
+            "type": "number",
+            "example": 60
+          },
+          "secret": {
+            "type": "string",
+            "description": "Secreto base32 para armar el QR (Authenticator / lib cliente)"
+          }
+        },
+        "required": [
+          "perfilId",
+          "periodSeconds",
+          "secret"
+        ]
+      },
+      "TotpCodigoResponseDto": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "example": "123456"
+          },
+          "periodSeconds": {
+            "type": "number",
+            "example": 60
+          },
+          "secondsRemaining": {
+            "type": "number",
+            "description": "Segundos restantes del período actual"
+          }
+        },
+        "required": [
+          "code",
+          "periodSeconds",
+          "secondsRemaining"
+        ]
+      },
+      "EmitirTotpDto": {
+        "type": "object",
+        "properties": {
+          "perfilId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Perfil al que emitir o rotar el seed TOTP"
+          }
+        },
+        "required": [
+          "perfilId"
+        ]
+      },
+      "EmitirTotpResponseDto": {
+        "type": "object",
+        "properties": {
+          "perfilId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "emitido": {
+            "type": "boolean",
+            "description": "true si se creó o rotó el seed"
+          }
+        },
+        "required": [
+          "perfilId",
+          "emitido"
+        ]
+      },
+      "SyncCheckInItemDto": {
+        "type": "object",
+        "properties": {
+          "clientEventId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Idempotencia: UUID generado en el cliente al encolar"
+          },
+          "perfilId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "code": {
+            "type": "string",
+            "description": "Código TOTP capturado al escanear (puede estar vencido al sync)"
+          },
+          "sedeId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "ocurrioEn": {
+            "type": "string",
+            "description": "Timestamp del escaneo offline (ISO). Si falta, usa now()."
+          }
+        },
+        "required": [
+          "clientEventId",
+          "perfilId",
+          "code",
+          "sedeId"
+        ]
+      },
+      "SyncCheckInsRequestDto": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "description": "Cola offline (máx. 50 ítems)",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SyncCheckInItemDto"
+            }
+          }
+        },
+        "required": [
+          "items"
+        ]
+      },
+      "CheckInResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "perfilId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "sedeId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "tipo": {
+            "type": "string",
+            "enum": [
+              "entrada",
+              "salida"
+            ]
+          },
+          "origen": {
+            "type": "string",
+            "enum": [
+              "online",
+              "offline_sync"
+            ]
+          },
+          "ocurrioEn": {
+            "type": "string"
+          },
+          "clientEventId": {
+            "type": "object",
+            "format": "uuid",
+            "nullable": true
+          }
+        },
+        "required": [
+          "id",
+          "perfilId",
+          "sedeId",
+          "tipo",
+          "origen",
+          "ocurrioEn"
+        ]
+      },
+      "SyncCheckInResultDto": {
+        "type": "object",
+        "properties": {
+          "clientEventId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "ok": {
+            "type": "boolean"
+          },
+          "checkIn": {
+            "$ref": "#/components/schemas/CheckInResponseDto"
+          },
+          "code": {
+            "type": "string",
+            "example": "YA_EN_OTRA_SEDE",
+            "description": "Código tipado si ok=false"
+          },
+          "message": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "clientEventId",
+          "ok"
+        ]
+      },
+      "SyncCheckInsResponseDto": {
+        "type": "object",
+        "properties": {
+          "results": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SyncCheckInResultDto"
+            }
+          }
+        },
+        "required": [
+          "results"
+        ]
+      },
+      "CheckInRequestDto": {
+        "type": "object",
+        "properties": {
+          "perfilId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "code": {
+            "type": "string",
+            "description": "Código TOTP de 6 dígitos del QR del socio"
+          },
+          "sedeId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "clientEventId": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true,
+            "description": "Opcional. Solo para sync offline / reintentos (idempotencia). En check-in online online NO hace falta: omitilo o dejalo vacío."
+          }
+        },
+        "required": [
+          "perfilId",
+          "code",
+          "sedeId"
+        ]
+      },
+      "CheckOutRequestDto": {
+        "type": "object",
+        "properties": {
+          "perfilId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "sedeId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "clientEventId": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true,
+            "description": "Opcional. Idempotencia offline; en uso normal omitilo."
+          }
+        },
+        "required": [
+          "perfilId",
+          "sedeId"
+        ]
+      },
+      "PresenciaItemDto": {
+        "type": "object",
+        "properties": {
+          "perfilId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "sedeId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "desde": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "perfilId",
+          "sedeId",
+          "desde"
+        ]
+      },
+      "PresenciasResponseDto": {
+        "type": "object",
+        "properties": {
+          "sedeId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PresenciaItemDto"
+            }
+          },
+          "ocupacion": {
+            "type": "number",
+            "description": "Cantidad de socios dentro"
+          },
+          "aforoMax": {
+            "type": "object",
+            "description": "aforo_max de la sede (soft; no bloquea ingreso)",
+            "nullable": true
+          }
+        },
+        "required": [
+          "sedeId",
+          "items",
+          "ocupacion"
+        ]
+      },
+      "ClaseConCupoResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "example": "c1000000-0000-4000-8000-000000000001"
+          },
+          "sede_id": {
+            "type": "string",
+            "format": "uuid",
+            "example": "42363e91-8c03-4d52-b160-5c1345be8656"
+          },
+          "tipo": {
+            "type": "string",
+            "example": "Spinning"
+          },
+          "instructor": {
+            "type": "string",
+            "example": "Lucía Fernández"
+          },
+          "inicio": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-11-10T18:00:00-03:00"
+          },
+          "fin": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-11-10T19:00:00-03:00"
+          },
+          "capacidad_max": {
+            "type": "number",
+            "example": 20
+          },
+          "estado": {
+            "type": "string",
+            "enum": [
+              "programada",
+              "cancelada"
+            ],
+            "example": "programada"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-11-01T12:00:00Z"
+          },
+          "cupos_libres": {
+            "type": "number",
+            "example": 5,
+            "description": "Lugares disponibles descontando inscriptos y notificados vigentes"
+          },
+          "en_espera": {
+            "type": "number",
+            "example": 0,
+            "description": "Cantidad de socios aguardando en lista de espera"
+          }
+        },
+        "required": [
+          "id",
+          "sede_id",
+          "tipo",
+          "instructor",
+          "inicio",
+          "fin",
+          "capacidad_max",
+          "estado",
+          "created_at",
+          "cupos_libres",
+          "en_espera"
+        ]
+      },
+      "ClaseResumenDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "example": "c1000000-0000-4000-8000-000000000001"
+          },
+          "sede_id": {
+            "type": "string",
+            "format": "uuid",
+            "example": "42363e91-8c03-4d52-b160-5c1345be8656"
+          },
+          "tipo": {
+            "type": "string",
+            "example": "Spinning"
+          },
+          "instructor": {
+            "type": "string",
+            "example": "Lucía Fernández"
+          },
+          "inicio": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-11-10T18:00:00-03:00"
+          },
+          "fin": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-11-10T19:00:00-03:00"
+          }
+        },
+        "required": [
+          "id",
+          "sede_id",
+          "tipo",
+          "inicio"
+        ]
+      },
+      "InscripcionConClaseResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "example": "d1000000-0000-4000-8000-000000000001"
+          },
+          "clase_id": {
+            "type": "string",
+            "format": "uuid",
+            "example": "c1000000-0000-4000-8000-000000000001"
+          },
+          "perfil_id": {
+            "type": "string",
+            "format": "uuid",
+            "example": "a1000000-0000-4000-8000-000000000001"
+          },
+          "estado": {
+            "type": "string",
+            "enum": [
+              "inscripto",
+              "cancelada"
+            ],
+            "example": "inscripto"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-11-04T19:00:00Z"
+          },
+          "cancelada_en": {
+            "type": "object",
+            "format": "date-time",
+            "nullable": true,
+            "example": null
+          },
+          "cancelacion_tardia": {
+            "type": "boolean",
+            "example": false,
+            "description": "True si se canceló con menos de 2 h de anticipación (D6)"
+          },
+          "clase": {
+            "$ref": "#/components/schemas/ClaseResumenDto"
+          }
+        },
+        "required": [
+          "id",
+          "clase_id",
+          "perfil_id",
+          "estado",
+          "created_at",
+          "cancelacion_tardia",
+          "clase"
+        ]
+      },
+      "InscribirClaseDto": {
+        "type": "object",
+        "properties": {
+          "claseId": {
+            "type": "string",
+            "format": "uuid",
+            "example": "c1000000-0000-4000-8000-000000000001",
+            "description": "UUID de la clase a reservar (el socio se obtiene del token JWT)"
+          }
+        },
+        "required": [
+          "claseId"
+        ]
+      },
+      "InscripcionClaseResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "example": "d1000000-0000-4000-8000-000000000001"
+          },
+          "clase_id": {
+            "type": "string",
+            "format": "uuid",
+            "example": "c1000000-0000-4000-8000-000000000001"
+          },
+          "perfil_id": {
+            "type": "string",
+            "format": "uuid",
+            "example": "a1000000-0000-4000-8000-000000000001"
+          },
+          "estado": {
+            "type": "string",
+            "enum": [
+              "inscripto",
+              "cancelada"
+            ],
+            "example": "inscripto"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-11-04T19:00:00Z"
+          },
+          "cancelada_en": {
+            "type": "object",
+            "format": "date-time",
+            "nullable": true,
+            "example": null
+          },
+          "cancelacion_tardia": {
+            "type": "boolean",
+            "example": false,
+            "description": "True si se canceló con menos de 2 h de anticipación (D6)"
+          }
+        },
+        "required": [
+          "id",
+          "clase_id",
+          "perfil_id",
+          "estado",
+          "created_at",
+          "cancelacion_tardia"
+        ]
+      },
+      "EsperaConClaseResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "example": "e1000000-0000-4000-8000-000000000001"
+          },
+          "clase_id": {
+            "type": "string",
+            "format": "uuid",
+            "example": "c1000000-0000-4000-8000-000000000001"
+          },
+          "perfil_id": {
+            "type": "string",
+            "format": "uuid",
+            "example": "a1000000-0000-4000-8000-000000000001"
+          },
+          "estado": {
+            "type": "string",
+            "enum": [
+              "esperando",
+              "notificado",
+              "inscripto",
+              "retirado",
+              "vencido"
+            ],
+            "example": "esperando"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-11-04T20:00:00Z"
+          },
+          "notificado_en": {
+            "type": "object",
+            "format": "date-time",
+            "nullable": true,
+            "example": null
+          },
+          "vence_en": {
+            "type": "object",
+            "format": "date-time",
+            "nullable": true,
+            "example": null,
+            "description": "Fecha y hora límite para confirmar cuando estado es notificado (D7)"
+          },
+          "clase": {
+            "$ref": "#/components/schemas/ClaseResumenDto"
+          }
+        },
+        "required": [
+          "id",
+          "clase_id",
+          "perfil_id",
+          "estado",
+          "created_at",
+          "clase"
+        ]
+      },
+      "AnotarseListaEsperaDto": {
+        "type": "object",
+        "properties": {
+          "claseId": {
+            "type": "string",
+            "format": "uuid",
+            "example": "c1000000-0000-4000-8000-000000000001",
+            "description": "UUID de la clase sin cupo o con lista de espera activa (el socio se obtiene del token JWT)"
+          }
+        },
+        "required": [
+          "claseId"
+        ]
+      },
+      "EntradaListaEsperaResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "example": "e1000000-0000-4000-8000-000000000001"
+          },
+          "clase_id": {
+            "type": "string",
+            "format": "uuid",
+            "example": "c1000000-0000-4000-8000-000000000001"
+          },
+          "perfil_id": {
+            "type": "string",
+            "format": "uuid",
+            "example": "a1000000-0000-4000-8000-000000000001"
+          },
+          "estado": {
+            "type": "string",
+            "enum": [
+              "esperando",
+              "notificado",
+              "inscripto",
+              "retirado",
+              "vencido"
+            ],
+            "example": "esperando"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-11-04T20:00:00Z"
+          },
+          "notificado_en": {
+            "type": "object",
+            "format": "date-time",
+            "nullable": true,
+            "example": null
+          },
+          "vence_en": {
+            "type": "object",
+            "format": "date-time",
+            "nullable": true,
+            "example": null,
+            "description": "Fecha y hora límite para confirmar cuando estado es notificado (D7)"
+          }
+        },
+        "required": [
+          "id",
+          "clase_id",
+          "perfil_id",
+          "estado",
+          "created_at"
+        ]
+      },
+      "ReservarCanchaDto": {
+        "type": "object",
+        "properties": {
+          "canchaId": {
+            "type": "string",
+            "example": "3f1c2a9e-8b7d-4c6e-9a1f-2b3c4d5e6f70",
+            "description": "ID de la cancha a reservar"
+          },
+          "inicio": {
+            "type": "string",
+            "example": "2026-11-15T19:00:00-03:00",
+            "description": "Inicio del turno (hora en punto, futuro, dentro de 1 mes). ISO 8601."
+          }
+        },
+        "required": [
+          "canchaId",
+          "inicio"
+        ]
+      },
+      "ReservaCanchaResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "canchaId": {
+            "type": "string"
+          },
+          "perfilId": {
+            "type": "string"
+          },
+          "inicio": {
+            "type": "string"
+          },
+          "fin": {
+            "type": "string"
+          },
+          "precio": {
+            "type": "number",
+            "example": 20000
+          },
+          "detalle": {
+            "type": "object",
+            "example": {
+              "precioBase": 20000,
+              "reglasAplicadas": [
+                "StandardPricing",
+                "PeakHourPricing"
+              ],
+              "descuentoSocioAplicado": false
+            }
+          },
+          "estado": {
+            "type": "string",
+            "enum": [
+              "pendiente",
+              "confirmada",
+              "cancelada"
+            ]
+          },
+          "createdAt": {
+            "type": "string"
+          },
+          "venceEn": {
+            "type": "string",
+            "description": "Fin de la ventana de hold (solo relevante si estado = pendiente). ISO 8601."
+          }
+        },
+        "required": [
+          "id",
+          "canchaId",
+          "perfilId",
+          "inicio",
+          "fin",
+          "precio",
+          "detalle",
+          "estado",
+          "createdAt"
+        ]
+      },
+      "IniciarPagoResponseDto": {
+        "type": "object",
+        "properties": {
+          "pagoId": {
+            "type": "string"
+          },
+          "checkoutUrl": {
+            "type": "string",
+            "example": "http://localhost:3000/pasarela-simulada/checkout/...",
+            "description": "URL del checkout simulado (estilo MercadoPago)."
+          }
+        },
+        "required": [
+          "pagoId",
+          "checkoutUrl"
+        ]
+      },
+      "CanchaResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "a3000000-0000-4000-8000-000000000001"
+          },
+          "sedeId": {
+            "type": "string",
+            "example": "a1000000-0000-4000-8000-000000000001"
+          },
+          "nombre": {
+            "type": "string",
+            "example": "Paddle 1"
+          },
+          "tipo": {
+            "type": "string",
+            "enum": [
+              "paddle",
+              "futbol5",
+              "otro"
+            ],
+            "example": "paddle"
+          },
+          "precioHora": {
+            "type": "number",
+            "example": 20000
+          },
+          "activa": {
+            "type": "boolean",
+            "example": true
+          },
+          "createdAt": {
+            "type": "string",
+            "example": "2026-10-27T20:00:00.000Z"
+          }
+        },
+        "required": [
+          "id",
+          "sedeId",
+          "nombre",
+          "tipo",
+          "precioHora",
+          "activa",
+          "createdAt"
+        ]
+      },
+      "ConfiguracionPicoDto": {
+        "type": "object",
+        "properties": {
+          "sedeId": {
+            "type": "string",
+            "example": "a1000000-0000-4000-8000-000000000001"
+          },
+          "recargoPct": {
+            "type": "number",
+            "example": 20,
+            "description": "Porcentaje de recargo (0 a 100)"
+          },
+          "desde": {
+            "type": "string",
+            "example": "19:00",
+            "description": "Hora de inicio en punto (HH:00)"
+          },
+          "hasta": {
+            "type": "string",
+            "example": "21:00",
+            "description": "Hora de fin en punto (HH:00)"
+          },
+          "dias": {
+            "example": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7
+            ],
+            "description": "Días ISO en que aplica (1 = lunes … 7 = domingo)",
+            "type": "array",
+            "items": {
+              "type": "number"
+            }
+          }
+        },
+        "required": [
+          "sedeId",
+          "recargoPct",
+          "desde",
+          "hasta",
+          "dias"
+        ]
+      },
+      "TurnoDisponibilidadDto": {
+        "type": "object",
+        "properties": {
+          "hora": {
+            "type": "string",
+            "example": "19:00"
+          },
+          "inicio": {
+            "type": "string",
+            "example": "2026-11-15T19:00:00-03:00",
+            "description": "Inicio del turno en hora Argentina (ISO 8601, listo para reservar)"
+          },
+          "fin": {
+            "type": "string",
+            "example": "2026-11-15T20:00:00-03:00"
+          },
+          "estado": {
+            "type": "string",
+            "enum": [
+              "disponible",
+              "ocupado",
+              "mantenimiento"
+            ],
+            "example": "disponible"
+          },
+          "esHorarioPico": {
+            "type": "boolean",
+            "example": true
+          },
+          "precioExterno": {
+            "type": "number",
+            "example": 24000,
+            "description": "Precio final calculado con Strategy para cliente externo o socio vencido"
+          },
+          "precioSocio": {
+            "type": "number",
+            "example": 20400,
+            "description": "Precio final calculado con Strategy para socio con membresía activa"
+          }
+        },
+        "required": [
+          "hora",
+          "inicio",
+          "fin",
+          "estado",
+          "esHorarioPico",
+          "precioExterno",
+          "precioSocio"
+        ]
+      },
+      "CanchaDisponibilidadDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "sedeId": {
+            "type": "string"
+          },
+          "nombre": {
+            "type": "string",
+            "example": "Paddle 1"
+          },
+          "tipo": {
+            "type": "string",
+            "enum": [
+              "paddle",
+              "futbol5",
+              "otro"
+            ],
+            "example": "paddle"
+          },
+          "precioHora": {
+            "type": "number",
+            "example": 20000
+          },
+          "turnos": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TurnoDisponibilidadDto"
+            }
+          }
+        },
+        "required": [
+          "id",
+          "sedeId",
+          "nombre",
+          "tipo",
+          "precioHora",
+          "turnos"
+        ]
+      },
+      "DisponibilidadSedeResponseDto": {
+        "type": "object",
+        "properties": {
+          "sedeId": {
+            "type": "string",
+            "example": "a1000000-0000-4000-8000-000000000001"
+          },
+          "fecha": {
+            "type": "string",
+            "example": "2026-11-15"
+          },
+          "configuracionPico": {
+            "$ref": "#/components/schemas/ConfiguracionPicoDto"
+          },
+          "descuentoSocioPct": {
+            "type": "number",
+            "example": 15
+          },
+          "canchas": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CanchaDisponibilidadDto"
+            }
+          }
+        },
+        "required": [
+          "sedeId",
+          "fecha",
+          "configuracionPico",
+          "descuentoSocioPct",
+          "canchas"
+        ]
+      },
+      "CrearCanchaDto": {
+        "type": "object",
+        "properties": {
+          "sedeId": {
+            "type": "string",
+            "example": "a1000000-0000-4000-8000-000000000001",
+            "description": "ID de la sede a la que pertenece la cancha"
+          },
+          "nombre": {
+            "type": "string",
+            "example": "Paddle 2"
+          },
+          "tipo": {
+            "type": "string",
+            "enum": [
+              "paddle",
+              "futbol5",
+              "otro"
+            ],
+            "example": "paddle"
+          },
+          "precioHora": {
+            "type": "number",
+            "example": 20000,
+            "description": "Precio base por hora en pesos (RF-09, S4-T09 P1)"
+          }
+        },
+        "required": [
+          "sedeId",
+          "nombre",
+          "tipo",
+          "precioHora"
+        ]
+      },
+      "ActualizarCanchaDto": {
+        "type": "object",
+        "properties": {
+          "nombre": {
+            "type": "string",
+            "example": "Paddle Central 1"
+          },
+          "precioHora": {
+            "type": "number",
+            "example": 22000,
+            "description": "Nuevo precio base por hora (solo afecta reservas nuevas)"
+          },
+          "activa": {
+            "type": "boolean",
+            "example": true
+          }
+        }
+      },
+      "MantenimientoCanchaResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "canchaId": {
+            "type": "string"
+          },
+          "desde": {
+            "type": "string",
+            "example": "2026-11-15T14:00:00-03:00"
+          },
+          "hasta": {
+            "type": "string",
+            "example": "2026-11-15T18:00:00-03:00"
+          },
+          "motivo": {
+            "type": "object",
+            "nullable": true,
+            "example": "Pintura de líneas"
+          },
+          "createdAt": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "canchaId",
+          "desde",
+          "hasta",
+          "createdAt"
+        ]
+      },
+      "CrearMantenimientoDto": {
+        "type": "object",
+        "properties": {
+          "desde": {
+            "type": "string",
+            "example": "2026-11-15T14:00:00-03:00",
+            "description": "Inicio del período de mantenimiento (ISO 8601)"
+          },
+          "hasta": {
+            "type": "string",
+            "example": "2026-11-15T18:00:00-03:00",
+            "description": "Fin del período de mantenimiento (ISO 8601, posterior a desde)"
+          },
+          "motivo": {
+            "type": "string",
+            "example": "Recambio de césped sintético"
+          }
+        },
+        "required": [
+          "desde",
+          "hasta"
+        ]
+      },
+      "ActualizarConfiguracionPicoDto": {
+        "type": "object",
+        "properties": {
+          "recargoPct": {
+            "type": "number",
+            "example": 20,
+            "description": "Porcentaje de recargo entre 0 y 100"
+          },
+          "desde": {
+            "type": "string",
+            "example": "19:00",
+            "description": "Hora de inicio en punto (HH:00)"
+          },
+          "hasta": {
+            "type": "string",
+            "example": "21:00",
+            "description": "Hora de fin en punto (HH:00)"
+          },
+          "dias": {
+            "example": [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "description": "Lista no vacía de días ISO (1 = lunes … 7 = domingo)",
+            "type": "array",
+            "items": {
+              "type": "number"
+            }
+          }
+        },
+        "required": [
+          "recargoPct",
+          "desde",
+          "hasta",
+          "dias"
+        ]
+      },
+      "DescuentoSocioResponseDto": {
+        "type": "object",
+        "properties": {
+          "descuentoSocioPct": {
+            "type": "number",
+            "example": 15,
+            "description": "Porcentaje único de descuento de socio para toda la cadena"
+          }
+        },
+        "required": [
+          "descuentoSocioPct"
+        ]
+      },
+      "ActualizarDescuentoSocioDto": {
+        "type": "object",
+        "properties": {
+          "descuentoSocioPct": {
+            "type": "number",
+            "example": 15,
+            "description": "Porcentaje de descuento de socio entre 0 y 100"
+          }
+        },
+        "required": [
+          "descuentoSocioPct"
+        ]
+      }
+    }
+  }
+}

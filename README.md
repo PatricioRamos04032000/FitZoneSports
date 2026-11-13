@@ -164,16 +164,17 @@ npm run start:prod
 | `GET` | `/perfiles/me` | Sí (JWT) | Perfil del usuario autenticado |
 | `PATCH` | `/perfiles/me` | Sí (JWT) | Actualizar perfil propio |
 | `GET` | `/clases?sedeId=` | No | Clases con cupo por sede |
-| `POST` | `/clases/inscripciones` | No | Inscribirse a una clase |
-| `DELETE` | `/clases/inscripciones/:id` | No | Cancelar inscripción |
-| `GET` | `/membresias` | No | Todas las membresías |
-| `GET` | `/membresias/activas/:perfilId` | No | Membresía activa de un perfil |
-| `POST` | `/membresias` | No | Crear membresía |
+| `POST` | `/clases/inscripciones` | Sí (JWT) | Inscribirse a una clase |
+| `DELETE` | `/clases/inscripciones/:id` | Sí (JWT) | Cancelar inscripción |
+| `GET` | `/membresias/mia` | Sí (JWT) | Membresía activa del socio autenticado |
+| `GET` | `/membresias` | Sí (JWT) | Todas las membresías (staff) |
+| `GET` | `/membresias/activas/:perfilId` | Sí (JWT) | Membresía activa de un perfil (staff) |
+| `POST` | `/membresias` | Sí (JWT) | Crear membresía |
 | `GET` | `/notificaciones` | Sí (JWT) | Notificaciones del usuario |
 | `PATCH` | `/notificaciones/preferencias` | Sí (JWT) | Preferencias de notificación |
 | `PATCH` | `/notificaciones/:id/leida` | Sí (JWT) | Marcar notificación como leída |
 
-La lista completa y actualizada está en Swagger: **`http://localhost:3000/api/docs`**.
+La especificación completa y actualizada está en Swagger UI (**`http://localhost:3000/api/docs`**) y exportada en el repositorio en [`backend/swagger.json`](backend/swagger.json).
 
 ---
 
@@ -333,6 +334,7 @@ npm run start:dev        # Modo desarrollo (watch)
 npm run start:prod       # Modo producción (desde dist/)
 npm run build            # Compilar TypeScript a JavaScript
 npm run seed             # Cargar usuarios/sedes/canchas de demo
+npm run swagger:export   # Exportar especificación OpenAPI a backend/swagger.json
 npm test                 # Ejecutar tests unitarios
 npm run test:e2e         # Ejecutar tests end-to-end (Supertest)
 npm run test:cov         # Tests con cobertura
@@ -368,6 +370,7 @@ FitZoneSports/
 │   │   ├── supabase/             # Cliente Supabase y Repository
 │   │   └── health/               # GET /health
 │   ├── test/                     # Tests e2e
+│   ├── swagger.json              # Especificación OpenAPI exportada
 │   └── .env.example
 ├── frontend/                     # SPA React + Vite
 │   └── src/
