@@ -512,4 +512,4 @@ Ninguno bloqueante para el guion de 5 min. Notificaciones sigue stub (C-12). Che
 
 **Commits**
 
-- S7-T08: pulido del flujo demo; Patricio toma y cierra la tarjeta de Lucas.
+- `0e82978` S7-T08: pulido del flujo demo; Patricio toma y cierra la tarjeta de Lucas.
