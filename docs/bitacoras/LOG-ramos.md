@@ -469,3 +469,25 @@ Bitácora de equipo, C4 y notas de unidad citan ADR-005 como BFF y ADR-006 como 
 - `601b986` Merge pull request #57 from PatricioRamos04032000/c-15
 - `6c0b540` C-18: escribe el manual técnico con los casos de tenis y de una estrategia de precio.
 - `e84e226` Merge pull request #58 from PatricioRamos04032000/c-18
+
+---
+
+## Sprint 8 — Cierre — Semana del 2026-11-09
+
+### 2026-11-13  ·  3 h
+
+**Actividad**
+
+Tomé y cerré la pantalla Clases que estaba a cargo de Lucas (S7-T06 / C-11). Cableé el cliente API y la UI `/clases`: listar con cupo por sede, inscribir, cancelar, y lista de espera (anotarse, confirmar lugar notificado, retirar). Corregí el contraste del desplegable de sedes (letra invisible en modo oscuro del SO). Dejé constancia del cierre en el LOG de equipo, Relacion_Trello, Plan_Cierre, Propuesta_Continuacion y el guion C-06 (Clases disponible, fuera del recorrido de 5 min).
+
+**Decisión**
+
+La tarjeta sigue cruzada con C-11/S7-T06, pero el responsable de cierre pasa a ser Patricio. El alcance no se cortó al mínimo de C-11: se entregó S7-T06 completo (cancelar + lista de espera en UI) porque la API ya estaba lista.
+
+**Problema o bloqueo**
+
+Las clases del seed tenían fechas viejas y fallaban la ventana D5 de 48 h al inscribir. Para el smoke usé clases futuras temporales en Supabase; el listado por sede ya respondía bien con el usuario seed.
+
+**Commits**
+
+- `60347be` S7-T06/C-11: pantalla Clases real; Patricio toma y cierra la tarjeta de Lucas.

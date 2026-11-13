@@ -34,8 +34,8 @@ Excel hermano (mismas filas + columna Observación):
 | **S7-T07** | Membresía en UI | por hacer | Relacionada con **C-02**. Mismo trabajo; priorizar C-02. | Sí → C-02 |
 | **C-03** | Responsive Login / Canchas / Mi QR | finalizado | Relacionada con **S7-T08** (pulido demo). C-03 = viewport móvil; S7-T08 = menú/errores/flujo sin mock. Solapan en pulido, no son idénticas. | Parcial → S7-T08 |
 | **S7-T08** | Pulido del flujo demo | por hacer | Relacionada con **C-03** y depende de **C-01**/**C-02**. Más amplia que solo responsive. | Parcial → C-03 |
-| **C-11** | Pantalla Clases mínima | por hacer | Relacionada con **S7-T06**. Mismo: listar + inscribir (lista espera stretch). Solo tras C-01 verde. | Sí → S7-T06 |
-| **S7-T06** | Pantalla Clases | por hacer | Relacionada con **C-11**. Mismo trabajo front; priorizar C-11. | Sí → C-11 |
+| **C-11** | Pantalla Clases mínima | finalizado | Relacionada con **S7-T06**. Cerrada 2026-11-13 por **Patricio** (tomó la tarjeta de Lucas): UI `/clases` con listar + inscribir; alcance real = S7-T06 completo (cancelar + lista de espera UI). | Sí → S7-T06 |
+| **S7-T06** | Pantalla Clases | finalizado | Relacionada con **C-11**. Cerrada 2026-11-13 por **Patricio** (tomó la de Lucas): listar con cupo, inscribir, cancelar y lista de espera en UI (`services/clases.ts` + `Clases.tsx`). | Sí → C-11 |
 | **C-12** | Notificaciones in-app (stretch) | por hacer | Relacionada con **S6-T09**. Mismo: listar + marcar leída. Stretch del cierre. | Sí → S6-T09 |
 | **S6-T09** | Notificaciones in-app | tambien en desarrollo | Relacionada con **C-12**. Mismo trabajo; priorizar C-12 si se hace. | Sí → C-12 |
 | **S5-T08** | Layout post-login y rutas protegidas | finalizado | Relacionada con **S5-T06**/**S5-T07** (finalizadas). En repo ya hay Layout + ProtectedRoute/RoleRoute. Contrastar y, si aplica, pasar a finalizado. | Cubierta por login/sesión hechos |
@@ -96,8 +96,8 @@ C-02 → Observación: relacionada con S7-T07 (mismo: membresía en UI).
 S7-T07 → Observación: relacionada con C-02 (mismo trabajo; priorizar C-02).
 C-03 → Observación: relacionada parcialmente con S7-T08 (responsive vs pulido demo).
 S7-T08 → Observación: relacionada parcialmente con C-03; depende de C-01/C-02.
-C-11 → Observación: relacionada con S7-T06 (mismo: pantalla clases).
-S7-T06 → Observación: relacionada con C-11 (mismo trabajo; priorizar C-11).
+C-11 → Observación: relacionada con S7-T06 (mismo: pantalla clases). Finalizada 2026-11-13 por Patricio (antes Lucas); alcance UI completo vía S7-T06.
+S7-T06 → Observación: relacionada con C-11 (mismo trabajo). Finalizada 2026-11-13 por Patricio (antes Lucas): listar, inscribir, cancelar, lista espera.
 C-12 → Observación: relacionada con S6-T09 (mismo: notificaciones in-app, stretch).
 S6-T09 → Observación: relacionada con C-12 (mismo trabajo; priorizar C-12).
 S5-T08 → Observación: relacionada con S5-T06/S5-T07; revisar si ya está hecha en repo.

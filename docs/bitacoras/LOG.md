@@ -875,7 +875,7 @@ Rama de trabajo: `S5-T08`, creada desde `desarrollo` (`0002fe3`).
 
 ### Fuera de este cierre
 
-- Pulido visto en el ensayo: el inicio sin sesión no redirige al login y repite los botones del menú; Acceso muestra JSON, UUID, perfilId y el mensaje crudo `[YA_DENTRO] El socio ya figura dentro de esta sede.`; Presencias lista el UUID en lugar del nombre y el apellido. El resto (dashboard, canchas maqueta, clases, notificaciones, membresía invisible en perfil) sigue en C-01, C-02, C-03 y, si entran, C-11 y C-12.
+- Pulido visto en el ensayo: el inicio sin sesión no redirige al login y repite los botones del menú; Acceso muestra JSON, UUID, perfilId y el mensaje crudo `[YA_DENTRO] El socio ya figura dentro de esta sede.`; Presencias lista el UUID en lugar del nombre y el apellido. El resto (dashboard, canchas maqueta, notificaciones, membresía invisible en perfil) sigue en C-01, C-02, C-03 y, si entra, C-12. **Actualización 2026-11-13:** el hueco de Clases (C-11 / S7-T06) se cerró en UI; ver entrada de ese día.
 - Ensayo de 5 minutos con plan B: C-24.
 
 ---
@@ -946,6 +946,33 @@ Estados copiados a [Plan_Cierre_Entrega_6_19_Nov.md](../planificacion/Plan_Cierr
 ### Commits vinculados
 
 _Sin commits asociados a esta entrada._
+
+---
+
+## 2026-11-13 — S7-T06 / C-11: Patricio toma y cierra la pantalla Clases (antes Lucas)
+
+**Tipo:** frontend  
+**Registrado por:** Patricio Ramos (P1)  
+**Tarea:** S7-T06 / C-11 — asignadas originalmente a Lucas Coquet (P3); las toma y cierra Patricio.
+
+Patricio Ramos (P1) toma la tarea que estaba a cargo de Lucas Coquet (P3).  
+**Cierre:** UI `/clases` conectada a la API Nest. C-11 y S7-T06 documentadas como finalizadas en Relacion_Trello, Plan_Cierre y Propuesta_Continuacion.
+
+### Entregado
+
+- Cliente [`frontend/src/services/clases.ts`](../../frontend/src/services/clases.ts): `GET /clases?sedeId=`, `GET /clases/inscripciones/mias`, `POST /clases/inscripciones`, `DELETE /clases/inscripciones/:id`, `GET/POST/DELETE` lista de espera y confirmar lugar.
+- Pantalla [`frontend/src/portal/Clases/Clases.tsx`](../../frontend/src/portal/Clases/Clases.tsx): sede → catálogo con cupo → inscribir / lista de espera; bloques Mis inscripciones (cancelar) y Mi lista de espera (confirmar / retirar).
+- Alcance: RF-07 (listar + inscribir) y RF-08 en UI (lista de espera). Fix menor de contraste del `<select>` de sedes (`color: #14283f` en Clases/Canchas).
+- Docs de cierre: estados en planificación + guion C-06 (hueco cerrado; Clases fuera del recorrido de 5 min).
+
+### Nota sobre el ensayo 2026-11-08
+
+En C-06, Clases figuraba como hueco / placeholder. Eso queda cerrado en código; el guion de 5 min **no** incorpora Clases (sigue login → membresía → cancha → QR → check-in). Ver actualización en `Guion_Ensayo_C-06.md`.
+
+### Fuera de este cierre
+
+- Mover tarjetas C-11 y S7-T06 a finalizado en Trello (y re-export C-21 si aplica).
+- Notificaciones in-app (C-12), manual de usuario (C-16), bitácora `LOG-coquet.md` (C-19c).
 
 ---
 
