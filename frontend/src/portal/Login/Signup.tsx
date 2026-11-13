@@ -180,10 +180,6 @@ function Signup() {
         <p className="signup-login">
           ¿Ya tenés una cuenta? <Link to="/login">Iniciá sesión</Link>
         </p>
-
-        <Link to="/" className="signup-back">
-          Volver al inicio
-        </Link>
       </div>
     </div>
   );

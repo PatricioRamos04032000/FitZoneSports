@@ -24,6 +24,8 @@ type PresenciaItem = {
   perfilId: string;
   sedeId: string;
   desde: string;
+  nombre: string | null;
+  apellido: string | null;
 };
 
 type PresenciasResponse = {
@@ -64,6 +66,33 @@ function parsePayload(raw: string): { perfilId: string; code: string } | null {
     return { perfilId: parts[0], code: parts[1] };
   }
   return null;
+}
+
+function mensajeRecepcion(err: unknown): string {
+  if (err instanceof ApiError) {
+    switch (err.code) {
+      case "YA_DENTRO":
+        return "Esta persona ya está en la sede.";
+      case "YA_EN_OTRA_SEDE":
+        return "Esta persona ya figura dentro de otra sede.";
+      case "MEMBRESIA_INACTIVA":
+        return "La membresía del socio no está activa.";
+      case "TOTP_INVALIDO":
+      case "TOTP_SEED_AUSENTE":
+        return "El código del QR no es válido o ya venció.";
+      case "RED_NO_DISPONIBLE":
+        return "Sin red: el ingreso queda pendiente de sincronizar.";
+      default:
+        return err.message || "No se pudo registrar el ingreso.";
+    }
+  }
+  if (err instanceof Error) return err.message;
+  return "No se pudo registrar el ingreso.";
+}
+
+function nombrePresencia(p: PresenciaItem): string {
+  const nombre = [p.nombre, p.apellido].filter(Boolean).join(" ").trim();
+  return nombre || "Socio sin nombre";
 }
 
 function Acceso() {
@@ -107,7 +136,9 @@ function Acceso() {
         setPresencias(data);
       } catch (err) {
         const msg =
-          err instanceof Error ? err.message : "No se pudieron cargar presencias.";
+          err instanceof Error
+            ? err.message
+            : "No se pudieron cargar las personas dentro de la sede.";
         setFeedback({ tipo: "error", texto: msg });
       }
     },
@@ -142,7 +173,7 @@ function Acceso() {
           texto:
             err instanceof Error
               ? err.message
-              : "No se pudieron cargar sedes/perfil.",
+              : "No se pudieron cargar sedes o perfil.",
         });
       } finally {
         setCargando(false);
@@ -187,7 +218,7 @@ function Acceso() {
       const errs = data.results.filter((r) => !r.ok).length;
       setFeedback({
         tipo: errs > 0 ? "info" : "ok",
-        texto: `Sync: ${oks} ok, ${errs} con error.`,
+        texto: `Sincronización: ${oks} ok, ${errs} con error.`,
       });
 
       if (sedeId) void cargarPresencias(sedeId);
@@ -237,7 +268,7 @@ function Acceso() {
     if (!perfilId || !code) {
       setFeedback({
         tipo: "error",
-        texto: "Pegá el JSON del QR o completá perfilId y código.",
+        texto: "Pegá el código del QR del socio o completá socio y código.",
       });
       return;
     }
@@ -259,7 +290,7 @@ function Acceso() {
       setCola(next);
       setFeedback({
         tipo: "info",
-        texto: `${motivo} Evento en cola (${clientEventId.slice(0, 8)}…).`,
+        texto: `${motivo} Quedó pendiente de sincronizar.`,
       });
     };
 
@@ -275,7 +306,7 @@ function Acceso() {
         headers: authHeaders(),
         body: JSON.stringify({ perfilId, code, sedeId }),
       });
-      setFeedback({ tipo: "ok", texto: "Check-in registrado." });
+      setFeedback({ tipo: "ok", texto: "Ingreso registrado." });
       setPayload("");
       setPerfilIdManual("");
       setCodeManual("");
@@ -284,13 +315,7 @@ function Acceso() {
       if (err instanceof ApiError && err.code === "RED_NO_DISPONIBLE") {
         encolar("Fallo de red.");
       } else {
-        const msg =
-          err instanceof ApiError
-            ? `${err.code ? `[${err.code}] ` : ""}${err.message}`
-            : err instanceof Error
-              ? err.message
-              : "No se pudo registrar el check-in.";
-        setFeedback({ tipo: "error", texto: msg });
+        setFeedback({ tipo: "error", texto: mensajeRecepcion(err) });
       }
     } finally {
       setEnviando(false);
@@ -302,8 +327,8 @@ function Acceso() {
       <header className="acceso-header">
         <h1>Acceso / Recepción</h1>
         <p>
-          Pegá el JSON del QR del socio o ingresá perfil y código. Sin red, se
-          encola y se sincroniza después.
+          Escaneá o pegá el código del QR del socio. Sin red, el ingreso se
+          guarda y se sincroniza después.
         </p>
       </header>
 
@@ -338,25 +363,25 @@ function Acceso() {
             </label>
 
             <label className="acceso-field">
-              Payload QR (JSON)
+              Código del QR
               <textarea
                 value={payload}
                 onChange={(e) => setPayload(e.target.value)}
-                placeholder='{"v":1,"perfilId":"...","code":"123456"}'
+                placeholder="Pegá acá el contenido del QR del socio"
               />
             </label>
 
             <label className="acceso-field">
-              Perfil ID (si no hay JSON)
+              Socio (si no hay QR)
               <input
                 value={perfilIdManual}
                 onChange={(e) => setPerfilIdManual(e.target.value)}
-                placeholder="uuid del socio"
+                placeholder="Identificador del socio"
               />
             </label>
 
             <label className="acceso-field">
-              Código TOTP
+              Código de acceso
               <input
                 value={codeManual}
                 onChange={(e) => setCodeManual(e.target.value)}
@@ -371,7 +396,7 @@ function Acceso() {
                 disabled={enviando || !sedeId}
                 onClick={() => void registrar()}
               >
-                {enviando ? "Registrando…" : "Registrar check-in"}
+                {enviando ? "Registrando…" : "Registrar ingreso"}
               </button>
             </div>
           </>
@@ -388,7 +413,7 @@ function Acceso() {
 
       <section className="acceso-card">
         <h2>
-          Presencias
+          En la sede
           {presencias
             ? ` (${presencias.ocupacion}${
                 presencias.aforoMax != null ? ` / ${presencias.aforoMax}` : ""
@@ -401,16 +426,14 @@ function Acceso() {
           <table className="acceso-table">
             <thead>
               <tr>
-                <th>Perfil</th>
+                <th>Socio</th>
                 <th>Desde</th>
               </tr>
             </thead>
             <tbody>
               {presencias.items.map((p) => (
                 <tr key={p.perfilId}>
-                  <td>
-                    <code>{p.perfilId}</code>
-                  </td>
+                  <td>{nombrePresencia(p)}</td>
                   <td>{new Date(p.desde).toLocaleString()}</td>
                 </tr>
               ))}
@@ -440,7 +463,7 @@ function Acceso() {
               <tr>
                 <th>Estado</th>
                 <th>Evento</th>
-                <th>Perfil</th>
+                <th>Socio</th>
                 <th>Detalle</th>
                 <th />
               </tr>
@@ -463,7 +486,12 @@ function Acceso() {
                   </td>
                   <td>
                     {item.estado === "error"
-                      ? `${item.errorCode ?? ""} ${item.errorMessage ?? ""}`.trim()
+                      ? mensajeRecepcion(
+                          new ApiError(
+                            item.errorMessage || "Error al sincronizar",
+                            { code: item.errorCode }
+                          )
+                        )
                       : new Date(item.ocurrioEn).toLocaleString()}
                   </td>
                   <td>

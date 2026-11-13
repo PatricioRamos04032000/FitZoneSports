@@ -14,6 +14,8 @@ export type Presencia = {
   perfil_id: string;
   sede_id: string;
   desde: string;
+  nombre: string | null;
+  apellido: string | null;
 };
 
 export type CheckIn = {

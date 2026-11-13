@@ -13,6 +13,9 @@
 .acceso-header h1 {
   margin: 0 0 12px;
   font-size: 30px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: #0f1c2e;
 }
 
 .acceso-header p {
@@ -32,7 +35,10 @@
 
 .acceso-card h2 {
   margin: 0 0 20px;
-  font-size: 20px;
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: #0f1c2e;
 }
 
 .acceso-field {

@@ -88,10 +88,6 @@ function Login() {
                     ¿No tenés una cuenta? <Link to="/signup">Registrate</Link>
                 </p>
 
-                <Link to="/" className="login-back">
-                    Volver al inicio
-                </Link>
-
             </div>
         </div>
     );

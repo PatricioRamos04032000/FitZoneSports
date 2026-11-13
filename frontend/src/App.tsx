@@ -26,7 +26,6 @@ function App() {
 
           {/* Rutas protegidas */}
           <Route element={<ProtectedRoute />}>
-            <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/perfil" element={<Perfil />} />
             <Route path="/canchas" element={<Canchas />} />
             <Route path="/clases" element={<Clases />} />
@@ -41,6 +40,7 @@ function App() {
                 <RoleRoute allowedRoles={["admin_sede", "gerente"]} />
               }
             >
+              <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/acceso" element={<Acceso />} />
             </Route>
           </Route>

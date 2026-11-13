@@ -82,11 +82,12 @@ Archivo principal: [`frontend/src/pages/Acceso/Acceso.tsx`](../frontend/src/page
 
 ## 5. Fuera de alcance (v2)
 
-- Check-out en la UI de recepción.
-- Mostrar nombre del socio en la lista de presencias.
+- Check-out en la UI de recepción (sigue por Swagger `POST /acceso/check-outs` hasta una rama aparte).
 - Atomic Design / Storybook.
 - App móvil nativa / service worker.
 - Validación TOTP 100 % offline en recepción (sigue siendo cola + sync, ADR-007).
+
+**Cubierto fuera de v2 (S7-T08, 2026-11-13):** nombre y apellido del socio en la lista de Presencias (`GET /acceso/presencias` + UI Acceso). Cámara/DNI siguen siendo alcance de esta v2.
 
 ---
 

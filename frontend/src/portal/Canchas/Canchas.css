@@ -41,6 +41,12 @@
     overflow-wrap: anywhere;
 }
 
+.canchas-error {
+    margin-top: 16px;
+    color: #b91c1c;
+    line-height: 1.5;
+}
+
 .cancha-card {
     margin-top: 16px;
     padding: 20px;

@@ -47,6 +47,10 @@ function Canchas() {
     useState<Reserva | null>(null);
   const [misReservas, setMisReservas] = useState<Reserva[]>([]);
   const [errorReserva, setErrorReserva] = useState("");
+  const [errorMisReservas, setErrorMisReservas] = useState("");
+  const [nombresCancha, setNombresCancha] = useState<
+    Record<string, string>
+  >({});
 
   // Estado de pago
   const [procesandoPago, setProcesandoPago] = useState(false);
@@ -100,6 +104,13 @@ function Canchas() {
         );
 
         setDisponibilidad(respuesta);
+        setNombresCancha((prev) => {
+          const next = { ...prev };
+          for (const cancha of respuesta.canchas) {
+            next[cancha.id] = cancha.nombre;
+          }
+          return next;
+        });
       } catch (err) {
         setDisponibilidad(null);
         setError(
@@ -129,12 +140,16 @@ function Canchas() {
 
         if (activo) {
           setMisReservas(reservas);
+          setErrorMisReservas("");
         }
       } catch (err) {
-        console.error(
-          "No se pudieron actualizar las reservas:",
-          err
-        );
+        if (activo) {
+          setErrorMisReservas(
+            err instanceof Error
+              ? err.message
+              : "No se pudieron actualizar tus reservas."
+          );
+        }
       }
     }
 
@@ -170,6 +185,15 @@ function Canchas() {
         (reserva) => reserva.id === reservaCreada.id
       ) ?? reservaCreada
     : null;
+
+  function nombreCancha(canchaId: string): string {
+    return (
+      nombresCancha[canchaId] ||
+      disponibilidad?.canchas.find((c) => c.id === canchaId)
+        ?.nombre ||
+      "Cancha"
+    );
+  }
 
   // Crear una reserva
   async function handleReservar(
@@ -303,7 +327,7 @@ function Canchas() {
       {/* Listado de canchas */}
       <h2>Canchas</h2>
 
-      {error && <p>{error}</p>}
+      {error && <p className="canchas-error">{error}</p>}
 
       {cargandoCanchas && (
         <p>Consultando disponibilidad...</p>
@@ -381,8 +405,12 @@ function Canchas() {
         })}
 
       {/* Resultado de la reserva */}
+      {errorMisReservas && (
+        <p className="canchas-error">{errorMisReservas}</p>
+      )}
+
       {errorReserva && (
-        <p>{errorReserva}</p>
+        <p className="canchas-error">{errorReserva}</p>
       )}
 
       {reservaMostrada && (
@@ -396,7 +424,7 @@ function Canchas() {
           </h3>
 
           <p>
-            Cancha: {reservaMostrada.canchaId}
+            Cancha: {nombreCancha(reservaMostrada.canchaId)}
           </p>
 
           <p>

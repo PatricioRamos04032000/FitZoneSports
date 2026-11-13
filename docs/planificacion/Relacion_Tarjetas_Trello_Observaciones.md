@@ -33,7 +33,7 @@ Excel hermano (mismas filas + columna Observación):
 | **C-02** | Membresía en UI | tambien en desarrollo | Relacionada con **S7-T07**. Mismo: mostrar plan/estado/vigencia (`GET /membresias/mia`). | Sí → S7-T07 |
 | **S7-T07** | Membresía en UI | por hacer | Relacionada con **C-02**. Mismo trabajo; priorizar C-02. | Sí → C-02 |
 | **C-03** | Responsive Login / Canchas / Mi QR | finalizado | Relacionada con **S7-T08** (pulido demo). C-03 = viewport móvil; S7-T08 = menú/errores/flujo sin mock. Solapan en pulido, no son idénticas. | Parcial → S7-T08 |
-| **S7-T08** | Pulido del flujo demo | por hacer | Relacionada con **C-03** y depende de **C-01**/**C-02**. Más amplia que solo responsive. | Parcial → C-03 |
+| **S7-T08** | Pulido del flujo demo | finalizado | Relacionada con **C-03**. Cerrada 2026-11-13 por **Patricio** (tomó la de Lucas): menú/roles, Acceso humanizado, Presencias con nombre; Dashboard solo `admin_sede`\|`gerente`. Más amplia que solo responsive. | Parcial → C-03 |
 | **C-11** | Pantalla Clases mínima | finalizado | Relacionada con **S7-T06**. Cerrada 2026-11-13 por **Patricio** (tomó la tarjeta de Lucas): UI `/clases` con listar + inscribir; alcance real = S7-T06 completo (cancelar + lista de espera UI). | Sí → S7-T06 |
 | **S7-T06** | Pantalla Clases | finalizado | Relacionada con **C-11**. Cerrada 2026-11-13 por **Patricio** (tomó la de Lucas): listar con cupo, inscribir, cancelar y lista de espera en UI (`services/clases.ts` + `Clases.tsx`). | Sí → C-11 |
 | **C-12** | Notificaciones in-app (stretch) | por hacer | Relacionada con **S6-T09**. Mismo: listar + marcar leída. Stretch del cierre. | Sí → S6-T09 |
@@ -95,7 +95,7 @@ S4-T03 → Observación: relacionada con C-01. Esta es prototipo mock; C-01 es A
 C-02 → Observación: relacionada con S7-T07 (mismo: membresía en UI).
 S7-T07 → Observación: relacionada con C-02 (mismo trabajo; priorizar C-02).
 C-03 → Observación: relacionada parcialmente con S7-T08 (responsive vs pulido demo).
-S7-T08 → Observación: relacionada parcialmente con C-03; depende de C-01/C-02.
+S7-T08 → Observación: relacionada parcialmente con C-03; finalizada 2026-11-13 por Patricio (antes Lucas). Dashboard restringido a staff; check-out UI y rediseño Canchas fuera de alcance.
 C-11 → Observación: relacionada con S7-T06 (mismo: pantalla clases). Finalizada 2026-11-13 por Patricio (antes Lucas); alcance UI completo vía S7-T06.
 S7-T06 → Observación: relacionada con C-11 (mismo trabajo). Finalizada 2026-11-13 por Patricio (antes Lucas): listar, inscribir, cancelar, lista espera.
 C-12 → Observación: relacionada con S6-T09 (mismo: notificaciones in-app, stretch).

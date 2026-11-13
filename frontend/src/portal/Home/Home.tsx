@@ -1,35 +1,24 @@
-import { Link } from "react-router-dom";
+import { Navigate } from "react-router-dom";
+import { useAuth } from "../../store/useAuth";
 import "./Home.css";
 
 function Home() {
-    return (
-        <div className="home-container">
-            <h1 className="home-title">Bienvenido a FitZone Sports</h1>
-            <p>Seleccioná una sección para continuar.</p>
+  const { user, isLoading } = useAuth();
 
-            <div className="home-links">
-                <Link to="/dashboard">
-                    <button>Dashboard</button>
-                </Link>
+  if (isLoading) {
+    return <p>Verificando sesión...</p>;
+  }
 
-                <Link to="/perfil">
-                    <button>Mi Perfil</button>
-                </Link>
+  if (!user) {
+    return <Navigate to="/login" replace />;
+  }
 
-                <Link to="/canchas">
-                    <button>Canchas</button>
-                </Link>
-
-                <Link to="/login">
-                    <button>Iniciar sesión</button>
-                </Link>
-
-                <Link to="/signup">
-                    <button>Registrarse</button>
-                </Link>
-            </div>
-        </div>
-    );
+  return (
+    <div className="home-container">
+      <h1 className="home-title">Bienvenido a FitZone Sports</h1>
+      <p>Elegí una sección del menú para continuar.</p>
+    </div>
+  );
 }
 
 export default Home;

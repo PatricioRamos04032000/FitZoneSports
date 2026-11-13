@@ -139,6 +139,7 @@
         "header": [
           { "key": "Authorization", "value": "Bearer {{adminToken}}" }
         ],
+        "description": "Lista quién está dentro. Cada ítem trae perfilId, sedeId, desde, nombre y apellido (join a perfiles; S7-T08).",
         "url": "{{baseUrl}}/acceso/presencias?sedeId={{sedeId}}"
       }
     },

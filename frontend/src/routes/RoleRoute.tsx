@@ -6,6 +6,13 @@ type RoleRouteProps = {
   allowedRoles: RolUsuario[];
 };
 
+function fallbackPorRol(rol: RolUsuario | null | undefined): string {
+  if (rol === "socio" || rol === "externo") {
+    return "/perfil";
+  }
+  return "/";
+}
+
 function RoleRoute({ allowedRoles }: RoleRouteProps) {
   const { isAuthenticated, isLoading, user } = useAuth();
 
@@ -19,7 +26,7 @@ function RoleRoute({ allowedRoles }: RoleRouteProps) {
 
   const rol = user?.rol;
   if (!rol || !allowedRoles.includes(rol)) {
-    return <Navigate to="/dashboard" replace />;
+    return <Navigate to={fallbackPorRol(rol)} replace />;
   }
 
   return <Outlet />;

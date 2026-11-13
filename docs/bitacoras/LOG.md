@@ -875,7 +875,7 @@ Rama de trabajo: `S5-T08`, creada desde `desarrollo` (`0002fe3`).
 
 ### Fuera de este cierre
 
-- Pulido visto en el ensayo: el inicio sin sesión no redirige al login y repite los botones del menú; Acceso muestra JSON, UUID, perfilId y el mensaje crudo `[YA_DENTRO] El socio ya figura dentro de esta sede.`; Presencias lista el UUID en lugar del nombre y el apellido. El resto (dashboard, canchas maqueta, notificaciones, membresía invisible en perfil) sigue en C-01, C-02, C-03 y, si entra, C-12. **Actualización 2026-11-13:** el hueco de Clases (C-11 / S7-T06) se cerró en UI; ver entrada de ese día.
+- Pulido visto en el ensayo: el inicio sin sesión no redirige al login y repite los botones del menú; Acceso muestra JSON, UUID, perfilId y el mensaje crudo `[YA_DENTRO] El socio ya figura dentro de esta sede.`; Presencias lista el UUID en lugar del nombre y el apellido. El resto (dashboard, canchas maqueta, notificaciones, membresía invisible en perfil) sigue en C-01, C-02, C-03 y, si entra, C-12. **Actualización 2026-11-13:** el hueco de Clases (C-11 / S7-T06) se cerró en UI; ver entrada de ese día. **Actualización 2026-11-13 (noche):** el pulido del §6 del guion quedó cerrado por **S7-T08** (menú/roles, Acceso humanizado, Presencias con nombre); ver entrada de ese día.
 - Ensayo de 5 minutos con plan B: C-24.
 
 ---
@@ -937,7 +937,7 @@ La tarjeta homónima de Lucas (S1-T16) sigue archivada en «por hacer». No se l
 
 ### Dónde quedó el resto
 
-S5 está cerrada (S5-T01 a S5-T11). De S6 queda abierta solo S6-T09. De S7 siguen en por hacer S7-T06, S7-T07, S7-T08 y S7-T09 (Lucas). El plan de cierre tiene en por hacer, entre otras, C-04 (Bruno), C-07, C-08, C-10, C-17, C-20 y C-21 (Matias), C-11, C-12, C-16 y C-19c (Lucas), y C-23 a C-27 (Patricio).
+S5 está cerrada (S5-T01 a S5-T11). De S6 queda abierta solo S6-T09. De S7, al 11/11, seguían en por hacer S7-T06, S7-T07, S7-T08 y S7-T09 (Lucas). **Actualización 2026-11-13:** S7-T06/C-11 y S7-T08 quedaron finalizadas (Patricio); ver entradas de ese día. El plan de cierre tiene en por hacer, entre otras, C-04 (Bruno), C-07, C-08, C-10, C-17, C-20 y C-21 (Matias), C-12, C-16 y C-19c (Lucas), y C-23 a C-27 (Patricio).
 
 Queda suelta, en por hacer y sin responsable, la tarjeta «Preparar API REST del módulo perfil». S6-T01 (`GET`/`PATCH /perfiles/me`) ya está finalizada.
 
@@ -973,6 +973,30 @@ En C-06, Clases figuraba como hueco / placeholder. Eso queda cerrado en código;
 
 - Mover tarjetas C-11 y S7-T06 a finalizado en Trello (y re-export C-21 si aplica).
 - Notificaciones in-app (C-12), manual de usuario (C-16), bitácora `LOG-coquet.md` (C-19c).
+
+---
+
+## 2026-11-13 — S7-T08: Patricio toma y cierra el pulido del flujo demo (antes Lucas)
+
+**Tipo:** frontend / demo  
+**Registrado por:** Patricio Ramos (P1)  
+**Tarea:** S7-T08 — asignada originalmente a Lucas Coquet (P3); la toma y cierra Patricio.
+
+Patricio Ramos (P1) toma la tarea que estaba a cargo de Lucas Coquet (P3).  
+**Cierre:** pase de ~5 min solo con la UI (menú alineado al guion, errores legibles, sin mock en el recorrido). Documentación de estados en planificación + guion C-06 + README §6.
+
+### Entregado
+
+- Layout: ítems protegidos solo con sesión; **Dashboard** y **Acceso** solo `admin_sede` | `gerente`; **Notificaciones** permanece (stub C-12).
+- Home sin fila duplicada de botones; contraste de títulos en Inicio, Perfil y Acceso.
+- Acceso: labels de recepción; mensajes sin prefijo `[YA_DENTRO]`; `GET /acceso/presencias` con `nombre`/`apellido` (join a `perfiles`).
+- Canchas: confirmación con nombre de cancha; errores de mis reservas en UI (sin rediseño de grilla).
+- Guion C-06 §1/§3/§6 y README §6 alineados al comportamiento real.
+
+### Fuera de este cierre
+
+- Rediseño Canchas (calendario/grilla/precio único), pantalla Mis reservas y check-out UI (otra rama).
+- Notificaciones reales (C-12), ensayo cronometrado (C-24), S7-T09.
 
 ---
 
