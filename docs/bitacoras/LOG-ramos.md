@@ -490,4 +490,4 @@ Las clases del seed tenían fechas viejas y fallaban la ventana D5 de 48 h al in
 
 **Commits**
 
-- `60347be` S7-T06/C-11: pantalla Clases real; Patricio toma y cierra la tarjeta de Lucas.
+- `2610431` S7-T06/C-11: pantalla Clases real; Patricio toma y cierra la tarjeta de Lucas.
