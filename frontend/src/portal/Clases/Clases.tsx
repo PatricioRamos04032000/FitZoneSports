@@ -101,7 +101,7 @@ function Clases() {
       }
     }
 
-    cargarSedes();
+    void cargarSedes();
   }, []);
 
   useEffect(() => {
@@ -127,7 +127,7 @@ function Clases() {
       }
     }
 
-    cargar();
+    void cargar();
     return () => {
       activo = false;
     };
@@ -157,7 +157,7 @@ function Clases() {
       }
     }
 
-    cargar();
+    void cargar();
     return () => {
       activo = false;
     };
