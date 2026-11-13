@@ -1,5 +1,3 @@
-export const PRICING_STRATEGIES = Symbol('PRICING_STRATEGIES');
-
 export const DESCUENTO_SOCIO_DEFAULT_PCT = 15;
 
 export interface ConfiguracionPico {
@@ -38,14 +36,4 @@ export interface PrecioCalculado {
   precioFinal: number;
   reglasAplicadas: string[];
   descuentoSocioAplicado: boolean;
-}
-
-/**
- * Interfaz Strategy (GoF) para el cálculo dinámico de precios de canchas (RF-11).
- * Cada regla determina si aplica al contexto de la reserva y transforma el precio acumulado.
- */
-export interface PricingStrategy {
-  readonly nombre: string;
-  aplica(ctx: ContextoPrecio): boolean;
-  calcular(precio: number, ctx: ContextoPrecio): number;
 }

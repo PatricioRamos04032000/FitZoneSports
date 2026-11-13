@@ -1,15 +1,16 @@
 import { Injectable } from '@nestjs/common';
-import { ContextoPrecio, PricingStrategy } from '../pricing.strategy';
+import { ContextoPrecio } from '../pricing.types';
+import { PricingDecorator } from './pricing.decorator';
 
 const ZONA_ARGENTINA = 'America/Argentina/Buenos_Aires';
 
 /**
- * Estrategia de recargo por horario pico (RF-11, S4-T09 P3).
+ * Decorador de recargo por horario pico (RF-11, S4-T09 P3, C-28).
  * Aplica cuando el turno comienza dentro de la franja [desde, hasta) en un día
  * configurado como pico para la sede (evaluado en hora de Argentina).
  */
 @Injectable()
-export class PeakHourPricing implements PricingStrategy {
+export class PeakHourPricingDecorator extends PricingDecorator {
   readonly nombre = 'PeakHourPricing';
 
   aplica(ctx: ContextoPrecio): boolean {
@@ -29,7 +30,7 @@ export class PeakHourPricing implements PricingStrategy {
     return minutosDelDia >= desdeMin && minutosDelDia < hastaMin;
   }
 
-  calcular(precio: number, ctx: ContextoPrecio): number {
+  modificar(precio: number, ctx: ContextoPrecio): number {
     return precio * (1 + ctx.pico.recargoPct / 100);
   }
 

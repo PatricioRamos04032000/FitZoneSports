@@ -1,28 +1,44 @@
 import { Module } from '@nestjs/common';
 import { PreciosService } from './precios.service';
-import { PRICING_STRATEGIES, PricingStrategy } from './pricing.strategy';
-import { MemberDiscountPricing } from './strategies/member-discount-pricing.strategy';
-import { PeakHourPricing } from './strategies/peak-hour-pricing.strategy';
-import { StandardPricing } from './strategies/standard-pricing.strategy';
+import {
+  PRICING_CHAIN,
+  PRICING_DECORATORS,
+  PricingComponent,
+} from './pricing.component';
+import { PricingDecorator } from './decorators/pricing.decorator';
+import { MemberDiscountPricingDecorator } from './decorators/member-discount-pricing.decorator';
+import { PeakHourPricingDecorator } from './decorators/peak-hour-pricing.decorator';
+import { StandardPricing } from './decorators/standard-pricing';
 
 /**
- * Módulo de cálculo de precios de canchas (S4-T01).
- * Inyecta la lista ordenada de estrategias en `PreciosService` mediante el token
- * de colección `PRICING_STRATEGIES` (StandardPricing -> PeakHourPricing -> MemberDiscountPricing).
+ * Módulo de cálculo de precios de canchas (C-28).
+ * Arma la cadena Decorator desde una lista ordenada de decoradores
+ * (PeakHour → MemberDiscount) envolviendo StandardPricing.
  */
 @Module({
   providers: [
     StandardPricing,
-    PeakHourPricing,
-    MemberDiscountPricing,
+    PeakHourPricingDecorator,
+    MemberDiscountPricingDecorator,
     {
-      provide: PRICING_STRATEGIES,
+      provide: PRICING_DECORATORS,
+      useFactory: (
+        peak: PeakHourPricingDecorator,
+        memberDiscount: MemberDiscountPricingDecorator,
+      ): PricingDecorator[] => [peak, memberDiscount],
+      inject: [PeakHourPricingDecorator, MemberDiscountPricingDecorator],
+    },
+    {
+      provide: PRICING_CHAIN,
       useFactory: (
         standard: StandardPricing,
-        peak: PeakHourPricing,
-        memberDiscount: MemberDiscountPricing,
-      ): PricingStrategy[] => [standard, peak, memberDiscount],
-      inject: [StandardPricing, PeakHourPricing, MemberDiscountPricing],
+        decorators: PricingDecorator[],
+      ): PricingComponent =>
+        decorators.reduce<PricingComponent>(
+          (inner, decorator) => decorator.wrap(inner),
+          standard,
+        ),
+      inject: [StandardPricing, PRICING_DECORATORS],
     },
     PreciosService,
   ],

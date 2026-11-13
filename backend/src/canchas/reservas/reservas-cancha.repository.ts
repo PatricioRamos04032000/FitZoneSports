@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { ConfiguracionPico } from '../precios/pricing.strategy';
+import { ConfiguracionPico } from '../precios/pricing.types';
 import { RepositoryError } from '../../supabase/repository.error';
 import { SupabaseRepository } from '../../supabase/supabase.repository';
 import {

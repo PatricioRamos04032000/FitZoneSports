@@ -7,7 +7,7 @@ import {
   NotFoundException,
   ServiceUnavailableException,
 } from '@nestjs/common';
-import { ContextoPrecio } from '../precios/pricing.strategy';
+import { ContextoPrecio } from '../precios/pricing.types';
 import { PreciosService } from '../precios/precios.service';
 import { PASARELA_PAGO } from '../../pagos/pasarela-pago';
 import type { PasarelaPago } from '../../pagos/pasarela-pago';

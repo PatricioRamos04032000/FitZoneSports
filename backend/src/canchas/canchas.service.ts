@@ -7,7 +7,7 @@ import {
 } from '@nestjs/common';
 import type { RolUsuario } from '../common/rol-usuario';
 import { PreciosService } from './precios/precios.service';
-import { ConfiguracionPico } from './precios/pricing.strategy';
+import { ConfiguracionPico } from './precios/pricing.types';
 import {
   ActualizarCanchaDto,
   ActualizarConfiguracionPicoDto,
