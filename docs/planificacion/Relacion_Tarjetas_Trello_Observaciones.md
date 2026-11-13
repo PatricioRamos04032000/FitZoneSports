@@ -64,6 +64,8 @@ Excel hermano (mismas filas + columna Observación):
 | **S7-T05** | Swagger al día | finalizado | Relacionada con **C-09** (export `swagger.json`). Documentar endpoints ≠ exportar archivo OpenAPI. | Parcial → C-09 |
 | **C-09** | Exportar backend/swagger.json | tambien en desarrollo | Relacionada con **S7-T05**. S7-T05 = anotaciones Swagger; C-09 = archivo en repo. | Parcial → S7-T05 |
 | **S4-T15** | *(PR mergeado; puede no estar en tablero)* | — | Relacionada con precios Strategy / **S4-T01**/**S4-T09**. Redondeo `Math.ceil`. Si no hay tarjeta, no crear duplicado de trabajo. | Hecho en código |
+| **C-28** | Precios Strategy → Decorator + UML Nest *(plan de cierre; 2026-11-13)* | por hacer (solo plan) | Relacionada con **S4-T01** (Strategy histórico de precios). **No** borrar S4-T01: C-28 redefine el patrón a Decorator GoF + diagrama Nest completo + docs. Crear tarjeta en Trello o track solo en el plan. | Extiende / reemplaza el patrón de S4-T01; no es reserva ni PDF |
+| **S4-T01** | Strategy de precios | finalizado | Relacionada con **C-28**. Entrega histórica del cálculo RF-11; C-28 es el refactor a Decorator antes del tag. | Cubierta en código histórico; C-28 la redefine |
 
 ---
 
@@ -79,6 +81,7 @@ Estas C-xx / S* no compiten entre sí por el mismo entregable; la observación e
 | **C-10** | Cobertura/umbral ADR. Relacionada con **S7-T10** (reporte cobertura finalizado): C-10 actualiza umbral + suite. |
 | **C-13, C-15, C-18** | Finalizadas en el tablero el 2026-11-11. Sin par S5–S7 equivalente. |
 | **C-16, C-17, C-19b, C-19c, C-20, C-21, C-23, C-25…C-27** | Docs/admisibilidad del cierre, en por hacer. C-19a finalizada; C-19d en desarrollo. C-22 (Anexo G) en desarrollo, a cargo de Patricio. |
+| **C-28** | Nueva 2026-11-13 (no estaba en el plan original). Solapa con **S4-T01** por el patrón de precios (ver §2); no compite con C-04 ni S7-T01. |
 | **C-14** | Diez ADR obligatorios escritos el 2026-11-09 (rama `c-14`, `docs/adr/`, ninguno Propuesto). El 60 % lo hace cumplir **C-10**; el Compose, **C-07**. Trello: finalizado. |
 | **S7-T12** | Stretch móvil. Distinto de **C-03** (web responsive). Trello: finalizado. |
 
@@ -124,6 +127,8 @@ C-09 → Observación: relacionada parcialmente con S7-T05 (export archivo OpenA
 C-08 → Observación: relacionada con S5-T03 (seed mínimo); C-08 pide >=25 sedes.
 C-10 → Observación: relacionada con S7-T10 (amplía cobertura + umbral ADR). El umbral del 60 % ya está declarado en ADR-008 (C-14); C-10 lo mide y lo hace cumplir en CI.
 C-14 → Observación: sin par S5–S7. Diez ADR en docs/adr/ (2026-11-09, rama c-14). Umbral: C-10. Compose: C-07. Trello: finalizado.
+C-28 → Observación: relacionada con S4-T01 (Strategy histórico). Redefine precios a Decorator + UML Nest; crear en Trello o track solo en plan.
+S4-T01 → Observación: relacionada con C-28 (refactor Decorator antes del tag); no borrar esta tarjeta.
 ```
 
 ---
