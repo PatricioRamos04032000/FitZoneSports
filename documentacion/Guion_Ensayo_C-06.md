@@ -21,7 +21,7 @@ Contraseña de todos los usuarios: el valor de `SEED_PASSWORD` en `backend/.env`
 | Reservar paddle y pagar | La pantalla `/canchas` es un mock. El flujo real va por API + checkout HTML | Swagger + `checkoutUrl` |
 | Mi QR | Se prueba | UI `/mi-qr` |
 | Check-in en recepción | Se prueba, pegando perfil + código (no hay cámara) | UI `/acceso` |
-| Clases, notificaciones, PDF comprobante, check-out | No forman parte de este recorrido | Huecos **C-11**, **C-12**, **C-04** |
+| Clases, notificaciones, PDF comprobante, check-out | No forman parte de este recorrido de 5 min | **C-11** cerrada (UI `/clases` disponible; demo extendida / defensa opcional). Huecos **C-12**, **C-04** |
 
 Si un paso de la tabla “se prueba” falla, es bug de este ensayo. Si está en “no se prueba”, se anota como hueco conocido y se sigue.
 
@@ -215,7 +215,8 @@ Esas frases hay que pasarlas a lenguaje de recepción (“Esta persona ya está 
 | Menú | Todos los links juntos, sin marcar la página actual. En teléfono se apila. | C-03 (Login, Canchas y Mi QR usables en el teléfono). |
 | Dashboard | Solo el título. | Sacarlo del recorrido o darle contenido. |
 | Canchas | Sedes y horarios fijos, precio “$X”, Reservar no llama a la API. Sin la card del resto de las pantallas. | C-01. No es un retoque de CSS. |
-| Clases y Notificaciones | Una frase de que el listado llega después. | C-11 y C-12, si entran. |
+| Clases | Disponible en `/clases` (listar, inscribir, cancelar, lista de espera). No entra al recorrido de 5 min. | C-11 / S7-T06 cerradas 2026-11-13. Opcional en defensa extendida. |
+| Notificaciones | Una frase de que el listado llega después. | C-12, si entra. |
 | Perfil | Card con datos reales. No muestra plan, estado ni vigencia. | C-02. |
 | Mi QR | El código de 6 dígitos se lee. | El id y el JSON quedan para copiar en recepción, no como texto de la demo del socio. |
 | Acceso | JSON, perfilId, UUID y `[YA_DENTRO]` a la vista. En Presencias, el socio aparece por UUID y no por nombre y apellido. | Nombre y apellido en la tabla. Mensaje de error sin código. La cámara queda fuera de la demo. |

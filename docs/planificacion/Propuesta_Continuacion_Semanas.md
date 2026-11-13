@@ -207,9 +207,9 @@ Cada tarea tiene entregable, dependencia y criterio de cierre. Las horas son tec
 
 ### Lucas (8 h)
 
-1. **Pantalla Clases (3 h) — Por hacer (S7-T06 y C-11)**  
-   - Entregar: listar con cupo; inscribir; cancelar; lista de espera si Bruno la terminó.  
-   - Cierra cuando: el socio seed hace listar → inscribir → ver cupo actualizado.
+1. **Pantalla Clases (3 h)** — **Finalizada 2026-11-13 (S7-T06 / C-11)** por **Patricio Ramos (P1)** (tomó la tarea asignada a Lucas)  
+   - Entregado: listar con cupo; inscribir; cancelar; lista de espera (anotarse / confirmar / retirar) en UI `/clases` (`frontend/src/services/clases.ts`, `frontend/src/portal/Clases/Clases.tsx`).  
+   - Cierre: socio seed listar → inscribir → cupo actualizado; más cancelar y lista de espera contra la API Nest.
 
 2. **Membresía en UI (1.5 h) — En desarrollo en C-02. S7-T07 sigue en por hacer.**  
    - Entregar: plan/estado/vigencia desde la API.  

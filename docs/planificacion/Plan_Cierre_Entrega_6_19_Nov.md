@@ -81,7 +81,7 @@ Después del tag: solo ensayo Demo Day.
 | C-08 | Seed ≥ **25 sedes** + canchas/clases mínimas + 4 roles (o script aparte `seed:entrega`) | Matias | 4–5 | **Por hacer** | Cumple §5.4.1 carga de prueba | Seed 25 sedes |
 | C-09 | Exportar `backend/swagger.json`; link en README | Bruno | 0,5 | **En desarrollo** | Archivo en repo + UI docs | swagger.json |
 | C-10 | Suite verde: unit + e2e críticos; actualizar reporte cobertura; declarar umbral en ADR-008 (cátedra) | Matias | 3–4 | **Por hacer** | CI verde + reporte | Cobertura / tests |
-| C-11 | Pantalla Clases mínima (listar + inscribir) **solo si C-01 está verde** | Lucas | 3–4 | **Por hacer** | RF-07 demoable en UI | 14 RF |
+| C-11 | Pantalla Clases mínima (listar + inscribir). **Cerrada 2026-11-13** por **Patricio** (tomó la tarjeta de Lucas; UI `/clases`; RF-07 + RF-08 lista espera) | Patricio (antes Lucas) | 3–4 | **Finalizado** | RF-07 demoable en UI | 14 RF |
 | C-12 | Notificaciones in-app (lista + leída) stretch | Lucas | 1–2 | **Por hacer** | Si sobra | — |
 
 #### 4.2 Repositorio y docs (admisibilidad §6.1)
@@ -181,7 +181,7 @@ Situación (5 min): agregar canchas de tenis (manual técnico C-18).
 ## 9. Rituales de equipo
 
 - **Lun 9/11 (30 min):** cierre T1; repartir C-14…C-21; confirmar nº de equipo NN y responsable Moodle.  
-- **Vie 13/11 (30 min):** estado diagramas/manuales/bitácoras; cortar C-11/C-12 si atrasan docs.  
+- **Vie 13/11 (30 min):** estado diagramas/manuales/bitácoras; C-11 ya cerrada (2026-11-13); cortar solo C-12 si atrasa docs.  
 - **Mar 17/11:** primer pase Anexo G completo.  
 - **Jue 19/11 mañana:** tag dry-run; **tarde antes de 18:00:** tag + Moodle.
 
