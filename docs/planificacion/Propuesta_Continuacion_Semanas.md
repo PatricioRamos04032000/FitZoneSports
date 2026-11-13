@@ -215,9 +215,9 @@ Cada tarea tiene entregable, dependencia y criterio de cierre. Las horas son tec
    - Entregar: plan/estado/vigencia desde la API.  
    - Cierra cuando: el demo muestra “socio activo” en pantalla.
 
-3. **Pulido del flujo demo (1.5 h) — Por hacer (S7-T08). C-03 (responsive) ya está finalizado.**  
-   - Entregar: menú alineado al guion; errores legibles; sin mock.  
-   - Cierra cuando: un pase de 5 minutos se hace solo con la UI.
+3. **Pulido del flujo demo (1.5 h)** — **Finalizada 2026-11-13 (S7-T08)** por **Patricio Ramos (P1)** (tomó la tarea asignada a Lucas). C-03 (responsive) ya estaba finalizado.  
+   - Entregado: menú por sesión/rol (Dashboard solo staff); Home sin nav duplicada; Acceso con mensajes de recepción; Presencias con nombre/apellido; canchas UI sin mock en el pase.  
+   - Cierre: un pase de ~5 minutos se hace solo con la UI (guion C-06 + README §6 actualizados).
 
 4. **Componentes documentados (2 h) — Por hacer (S7-T09, entregable IV)**  
    - Entregar: 5+ componentes + README Atomic Design o Storybook mínimo; responsive básico de Login y Canchas.  

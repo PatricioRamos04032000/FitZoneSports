@@ -6,10 +6,22 @@
 }
 
 .home-title {
+    margin: 0 0 16px;
     font-size: 42px;
+    font-weight: 700;
     line-height: 1.2;
+    letter-spacing: -0.02em;
     padding: 0 15px;
     overflow-wrap: break-word;
+    color: #0f1c2e;
+}
+
+.home-container > p {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 500;
+    line-height: 1.5;
+    color: #14283f;
 }
 
 .home-links {

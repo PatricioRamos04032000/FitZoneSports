@@ -2804,6 +2804,14 @@
           },
           "desde": {
             "type": "string"
+          },
+          "nombre": {
+            "type": "string",
+            "nullable": true
+          },
+          "apellido": {
+            "type": "string",
+            "nullable": true
           }
         },
         "required": [

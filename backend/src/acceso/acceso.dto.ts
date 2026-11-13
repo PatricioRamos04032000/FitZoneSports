@@ -100,6 +100,12 @@ export class PresenciaItemDto {
 
   @ApiProperty()
   desde: string;
+
+  @ApiPropertyOptional({ type: String, nullable: true })
+  nombre: string | null;
+
+  @ApiPropertyOptional({ type: String, nullable: true })
+  apellido: string | null;
 }
 
 export class PresenciasResponseDto {

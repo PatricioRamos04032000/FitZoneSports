@@ -79,7 +79,7 @@ La API se arma en [backend/src/app.module.ts](../../backend/src/app.module.ts). 
 | Módulo | Responsabilidad | Carpeta |
 |--------|-----------------|---------|
 | M1 Usuarios y membresías | Login vía BFF, perfil, rol, sede de origen y vigencia de la membresía | [backend/src/usuarios/](../../backend/src/usuarios/) (`auth`, `perfiles`, `membresias`, `sedes`) |
-| M2 Acceso | QR rotativo, check-in, presencia en una sola sede y cola del terminal | [backend/src/acceso/](../../backend/src/acceso/) |
+| M2 Acceso | QR rotativo, check-in, presencia en una sola sede y cola del terminal. `GET /acceso/presencias` incluye `nombre` y `apellido` del perfil | [backend/src/acceso/](../../backend/src/acceso/) |
 | M3 Clases | Agenda, inscripción, lista de espera y avisos cuando se libera un lugar | [backend/src/clases/](../../backend/src/clases/) |
 | M4 Canchas | Canchas, grilla, precio, reserva y ciclo de la reserva | [backend/src/canchas/](../../backend/src/canchas/) |
 | M5 Pagos | Cobro simulado de la reserva y token opaco | [backend/src/pagos/](../../backend/src/pagos/) |

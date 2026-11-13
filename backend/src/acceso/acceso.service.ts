@@ -279,6 +279,8 @@ export class AccesoService {
         perfilId: p.perfil_id,
         sedeId: p.sede_id,
         desde: p.desde,
+        nombre: p.nombre,
+        apellido: p.apellido,
       })),
       ocupacion: items.length,
       aforoMax,

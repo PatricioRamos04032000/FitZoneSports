@@ -423,7 +423,7 @@ El estado global de sesión pasa a mi cargo. El rol viaja tipado desde `/auth/me
 
 **Problema o bloqueo**
 
-El ensayo del 8/11 no encontró un corte de flujo, y sí dejó pulido visual pendiente (espaciados, estados vacíos, lectura en teléfono). Lo anoté fuera de C-06 para no reabrir el guion por css. El responsive de Login, Canchas y Mi QR sigue en C-03.
+El ensayo del 8/11 no encontró un corte de flujo, y sí dejó pulido visual pendiente (espaciados, estados vacíos, lectura en teléfono). Lo anoté fuera de C-06 para no reabrir el guion por css. El responsive de Login, Canchas y Mi QR sigue en C-03. **Actualización 2026-11-13:** el pulido del flujo demo (menú, Acceso, Presencias) quedó cerrado en S7-T08; ver entrada de ese día.
 
 **Commits**
 
@@ -491,3 +491,25 @@ Las clases del seed tenían fechas viejas y fallaban la ventana D5 de 48 h al in
 **Commits**
 
 - `2610431` S7-T06/C-11: pantalla Clases real; Patricio toma y cierra la tarjeta de Lucas.
+
+---
+
+## Sprint 8 — Cierre — Semana del 2026-11-09
+
+### 2026-11-13  ·  S7-T08 (~2 h)
+
+**Actividad**
+
+Tomé y cerré el pulido del flujo demo que estaba a cargo de Lucas (S7-T08). Alineé el menú a la sesión y al rol (Dashboard solo staff), saqué la nav duplicada del Home, humanicé Acceso (labels y errores de mostrador) y enriquecí Presencias con nombre/apellido desde el backend. En Canchas dejé el nombre de cancha en la confirmación. Subí el contraste de títulos en Inicio, Perfil y Acceso. Sin sesión, `/` redirige a `/login` y el Layout/Login/Signup ya no muestran Inicio, Iniciar sesión ni «Volver al inicio» de más. Actualicé guion C-06, README §6, LOG de equipo y planes de cierre.
+
+**Decisión**
+
+S7-T08 cierra el pase “solo UI” del Demo Day. El rediseño de grilla/calendario de Canchas, Mis reservas y el check-out en Acceso quedan para otra rama.
+
+**Problema o bloqueo**
+
+Ninguno bloqueante para el guion de 5 min. Notificaciones sigue stub (C-12). Check-out sigue por Swagger.
+
+**Commits**
+
+- `0e82978` S7-T08: pulido del flujo demo; Patricio toma y cierra la tarjeta de Lucas.

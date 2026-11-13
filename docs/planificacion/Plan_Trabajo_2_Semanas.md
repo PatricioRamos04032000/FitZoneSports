@@ -36,7 +36,7 @@
 | Sedes y notificaciones | `GET /sedes` y endpoints de notificaciones implementados. El Observer y su publisher existen, pero Clases todavía no publica el evento al cancelar/procesar la lista de espera. |
 | Membresías y clases | Hay módulos, repositorios y lógica inicial, además de migración SQL para membresías/clases. Los endpoints de Clases y Membresías aún no aplican los controles de autenticación, autorización y pertenencia previstos en Correcciones S3-T03 / S3-T04. |
 | Canchas | Está implementado el cálculo de precios con Strategy. No existe todavía el módulo/API REST de canchas ni sus tablas y reservas en las migraciones del repositorio; por eso la integración de la pantalla está bloqueada. |
-| Frontend | Existen prototipos estáticos para Inicio, Login, Perfil y Canchas. Login aún no llama al backend; Mi Perfil y Canchas muestran datos de prueba. No hay cliente API, sesión global ni rutas protegidas. |
+| Frontend | *(Snapshot 2026-10-22.)* Prototipos estáticos; login sin backend. **Actualización 2026-11-13:** login real, sesión, Perfil con membresía, Canchas/Clases/Mi QR/Acceso cableados; menú por rol (S7-T08). Quedan stub Notificaciones y Dashboard vacío. |
 | Pruebas y entrega | Hay pruebas unitarias y e2e del backend, pruebas SQL de membresías/clases y colección Postman. No se observan tests de frontend, pipeline CI, Docker ni configuración de despliegue en el repositorio. |
 
 > Fase A (`sedes`, `perfiles`, `membresias` y enums): versionada en `supabase/migrations/20260915000000_fase_a_nucleo.sql` (**S5-T01 Finalizado**, 2026-10-27). Encima siguen `20261005220000_membresias_clases.sql` y `20261006190000_notificaciones.sql`.
@@ -139,7 +139,7 @@ Lo que el tablero deja en **Por hacer** para el cierre está en el plan del 6–
 
 1. Patricio: C-23, C-24, C-25, C-26 y C-27, después de C-22.
 2. Bruno: C-04 (PDF comprobante) y C-19b (bitácora), en paralelo con C-09.
-3. Lucas: S7-T06 / C-11 (pantalla Clases), S7-T07 (la tarjeta hermana de C-02 sigue en por hacer), S7-T08, S7-T09, C-12 (hermana de S6-T09), C-16 y C-19c.
+3. Lucas: S7-T07 (hermana de C-02), S7-T09, C-12 (hermana de S6-T09), C-16 y C-19c. **S7-T06/C-11 y S7-T08** las cerró Patricio (2026-11-13).
 4. Matias: C-07, C-08, C-10, C-17, C-20 y C-21, en paralelo con C-19d.
 
 ## Fuera del alcance inmediato

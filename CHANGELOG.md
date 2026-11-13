@@ -6,6 +6,16 @@ El formato está basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1
 
 Cada versión corresponde a un paso de la línea de integración (`desarrollo`) que trajo código. La documentación que entró entre dos números queda anotada en la versión vigente en ese momento.
 
+## [Unreleased]
+
+### Changed
+
+- S7-T08: pulido del flujo demo — menú por sesión/rol (`/dashboard` solo staff), Acceso con mensajes de recepción, Presencias con nombre/apellido, Home sin nav duplicada; confirmación de cancha por nombre.
+
+### Documentación
+
+- Guion C-06, README §6, bitácoras y planes de cierre alineados al pase solo UI.
+
 ## [0.23.0] - 2026-11-03
 
 ### Added

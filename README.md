@@ -282,9 +282,9 @@ curl http://localhost:3000/health
 }
 ```
 
-### 6.3 Demo por API (recomendado hoy)
+### 6.3 Demo por API (opcional / depuración)
 
-La mayor parte de la lógica de negocio se demuestra por **Swagger** (`http://localhost:3000/api/docs`) o `curl`. Flujo sugerido (~5–10 min):
+El **Demo Day** se narra por UI (§6.4). Swagger (`http://localhost:3000/api/docs`) o `curl` sirven para depurar o mostrar endpoints sueltos. Flujo sugerido (~5–10 min):
 
 1. **Login socio** — `POST /auth/login` con `socio@fitzone.com` + `SEED_PASSWORD`. Copiar el `access_token`.
 2. **Identidad** — `GET /auth/me` con header `Authorization: Bearer <token>`. Debe devolver el usuario y rol `socio`.
@@ -297,29 +297,33 @@ La mayor parte de la lógica de negocio se demuestra por **Swagger** (`http://lo
 
 Authorize en Swagger: botón **Authorize**, pegar el JWT (sin la palabra `Bearer` si el esquema ya la agrega; si pide el valor completo, usar `Bearer <token>` según indique la UI).
 
-### 6.4 Demo por UI (estado actual del frontend)
+### 6.4 Demo por UI (recorrido Demo Day)
 
-Rutas: `/`, `/login`, `/signup`, `/perfil`, `/canchas`, `/dashboard`, **`/mi-qr`** (socio), **`/acceso`** (admin_sede / gerente).
+Rutas: `/`, `/login`, `/signup`, `/perfil`, `/canchas`, `/clases`, `/notificaciones` (stub), `/dashboard` (**solo** `admin_sede` / `gerente`), **`/mi-qr`** (socio), **`/acceso`** (admin_sede / gerente).
 
-Configurar `frontend/.env` con al menos `VITE_API_URL=http://localhost:3000` (reiniciar Vite si se cambia).
+Configurar `frontend/.env` con al menos `VITE_API_URL=http://localhost:3000` (reiniciar Vite si se cambia). Guion operativo: [`documentacion/Guion_Ensayo_C-06.md`](documentacion/Guion_Ensayo_C-06.md) (actualizado post S7-T08).
 
-#### Acceso M2 (QR + recepción) — ~5 min
+#### Guion corto — ~5 min (solo UI)
 
-Requiere migración Acceso M2 aplicada y `npm run seed` (socio con TOTP). Colección Postman: [`postman/FitZoneSports_Acceso.postman_collection.json`](postman/FitZoneSports_Acceso.postman_collection.json).
+1. **Socio** — login `socio@fitzone.com` → **Mi Perfil** (membresía activa) → **Canchas** (sede Demo Centro, fecha futura, reservar paddle, pagar en checkout simulado `4111111111111111`) → **Mi QR**.
+2. **Recepción** — otra ventana: login `admin.central@fitzone.com` → **Acceso** → pegá el código del QR → **Registrar ingreso** → el socio aparece en **En la sede** por nombre y apellido.
+3. Segundo ingreso: mensaje de mostrador (sin códigos API en pantalla).
 
-1. **Socio** — login `socio@fitzone.com` → menú **Mi QR**: código de 6 dígitos + QR (`{ v:1, perfilId, code }`), se renueva ~cada 60 s.
-2. **Recepción** — otra ventana/perfil: login `admin.central@fitzone.com` → **Acceso**.
-3. Pegá el JSON del QR (o perfilId + código actual) → **Registrar check-in** → el socio aparece en **Presencias**.
-4. **Offline (RNF-01 acotado):** DevTools → Network → Offline → registrar de nuevo → ítem en **Cola offline** → Online → **Sincronizar** (o el evento `online`) → `ok` o error tipado (`YA_DENTRO`, etc.).
-5. Check-out: por ahora vía API/Swagger `POST /acceso/check-outs` (la UI de recepción aún no tiene botón de salida).
+#### Acceso M2 (detalle / offline)
 
-Recorrido general: Home → Login → Perfil / Canchas según rol.
+Requiere migración Acceso M2 y `npm run seed`. Colección: [`postman/FitZoneSports_Acceso.postman_collection.json`](postman/FitZoneSports_Acceso.postman_collection.json).
+
+1. Socio → **Mi QR**: código de 6 dígitos + QR, ~60 s.
+2. Recepción → **Acceso**: código del QR → ingreso → lista **En la sede** con nombres (`GET /acceso/presencias` incluye `nombre`/`apellido`).
+3. **Offline (RNF-01 acotado):** DevTools → Offline → encolar → Online → **Sincronizar** (`ok` o error tipado en API; la UI muestra frases de recepción).
+4. **Check-out:** por ahora vía API/Swagger `POST /acceso/check-outs` (sin botón de salida en la UI).
 
 ### 6.5 Qué no esperar aún en la demo
 
-- Flujos completos de reserva de cancha / pago en la UI (módulos en evolución; precios Strategy están en backend bajo `canchas/precios`).
-- Cámara para escanear QR; check-out amigable en la pantalla Acceso; app móvil nativa (Unidad VI).
-- Nodo/servidor por sede ni validación TOTP 100 % offline en recepción (MVP = cola local + sync; [ADR-007](docs/adr/ADR-007-acceso-totp-cola-offline.md)).
+- Check-out amigable en Acceso; cámara para escanear QR; app móvil nativa (Unidad VI).
+- Listado real de notificaciones in-app (pantalla stub; C-12).
+- Rediseño de grilla/calendario de Canchas y pantalla Mis reservas (pendiente en otra rama).
+- Nodo/servidor por sede ni validación TOTP 100 % offline (MVP = cola local + sync; [ADR-007](docs/adr/ADR-007-acceso-totp-cola-offline.md)).
 - Que el seed cree clases o reservas (solo usuarios, sedes, membresía/TOTP del socio y canchas).
 
 ---
@@ -465,7 +469,7 @@ NODE_OPTIONS=--use-system-ca npm run start:dev
 
 ### Estado del frontend
 
-El frontend tiene el esqueleto de rutas (Home, Login, Perfil, Canchas). Parte de la UI sigue siendo placeholder o no está totalmente cableada al BFF; para demos de negocio usar Swagger (§6.3).
+Portal cableado al BFF para login, perfil (con membresía), canchas (reserva + pago simulado), clases, Mi QR y Acceso. Menú por sesión/rol (`/dashboard` solo staff). Quedan stub Notificaciones y el Dashboard vacío; check-out de sede sigue por Swagger (§6.4).
 
 ### Soporte
 
@@ -473,5 +477,5 @@ Para credenciales de Supabase (Service Role Key), contacta al administrador del 
 
 ---
 
-*Última actualización: 29/10/2026*
+*Última actualización: 13/11/2026*
 

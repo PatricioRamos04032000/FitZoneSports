@@ -5,7 +5,7 @@
 **Congelamiento / tag:** jueves **19/11/2026, 18:00** → `v1.0-entrega`  
 **Demo Day:** semana 23–29/11 (sin desarrollo)  
 **Fuente de orden:** [Lineamientos de Entrega](./Lineamientos_Entrega_TIF_FitZone_Sports_2do_Cuatrimestre_2026.pdf) · **Anexo G**  
-**Estado de partida:** relevado el 2026-11-06 sobre `desarrollo` (API canchas/clases/acceso fuertes; UI canchas mock; docs de entrega incompletas)
+**Estado de partida:** relevado el 2026-11-06 sobre `desarrollo` (API canchas/clases/acceso fuertes; entonces UI canchas mock; docs de entrega incompletas). **Actualización 2026-11-13:** C-01 y S7-T08 cerrados — canchas en UI y pase demo solo UI; C-24 (ensayo 5 min cronometrado) sigue sobre el guion ya pulido.
 
 **Estados** (lista Trello → este plan): `por hacer` → **Por hacer** · `tambien en desarrollo` → **En desarrollo** · `finalizado` → **Finalizado**. El 2026-11-11 las listas `en desarrollo` y `Blocked` estaban vacías.
 
