@@ -158,6 +158,8 @@ La actividad de la lista está en [act-lista-espera.mmd](../diagramas/fuentes/ac
 
 Repositorios concretos: `SedesRepository`, `PerfilesRepository`, `MembresiasRepository`, `ClasesRepository`, `CanchasRepository`, `ReservasCanchaRepository`, `PagosRepository`, `AccesoRepository`, `NotificacionesRepository`, `PreferenciasRepository` y `PerfilesRolRepository`.
 
+Diagrama de clases del patrón: [uml-clases-dominio.drawio](../diagramas/fuentes/uml-clases-dominio.drawio) (página 4) y [uml-clases-dominio.svg](../diagramas/img/uml-clases-dominio.svg) (zona inferior «Repository — patrón GoF»).
+
 Lo que tiene que ser atómico (reservar cancha, check-in, inscripción) no es un `select` seguido de un `insert` en el repositorio: es una función SQL invocada por RPC. La reserva entra por `reservar_cancha` (sección 5).
 
 ### 4.4 Patrones estructurales y de ciclo de vida
