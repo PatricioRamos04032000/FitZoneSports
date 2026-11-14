@@ -539,5 +539,5 @@ Sin CLI de draw.io/mermaid local fiable: SVG de UML vía script Python; secuenci
 - `bc5a56e` C-28.3: diagrama de clases Nest completo con Decorator.
 - `214a167` C-28.3: agrega diagrama Repository y regenera el SVG.
 - `4f41dc1` C-28.4: actualiza secuencia y C4-3 de precios a Decorator.
-- *(C-28.5 docs/bitácora en el commit de esta entrada)*
+- `995dccc` C-28.5: alinea docs y bitácora al Decorator de precios.
 
