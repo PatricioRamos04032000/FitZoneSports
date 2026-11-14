@@ -5,7 +5,9 @@ sequenceDiagram
     participant Canchas as CanchasService
     participant Reservas as ReservasCanchaService
     participant Precios as PreciosService
-    participant Estrategia as PricingStrategy
+    participant Member as MemberDiscount
+    participant Peak as PeakHour
+    participant Standard as StandardPricing
     participant Repo as ReservasCanchaRepository
     participant Pasarela as PasarelaSimulada
 
@@ -19,8 +21,13 @@ sequenceDiagram
     Reservas->>Repo: Cancha, pico, descuento y membresía
     Repo-->>Reservas: ContextoPrecio
     Reservas->>Precios: calcular(ctx)
-    Precios->>Estrategia: aplica y calcular
-    Estrategia-->>Precios: Precio de la regla
+    Note over Precios,Standard: Cadena Decorator: Member(Peak(Standard))
+    Precios->>Member: calcular(ctx)
+    Member->>Peak: calcular(ctx)
+    Peak->>Standard: calcular(ctx)
+    Standard-->>Peak: PrecioAcumulado base
+    Peak-->>Member: PrecioAcumulado (+pico si aplica)
+    Member-->>Precios: PrecioAcumulado (+socio si aplica)
     Precios-->>Reservas: PrecioCalculado
     Reservas->>Repo: reservar_cancha
     Repo-->>Reservas: Reserva pendiente
@@ -44,7 +51,8 @@ sequenceDiagram
 
 %% Secuencia — Reserva de cancha con pago — FitZone Sports
 %% Autor: Patricio Ramos
-%% Fecha: 2026-11-10
-%% Versión: 1.0
+%% Fecha: 2026-11-13
+%% Versión: 2.0 (C-28 Decorator)
 %% La pasarela es simulada. No hay Mercado Pago ni comprobante PDF.
 %% El cierre es la fila de pagos aprobada, con token, y la reserva confirmada.
+%% Precios: delegación hacia adentro Member → Peak → Standard.

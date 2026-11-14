@@ -12,7 +12,7 @@ C4Component
     Container_Boundary(fitzone, "FitZone Sports") {
         Container_Boundary(m4, "M4 Canchas") {
             Boundary(colIzq, " ", "") {
-                Component(precios, "PreciosService", "Strategy", "Estándar, descuento de socio y horario pico.")
+                Component(precios, "PreciosService", "Decorator", "Estándar, descuento de socio y horario pico.")
             }
             Boundary(colDer, " ", "") {
                 Person(huecoDer, " ", " ")
@@ -56,8 +56,8 @@ C4Component
 
 %% C4-3 Componentes — Canchas — FitZone Sports
 %% Autor: Patricio Ramos
-%% Fecha: 2026-11-10
-%% Versión: 1.0
+%% Fecha: 2026-11-13
+%% Versión: 2.0 (C-28 Decorator)
 %% El gestor de bloqueos no es una clase: es la RPC reservar_cancha y el índice único parcial
 %% sobre (cancha_id, inicio) donde el estado es pendiente o confirmada.
 %% PreciosService queda arriba a la izquierda. ReservasCanchaService queda a su derecha, junto a la pasarela.
