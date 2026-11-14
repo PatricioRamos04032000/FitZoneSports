@@ -513,3 +513,31 @@ Ninguno bloqueante para el guion de 5 min. Notificaciones sigue stub (C-12). Che
 **Commits**
 
 - `0e82978` S7-T08: pulido del flujo demo; Patricio toma y cierra la tarjeta de Lucas.
+
+---
+
+## Sprint 8 — Cierre — Semana del 2026-11-09
+
+### 2026-11-13  ·  C-28 (~6 h)
+
+**Actividad**
+
+Cerré la serie C-28 (precios Strategy → Decorator GoF + UML Nest + docs). Código: `PricingComponent` / `PricingDecorator`, lista `PRICING_DECORATORS`, cadena `Member(Peak(Standard))`, specs con los mismos montos. Diagramas: UML Nest multipágina (incl. Repository), secuencia reserva/pago y C4-3 sin etiqueta Strategy. Docs: manual §4.1/7.2, Contexto ADR-004/005 y wording ADR-008 (sin tocar Decisiones), justificación Unidad III con Decorator implementado.
+
+**Decisión**
+
+Para RF-11 se elige **Decorator** y se descarta Strategy como forma del precio acumulado (las reglas se combinan). La selección queda en la justificación de patrones y en el manual técnico, no en un ADR nuevo: ninguno de los diez obligatorios decidía el patrón de precios.
+
+**Problema o bloqueo**
+
+Sin CLI de draw.io/mermaid local fiable: SVG de UML vía script Python; secuencia y C4-3 vía Kroki.
+
+**Commits**
+
+- `b40f866` C-28.1: registra C-28 (Decorator precios + UML Nest) en el plan de cierre.
+- `be86094` C-28.2: reemplaza Strategy de precios por Decorator GoF.
+- `bc5a56e` C-28.3: diagrama de clases Nest completo con Decorator.
+- `214a167` C-28.3: agrega diagrama Repository y regenera el SVG.
+- `4f41dc1` C-28.4: actualiza secuencia y C4-3 de precios a Decorator.
+- *(C-28.5 docs/bitácora en el commit de esta entrada)*
+

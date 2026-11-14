@@ -2,21 +2,21 @@
 
 **Proyecto:** FitZone Sports · Programación V · UNER  
 **Responsable:** Patricio Ramos (P1)  
-**Fecha:** 2026-10-06 (actualizado 2026-11-03)  
+**Fecha:** 2026-10-06 (actualizado 2026-11-13, C-28 Decorator)  
 **Entregable:** Unidad III — código refactorizado con patrones + justificación
 
 | Patrón | Dónde | Requisito | Estado |
 |--------|-------|-----------|--------|
 | [Repository](#1-repository--acceso-a-datos) | Toda la capa de datos del backend (incl. Acceso M2) | ADR-006 · ADR-007 | **Implementado** (S3-T11); Acceso `AccesoRepository` (S8-T1) |
 | [Observer](#2-observer--lista-de-espera-de-clases) | Clases / lista de espera | RF-08 | **Implementado** (S4-T02) |
-| [Strategy](#3-strategy--precio-de-canchas) | Canchas / precios | RF-11, RN-03 | **Implementado** (S4-T01); **en uso** desde Facade `reservar` (S7-T01) |
+| [Decorator](#3-decorator--precio-de-canchas) | Canchas / precios | RF-11, RN-03 | **Implementado** (C-28; reemplaza Strategy de S4-T01); **en uso** desde Facade `reservar` (S7-T01) |
 | [Factory Method](#4-factory-method--descartado) | Candidato del docente (canales de aviso) | — | **Descartado** (2026-10-15) |
 | [State](#5-state--ciclo-de-la-reserva-de-cancha) | Reserva de cancha | RF-10, RF-12, RF-13 | **Implementado** (S7-T01) |
 | [Chain of Responsibility](#6-chain-of-responsibility--descartado) | Candidato del docente (aprobaciones / validaciones) | — | **Descartado** (2026-10-15); los guards cubren el corte en cadena |
 | [Adapter](#7-adapter--pasarela-de-pago) | Pasarela de pago | RF-13, RNF-02 | **PasarelaSimulada** + checkout HTML (S7-T02b); `AdaptadorMercadoPago` pendiente |
 | [Facade](#8-facade--reservar-cancha-y-membresia) | Reservar cancha y alta o renovación de membresía | RF-10, RF-02, RF-13 | **Implementado** cancha partido (S7-T02b); membresía `renovar` pendiente |
 | [Builder](#9-builder--descartado) | Candidato del docente (armar una reserva) | — | **Descartado** (2026-10-15); no se planifica |
-| [Decorator](#10-decorator--descartado) | Candidato del docente (caché, log, reintentos) | — | **Descartado** (2026-10-15). Reintento de MercadoPago queda anotado para M5 |
+| [Decorator transversal](#10-decorator-transversal--descartado) | Caché, log, reintentos (no precio) | — | **Descartado** (2026-10-15). El Decorator GoF de **precios** está en [§3](#3-decorator--precio-de-canchas). Reintento de MercadoPago anotado para M5 |
 | [Command](#11-command--no-implementado) | Cola de acciones sin conexión | RNF-01, Unidad VI | **No implementado** como patrón GoF. El offline de sede M2 (ADR-007) usa cola en `localStorage` + `POST /acceso/check-ins/sync`, sin objetos Command en Nest |
 | [Singleton](#12-singleton--descartado) | Instancia única de servicios | — | **Descartado** (2026-10-15). Lo resuelve el contenedor de Nest |
 | [Abstract Factory](#13-abstract-factory--descartado) | Familias de objetos (pasarela por país) | — | **Descartado** (2026-10-15). Una pasarela y un solo país |
@@ -24,7 +24,7 @@
 | [Circuit Breaker](#15-circuit-breaker--pasarela-real) | MercadoPago | RF-13, M5 | **Diseñado** (2026-10-15); código con M5. No aplica a Supabase ni al simulacro |
 | [CQRS nivel 2](#16-cqrs-nivel-2--reportes-del-gerente) | Reportes consolidados del gerente | Consigna TI (reserva vs reportes) | **Pendiente** (2026-10-27). Hacerlo cuando existan reportes / M4 con datos de ocupación |
 
-Cada sección de patrón aplicado sigue el mismo orden: problema, por qué este patrón, alternativas descartadas, estructura, dónde está en el código, consecuencias y cómo se prueba. Las secciones 4 y 6 justifican descartes (también puntúa en la defensa).
+Cada sección de patrón aplicado sigue el mismo orden: problema, por qué este patrón, alternativas descartadas, estructura, dónde está en el código, consecuencias y cómo se prueba. Las secciones de descarte (Factory, Chain, Builder, Decorator transversal, etc.) también puntúan en la defensa.
 
 ---
 
@@ -235,7 +235,7 @@ classDiagram
 
 ---
 
-## 3. Strategy — Precio de canchas
+## 3. Decorator — Precio de canchas
 
 ### Problema
 
@@ -246,50 +246,48 @@ RF-11: el precio de una cancha es el precio estándar, con **descuento de socio*
 - Un socio con cuota vencida paga como externo (RN-03).
 - Descuento y recargo se combinan (P4).
 
-Resolverlo con condicionales en el servicio de reservas (`if (esSocio) … if (esPico) …`) concentra todas las reglas en un método que crece con cada regla nueva (p. ej. feriados o promociones) y es difícil de testear por partes.
+Resolverlo con condicionales en el servicio de reservas (`if (esSocio) … if (esPico) …`) concentra todas las reglas en un método que crece con cada regla nueva y es difícil de testear por partes.
 
-### Por qué Strategy (y su relación con Decorator)
+### Por qué Decorator (y descarte de Strategy)
 
-Strategy encapsula cada algoritmo de cálculo en una clase con una interfaz común (`PricingStrategy`), y el contexto los usa sin conocer sus detalles. La consigna lo pide explícitamente: `StandardPricing`, `MemberDiscountPricing` y `PeakHourPricing`.
+La Clase 1 de Unidad III (RF-11) admite **Decorator o Strategy** y pide elegir uno justificando el descarte del otro. Las reglas de FitZone **se acumulan** sobre el mismo precio (P4): no se elige una sola fórmula excluyente.
 
-Como las reglas se combinan (P4), el servicio de precios no elige **una** estrategia excluyente: aplica en orden **todas las que corresponden** (`filter` + `reduce`), y cada una recibe el precio que dejó la anterior. Tal como se vio en la Clase 1 de la Unidad III (diapositivas 26 y 35), cuando las reglas se acumulan sobre el mismo precio, la estructura funciona conceptualmente como una cadena de modificadores (**Decorator**) armada por el contenedor de inyección de dependencias (`PRICING_STRATEGIES` con `useFactory`).
+- **Decorator GoF** (C-28): un `PricingComponent` base (`StandardPricing`) y decoradores que envuelven (`PeakHour`, `MemberDiscount`). Cada uno delega `calcular` hacia adentro y, si `aplica`, transforma el precio que volvió.
+- **Strategy** (S4-T01 histórico): lista `PricingStrategy[]` con `filter`/`reduce` en el servicio. Funcionaba, pero la forma clásica de Strategy es “elegir una”; la acumulación ya era conceptualmente una cadena de modificadores. C-28 alinea el código al patrón que describe esa acumulación.
 
-### Aclaración: no es el Strategy de “elegir una”
-
-El ejemplo clásico (envío estándar, express o retiro) guarda **una** estrategia y la cambia: las opciones se excluyen. Acá descuento y recargo se **acumulan** sobre el mismo precio. Elegir una sola habría sido usar mal el patrón para esta regla; por eso esa alternativa está descartada abajo.
-
-La clase lo dice así (ejemplos Java, diapositiva 12, y clase 1, diapositivas 26 y 35): si las reglas se combinan, la composición es una **lista de políticas en orden**, que en rigor también se puede llamar **cadena de decoradores**. Acepta el nombre Strategy si la justificación lo explica. En FitZone quedan las dos piezas:
-
-| Pieza | Qué es |
-|-------|--------|
-| Cada fórmula (`StandardPricing`, `MemberDiscountPricing`, `PeakHourPricing`) | Strategy: algoritmo intercambiable, como pide la consigna |
-| Aplicarlas en orden sobre el precio anterior | Cadena de políticas (el profesor también la llama Decorator) |
-
-No anidamos decoradores GoF (`new Recargo(new Descuento(base))`). El mismo efecto lo hace `PreciosService` recorriendo la lista: cada estrategia que `aplica` recibe el precio que dejó la anterior. Una regla nueva es una clase más en esa lista.
+Los montos de S4-T09 / caracterización se mantienen; cambia la estructura, no la regla de negocio.
 
 ### Alternativas descartadas
 
 | Alternativa | Por qué no |
 |-------------|------------|
 | Condicionales en el servicio | Descripto arriba |
-| Elegir una sola estrategia por reserva | No permite combinar descuento y recargo (P4) |
+| Strategy clásico (una sola estrategia por reserva) | No permite combinar descuento y recargo (P4) |
+| Strategy como lista `filter`/`reduce` (S4-T01) | Cubría P4, pero no es el Decorator GoF que la cátedra contrapone a Strategy para RF-11; reemplazado en C-28 |
 | Precio calculado en SQL | Las reglas de negocio quedarían fuera del backend y del patrón pedido |
 
 ### Estructura
 
 ```mermaid
 classDiagram
-    class PricingStrategy {
+    class PricingComponent {
         <<interface>>
         +nombre: string
+        +calcular(ctx) PrecioAcumulado
+    }
+    class PricingDecorator {
+        <<abstract>>
+        #inner: PricingComponent
+        +wrap(inner)
         +aplica(ctx) boolean
-        +calcular(precio, ctx) number
+        +modificar(precio, ctx) number
+        +calcular(ctx)
     }
     class StandardPricing
-    class PeakHourPricing
-    class MemberDiscountPricing
+    class PeakHourPricingDecorator
+    class MemberDiscountPricingDecorator
     class PreciosService {
-        -estrategias: PricingStrategy[]
+        -cadena: PricingComponent
         +calcular(ctx) PrecioCalculado
     }
     class ContextoPrecio {
@@ -300,42 +298,50 @@ classDiagram
         pico: ConfiguracionPico
     }
 
-    PricingStrategy <|.. StandardPricing
-    PricingStrategy <|.. PeakHourPricing
-    PricingStrategy <|.. MemberDiscountPricing
-    PreciosService o-- PricingStrategy
-    PricingStrategy ..> ContextoPrecio
+    PricingComponent <|.. StandardPricing
+    PricingComponent <|.. PricingDecorator
+    PricingDecorator <|-- PeakHourPricingDecorator
+    PricingDecorator <|-- MemberDiscountPricingDecorator
+    PricingDecorator o-- PricingComponent : inner
+    PreciosService o-- PricingComponent : cadena
+    PricingComponent ..> ContextoPrecio
 ```
+
+Cadena armada en Nest: `MemberDiscount(PeakHour(Standard))` vía `PRICING_DECORATORS` + `reduce(wrap)`.
 
 | Rol GoF | Clase |
 |---------|-------|
-| Strategy | `PricingStrategy` |
-| ConcreteStrategy | `StandardPricing`, `PeakHourPricing`, `MemberDiscountPricing` |
-| Context | `PreciosService` |
+| Component | `PricingComponent` |
+| ConcreteComponent | `StandardPricing` |
+| Decorator | `PricingDecorator` |
+| ConcreteDecorator | `PeakHourPricingDecorator`, `MemberDiscountPricingDecorator` |
+| Cliente | `PreciosService` (invoca la raíz) |
 
 ### Dónde está
 
-- Interfaz y tipos del contexto: `backend/src/canchas/precios/pricing.strategy.ts`
-- Estrategias concretas:
-  - `backend/src/canchas/precios/strategies/standard-pricing.strategy.ts` (`StandardPricing`)
-  - `backend/src/canchas/precios/strategies/peak-hour-pricing.strategy.ts` (`PeakHourPricing`)
-  - `backend/src/canchas/precios/strategies/member-discount-pricing.strategy.ts` (`MemberDiscountPricing`)
-- Contexto y módulo NestJS: `backend/src/canchas/precios/precios.service.ts`, `backend/src/canchas/precios/precios.module.ts`
-- **En uso (S7-T01):** `ReservasCanchaService.reservar()` arma `ContextoPrecio` (cancha, pico, descuento cadena, membresía del día del turno) y llama a `PreciosService.calcular` antes del RPC.
+- Componente y tokens: `backend/src/canchas/precios/pricing.component.ts`, tipos en `pricing.types.ts`
+- Decoradores:
+  - `backend/src/canchas/precios/decorators/pricing.decorator.ts`
+  - `backend/src/canchas/precios/decorators/standard-pricing.ts`
+  - `backend/src/canchas/precios/decorators/peak-hour-pricing.decorator.ts`
+  - `backend/src/canchas/precios/decorators/member-discount-pricing.decorator.ts`
+- Módulo / servicio: `precios.module.ts`, `precios.service.ts`
+- Diagramas: [uml-clases-dominio](../docs/diagramas/fuentes/uml-clases-dominio.drawio) (Decorator), [sec-reserva-pago](../docs/diagramas/fuentes/sec-reserva-pago.mmd)
+- **En uso (S7-T01):** `ReservasCanchaService.reservar()` arma `ContextoPrecio` y llama a `PreciosService.calcular` antes del RPC.
 
 ### Consecuencias
 
 | Positivas | Negativas |
 |-----------|-----------|
-| Una regla nueva (p. ej. feriados) es una clase nueva, sin tocar las demás (principio abierto/cerrado) | Más clases que un método con condicionales |
-| Cada regla se prueba sola con los casos de S4-T09 | El orden de aplicación importa si se suman reglas no multiplicativas |
-| Los parámetros (porcentajes, horarios) vienen de la base, no del código | En NestJS hay que declarar el token de colección (`PRICING_STRATEGIES`) con `useFactory` |
+| Una regla nueva es un decorador más en la lista ordenada (abierto/cerrado) | Más clases que un método con condicionales |
+| Cada regla se prueba sola con los casos de S4-T09 | El orden de `wrap` importa (el descuento debe quedar afuera) |
+| La estructura coincide con la ficha GoF de Decorator | Nest declara `PRICING_DECORATORS` y `PRICING_CHAIN` con `useFactory` |
 
 ### Cómo se prueba
 
 - `backend/src/canchas/precios/precios.service.spec.ts`:
-  - Pruebas unitarias aisladas de `StandardPricing`, `PeakHourPricing` (límites de franja `[desde, hasta)` y días de la semana en hora Argentina) y `MemberDiscountPricing` (socio activo vs. cuota vencida RN-03).
-  - Pruebas integradas con `PreciosModule` verificando las tres tablas de casos acordadas en [S4-T09](./Propuesta_Reglas_Negocio_S4-T09.md) (base $20.000 con valores por defecto, sede con pico personalizado 30% lun–vie 18–22 hs, cambio de descuento de cadena a 10%) y el redondeo hacia arriba al peso entero (`Math.ceil`, P7 / S4-T15):
+  - Unitarios de `StandardPricing`, `PeakHourPricingDecorator` y `MemberDiscountPricingDecorator` (RN-03).
+  - Integrados con `PreciosModule` (tablas S4-T09 + `Math.ceil`, P7 / S4-T15):
 
 | Cliente | Turno | Precio |
 |---------|-------|--------|
@@ -345,19 +351,15 @@ classDiagram
 | Socio activo | 20:00 | $20.400 |
 | Socio con cuota vencida | 19:00 | $24.000 |
 
-- Tests de **caracterización** del laboratorio (consigna 1): mismo archivo, bloque `Caracterización del cálculo actual`, incluida la rareza de ISO sin zona horaria → Argentina. Ver [LOG 2026-10-27](./LOG.md).
+- Caracterización del laboratorio (consigna 1): mismo archivo. Ver [LOG 2026-10-27](../docs/bitacoras/LOG.md).
 
 ### Laboratorio Unidad III · consigna 3 (seis commits de refactor) — no aplica
 
 **Decisión:** 2026-10-27 · No se reproduce un historial de seis pasos *Replace Conditional with Polymorphism* sobre precios.
 
-La consigna 3 del laboratorio (clase 2) asume un cálculo previo con `if`/`switch` y un camino de refactor (Extract Method → interfaz → clases → lista → DI), **un commit por paso**. En FitZone **no hubo ese código previo**:
+La consigna 3 asume un cálculo previo con `if`/`switch`. En FitZone **no hubo ese código**: S4-T01 ya partió de una lista de reglas; C-28 la reestructuró a Decorator GoF. Inventar un monolito con `if` solo para deshacerlo en seis commits sería teatro de git.
 
-- RF-11 y la rúbrica de Unidad III **ya pedían Strategy** (`StandardPricing`, `MemberDiscountPricing`, `PeakHourPricing`).
-- El equipo lo implementó **de entrada** en S4-T01 (`71c993d`): lista ordenada de reglas, `filter`/`reduce` y `PRICING_STRATEGIES` en el módulo. El destino del paso 5–6 de la diapositiva es el diseño inicial, no el resultado de un refactor.
-- Inventar un monolito con `if` solo para deshacerlo en seis commits sería teatro de git, no evidencia de olores reales empujando al patrón.
-
-Lo que sí acredita el eje: el **código** con lista de reglas, los **tests** (negocio + caracterización), la **planilla de olores** (donde el `switch` de precios **no** aparece porque nunca existió) y esta **justificación** (por qué Strategy; por qué no el camino de refactor de la consigna 3). Criterio de la cátedra: a veces el patrón no nace de un olor en el repo, sino del requerimiento; justificar “por qué no el otro camino” también cuenta.
+Lo que acredita el eje: **código** Decorator, **tests** (negocio + caracterización), **planilla de olores** (sin `switch` de precios) y esta **justificación** (Decorator elegido; Strategy descartado como forma del precio acumulado).
 
 ---
 
@@ -390,7 +392,7 @@ Tampoco hoy:
 |------|------------------|------------|
 | Planes de membresía (`mensual` / `trimestral` / `anual`) | Un `switch` por plan | Solo cambia duración/precio (datos en `planes_membresia`). La clase: si solo cambian datos, es una columna, no una subclase |
 | Roles de usuario | Crear algo distinto por rol | Son autorización (guards), no creación de objetos con comportamiento distinto |
-| Strategy de precios | Crear la estrategia por nombre | El diseño aplica una **lista** de políticas (descuento + pico); Nest las inyecta |
+| Decorator de precios | Crear la regla por nombre | Nest inyecta la lista ordenada de decoradores y arma la cadena |
 | Pasarela de pago | Varios proveedores | Hay una sola pasarela simulada → candidato a **Adapter**, no a Factory |
 | Comprobantes / reportes | Elegir CSV vs PDF | Aún no existen; cuando existan, encaja más **Template Method** |
 
@@ -516,7 +518,7 @@ FitZone no tiene aprobaciones por nivel ni por monto. Los casos que se parecen r
 
 | Caso | Por qué no es Chain |
 |------|---------------------|
-| Precio de cancha | Strategy: se aplican las reglas que correspondan (descuento y recargo), no “la primera que pueda” |
+| Precio de cancha | Decorator: se aplican las reglas que correspondan (descuento y recargo), no “la primera que pueda” |
 | Validar una reserva (membresía, horario libre, mantenimiento, ventana de 48 h) | Hay que pasar por **todas**. La diapositiva 10 lo llama **pipeline**, no Chain. Si se devuelven todos los errores juntos, ningún eslabón puede cortar al primero |
 | Aprobación de compras | No existe en el caso |
 
@@ -642,7 +644,7 @@ Inscribirse a una clase es una llamada a `inscribir_en_clase`. Una fachada que s
 
 **`ReservasCanchaService`** (implementado, flujo partido S7-T02b)
 
-1. `reservar()`: precio (Strategy) → RPC `reservar_cancha` en `pendiente` (hold; lazy limpia vencidos) → responde con `venceEn`. **No cobra.**
+1. `reservar()`: precio (Decorator) → RPC `reservar_cancha` en `pendiente` (hold; lazy limpia vencidos) → responde con `venceEn`. **No cobra.**
 2. `iniciarPago()`: dueño + pendiente + hold vigente → `PasarelaPago.crearPreferencia` (idempotente) → `checkoutUrl`.
 3. Checkout HTML (`/pasarela-simulada/...`): el usuario carga tarjeta de prueba; **no se persiste** PAN/CVV.
 4. `confirmarPago` + `aplicarResultadoPago`: si aprueba, State confirma; si rechaza, cancela. Hold vencido → `RESERVA_VENCIDA` / cancelación.
@@ -706,20 +708,20 @@ classDiagram
 - Checkout: `backend/src/pagos/checkout-simulado.controller.ts` — `/pasarela-simulada/checkout/:pagoId`
 - Puerto: `pasarela-pago.ts` + `PasarelaSimulada` (`crearPreferencia` / `confirmarPago`)
 - Hold: migración `20261101200000_hold_reserva_pendiente.sql` (lazy + ventana + `pg_cron`)
-- Strategy en uso: `PreciosService.calcular` dentro de `reservar()`
+- Decorator en uso: `PreciosService.calcular` dentro de `reservar()`
 
 ### Consecuencias
 
 | Positivas | Negativas |
 |-----------|-----------|
 | Cada caso de uso tiene un solo orden, testeable sin el controller | Una clase que conoce varios subsistemas: hay que mantenerla chica |
-| Cambiar Strategy o la pasarela no cambia la firma de `reservar()` ni de `renovar()` | La compensación si el pago falla (cancelar pendiente) hay que probarla explícitamente |
+| Cambiar la cadena de precios o la pasarela no cambia la firma de `reservar()` ni de `renovar()` | La compensación si el pago falla (cancelar pendiente) hay que probarla explícitamente |
 | La inscripción a clase sigue siendo una llamada simple | |
 
 ### Cómo se prueba
 
 - `backend/src/canchas/reservas/reservas-cancha.service.spec.ts`:
-  - pasarela aprobada → `confirmada` y precio de Strategy;
+  - pasarela aprobada → `confirmada` y precio de Decorator;
   - pago rechazado → cancela y 402, sin confirmar;
   - `TURNO_OCUPADO` (RN-02) → 409.
 - Inscribir a una clase no pasa por estas clases.
@@ -738,7 +740,7 @@ Builder arma un objeto con muchos campos opcionales (un pedido, un DTO de report
 
 ### Por qué no
 
-Esta clase afina el criterio: Builder sirve cuando hay muchas combinaciones válidas de campos opcionales. La reserva de cancha no es ese caso. `reservar()` la arma de una vez con datos obligatorios que ya salieron del lock, de Strategy y de la pasarela: cancha, horario, socio, precio y el resultado del pago. O el pago aprueba y la reserva se confirma, o no se confirma. No hay variantes opcionales.
+Esta clase afina el criterio: Builder sirve cuando hay muchas combinaciones válidas de campos opcionales. La reserva de cancha no es ese caso. `reservar()` la arma de una vez con datos obligatorios que ya salieron del lock, del cálculo de precio y de la pasarela: cancha, horario, socio, precio y el resultado del pago. O el pago aprueba y la reserva se confirma, o no se confirma. No hay variantes opcionales.
 
 Lo mismo el filtro de la grilla (sede, fecha, tipo) y el comprobante (cancha, horario, monto): pocos campos, una sola forma.
 
@@ -750,20 +752,21 @@ Escribir `ReservaBuilder` “porque la reserva tiene varios campos”. El costo 
 
 ---
 
-## 10. Decorator — Descartado
+## 10. Decorator transversal — Descartado
 
-**Decisión:** 2026-10-15 · No se implementa Decorator (GoF).  
+**Decisión:** 2026-10-15 · No se implementa Decorator GoF para **caché, log ni reintentos**.  
+**Aclaración C-28:** el Decorator GoF de **precio dinámico** sí está implementado — ver [§3](#3-decorator--precio-de-canchas).  
 **Referencia de clase:** ejemplos Java, diapositiva 22 ([Patrones_Ejemplos_Java.md](./Patrones_Ejemplos_Java.md)).
 
-### Qué problema plantea el docente
+### Qué problema plantea el docente (fuera de RF-11)
 
-Decorator envuelve un objeto con la misma interfaz para sumarle comportamiento (caché, log, reintentos) sin modificar la clase de adentro. Los envoltorios se apilan y el orden importa.
+Decorator envuelve un objeto con la misma interfaz para sumarle comportamiento transversal (caché, log, reintentos) sin modificar la clase de adentro. Los envoltorios se apilan y el orden importa.
 
-### Por qué no
+### Por qué no (en esos casos)
 
 | Caso | Decisión |
 |------|----------|
-| Precio (descuento + recargo) | Ya está en Strategy (§3): `PreciosService` aplica la lista en orden. No anidamos `new Recargo(new Descuento(base))` |
+| Precio (descuento + recargo) | Cubierto por Decorator de dominio en [§3](#3-decorator--precio-de-canchas) |
 | Caché de consultas | No hay requisito |
 | Log de Supabase | `unwrap` del repositorio ya registra el error |
 | Reintentos de la pasarela | Ver abajo: se anota, no se escribe ahora |
@@ -776,7 +779,7 @@ Si MercadoPago falla por red, un envoltorio de reintentos alrededor de `Pasarela
 
 ### Alternativa descartada
 
-Envolver el simulacro o el repositorio “por si acaso”. La diapositiva 16, en Adapter, ya marca como capa vacía lo que solo reenvía. Acá es el mismo costo.
+Envolver el simulacro o el repositorio “por si acaso”. La diapositiva 16, en Adapter, ya marca como capa vacía lo que solo reenvía. Acá es el mismo costo. El precio ya tiene su Decorator de dominio (§3).
 
 ---
 
@@ -831,7 +834,7 @@ No hay dos familias coherentes que crear juntas.
 |------------------|----------------------|
 | Pasarela por país | Una sola. El simulacro implementa `PasarelaPago` y MercadoPago entra por Adapter (§7) |
 | Canales de aviso según la región | No se elige un juego de notificadores. Varios canales escuchan el mismo evento (Observer, §2) |
-| Precio distinto por país | Un descuento para toda la cadena y un pico por sede. Son datos y Strategy (§3) |
+| Precio distinto por país | Un descuento para toda la cadena y un pico por sede. Son datos y Decorator (§3) |
 
 Factory Method ya está descartado (§4): no hay un `crear(tipo)` que el negocio necesite. Abstract Factory exige además varias familias. No las hay.
 
@@ -938,7 +941,7 @@ No son el foco de la Unidad III, pero aparecen y conviene nombrarlos en la defen
 | **Template Method** (GoF) | Ya aplicado en `SupabaseRepository<T>`: `findAll`/`findById` en la base, cada subclase aporta la tabla. Comprobante PDF: anotado para cuando haya cancha y membresía; no se diseña aparte ahora |
 | **Inyección de dependencias** | Todo el backend (NestJS): servicios, repositorios, observadores. La instancia única la da el contenedor; no escribimos Singleton ([§12](#12-singleton--descartado)) |
 | **Guards** | `JwtAuthGuard` → `RolesGuard` (`@RequiereRol`). Cortan la petición si falla el token o el rol. Ver [§6](#6-chain-of-responsibility--descartado): no implementamos Chain of Responsibility aparte |
-| **Decorator de TypeScript** (no el GoF) | `@RequiereRol`, `@CurrentUser`, `@OnEvent`. El Decorator GoF está descartado en [§10](#10-decorator--descartado) |
+| **Decorator de TypeScript** (no el GoF) | `@RequiereRol`, `@CurrentUser`, `@OnEvent`. El Decorator GoF de precios está en [§3](#3-decorator--precio-de-canchas); el transversal (caché/log) sigue descartado en [§10](#10-decorator-transversal--descartado) |
 | **BFF** (arquitectura) | El frontend solo habla con Nest; Nest es la única puerta a Supabase (ADR-005) |
 
 **Circuit Breaker** quedó diseñado para MercadoPago en [§15](#15-circuit-breaker--pasarela-real). No se usa sobre Supabase ni sobre el simulacro.

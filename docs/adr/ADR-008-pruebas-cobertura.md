@@ -27,7 +27,7 @@ C-10 queda a cargo de dejar la suite en verde, publicar el reporte y hacer falla
 
 La pirámide de esta entrega es:
 
-1. **Base.** Tests unitarios Jest + `ts-jest` sobre `backend/src/**/*.spec.ts` (servicios, guards, estrategias de precio, TOTP, pasarela simulada).
+1. **Base.** Tests unitarios Jest + `ts-jest` sobre `backend/src/**/*.spec.ts` (servicios, guards, decoradores de precio, TOTP, pasarela simulada).
 2. **Medio.** Tests HTTP con Supertest (`backend/test/**/*.e2e-spec.ts`) y el script SQL `supabase/tests/canchas_m4.test.sql`, que rechaza una segunda reserva del mismo turno. El script es secuencial, manual, contra un PostgreSQL local, y no se corre en CI.
 3. **Cima.** E2E de navegador, fuera de esta entrega.
 

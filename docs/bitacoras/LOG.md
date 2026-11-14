@@ -1000,4 +1000,25 @@ Patricio Ramos (P1) toma la tarea que estaba a cargo de Lucas Coquet (P3).
 
 ---
 
+## 2026-11-13 — C-28: precios Decorator + UML Nest (Patricio)
+
+**Tipo:** patrones / diagramas / docs  
+**Registrado por:** Patricio Ramos (P1)  
+**Tarea:** C-28 (serie C-28.1…C-28.5)
+
+Patricio Ramos (P1) cierra el refactor de precios de Strategy a **Decorator GoF**, el diagrama de clases Nest (controllers/services/DTOs/repos + Decorator + Repository), la secuencia de reserva/pago, el C4-3 de canchas y la alineación de manual, justificación Unidad III y bitácora. ADR-004/005/008 solo alinean Contexto o nomenclatura; no se reemplazan Decisiones.
+
+### Entregado
+
+- Cadena `MemberDiscount(PeakHour(Standard))` en `backend/src/canchas/precios/`.
+- `uml-clases-dominio`, `sec-reserva-pago`, `c4-3-canchas` sin etiqueta Strategy de precios.
+- Manual técnico §4.1/7.2 y `Justificacion_Patrones_Unidad_III.md` con Decorator implementado.
+
+### Fuera de este cierre
+
+- ADR-012 opcional (registro formal Strategy→Decorator) si la cátedra lo pide.
+- Push/PR de la rama `C-28` a `desarrollo`.
+
+---
+
 *FitZone Sports · Programación V · UNER*

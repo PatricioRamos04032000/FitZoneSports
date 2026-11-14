@@ -64,7 +64,7 @@ Excel hermano (mismas filas + columna Observación):
 | **S7-T05** | Swagger al día | finalizado | Relacionada con **C-09** (export `swagger.json`). Documentar endpoints ≠ exportar archivo OpenAPI. | Parcial → C-09 |
 | **C-09** | Exportar backend/swagger.json | tambien en desarrollo | Relacionada con **S7-T05**. S7-T05 = anotaciones Swagger; C-09 = archivo en repo. | Parcial → S7-T05 |
 | **S4-T15** | *(PR mergeado; puede no estar en tablero)* | — | Relacionada con precios Strategy / **S4-T01**/**S4-T09**. Redondeo `Math.ceil`. Si no hay tarjeta, no crear duplicado de trabajo. | Hecho en código |
-| **C-28** | Precios Strategy → Decorator + UML Nest *(plan de cierre; 2026-11-13)* | por hacer (solo plan) | Relacionada con **S4-T01** (Strategy histórico de precios). **No** borrar S4-T01: C-28 redefine el patrón a Decorator GoF + diagrama Nest completo + docs. Crear tarjeta en Trello o track solo en el plan. | Extiende / reemplaza el patrón de S4-T01; no es reserva ni PDF |
+| **C-28** | Precios Strategy → Decorator + UML Nest *(plan de cierre; 2026-11-13)* | finalizado (plan) | Relacionada con **S4-T01** (Strategy histórico de precios). **No** borrar S4-T01: C-28 redefine el patrón a Decorator GoF + diagrama Nest completo + docs. Track en plan; crear tarjeta en Trello solo si el equipo lo pide. | Extiende / reemplaza el patrón de S4-T01; no es reserva ni PDF |
 | **S4-T01** | Strategy de precios | finalizado | Relacionada con **C-28**. Entrega histórica del cálculo RF-11; C-28 es el refactor a Decorator antes del tag. | Cubierta en código histórico; C-28 la redefine |
 
 ---

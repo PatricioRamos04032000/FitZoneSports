@@ -10,7 +10,7 @@
 
 Dos socios pueden pedir el mismo turno de la misma cancha al mismo tiempo. La regla de negocio es que exactamente uno queda con la reserva (RN-02). Un control previo en la API (leer si el turno está libre y después insertar) pierde la carrera: las dos lecturas ven el turno libre y las dos escrituras confirman.
 
-El precio lo calcula Nest con estrategias intercambiables y lo envía ya resuelto. La base tiene que garantizar el cupo del turno, no el cálculo del precio. Una reserva `pendiente` de pago también ocupa el turno durante una ventana corta: si no lo hiciera, otro socio compraría el mismo horario mientras el primero está en el checkout.
+El precio lo calcula Nest con una cadena Decorator (Nest manda el precio ya resuelto). La base tiene que garantizar el cupo del turno, no el cálculo del precio. Una reserva `pendiente` de pago también ocupa el turno durante una ventana corta: si no lo hiciera, otro socio compraría el mismo horario mientras el primero está en el checkout.
 
 La función y el índice quedaron en la migración `supabase/migrations/20261027200000_canchas_m4.sql`. El hold de la pendiente, en `20261101200000_hold_reserva_pendiente.sql`.
 

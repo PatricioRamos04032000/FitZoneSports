@@ -12,7 +12,7 @@ El monolito modular (ADR-001) necesitaba un framework de API con módulos, un co
 
 La base está en Supabase. Desde Nest se podía conectar con un ORM sobre `DATABASE_URL` o usar el cliente de Supabase. En la exposición del 28/08/2026 el docente recomendó la API de Supabase. Un ADR anterior mezclaba el motor de la base con un ORM todavía no elegido; ese texto está en `historial/ADR-002-postgresql.md`. El registro que separaba «sin ORM» está en `historial/ADR-006-supabase-api-sin-orm.md`.
 
-Hacía falta, además, un lugar donde vivir Repository, Strategy y Observer, sin mover la lógica de negocio al navegador ni a un BaaS.
+Hacía falta, además, un lugar donde vivir Repository, Decorator (precios) y Observer, sin mover la lógica de negocio al navegador ni a un BaaS.
 
 ## Alternativas consideradas
 

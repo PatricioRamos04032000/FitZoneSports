@@ -2,12 +2,12 @@
 
 - **Tarea:** C-18
 - **Anexo:** F de los lineamientos de entrega
-- **Fecha:** 2026-11-11
+- **Fecha:** 2026-11-11 (actualizado 2026-11-13, C-28 Decorator)
 - **Autor:** Patricio Ramos (P1)
 
 Este manual describe el sistema que está en el repositorio. Cada afirmación cita un archivo. Las decisiones largas viven en los ADR: acá se enlazan, no se reescriben. Los diagramas viven en `docs/diagramas/`: acá se listan, no se redibujan.
 
-Los casos de la sección 7 son una guía para quien extiende el código (y para la defensa de cinco minutos). Este archivo no agrega el valor `tenis` al enum ni deja una estrategia nueva en el backend.
+Los casos de la sección 7 son una guía para quien extiende el código (y para la defensa de cinco minutos). Este archivo no agrega el valor `tenis` al enum ni deja un decorador nuevo en el backend.
 
 ## Índice
 
@@ -53,7 +53,7 @@ Los diez obligatorios y el adicional están aceptados. El índice con el histori
 
 ### 1.2 Diagramas de la entrega
 
-Hay 14 diagramas. La fuente editable está en `docs/diagramas/fuentes/` y el SVG en `docs/diagramas/img/`. El C4-4 de la jerarquía `PricingStrategy` no forma parte de esta entrega: los lineamientos lo dejan opcional. La estructura del patrón se lee en el diagrama de clases y en el código de la sección 4.1.
+Hay 14 diagramas. La fuente editable está en `docs/diagramas/fuentes/` y el SVG en `docs/diagramas/img/`. El C4-4 de código de precios queda opcional en los lineamientos: la estructura Decorator se lee en el diagrama de clases Nest ([uml-clases-dominio](../diagramas/fuentes/uml-clases-dominio.drawio), página 1), en la secuencia de reserva y en el código de la sección 4.1.
 
 | # | Diagrama | Fuente | SVG |
 |---|----------|--------|-----|
@@ -126,19 +126,19 @@ El DER físico está en [er-fisico.drawio](../diagramas/fuentes/er-fisico.drawio
 
 ## 4. Patrones de diseño
 
-### 4.1 Strategy — precio dinámico de canchas
+### 4.1 Decorator — precio dinámico de canchas
 
-La interfaz está en [backend/src/canchas/precios/pricing.strategy.ts](../../backend/src/canchas/precios/pricing.strategy.ts). Cada regla tiene `nombre`, `aplica(ctx)` y `calcular(precio, ctx)`. El contexto (`ContextoPrecio`) trae el precio base de la cancha, el inicio del turno, si el cliente es socio activo, el porcentaje de descuento y la franja pico de la sede. No trae el deporte.
+El componente común es [PricingComponent](../../backend/src/canchas/precios/pricing.component.ts) (`nombre` + `calcular(ctx)`). El decorador abstracto [PricingDecorator](../../backend/src/canchas/precios/decorators/pricing.decorator.ts) envuelve un `inner`, delega `calcular` hacia adentro y, si `aplica(ctx)`, transforma el precio con `modificar`. El contexto (`ContextoPrecio` en [pricing.types.ts](../../backend/src/canchas/precios/pricing.types.ts)) trae el precio base de la cancha, el inicio del turno, si el cliente es socio activo, el porcentaje de descuento y la franja pico de la sede. No trae el deporte.
 
-[PreciosService.calcular](../../backend/src/canchas/precios/precios.service.ts) filtra las estrategias con `aplica` y acumula `calcular` sobre `precioBase`. Al final redondea hacia arriba al peso (`Math.ceil`). El servicio no elige la regla con un `switch`.
+[PreciosService.calcular](../../backend/src/canchas/precios/precios.service.ts) invoca la raíz de la cadena (`PRICING_CHAIN`) y redondea hacia arriba al peso (`Math.ceil`). No elige la regla con un `switch` ni filtra una lista: la cadena ya está armada.
 
-La lista la arma la factory de [precios.module.ts](../../backend/src/canchas/precios/precios.module.ts), inyectada con el token `PRICING_STRATEGIES`. El orden de hoy es el orden de la acumulación:
+La factory de [precios.module.ts](../../backend/src/canchas/precios/precios.module.ts) declara la lista ordenada `PRICING_DECORATORS` y la reduce con `wrap` sobre `StandardPricing`. El orden de la lista es el orden de envoltorio (el último de la lista queda afuera). Hoy:
 
-1. `StandardPricing` — siempre aplica y deja el precio base de la cancha.
-2. `PeakHourPricing` — recargo si el turno cae en la franja pico de la sede, en hora de `America/Argentina/Buenos_Aires`.
-3. `MemberDiscountPricing` — descuento si `esSocioActivo` y el porcentaje es mayor a cero. Un socio vencido no entra: paga como externo (RN-03).
+1. `StandardPricing` — componente concreto: arranca con `precioBase`.
+2. `PeakHourPricingDecorator` — recargo si el turno cae en la franja pico de la sede, en hora de `America/Argentina/Buenos_Aires`.
+3. `MemberDiscountPricingDecorator` — descuento si `esSocioActivo` y el porcentaje es mayor a cero. Un socio vencido no entra: paga como externo (RN-03).
 
-El descuento va último porque `calcular` recibe el precio que dejaron las reglas anteriores. Una regla nueva se inserta en esa lista. La sección 7.2 recorre ese cambio.
+Cadena resultante: `MemberDiscount(PeakHour(Standard))`. El descuento queda afuera porque multiplica el precio que ya trajo el pico. Una regla nueva es un decorador más en esa lista. La sección 7.2 recorre ese cambio.
 
 ### 4.2 Observer — lista de espera de clases
 
@@ -164,9 +164,9 @@ Lo que tiene que ser atómico (reservar cancha, check-in, inscripción) no es un
 
 ### 4.4 Patrones estructurales y de ciclo de vida
 
-Estos tres están en el código. La factory de `precios.module.ts` es el contenedor de Nest armando la lista de estrategias. No hay un Factory GoF aparte.
+Estos tres están en el código. La factory de `precios.module.ts` es el contenedor de Nest armando la lista de decoradores y la cadena. No hay un Factory GoF aparte.
 
-**Facade.** [ReservasCanchaService](../../backend/src/canchas/reservas/reservas-cancha.service.ts) es el caso de uso «reservar cancha». `reservar` valida, pide el precio a `PreciosService`, llama al RPC y devuelve la reserva en `pendiente`. Quien reserva no habla con el repositorio, con las estrategias ni con la pasarela por separado. La secuencia está en [sec-reserva-pago.mmd](../diagramas/fuentes/sec-reserva-pago.mmd).
+**Facade.** [ReservasCanchaService](../../backend/src/canchas/reservas/reservas-cancha.service.ts) es el caso de uso «reservar cancha». `reservar` valida, pide el precio a `PreciosService`, llama al RPC y devuelve la reserva en `pendiente`. Quien reserva no habla con el repositorio, con la cadena de precios ni con la pasarela por separado. La secuencia está en [sec-reserva-pago.mmd](../diagramas/fuentes/sec-reserva-pago.mmd).
 
 **State.** El ciclo de la reserva está en [backend/src/canchas/reservas/estado/](../../backend/src/canchas/reservas/estado/). `EstadoReserva` declara `pagar` y `cancelar`. Los estados concretos son `PendienteDePago`, `Confirmada` y `Cancelada`. `Reserva.desdeFila` reconstruye el estado desde el enum SQL. Un estado terminal rechaza la acción que no le corresponde. El diagrama es [est-reserva.mmd](../diagramas/fuentes/est-reserva.mmd).
 
@@ -178,7 +178,7 @@ Dos socios pueden pedir el mismo turno. Exactamente uno queda con la reserva (RN
 
 El camino en el código:
 
-1. Nest calcula el precio con Strategy y lo manda ya resuelto. La base no recalcula la tarifa.
+1. Nest calcula el precio con la cadena Decorator y lo manda ya resuelto. La base no recalcula la tarifa.
 2. `ReservasCanchaRepository` llama a `reservar_cancha` ([20261027200000_canchas_m4.sql](../../supabase/migrations/20261027200000_canchas_m4.sql), hold en [20261101200000_hold_reserva_pendiente.sql](../../supabase/migrations/20261101200000_hold_reserva_pendiente.sql)).
 3. La función toma `SELECT … FROM canchas WHERE id = p_cancha_id FOR UPDATE`, valida horario, mantenimiento y horizonte, y recién ahí inserta.
 4. Si dos transacciones pasan el lock, el índice `reservas_cancha_sin_sobreventa` deja una sola fila en `pendiente` o `confirmada` para ese `(cancha_id, inicio)`.
@@ -202,9 +202,9 @@ Queda fuera de esta entrega, y así lo registran los dos ADR: el paquete de seed
 
 ## 7. Guía de extensión
 
-Los dos casos se resuelven por caminos distintos. Agregar tenis no pide una estrategia nueva. Agregar una estrategia no pide un deporte nuevo.
+Los dos casos se resuelven por caminos distintos. Agregar tenis no pide un decorador nuevo. Agregar un decorador de precio no pide un deporte nuevo.
 
-El precio de una cancha es `canchas.precio_hora`. `ContextoPrecio` no tiene tipo de deporte. `StandardPricing`, `PeakHourPricing` y `MemberDiscountPricing` se aplican igual a paddle, fútbol 5 o cualquier tipo que se sume. `reservar_cancha` bloquea por `cancha_id` e `inicio`, no por deporte.
+El precio de una cancha es `canchas.precio_hora`. `ContextoPrecio` no tiene tipo de deporte. `StandardPricing`, `PeakHourPricingDecorator` y `MemberDiscountPricingDecorator` se aplican igual a paddle, fútbol 5 o cualquier tipo que se sume. `reservar_cancha` bloquea por `cancha_id` e `inicio`, no por deporte.
 
 ### 7.1 Caso resuelto: agregar canchas de tenis
 
@@ -217,7 +217,7 @@ Hoy el deporte no existe. El enum SQL y los tres tipos del código son `paddle`,
 
 La defensa pide el valor `tenis`. El valor `otro` ya está y no cubre ese pedido.
 
-El recorrido no toca `PreciosService`, `PricingStrategy`, `ReservasCanchaService` ni `reservar_cancha`.
+El recorrido no toca `PreciosService`, `PricingComponent`, `ReservasCanchaService` ni `reservar_cancha`.
 
 **Paso 1. Migración que solo agrega el valor.**
 
@@ -283,22 +283,23 @@ Desde `backend/`, con la migración ya aplicada: `npm run seed`.
 
 1. `GET /canchas/disponibilidad` de la sede Central lista «Tenis 1» con `tipo: "tenis"` y `precioHora: 22000`.
 2. Un turno fuera de pico, para un externo, cotiza 22000. Ese número sale de `precio_hora` más `StandardPricing`.
-3. El mismo turno en la franja pico, para un socio activo, aplica pico y descuento de socio sobre 22000. Las tres estrategias registradas no se modificaron.
+3. El mismo turno en la franja pico, para un socio activo, aplica pico y descuento de socio sobre 22000. Los decoradores registrados no se modificaron.
 4. `POST` de reserva de esa cancha entra por `reservar_cancha` igual que una de paddle. Un segundo intento del mismo inicio responde `TURNO_OCUPADO`.
 
-### 7.2 Caso resuelto: agregar una estrategia de precio
+### 7.2 Caso resuelto: agregar un decorador de precio
 
-El ejemplo es un recargo de fin de semana del 10 %. Cabe en el `ContextoPrecio` actual: el día se lee de `inicio`, en `America/Argentina/Buenos_Aires`, igual que [PeakHourPricing](../../backend/src/canchas/precios/strategies/peak-hour-pricing.strategy.ts). No hace falta una columna nueva. El 10 % vive en la clase, como constante del ejemplo. Un porcentaje configurable por sede sería otra tabla y otro campo del contexto, y queda fuera de este caso.
+El ejemplo es un recargo de fin de semana del 10 %. Cabe en el `ContextoPrecio` actual: el día se lee de `inicio`, en `America/Argentina/Buenos_Aires`, igual que [PeakHourPricingDecorator](../../backend/src/canchas/precios/decorators/peak-hour-pricing.decorator.ts). No hace falta una columna nueva. El 10 % vive en la clase, como constante del ejemplo. Un porcentaje configurable por sede sería otra tabla y otro campo del contexto, y queda fuera de este caso.
 
-`PreciosService.calcular` y la firma de `PricingStrategy` quedan como están.
+`PreciosService.calcular` y `PricingComponent` / `PricingDecorator` quedan como están.
 
 **Paso 1. La clase.**
 
-Archivo nuevo `backend/src/canchas/precios/strategies/weekend-surcharge-pricing.strategy.ts`:
+Archivo nuevo `backend/src/canchas/precios/decorators/weekend-surcharge-pricing.decorator.ts`:
 
 ```typescript
 import { Injectable } from '@nestjs/common';
-import { ContextoPrecio, PricingStrategy } from '../pricing.strategy';
+import { ContextoPrecio } from '../pricing.types';
+import { PricingDecorator } from './pricing.decorator';
 
 const ZONA_ARGENTINA = 'America/Argentina/Buenos_Aires';
 /** Ejemplo de la guía de extensión. No sale de una tabla. */
@@ -309,7 +310,7 @@ const RECARGO_FIN_DE_SEMANA_PCT = 10;
  * Caso resuelto del manual técnico, sección 7.2.
  */
 @Injectable()
-export class WeekendSurchargePricing implements PricingStrategy {
+export class WeekendSurchargePricingDecorator extends PricingDecorator {
   readonly nombre = 'WeekendSurchargePricing';
 
   aplica(ctx: ContextoPrecio): boolean {
@@ -317,7 +318,7 @@ export class WeekendSurchargePricing implements PricingStrategy {
     return dia === 6 || dia === 7;
   }
 
-  calcular(precio: number, _ctx: ContextoPrecio): number {
+  modificar(precio: number, _ctx: ContextoPrecio): number {
     return precio * (1 + RECARGO_FIN_DE_SEMANA_PCT / 100);
   }
 }
@@ -345,55 +346,54 @@ function diaIsoArgentina(inicio: Date | string): number {
 }
 ```
 
-**Paso 2. Registrarla en la factory.**
+**Paso 2. Registrarlo en la factory.**
 
-En [precios.module.ts](../../backend/src/canchas/precios/precios.module.ts) se importa la clase, se declara como provider y se inserta en la lista. El orden importa. `StandardPricing` va primero porque pisa el acumulado con `precioBase`. El descuento de socio va último porque multiplica lo que ya sumaron pico y fin de semana.
+En [precios.module.ts](../../backend/src/canchas/precios/precios.module.ts) se importa la clase, se declara como provider y se inserta en `PRICING_DECORATORS`. El orden importa: el `reduce` envuelve de adentro hacia afuera; el descuento de socio debe quedar afuera para multiplicar pico y fin de semana.
 
 ```typescript
-import { WeekendSurchargePricing } from './strategies/weekend-surcharge-pricing.strategy';
+import { WeekendSurchargePricingDecorator } from './decorators/weekend-surcharge-pricing.decorator';
 
-// providers: StandardPricing, PeakHourPricing, WeekendSurchargePricing,
-// MemberDiscountPricing, y la factory:
+// providers: StandardPricing, PeakHourPricingDecorator,
+// WeekendSurchargePricingDecorator, MemberDiscountPricingDecorator,
+// y las factories:
 
 {
-  provide: PRICING_STRATEGIES,
+  provide: PRICING_DECORATORS,
   useFactory: (
-    standard: StandardPricing,
-    peak: PeakHourPricing,
-    weekend: WeekendSurchargePricing,
-    memberDiscount: MemberDiscountPricing,
-  ): PricingStrategy[] => [standard, peak, weekend, memberDiscount],
+    peak: PeakHourPricingDecorator,
+    weekend: WeekendSurchargePricingDecorator,
+    memberDiscount: MemberDiscountPricingDecorator,
+  ): PricingDecorator[] => [peak, weekend, memberDiscount],
   inject: [
-    StandardPricing,
-    PeakHourPricing,
-    WeekendSurchargePricing,
-    MemberDiscountPricing,
+    PeakHourPricingDecorator,
+    WeekendSurchargePricingDecorator,
+    MemberDiscountPricingDecorator,
   ],
 },
 ```
 
-Un sábado a las 19:00, con pico del 20 % y socio activo al 15 %, el acumulado queda `precioBase × 1,20 × 1,10 × 0,85`. El redondeo al peso lo sigue haciendo `PreciosService`.
+Cadena resultante: `MemberDiscount(Weekend(Peak(Standard)))`. Un sábado a las 19:00, con pico del 20 % y socio activo al 15 %, el acumulado queda `precioBase × 1,20 × 1,10 × 0,85`. El redondeo al peso lo sigue haciendo `PreciosService`.
 
 **Paso 3. El test.**
 
 En [precios.service.spec.ts](../../backend/src/canchas/precios/precios.service.spec.ts). El archivo ya fija que el 2026-10-06 es martes y el 2026-10-10 es sábado. El 2026-10-07 es miércoles.
 
-Sobre la clase, el miércoles no aplica y el sábado sí:
+Sobre el decorador, el miércoles no aplica y el sábado sí (`aplica` / `modificar`):
 
 ```typescript
 const MIERCOLES_17_HS = '2026-10-07T17:00:00-03:00';
-const strategy = new WeekendSurchargePricing();
+const weekend = new WeekendSurchargePricingDecorator();
 
-expect(strategy.aplica(crearContexto({ inicio: MIERCOLES_17_HS }))).toBe(false);
-expect(strategy.aplica(crearContexto({ inicio: SABADO_19_HS }))).toBe(true);
-expect(strategy.calcular(20_000, crearContexto({ inicio: SABADO_19_HS }))).toBe(22_000);
+expect(weekend.aplica(crearContexto({ inicio: MIERCOLES_17_HS }))).toBe(false);
+expect(weekend.aplica(crearContexto({ inicio: SABADO_19_HS }))).toBe(true);
+expect(weekend.modificar(20_000, crearContexto({ inicio: SABADO_19_HS }))).toBe(22_000);
 ```
 
-Sobre el servicio, el caso que ya existe —«Externo sábado 19:00 no paga recargo porque sábado no aplica ($20.000)»— usa una franja pico de lunes a viernes. El pico no entra. Con la estrategia registrada, ese sábado pasa de 20000 a 22000 (`20000 × 1,10`) y `reglasAplicadas` incluye `WeekendSurchargePricing`. Hay que actualizar esa expectativa. Los casos de martes no cambian: el miércoles y el martes dejan `aplica` en falso.
+Sobre el servicio, el caso que ya existe —«Externo sábado 19:00 no paga recargo porque sábado no aplica ($20.000)»— usa una franja pico de lunes a viernes. El pico no entra. Con el decorador registrado, ese sábado pasa de 20000 a 22000 (`20000 × 1,10`) y `reglasAplicadas` incluye `WeekendSurchargePricing`. Hay que actualizar esa expectativa. Los casos de martes no cambian: el miércoles y el martes dejan `aplica` en falso.
 
 **Paso 4. Qué queda igual.**
 
-`PreciosService.calcular` sigue filtrando `aplica` y acumulando `calcular`. La interfaz `PricingStrategy` no gana métodos. `reservar_cancha` sigue recibiendo el precio ya calculado. Tennis y este recargo no se necesitan el uno al otro: una cancha de tenis de fin de semana tomaría el 10 % porque el turno cae sábado o domingo, no porque el tipo sea `tenis`.
+`PreciosService.calcular` sigue invocando la raíz de la cadena. `PricingComponent` / `PricingDecorator` no ganan métodos. `reservar_cancha` sigue recibiendo el precio ya calculado. Tennis y este recargo no se necesitan el uno al otro: una cancha de tenis de fin de semana tomaría el 10 % porque el turno cae sábado o domingo, no porque el tipo sea `tenis`.
 
 ## 8. Pruebas: cómo correrlas y cómo leer la cobertura
 
@@ -434,7 +434,7 @@ Ese pipeline no despliega a Vercel ni a Render. El mapa de la demo y la reversi�
 Lo que el repositorio ya hace:
 
 - Un módulo Nest por carpeta de dominio (`usuarios`, `acceso`, `clases`, `canchas`, `pagos`), registrado en `app.module.ts`.
-- Las estrategias de precio viven en `backend/src/canchas/precios/strategies/`, una clase por archivo, nombre `*-pricing.strategy.ts`.
+- Los decoradores de precio viven en `backend/src/canchas/precios/decorators/`, una clase por archivo, nombre `*-pricing.decorator.ts` (más `standard-pricing.ts` como componente base).
 - El SQL de esquema vive en `supabase/migrations/`, con prefijo `AAAAMMDDHHMMSS_`. Una migración avanza. No se reescribe una ya aplicada.
 - La rama de trabajo es distinta de `desarrollo`. El pull request apunta a `desarrollo`, que es la rama que dispara el CI.
 - El mensaje de commit nombra la tarjeta del tablero (`C-18`, `S4-T01`, `S7-T02b`) y dice qué quedó cerrado. El historial de la entrega pide mensajes con esa referencia.
