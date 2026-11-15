@@ -1,5 +1,6 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import type {
+  Clase,
   ClaseConCupo,
   ClaseResumenInscripcion,
   EntradaListaEspera,
@@ -149,6 +150,101 @@ export class EntradaListaEsperaResponseDto implements EntradaListaEspera {
     description: 'Fecha y hora límite para confirmar cuando estado es notificado (D7)',
   })
   vence_en?: string | null;
+}
+
+export class ClaseResponseDto implements Clase {
+  @ApiProperty({ format: 'uuid', example: 'c1000000-0000-4000-8000-000000000001' })
+  id!: string;
+
+  @ApiProperty({ format: 'uuid', example: '42363e91-8c03-4d52-b160-5c1345be8656' })
+  sede_id!: string;
+
+  @ApiProperty({ example: 'Spinning' })
+  tipo!: string;
+
+  @ApiProperty({ example: 'Lucía Fernández' })
+  instructor!: string;
+
+  @ApiProperty({ format: 'date-time', example: '2026-11-20T21:00:00.000Z' })
+  inicio!: string;
+
+  @ApiProperty({ format: 'date-time', example: '2026-11-20T22:00:00.000Z' })
+  fin!: string;
+
+  @ApiProperty({ example: 20 })
+  capacidad_max!: number;
+
+  @ApiProperty({ enum: ['programada', 'cancelada'], example: 'programada' })
+  estado!: EstadoClase;
+
+  @ApiProperty({ format: 'date-time', example: '2026-11-14T20:00:00.000Z' })
+  created_at!: string;
+}
+
+export class CrearClaseDto {
+  @ApiProperty({
+    format: 'uuid',
+    example: '42363e91-8c03-4d52-b160-5c1345be8656',
+    description: 'Sede activa donde se dicta la clase',
+  })
+  sedeId!: string;
+
+  @ApiProperty({ example: 'Yoga' })
+  tipo!: string;
+
+  @ApiProperty({ example: 'Ana Pérez' })
+  instructor!: string;
+
+  @ApiProperty({
+    format: 'date-time',
+    example: '2026-11-20T18:00:00-03:00',
+    description: 'Inicio en hora de América/Argentina/Buenos Aires',
+  })
+  inicio!: string;
+
+  @ApiProperty({
+    format: 'date-time',
+    example: '2026-11-20T19:00:00-03:00',
+  })
+  fin!: string;
+
+  @ApiProperty({ example: 12, description: 'Entero mayor a 0' })
+  capacidadMax!: number;
+}
+
+export class EditarClaseDto {
+  @ApiPropertyOptional({
+    description:
+      'No se acepta. Para pasar la clase de sede hay que cancelarla y crear otra.',
+  })
+  sedeId?: string;
+
+  @ApiPropertyOptional({ example: 'Yoga' })
+  tipo?: string;
+
+  @ApiPropertyOptional({ example: 'Ana Pérez' })
+  instructor?: string;
+
+  @ApiPropertyOptional({ format: 'date-time', example: '2026-11-20T18:00:00-03:00' })
+  inicio?: string;
+
+  @ApiPropertyOptional({ format: 'date-time', example: '2026-11-20T19:00:00-03:00' })
+  fin?: string;
+
+  @ApiPropertyOptional({
+    example: 12,
+    description:
+      'No puede quedar por debajo de los inscriptos más los notificados con plazo vigente',
+  })
+  capacidadMax?: number;
+
+  @ApiPropertyOptional({
+    enum: ['programada', 'cancelada'],
+    example: 'cancelada',
+    description:
+      'La baja es cancelada. No borra inscripciones ni avisa a la lista de espera. Se puede volver a programada.',
+  })
+  estado?: EstadoClase;
 }
 
 export class EsperaConClaseResponseDto extends EntradaListaEsperaResponseDto {

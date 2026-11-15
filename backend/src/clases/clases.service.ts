@@ -7,16 +7,20 @@ import {
 } from '@nestjs/common';
 import type { RolUsuario } from '../common/rol-usuario';
 import { MembresiasService } from '../usuarios/membresias/membresias.service';
+import { SedesRepository } from '../usuarios/sedes/sedes.repository';
 import { ListaEsperaPublisher } from './notificaciones/lista-espera.publisher';
 import { RepositoryError } from '../supabase/repository.error';
+import { EditarClaseDto, CrearClaseDto } from './clase.dto';
 import {
+  Clase,
   ClaseConCupo,
   EntradaListaEspera,
   EsperaConClase,
+  EstadoClase,
   InscripcionClase,
   InscripcionConClase,
 } from './clase.model';
-import { ClasesRepository } from './clases.repository';
+import { ClasesRepository, NuevaClase } from './clases.repository';
 
 /** Decisión D5 (RF-07): la ventana de inscripción cierra 48 h antes del inicio de la clase. */
 export const VENTANA_RESERVA_CLASE_MS = 48 * 60 * 60 * 1000;
@@ -36,11 +40,60 @@ export class ClasesService {
     private readonly repository: ClasesRepository,
     private readonly membresias: MembresiasService,
     private readonly listaEspera: ListaEsperaPublisher,
+    private readonly sedesRepository: SedesRepository,
   ) {}
 
   async findConCupoPorSede(sedeId: string): Promise<ClaseConCupo[]> {
     this.validarUuid(sedeId, 'sedeId');
     return this.repository.findConCupoPorSede(sedeId);
+  }
+
+  async crear(dto: CrearClaseDto): Promise<Clase> {
+    const sedeId = this.textoObligatorio(dto?.sedeId, 'sedeId');
+    this.validarUuid(sedeId, 'sedeId');
+    await this.asegurarSedeActiva(sedeId);
+
+    const inicio = this.fechaObligatoria(dto?.inicio, 'inicio');
+    const fin = this.fechaObligatoria(dto?.fin, 'fin');
+    this.asegurarFinPosterior(inicio, fin);
+
+    return this.repository.crear({
+      sede_id: sedeId,
+      tipo: this.textoObligatorio(dto?.tipo, 'tipo'),
+      instructor: this.textoObligatorio(dto?.instructor, 'instructor'),
+      inicio: inicio.toISOString(),
+      fin: fin.toISOString(),
+      capacidad_max: this.capacidadPositiva(dto?.capacidadMax),
+      estado: 'programada',
+    });
+  }
+
+  async editar(id: string, dto: EditarClaseDto): Promise<Clase> {
+    this.validarUuid(id, 'id');
+    this.rechazarCambioDeSede(dto);
+    const cambios = this.extraerCambios(dto);
+
+    const clase = await this.repository.findById(id);
+    if (!clase) {
+      throw new NotFoundException('La clase solicitada no existe');
+    }
+
+    if (cambios.inicio !== undefined || cambios.fin !== undefined) {
+      this.asegurarFinPosterior(
+        new Date(cambios.inicio ?? clase.inicio),
+        new Date(cambios.fin ?? clase.fin),
+      );
+    }
+
+    if (cambios.capacidad_max !== undefined) {
+      await this.asegurarCapacidadAlcanza(id, cambios.capacidad_max);
+    }
+
+    const actualizada = await this.repository.actualizar(id, cambios);
+    if (!actualizada) {
+      throw new NotFoundException('La clase solicitada no existe');
+    }
+    return actualizada;
   }
 
   async listarMisInscripciones(perfilId: string): Promise<InscripcionConClase[]> {
@@ -293,6 +346,121 @@ export class ClasesService {
       PLAZO_CONFIRMACION_ESPERA,
     );
     this.listaEspera.notificarLugaresLiberados(clase, notificados);
+  }
+
+  private rechazarCambioDeSede(dto: EditarClaseDto | undefined): void {
+    if (
+      dto != null &&
+      Object.prototype.hasOwnProperty.call(dto, 'sedeId')
+    ) {
+      throw new BadRequestException(
+        'La sede de una clase no se cambia. Cancelala y creá otra en la sede nueva.',
+      );
+    }
+  }
+
+  private extraerCambios(dto: EditarClaseDto | undefined): Partial<NuevaClase> {
+    const cambios: Partial<NuevaClase> = {};
+
+    if (dto?.tipo !== undefined) {
+      cambios.tipo = this.textoObligatorio(dto.tipo, 'tipo');
+    }
+    if (dto?.instructor !== undefined) {
+      cambios.instructor = this.textoObligatorio(dto.instructor, 'instructor');
+    }
+    if (dto?.inicio !== undefined) {
+      cambios.inicio = this.fechaObligatoria(dto.inicio, 'inicio').toISOString();
+    }
+    if (dto?.fin !== undefined) {
+      cambios.fin = this.fechaObligatoria(dto.fin, 'fin').toISOString();
+    }
+    if (dto?.capacidadMax !== undefined) {
+      cambios.capacidad_max = this.capacidadPositiva(dto.capacidadMax);
+    }
+    if (dto?.estado !== undefined) {
+      cambios.estado = this.estadoValido(dto.estado);
+    }
+
+    if (Object.keys(cambios).length === 0) {
+      throw new BadRequestException(
+        'Debe enviar al menos un campo para actualizar (tipo, instructor, inicio, fin, capacidadMax o estado)',
+      );
+    }
+    return cambios;
+  }
+
+  private async asegurarSedeActiva(sedeId: string): Promise<void> {
+    const sede = await this.sedesRepository.findById(sedeId);
+    if (!sede) {
+      throw new NotFoundException('La sede solicitada no existe');
+    }
+    if (!sede.activa) {
+      throw new BadRequestException(
+        'La sede está inactiva y no admite clases nuevas',
+      );
+    }
+  }
+
+  private async asegurarCapacidadAlcanza(
+    claseId: string,
+    capacidad: number,
+  ): Promise<void> {
+    const clase = await this.repository.findConCupoById(claseId);
+    if (!clase) {
+      throw new NotFoundException('La clase solicitada no existe');
+    }
+    const ocupados = clase.capacidad_max - clase.cupos_libres;
+    if (capacidad < ocupados) {
+      throw new BadRequestException(
+        `La capacidad no puede quedar por debajo de los ${ocupados} lugares ya ocupados`,
+      );
+    }
+  }
+
+  private textoObligatorio(valor: unknown, campo: string): string {
+    if (typeof valor !== 'string' || !valor.trim()) {
+      throw new BadRequestException(`${campo} es obligatorio`);
+    }
+    return valor.trim();
+  }
+
+  private fechaObligatoria(valor: unknown, campo: string): Date {
+    if (typeof valor !== 'string' || !valor.trim()) {
+      throw new BadRequestException(`${campo} es obligatorio`);
+    }
+    const fecha = new Date(valor);
+    if (Number.isNaN(fecha.getTime())) {
+      throw new BadRequestException(`${campo} debe ser una fecha válida`);
+    }
+    return fecha;
+  }
+
+  private asegurarFinPosterior(inicio: Date, fin: Date): void {
+    if (fin.getTime() <= inicio.getTime()) {
+      throw new BadRequestException('fin tiene que ser posterior a inicio');
+    }
+  }
+
+  private capacidadPositiva(capacidad: unknown): number {
+    if (
+      typeof capacidad !== 'number' ||
+      !Number.isInteger(capacidad) ||
+      capacidad <= 0
+    ) {
+      throw new BadRequestException(
+        'capacidadMax debe ser un entero mayor a 0',
+      );
+    }
+    return capacidad;
+  }
+
+  private estadoValido(estado: unknown): EstadoClase {
+    if (estado !== 'programada' && estado !== 'cancelada') {
+      throw new BadRequestException(
+        'estado debe ser programada o cancelada',
+      );
+    }
+    return estado;
   }
 
   private validarUuid(valor: string | undefined, campo: string): void {

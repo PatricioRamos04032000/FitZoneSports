@@ -7,9 +7,20 @@ import {
   ClaseResumenInscripcion,
   EntradaListaEspera,
   EsperaConClase,
+  EstadoClase,
   InscripcionClase,
   InscripcionConClase,
 } from './clase.model';
+
+export interface NuevaClase {
+  sede_id: string;
+  tipo: string;
+  instructor: string;
+  inicio: string;
+  fin: string;
+  capacidad_max: number;
+  estado: EstadoClase;
+}
 
 interface InscripcionJoinCruda {
   id: string;
@@ -36,6 +47,34 @@ interface EsperaJoinCruda {
 @Injectable()
 export class ClasesRepository extends SupabaseRepository<Clase> {
   protected readonly table = 'clases';
+
+  async crear(datos: NuevaClase): Promise<Clase> {
+    return this.unwrap<Clase>(
+      await this.from()
+        .insert({
+          sede_id: datos.sede_id,
+          tipo: datos.tipo,
+          instructor: datos.instructor,
+          inicio: datos.inicio,
+          fin: datos.fin,
+          capacidad_max: datos.capacidad_max,
+          estado: datos.estado,
+        })
+        .select('*')
+        .single(),
+      'crear',
+    );
+  }
+
+  async actualizar(
+    id: string,
+    cambios: Partial<NuevaClase>,
+  ): Promise<Clase | null> {
+    return this.unwrap<Clase | null>(
+      await this.from().update(cambios).eq('id', id).select('*').maybeSingle(),
+      'actualizar',
+    );
+  }
 
   async findConCupoPorSede(sedeId: string): Promise<ClaseConCupo[]> {
     return this.unwrap<ClaseConCupo[]>(

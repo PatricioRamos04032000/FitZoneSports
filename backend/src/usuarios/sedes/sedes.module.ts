@@ -8,5 +8,6 @@ import { SedesService } from './sedes.service';
   imports: [AuthModule],
   controllers: [SedesController],
   providers: [SedesService, SedesRepository],
+  exports: [SedesRepository],
 })
 export class SedesModule {}

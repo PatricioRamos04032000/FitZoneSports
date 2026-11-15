@@ -35,6 +35,7 @@ function Layout() {
               {rol === "socio" && <Link to="/mi-qr">Mi QR</Link>}
               {esStaff && <Link to="/acceso">Acceso</Link>}
               {rol === "gerente" && <Link to="/sedes">Sedes</Link>}
+              {rol === "gerente" && <Link to="/clases/gestionar">Agenda</Link>}
             </>
           )}
         </div>
