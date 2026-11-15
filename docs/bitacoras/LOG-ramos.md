@@ -541,3 +541,21 @@ Sin CLI de draw.io/mermaid local fiable: SVG de UML vía script Python; secuenci
 - `4f41dc1` C-28.4: actualiza secuencia y C4-3 de precios a Decorator.
 - `995dccc` C-28.5: alinea docs y bitácora al Decorator de precios.
 
+### 2026-11-14  ·  C-29 (~3 h)
+
+**Actividad**
+
+Alta y edición de sedes para el gerente (A4, RNF-04), en la rama `C-29`. Checks de nombre y aforo, `POST /sedes` y `PATCH /sedes/:id` solo con rol gerente, pantalla `/sedes`, unitarios y e2e de rol. El insert sigue dejando que el trigger cree `configuracion_pico`.
+
+**Decisión**
+
+No hay ADR nuevo. RNF-04 ya está aceptado en ADR-001, ADR-002 y ADR-009: una sede es una fila, no un deploy. La baja es `activa = false` porque borrar la sede cascada las canchas. C4-1 y C4-2 nombran al gerente como quien configura sedes; el DER no cambia.
+
+**Problema o bloqueo**
+
+La API no arrancó en local por un error de TypeScript ya existente en `precios.service.ts` (`PricingComponent`). `/sedes` sin sesión redirige al login. Falta el pase con `gerente@fitzone.com`.
+
+**Commits**
+
+- Pendiente: el trabajo está en la rama `C-29`, sin commit.
+

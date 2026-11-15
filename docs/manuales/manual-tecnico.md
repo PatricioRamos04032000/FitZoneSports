@@ -2,7 +2,7 @@
 
 - **Tarea:** C-18
 - **Anexo:** F de los lineamientos de entrega
-- **Fecha:** 2026-11-11 (actualizado 2026-11-13, C-28 Decorator)
+- **Fecha:** 2026-11-11 (actualizado 2026-11-13, C-28 Decorator; 2026-11-14, C-29 alta de sedes)
 - **Autor:** Patricio Ramos (P1)
 
 Este manual describe el sistema que está en el repositorio. Cada afirmación cita un archivo. Las decisiones largas viven en los ADR: acá se enlazan, no se reescriben. Los diagramas viven en `docs/diagramas/`: acá se listan, no se redibujan.
@@ -78,13 +78,15 @@ La API se arma en [backend/src/app.module.ts](../../backend/src/app.module.ts). 
 
 | Módulo | Responsabilidad | Carpeta |
 |--------|-----------------|---------|
-| M1 Usuarios y membresías | Login vía BFF, perfil, rol, sede de origen y vigencia de la membresía | [backend/src/usuarios/](../../backend/src/usuarios/) (`auth`, `perfiles`, `membresias`, `sedes`) |
+| M1 Usuarios y membresías | Login vía BFF, perfil, rol, sede de origen y vigencia de la membresía. El gerente crea y edita sedes (`POST /sedes`, `PATCH /sedes/:id`) | [backend/src/usuarios/](../../backend/src/usuarios/) (`auth`, `perfiles`, `membresias`, `sedes`) |
 | M2 Acceso | QR rotativo, check-in, presencia en una sola sede y cola del terminal. `GET /acceso/presencias` incluye `nombre` y `apellido` del perfil | [backend/src/acceso/](../../backend/src/acceso/) |
 | M3 Clases | Agenda, inscripción, lista de espera y avisos cuando se libera un lugar | [backend/src/clases/](../../backend/src/clases/) |
 | M4 Canchas | Canchas, grilla, precio, reserva y ciclo de la reserva | [backend/src/canchas/](../../backend/src/canchas/) |
 | M5 Pagos | Cobro simulado de la reserva y token opaco | [backend/src/pagos/](../../backend/src/pagos/) |
 
 M4 se parte en tres piezas que el C4-3 de canchas muestra juntas: el módulo de canchas, `precios/` y `reservas/`. Las registra el mismo `AppModule`.
+
+El alta de una sede (A4, RNF-04) no abre un servicio nuevo. Solo el rol `gerente` llama a `POST /sedes` y a `PATCH /sedes/:id`, con nombre, dirección, aforo máximo y el flag `activa`. Si el aforo no viene en el alta, queda en 50. El insert lo hace el repositorio de sedes; el trigger `sedes_after_insert_configuracion_pico` crea la fila de horario pico. No hay `DELETE`: `canchas.sede_id` borra en cascada, así que la baja es `activa = false`. Las pantallas públicas dejan de ofrecer esa sede; las reservas ya tomadas siguen. La pantalla es `/sedes`.
 
 ## 3. Modelo de datos y persistencia
 
@@ -102,6 +104,7 @@ Las migraciones, en orden, están en `supabase/migrations/`:
 | `20261031200000_confirmar_reserva_cancha.sql` | Confirmación de la reserva |
 | `20261101200000_hold_reserva_pendiente.sql` | Hold de la reserva pendiente |
 | `20261101210000_acceso_m2.sql` | Check-in y presencia (RN-01) |
+| `20261114203000_sedes_checks.sql` | Nombre de sede no vacío y aforo mayor a 0 (RNF-04) |
 
 Convenciones que el SQL ya usa:
 

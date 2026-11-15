@@ -9,7 +9,7 @@
 </defs>
 <rect width="100%" height="100%" fill="#ffffff"/>
 <text x="24" y="32" font-size="20" font-weight="700" fill="#222">FitZone — Diagrama de clases Nest (C-28.3)</text>
-<text x="24" y="52" font-size="12" fill="#555">Exportado desde uml-clases-dominio.drawio · Controllers · Services · DTOs · Repositories · Decorator / Facade / State / Observer · 2026-11-13</text>
+<text x="24" y="52" font-size="12" fill="#555">Exportado desde uml-clases-dominio.drawio · Controllers · Services · DTOs · Repositories · Decorator / Facade / State / Observer · 2026-11-14</text>
 <text x="24" y="86" font-size="16" font-weight="700" fill="#222">1 Canchas Decorator</text>
 <rect x="20.0" y="116.0" width="900.0" height="520.0" fill="#f7f9fc" stroke="#999999" stroke-dasharray="4 3" fill-opacity="0.9"/>
 <text x="470.0" y="138.0" text-anchor="middle" font-size="13" font-weight="700" fill="#333">Decorator — Precios (RF-11)</text>
@@ -323,19 +323,33 @@
 <text x="2088.0" y="1654.0" font-size="11" fill="#333">estado</text>
 <text x="2088.0" y="1670.0" font-size="11" fill="#333">vigencia</text>
 <line x1="2080.0" y1="1682.0" x2="2320.0" y2="1682.0" stroke="#9673a6" stroke-width="1"/>
-<rect x="1280.0" y="1592.0" width="220.0" height="80.0" fill="#ffe6cc" stroke="#d79b00" stroke-width="1.2"/>
-<text x="1390.0" y="1608.0" text-anchor="middle" font-size="12" font-weight="700" fill="#333">SedesController</text>
-<line x1="1280.0" y1="1620.0" x2="1500.0" y2="1620.0" stroke="#d79b00" stroke-width="1"/>
-<text x="1288.0" y="1628.0" font-size="11" fill="#333">GET /sedes</text>
-<rect x="1280.0" y="1702.0" width="220.0" height="80.0" fill="#dae8fc" stroke="#6c8ebf" stroke-width="1.2"/>
-<text x="1390.0" y="1718.0" text-anchor="middle" font-size="12" font-weight="700" fill="#333">SedesService</text>
-<line x1="1280.0" y1="1730.0" x2="1500.0" y2="1730.0" stroke="#6c8ebf" stroke-width="1"/>
-<text x="1288.0" y="1738.0" font-size="11" fill="#333">+listar()</text>
-<rect x="1540.0" y="1702.0" width="220.0" height="80.0" fill="#d5e8d4" stroke="#82b366" stroke-width="1.2"/>
-<text x="1650.0" y="1718.0" text-anchor="middle" font-size="12" font-weight="700" fill="#333">SedesRepository</text>
-<line x1="1540.0" y1="1730.0" x2="1760.0" y2="1730.0" stroke="#82b366" stroke-width="1"/>
+<rect x="1280.0" y="1572.0" width="240.0" height="110.0" fill="#ffe6cc" stroke="#d79b00" stroke-width="1.2"/>
+<text x="1400.0" y="1588.0" text-anchor="middle" font-size="12" font-weight="700" fill="#333">SedesController</text>
+<line x1="1280.0" y1="1600.0" x2="1520.0" y2="1600.0" stroke="#d79b00" stroke-width="1"/>
+<text x="1288.0" y="1608.0" font-size="11" fill="#333">GET /sedes</text>
+<text x="1288.0" y="1624.0" font-size="11" fill="#333">POST /sedes</text>
+<text x="1288.0" y="1640.0" font-size="11" fill="#333">PATCH /sedes/:id</text>
+<rect x="1540.0" y="1562.0" width="240.0" height="120.0" fill="#e1d5e7" stroke="#9673a6" stroke-width="1.2"/>
+<text x="1660.0" y="1578.0" text-anchor="middle" font-size="12" font-weight="700" fill="#333">SedeDto / Crear / Actualizar</text>
+<line x1="1540.0" y1="1590.0" x2="1780.0" y2="1590.0" stroke="#9673a6" stroke-width="1"/>
+<text x="1548.0" y="1598.0" font-size="11" fill="#333">nombre</text>
+<text x="1548.0" y="1614.0" font-size="11" fill="#333">direccion</text>
+<text x="1548.0" y="1630.0" font-size="11" fill="#333">aforo_max</text>
+<text x="1548.0" y="1646.0" font-size="11" fill="#333">activa</text>
+<line x1="1540.0" y1="1658.0" x2="1780.0" y2="1658.0" stroke="#9673a6" stroke-width="1"/>
+<rect x="1280.0" y="1702.0" width="240.0" height="110.0" fill="#dae8fc" stroke="#6c8ebf" stroke-width="1.2"/>
+<text x="1400.0" y="1718.0" text-anchor="middle" font-size="12" font-weight="700" fill="#333">SedesService</text>
+<line x1="1280.0" y1="1730.0" x2="1520.0" y2="1730.0" stroke="#6c8ebf" stroke-width="1"/>
+<text x="1288.0" y="1738.0" font-size="11" fill="#333">+findAll()</text>
+<text x="1288.0" y="1754.0" font-size="11" fill="#333">+crear()</text>
+<text x="1288.0" y="1770.0" font-size="11" fill="#333">+actualizar()</text>
+<rect x="1540.0" y="1702.0" width="240.0" height="110.0" fill="#d5e8d4" stroke="#82b366" stroke-width="1.2"/>
+<text x="1660.0" y="1718.0" text-anchor="middle" font-size="12" font-weight="700" fill="#333">SedesRepository</text>
+<line x1="1540.0" y1="1730.0" x2="1780.0" y2="1730.0" stroke="#82b366" stroke-width="1"/>
 <text x="1548.0" y="1738.0" font-size="11" fill="#333">+findAll()</text>
-<text x="20.0" y="1928.0" font-size="12" fill="#333" font-weight="700">Página 2/4 — Acceso y usuarios. Autor: Patricio Ramos · 2026-11-13 · C-28.3</text>
+<text x="1548.0" y="1754.0" font-size="11" fill="#333">+crear()</text>
+<text x="1548.0" y="1770.0" font-size="11" fill="#333">+actualizar()</text>
+<text x="20.0" y="1928.0" font-size="12" fill="#333" font-weight="700">Página 2/4 — Acceso y usuarios. Autor: Patricio Ramos · 2026-11-14 · C-29 (sedes: alta y edición)</text>
 <line x1="170.0" y1="1372.0" x2="170.0" y2="1412.0" stroke="#222" stroke-width="1.6" marker-end="url(#arrow)"/>
 <rect x="156.0" y="1383.0" width="28" height="14" fill="#fff" fill-opacity="0.9"/>
 <text x="170.0" y="1394.0" text-anchor="middle" font-size="10" fill="#222" font-weight="600">usa</text>
@@ -363,12 +377,15 @@
 <line x1="2200.0" y1="1462.0" x2="2200.0" y2="1492.0" stroke="#222" stroke-width="1.6" marker-end="url(#arrow)"/>
 <rect x="2186.0" y="1468.0" width="28" height="14" fill="#fff" fill-opacity="0.9"/>
 <text x="2200.0" y="1479.0" text-anchor="middle" font-size="10" fill="#222" font-weight="600">usa</text>
-<line x1="1390.0" y1="1672.0" x2="1390.0" y2="1702.0" stroke="#222" stroke-width="1.6" marker-end="url(#arrow)"/>
-<rect x="1376.0" y="1678.0" width="28" height="14" fill="#fff" fill-opacity="0.9"/>
-<text x="1390.0" y="1689.0" text-anchor="middle" font-size="10" fill="#222" font-weight="600">usa</text>
-<line x1="1500.0" y1="1742.0" x2="1540.0" y2="1742.0" stroke="#222" stroke-width="1.6" marker-end="url(#arrow)"/>
-<rect x="1506.0" y="1733.0" width="28" height="14" fill="#fff" fill-opacity="0.9"/>
-<text x="1520.0" y="1744.0" text-anchor="middle" font-size="10" fill="#222" font-weight="600">usa</text>
+<line x1="1520.0" y1="1624.7" x2="1540.0" y2="1624.3" stroke="#222" stroke-width="1.6" stroke-dasharray="5 3" marker-end="url(#arrow)"/>
+<rect x="1516.0" y="1615.5" width="28" height="14" fill="#fff" fill-opacity="0.9"/>
+<text x="1530.0" y="1626.5" text-anchor="middle" font-size="10" fill="#222" font-weight="600">DTO</text>
+<line x1="1400.0" y1="1682.0" x2="1400.0" y2="1702.0" stroke="#222" stroke-width="1.6" marker-end="url(#arrow)"/>
+<rect x="1386.0" y="1683.0" width="28" height="14" fill="#fff" fill-opacity="0.9"/>
+<text x="1400.0" y="1694.0" text-anchor="middle" font-size="10" fill="#222" font-weight="600">usa</text>
+<line x1="1520.0" y1="1757.0" x2="1540.0" y2="1757.0" stroke="#222" stroke-width="1.6" marker-end="url(#arrow)"/>
+<rect x="1516.0" y="1748.0" width="28" height="14" fill="#fff" fill-opacity="0.9"/>
+<text x="1530.0" y="1759.0" text-anchor="middle" font-size="10" fill="#222" font-weight="600">usa</text>
 <text x="24" y="2038.0" font-size="16" font-weight="700" fill="#222">3 Clases Infra</text>
 <rect x="20.0" y="2068.0" width="1600.0" height="720.0" fill="#f7f9fc" stroke="#999999" stroke-dasharray="4 3" fill-opacity="0.9"/>
 <text x="820.0" y="2090.0" text-anchor="middle" font-size="13" font-weight="700" fill="#333">Nest — Clases / Observer / Notificaciones</text>

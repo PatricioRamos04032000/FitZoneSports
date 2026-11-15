@@ -6,7 +6,7 @@ C4Container
     Boundary(actores, " ", "") {
         Person(socio, "Socio activo", "Membresía, clases, canchas y QR")
         Person(externo, "Cliente externo", "Alquila canchas a tarifa plena")
-        Person(gerente, "Gerente central", "Precios, descuento y canchas")
+        Person(gerente, "Gerente central", "Sedes, precios y canchas")
         Person(recep, "Recepcionista / administrador de sede", "Ingreso y aforo de su sede")
     }
 
@@ -54,8 +54,8 @@ C4Container
 
 %% C4-2 Contenedores — FitZone Sports
 %% Autor: Patricio Ramos
-%% Fecha: 2026-11-10
-%% Versión: 1.0
+%% Fecha: 2026-11-10 (etiqueta del gerente, 2026-11-14, C-29)
+%% Versión: 1.1
 %% El límite es el Container_Boundary FitZone Sports. Las personas y la pasarela quedan afuera.
 %% El Compose (C-07, ADR-009) empaqueta solo la web y la API. La base sigue en Supabase.
 %% Sin red, el terminal no llama a la API: la cola queda en el navegador.

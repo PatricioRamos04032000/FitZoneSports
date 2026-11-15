@@ -82,6 +82,7 @@ Estas C-xx / S* no compiten entre sí por el mismo entregable; la observación e
 | **C-13, C-15, C-18** | Finalizadas en el tablero el 2026-11-11. Sin par S5–S7 equivalente. |
 | **C-16, C-17, C-19b, C-19c, C-20, C-21, C-23, C-25…C-27** | Docs/admisibilidad del cierre, en por hacer. C-19a finalizada; C-19d en desarrollo. C-22 (Anexo G) en desarrollo, a cargo de Patricio. |
 | **C-28** | Nueva 2026-11-13 (no estaba en el plan original). Solapa con **S4-T01** por el patrón de precios (ver §2); no compite con C-04 ni S7-T01. |
+| **C-29** | Nueva 2026-11-14, Patricio, rama `C-29`. Alta y edición de sedes (A4, RNF-04). No es **C-08** (seed de 25 sedes) ni los reportes del gerente. |
 | **C-14** | Diez ADR obligatorios escritos el 2026-11-09 (rama `c-14`, `docs/adr/`, ninguno Propuesto). El 60 % lo hace cumplir **C-10**; el Compose, **C-07**. Trello: finalizado. |
 | **S7-T12** | Stretch móvil. Distinto de **C-03** (web responsive). Trello: finalizado. |
 
@@ -129,6 +130,7 @@ C-10 → Observación: relacionada con S7-T10 (amplía cobertura + umbral ADR). 
 C-14 → Observación: sin par S5–S7. Diez ADR en docs/adr/ (2026-11-09, rama c-14). Umbral: C-10. Compose: C-07. Trello: finalizado.
 C-28 → Observación: relacionada con S4-T01 (Strategy histórico). Redefine precios a Decorator + UML Nest; crear en Trello o track solo en plan.
 S4-T01 → Observación: relacionada con C-28 (refactor Decorator antes del tag); no borrar esta tarjeta.
+C-29 → Observación: alta y edición de sedes (A4, RNF-04), Patricio, rama C-29. No es C-08 (seed de 25 sedes) ni los reportes del gerente. Sin ADR nuevo.
 ```
 
 ---

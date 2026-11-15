@@ -13,6 +13,7 @@ import Clases from "./portal/Clases/Clases";
 import Notificaciones from "./portal/Notificaciones/Notificaciones";
 import MiQr from "./portal/MiQr/MiQr";
 import Acceso from "./admin/Acceso/Acceso";
+import Sedes from "./admin/Sedes/Sedes";
 
 function App() {
   return (
@@ -42,6 +43,10 @@ function App() {
             >
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/acceso" element={<Acceso />} />
+            </Route>
+
+            <Route element={<RoleRoute allowedRoles={["gerente"]} />}>
+              <Route path="/sedes" element={<Sedes />} />
             </Route>
           </Route>
         </Route>
