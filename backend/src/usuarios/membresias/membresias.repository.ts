@@ -73,6 +73,14 @@ export class MembresiasRepository extends SupabaseRepository<Membresia> {
     );
   }
 
+  /** Cierra las activas e inserta la nueva en la misma transacción (RF-02). */
+  async renovar(perfilId: string, plan: PlanMembresia): Promise<Membresia> {
+    return this.rpc<Membresia>('renovar_membresia', {
+      p_perfil_id: perfilId,
+      p_plan: plan,
+    });
+  }
+
   async crear(nueva: NuevaMembresiaRow): Promise<Membresia> {
     return this.unwrap<Membresia>(
       await this.from().insert(nueva).select('*').single(),

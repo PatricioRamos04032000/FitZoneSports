@@ -300,29 +300,33 @@
 <text x="1808.0" y="1660.0" font-size="11" fill="#333">dni</text>
 <text x="1808.0" y="1676.0" font-size="11" fill="#333">sedeId</text>
 <line x1="1800.0" y1="1688.0" x2="2020.0" y2="1688.0" stroke="#9673a6" stroke-width="1"/>
-<rect x="2080.0" y="1232.0" width="240.0" height="110.0" fill="#ffe6cc" stroke="#d79b00" stroke-width="1.2"/>
-<text x="2200.0" y="1248.0" text-anchor="middle" font-size="12" font-weight="700" fill="#333">MembresiasController</text>
-<line x1="2080.0" y1="1260.0" x2="2320.0" y2="1260.0" stroke="#d79b00" stroke-width="1"/>
-<text x="2088.0" y="1268.0" font-size="11" fill="#333">GET planes</text>
-<text x="2088.0" y="1284.0" font-size="11" fill="#333">GET mia</text>
-<text x="2088.0" y="1300.0" font-size="11" fill="#333">GET/POST staff</text>
-<rect x="2080.0" y="1372.0" width="240.0" height="90.0" fill="#dae8fc" stroke="#6c8ebf" stroke-width="1.2"/>
-<text x="2200.0" y="1388.0" text-anchor="middle" font-size="12" font-weight="700" fill="#333">MembresiasService</text>
-<line x1="2080.0" y1="1400.0" x2="2320.0" y2="1400.0" stroke="#6c8ebf" stroke-width="1"/>
-<text x="2088.0" y="1408.0" font-size="11" fill="#333">+mia()</text>
-<text x="2088.0" y="1424.0" font-size="11" fill="#333">+crear()</text>
-<text x="2088.0" y="1440.0" font-size="11" fill="#333">+activas()</text>
-<rect x="2080.0" y="1492.0" width="240.0" height="80.0" fill="#d5e8d4" stroke="#82b366" stroke-width="1.2"/>
-<text x="2200.0" y="1508.0" text-anchor="middle" font-size="12" font-weight="700" fill="#333">MembresiasRepository</text>
-<line x1="2080.0" y1="1520.0" x2="2320.0" y2="1520.0" stroke="#82b366" stroke-width="1"/>
-<text x="2088.0" y="1528.0" font-size="11" fill="#333">+findActivaPorPerfil()</text>
-<rect x="2080.0" y="1602.0" width="240.0" height="90.0" fill="#e1d5e7" stroke="#9673a6" stroke-width="1.2"/>
-<text x="2200.0" y="1618.0" text-anchor="middle" font-size="12" font-weight="700" fill="#333">MembresiaDto</text>
-<line x1="2080.0" y1="1630.0" x2="2320.0" y2="1630.0" stroke="#9673a6" stroke-width="1"/>
-<text x="2088.0" y="1638.0" font-size="11" fill="#333">plan</text>
-<text x="2088.0" y="1654.0" font-size="11" fill="#333">estado</text>
-<text x="2088.0" y="1670.0" font-size="11" fill="#333">vigencia</text>
-<line x1="2080.0" y1="1682.0" x2="2320.0" y2="1682.0" stroke="#9673a6" stroke-width="1"/>
+<rect x="2080.0" y="1212.0" width="260.0" height="130.0" fill="#ffe6cc" stroke="#d79b00" stroke-width="1.2"/>
+<text x="2210.0" y="1228.0" text-anchor="middle" font-size="12" font-weight="700" fill="#333">MembresiasController</text>
+<line x1="2080.0" y1="1240.0" x2="2340.0" y2="1240.0" stroke="#d79b00" stroke-width="1"/>
+<text x="2088.0" y="1248.0" font-size="11" fill="#333">GET planes</text>
+<text x="2088.0" y="1264.0" font-size="11" fill="#333">GET mia</text>
+<text x="2088.0" y="1280.0" font-size="11" fill="#333">GET/POST staff</text>
+<text x="2088.0" y="1296.0" font-size="11" fill="#333">POST renovar</text>
+<rect x="2080.0" y="1362.0" width="260.0" height="130.0" fill="#dae8fc" stroke="#6c8ebf" stroke-width="1.2"/>
+<text x="2210.0" y="1378.0" text-anchor="middle" font-size="12" font-weight="700" fill="#333">MembresiasService</text>
+<line x1="2080.0" y1="1390.0" x2="2340.0" y2="1390.0" stroke="#6c8ebf" stroke-width="1"/>
+<text x="2088.0" y="1398.0" font-size="11" fill="#333">+mia()</text>
+<text x="2088.0" y="1414.0" font-size="11" fill="#333">+crear()</text>
+<text x="2088.0" y="1430.0" font-size="11" fill="#333">+activas()</text>
+<text x="2088.0" y="1446.0" font-size="11" fill="#333">+iniciarRenovacion()</text>
+<text x="2088.0" y="1462.0" font-size="11" fill="#333">+aplicarResultadoPago()</text>
+<rect x="2080.0" y="1512.0" width="260.0" height="90.0" fill="#d5e8d4" stroke="#82b366" stroke-width="1.2"/>
+<text x="2210.0" y="1528.0" text-anchor="middle" font-size="12" font-weight="700" fill="#333">MembresiasRepository</text>
+<line x1="2080.0" y1="1540.0" x2="2340.0" y2="1540.0" stroke="#82b366" stroke-width="1"/>
+<text x="2088.0" y="1548.0" font-size="11" fill="#333">+findActivaPorPerfil()</text>
+<text x="2088.0" y="1564.0" font-size="11" fill="#333">+renovar()</text>
+<rect x="2080.0" y="1622.0" width="260.0" height="90.0" fill="#e1d5e7" stroke="#9673a6" stroke-width="1.2"/>
+<text x="2210.0" y="1638.0" text-anchor="middle" font-size="12" font-weight="700" fill="#333">MembresiaDto</text>
+<line x1="2080.0" y1="1650.0" x2="2340.0" y2="1650.0" stroke="#9673a6" stroke-width="1"/>
+<text x="2088.0" y="1658.0" font-size="11" fill="#333">plan</text>
+<text x="2088.0" y="1674.0" font-size="11" fill="#333">estado</text>
+<text x="2088.0" y="1690.0" font-size="11" fill="#333">vigencia</text>
+<line x1="2080.0" y1="1702.0" x2="2340.0" y2="1702.0" stroke="#9673a6" stroke-width="1"/>
 <rect x="1280.0" y="1572.0" width="240.0" height="110.0" fill="#ffe6cc" stroke="#d79b00" stroke-width="1.2"/>
 <text x="1400.0" y="1588.0" text-anchor="middle" font-size="12" font-weight="700" fill="#333">SedesController</text>
 <line x1="1280.0" y1="1600.0" x2="1520.0" y2="1600.0" stroke="#d79b00" stroke-width="1"/>
@@ -349,7 +353,7 @@
 <text x="1548.0" y="1738.0" font-size="11" fill="#333">+findAll()</text>
 <text x="1548.0" y="1754.0" font-size="11" fill="#333">+crear()</text>
 <text x="1548.0" y="1770.0" font-size="11" fill="#333">+actualizar()</text>
-<text x="20.0" y="1928.0" font-size="12" fill="#333" font-weight="700">Página 2/4 — Acceso y usuarios. Autor: Patricio Ramos · 2026-11-14 · C-29 (sedes: alta y edición)</text>
+<text x="20.0" y="1928.0" font-size="12" fill="#333" font-weight="700">Página 2/4 — Acceso y usuarios. Autor: Patricio Ramos · 2026-11-14 · C-30 (renovación de membresía)</text>
 <line x1="170.0" y1="1372.0" x2="170.0" y2="1412.0" stroke="#222" stroke-width="1.6" marker-end="url(#arrow)"/>
 <rect x="156.0" y="1383.0" width="28" height="14" fill="#fff" fill-opacity="0.9"/>
 <text x="170.0" y="1394.0" text-anchor="middle" font-size="10" fill="#222" font-weight="600">usa</text>
@@ -371,12 +375,12 @@
 <line x1="1910.0" y1="1442.0" x2="1910.0" y2="1472.0" stroke="#222" stroke-width="1.6" marker-end="url(#arrow)"/>
 <rect x="1896.0" y="1448.0" width="28" height="14" fill="#fff" fill-opacity="0.9"/>
 <text x="1910.0" y="1459.0" text-anchor="middle" font-size="10" fill="#222" font-weight="600">usa</text>
-<line x1="2200.0" y1="1342.0" x2="2200.0" y2="1372.0" stroke="#222" stroke-width="1.6" marker-end="url(#arrow)"/>
-<rect x="2186.0" y="1348.0" width="28" height="14" fill="#fff" fill-opacity="0.9"/>
-<text x="2200.0" y="1359.0" text-anchor="middle" font-size="10" fill="#222" font-weight="600">usa</text>
-<line x1="2200.0" y1="1462.0" x2="2200.0" y2="1492.0" stroke="#222" stroke-width="1.6" marker-end="url(#arrow)"/>
-<rect x="2186.0" y="1468.0" width="28" height="14" fill="#fff" fill-opacity="0.9"/>
-<text x="2200.0" y="1479.0" text-anchor="middle" font-size="10" fill="#222" font-weight="600">usa</text>
+<line x1="2210.0" y1="1342.0" x2="2210.0" y2="1362.0" stroke="#222" stroke-width="1.6" marker-end="url(#arrow)"/>
+<rect x="2196.0" y="1343.0" width="28" height="14" fill="#fff" fill-opacity="0.9"/>
+<text x="2210.0" y="1354.0" text-anchor="middle" font-size="10" fill="#222" font-weight="600">usa</text>
+<line x1="2210.0" y1="1492.0" x2="2210.0" y2="1512.0" stroke="#222" stroke-width="1.6" marker-end="url(#arrow)"/>
+<rect x="2196.0" y="1493.0" width="28" height="14" fill="#fff" fill-opacity="0.9"/>
+<text x="2210.0" y="1504.0" text-anchor="middle" font-size="10" fill="#222" font-weight="600">usa</text>
 <line x1="1520.0" y1="1624.7" x2="1540.0" y2="1624.3" stroke="#222" stroke-width="1.6" stroke-dasharray="5 3" marker-end="url(#arrow)"/>
 <rect x="1516.0" y="1615.5" width="28" height="14" fill="#fff" fill-opacity="0.9"/>
 <text x="1530.0" y="1626.5" text-anchor="middle" font-size="10" fill="#222" font-weight="600">DTO</text>

@@ -65,6 +65,13 @@ describe('Membresías, Clases y Lista de Espera — Seguridad y Swagger (e2e)', 
     }),
     findAll: jest.fn().mockResolvedValue([]),
     findActivaPorPerfil: jest.fn(),
+    iniciarRenovacion: jest.fn().mockResolvedValue({
+      pagoId: 'f1000000-0000-4000-8000-000000000001',
+      checkoutUrl:
+        'http://localhost:3000/pasarela-simulada/checkout/f1000000-0000-4000-8000-000000000001',
+      monto: 25000,
+      plan: 'mensual',
+    }),
     crear: jest.fn().mockResolvedValue({
       id: 'b1000000-0000-4000-8000-000000000001',
       perfil_id: SOCIO_ID,
@@ -104,6 +111,26 @@ describe('Membresías, Clases y Lista de Espera — Seguridad y Swagger (e2e)', 
     await app.close();
   });
 
+  describe('catálogo de planes', () => {
+    it('GET /membresias/planes devuelve los tres planes', async () => {
+      membresiasService.listarPlanes.mockResolvedValueOnce([
+        { plan: 'mensual', duracion_meses: 1, precio: 25000, activo: true },
+        { plan: 'trimestral', duracion_meses: 3, precio: 67500, activo: true },
+        { plan: 'anual', duracion_meses: 12, precio: 240000, activo: true },
+      ]);
+
+      const res = await request(app.getHttpServer())
+        .get('/membresias/planes')
+        .expect(200);
+
+      expect(res.body).toEqual([
+        { plan: 'mensual', duracion_meses: 1, precio: 25000, activo: true },
+        { plan: 'trimestral', duracion_meses: 3, precio: 67500, activo: true },
+        { plan: 'anual', duracion_meses: 12, precio: 240000, activo: true },
+      ]);
+    });
+  });
+
   describe('401 sin token Bearer', () => {
     it('rechaza endpoints protegidos de clases, lista de espera y membresías sin autenticación', async () => {
       await request(app.getHttpServer())
@@ -135,6 +162,10 @@ describe('Membresías, Clases y Lista de Espera — Seguridad y Swagger (e2e)', 
         .post('/membresias')
         .send({ perfil_id: SOCIO_ID, plan: 'mensual' })
         .expect(401);
+      await request(app.getHttpServer())
+        .post('/membresias/renovar')
+        .send({ plan: 'mensual' })
+        .expect(401);
     });
   });
 
@@ -157,6 +188,12 @@ describe('Membresías, Clases y Lista de Espera — Seguridad y Swagger (e2e)', 
       await request(app.getHttpServer())
         .get('/membresias/mia')
         .set('Authorization', `Bearer ${tokenSocio}`)
+        .expect(403);
+
+      await request(app.getHttpServer())
+        .post('/membresias/renovar')
+        .set('Authorization', `Bearer ${tokenSocio}`)
+        .send({ plan: 'mensual' })
         .expect(403);
     });
 
@@ -275,6 +312,7 @@ describe('Membresías, Clases y Lista de Espera — Seguridad y Swagger (e2e)', 
           '/perfiles/me',
           '/membresias/mia',
           '/membresias/planes',
+          '/membresias/renovar',
           '/clases',
           '/clases/inscripciones',
           '/clases/lista-espera',

@@ -7,6 +7,11 @@ import {
   forwardRef,
 } from '@nestjs/common';
 import { AccesoService } from '../../acceso/acceso.service';
+import { PagosRepository } from '../../pagos/pagos.repository';
+import {
+  PASARELA_PAGO,
+  type PasarelaPago,
+} from '../../pagos/pasarela-pago';
 import { RepositoryError } from '../../supabase/repository.error';
 import { CrearMembresiaDto } from './membresia.dto';
 import {
@@ -62,6 +67,9 @@ export class MembresiasService {
     private readonly repository: MembresiasRepository,
     @Inject(forwardRef(() => AccesoService))
     private readonly acceso: AccesoService,
+    @Inject(forwardRef(() => PagosRepository))
+    private readonly pagos: PagosRepository,
+    @Inject(PASARELA_PAGO) private readonly pasarela: PasarelaPago,
   ) {}
 
   async listarPlanes(): Promise<PlanMembresiaFila[]> {
@@ -135,36 +143,14 @@ export class MembresiasService {
       throw new BadRequestException('El plan solicitado no se encuentra activo');
     }
 
-    const vigenteDesde = fechaHoyArgentina(ahora);
-    const vigenteHasta = sumarMesesFechaIso(
-      vigenteDesde,
-      planFila.duracion_meses,
-    );
-
-    // D1: cerrar cualquier membresía activa previa del socio antes de dar de alta la nueva.
-    await this.repository.cerrarActivasPorPerfil(dto.perfil_id);
+    // La vigencia la calcula renovar_membresia (misma zona que fechaHoyArgentina).
+    void ahora;
 
     let creada: Membresia;
     try {
-      creada = await this.repository.crear({
-        perfil_id: dto.perfil_id,
-        plan: dto.plan,
-        estado: 'activo',
-        vigente_desde: vigenteDesde,
-        vigente_hasta: vigenteHasta,
-      });
+      creada = await this.repository.renovar(dto.perfil_id, dto.plan);
     } catch (e) {
-      if (e instanceof RepositoryError) {
-        if (e.code === '23505') {
-          throw new ConflictException(
-            'El socio ya posee una membresía activa en curso',
-          );
-        }
-        if (e.code === '23503') {
-          throw new NotFoundException('El perfil indicado no existe');
-        }
-      }
-      throw e;
+      this.traducirErrorAlta(e);
     }
 
     // Acceso M2: socio con membresía activa recibe seed TOTP cifrado (si aún no tiene).
@@ -173,6 +159,92 @@ export class MembresiasService {
     }
 
     return creada;
+  }
+
+  /**
+   * El socio elige un plan del catálogo. Deja un pago pendiente y la URL del checkout.
+   * La membresía vigente no cambia hasta que la pasarela aprueba.
+   */
+  async iniciarRenovacion(
+    perfilId: string,
+    plan: unknown,
+  ): Promise<{
+    pagoId: string;
+    checkoutUrl: string;
+    monto: number;
+    plan: PlanMembresia;
+  }> {
+    this.validarUuid(perfilId, 'perfilId');
+    this.validarPlan(plan);
+
+    const planFila = await this.repository.findPlanActivo(plan);
+    if (!planFila) {
+      throw new BadRequestException('El plan solicitado no se encuentra activo');
+    }
+
+    const preferencia = await this.pasarela.crearPreferencia({
+      monto: Number(planFila.precio),
+      concepto: 'membresia',
+      referenciaId: perfilId,
+      perfilId,
+      plan,
+    });
+
+    return {
+      pagoId: preferencia.pagoId,
+      checkoutUrl: preferencia.checkoutUrl,
+      monto: Number(planFila.precio),
+      plan,
+    };
+  }
+
+  /**
+   * Resultado del checkout de un pago de membresía.
+   * El rechazo solo marca el pago. La aprobación cierra la activa e inserta la nueva.
+   */
+  async aplicarResultadoPago(
+    pago: { id: string; perfil_id: string; plan: PlanMembresia | null },
+    aprobado: boolean,
+    token?: string,
+  ): Promise<void> {
+    if (!aprobado) {
+      await this.pagos.actualizarEstado(pago.id, {
+        estado: 'rechazado',
+        token_pasarela: null,
+      });
+      return;
+    }
+
+    if (!pago.plan) {
+      throw new BadRequestException('El pago de membresía no tiene plan');
+    }
+
+    let creada: Membresia;
+    try {
+      creada = await this.repository.renovar(pago.perfil_id, pago.plan);
+    } catch (e) {
+      this.traducirErrorAlta(e);
+    }
+
+    await this.pagos.aprobarMembresia(pago.id, creada.id, token ?? null);
+    await this.acceso.ensureTotpSeed(pago.perfil_id);
+  }
+
+  private traducirErrorAlta(e: unknown): never {
+    if (e instanceof RepositoryError) {
+      if (e.code === '23505') {
+        throw new ConflictException(
+          'El socio ya posee una membresía activa en curso',
+        );
+      }
+      if (e.code === '23503') {
+        throw new NotFoundException('El perfil indicado no existe');
+      }
+      if (e.message.includes('PLAN_INACTIVO')) {
+        throw new BadRequestException('El plan solicitado no se encuentra activo');
+      }
+    }
+    throw e;
   }
 
   private calcularEstadoVencido(membresia: Membresia, hoyIso: string): Membresia {

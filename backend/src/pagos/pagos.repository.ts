@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { SupabaseRepository } from '../supabase/supabase.repository';
+import type { PlanMembresia } from '../usuarios/membresias/membresia.model';
 import { EstadoPago, NuevoPago, Pago } from './pago.model';
 
 @Injectable()
@@ -10,6 +11,42 @@ export class PagosRepository extends SupabaseRepository<Pago> {
     return this.unwrap(
       await this.from().insert(nuevo).select().single(),
       'registrarCobro',
+    );
+  }
+
+  async findPendienteMembresia(
+    perfilId: string,
+    plan: PlanMembresia,
+  ): Promise<Pago | null> {
+    return this.unwrap(
+      await this.from()
+        .select('*')
+        .eq('perfil_id', perfilId)
+        .eq('concepto', 'membresia')
+        .eq('plan', plan)
+        .eq('estado', 'pendiente')
+        .maybeSingle(),
+      'findPendienteMembresia',
+    );
+  }
+
+  /** Estado aprobado y membresía vinculada en el mismo update (check de pagos). */
+  async aprobarMembresia(
+    pagoId: string,
+    membresiaId: string,
+    token: string | null,
+  ): Promise<Pago> {
+    return this.unwrap(
+      await this.from()
+        .update({
+          estado: 'aprobado',
+          token_pasarela: token,
+          membresia_id: membresiaId,
+        })
+        .eq('id', pagoId)
+        .select()
+        .single(),
+      'aprobarMembresia',
     );
   }
 

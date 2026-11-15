@@ -47,10 +47,10 @@ El guion de Demo Day (login → ver membresía → reservar paddle y pagar → Q
 | RF-01 Registro (DNI, contacto; externo) | ✅ `perfiles` | ✅ `POST /auth/register` crea rol `externo` y no devuelve token hasta confirmar el mail | ✅ `auth.service.spec` (`register`) | ✅ `/signup` | 🟡 ADR-011 (el BFF); el alta no tiene sección propia | No hay alta de socio por esta vía |
 | RF-01 Foto | 🟡 columna `foto_url`; Storage sin configurar | 🟡 `PATCH /perfiles/me` acepta una URL de texto | ❌ | ❌ el formulario no la pide | ❌ | — |
 | Ver y editar mi perfil | ✅ | ✅ `GET/PATCH /perfiles/me` (identidad del JWT) | ✅ `perfiles.service.spec` y `perfiles.e2e-spec` | ✅ `/perfil` | 🟡 manual técnico nombra el módulo | Falta el manual de usuario |
-| RF-02 Catálogo de planes | ✅ `planes_membresia` | ✅ `GET /membresias/planes` | 🟡 el e2e de membresías prueba seguridad, no el catálogo | ❌ | ✅ diagrama [est-membresia](../docs/diagramas/fuentes/est-membresia.mmd) | — |
+| RF-02 Catálogo de planes | ✅ `planes_membresia` | ✅ `GET /membresias/planes` | ✅ el e2e comprueba los tres planes | ✅ el perfil del socio muestra plan, duración y precio | ✅ diagrama [est-membresia](../docs/diagramas/fuentes/est-membresia.mmd) | — |
 | RF-02 Membresía activa / vencida | ✅ estados y vigencia | ✅ `GET /membresias/mia` | 🟡 unitario del servicio | ✅ el perfil del socio muestra plan, estado y vigencia | ✅ diagrama de estados, manual técnico §2 | — |
-| RF-02 Alta que cierra la anterior | ✅ índice de una activa por perfil | 🟡 `POST /membresias` (admin o gerente) cierra la activa; no hay función SQL `renovar_membresia` | 🟡 | ❌ | 🟡 el diagrama de estados no describe la pantalla | — |
-| RF-02 Renovación cobrada | — | ❌ el alta no pasa por la pasarela | ❌ | ❌ | 🟡 figura como pendiente en la bitácora | Depende de M5 y no está hecha |
+| RF-02 Alta que cierra la anterior | ✅ `renovar_membresia` cierra e inserta en la misma transacción | ✅ el `POST /membresias` del staff llama a esa función y no cobra | ✅ el unitario espera `renovar` | — el alta de staff no tiene pantalla | ✅ manual técnico M1 | — |
+| RF-02 Renovación cobrada | ✅ `pagos.plan` y el check de un pago pendiente sin `membresia_id` | ✅ `POST /membresias/renovar` y el checkout; el rechazo no toca la vigente | ✅ unitario de rechazo y de aprobación, e2e 401/403 | ✅ botón Pagar en el perfil | ✅ manual técnico M5 | — |
 | RF-03 Acceso multi-sede | ✅ la membresía no tiene sede | ✅ el check-in no exige `sede_home` | ❌ no hay un caso que lo afirme | — el socio elige sede en clases y canchas | ✅ enunciado y manual técnico M1 | La regla es de modelo, no de pantalla |
 
 ### M2 — Acceso
@@ -164,9 +164,8 @@ Ordenado por lo que impide decir que la regla está cerrada de punta a punta.
 | 2 | ABM de clases (hoy la agenda entra por SQL) | RF-06 |
 | 3 | Pantallas de alta de cancha, mantenimiento, horario pico y descuento de socio | RF-09, RF-12, RF-11 |
 | 4 | Cancelar una reserva de cancha desde `/canchas` y check-out desde `/acceso` | RF-10, RN-01 |
-| 5 | Renovación de membresía que pase por la pasarela | RF-02 |
-| 6 | Foto (Storage) y alta de socio, no solo de externo | RF-01 |
-| 7 | Manual de usuario y manual de instalación | C-16, C-17 |
-| 8 | Docker o un arranque de cinco pasos, y el seed de 25 sedes | ADR-009, carga de prueba |
+| 5 | Foto (Storage) y alta de socio, no solo de externo | RF-01 |
+| 6 | Manual de usuario y manual de instalación | C-16, C-17 |
+| 7 | Docker o un arranque de cinco pasos, y el seed de 25 sedes | ADR-009, carga de prueba |
 
-Quedan fuera de esta entrega, ya escritos como corte: app móvil, MercadoPago real, Circuit Breaker y reportes del gerente. El offline de recepción es la cola del navegador más el sync, no un nodo por sede. El alta de sedes del gerente ya está en `/sedes`.
+Quedan fuera de esta entrega, ya escritos como corte: app móvil, MercadoPago real, Circuit Breaker y reportes del gerente. El offline de recepción es la cola del navegador más el sync, no un nodo por sede. El alta de sedes del gerente ya está en `/sedes`. La renovación cobrada de la membresía ya está en el perfil del socio.
