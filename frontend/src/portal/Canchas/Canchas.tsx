@@ -5,6 +5,7 @@ import {
   obtenerDisponibilidad,
   obtenerMisReservas,
   reservarCancha,
+  cancelarReserva,
   iniciarPago,
   type Sede,
   type DisponibilidadSede,
@@ -54,6 +55,7 @@ function Canchas() {
 
   // Estado de pago
   const [procesandoPago, setProcesandoPago] = useState(false);
+  const [cancelandoId, setCancelandoId] = useState("");
 
   // Cargar sedes
   useEffect(() => {
@@ -232,6 +234,68 @@ function Canchas() {
       );
     } finally {
       setReservando(false);
+    }
+  }
+
+  function formatearInicio(iso: string) {
+    const fecha = new Date(iso);
+    if (Number.isNaN(fecha.getTime())) {
+      return iso;
+    }
+    return fecha.toLocaleString("es-AR", {
+      timeZone: "America/Argentina/Buenos_Aires",
+      dateStyle: "short",
+      timeStyle: "short",
+    });
+  }
+
+  async function recargarDisponibilidad() {
+    if (!sedeSeleccionada || !fecha) return;
+    try {
+      const respuesta = await obtenerDisponibilidad(
+        sedeSeleccionada,
+        fecha
+      );
+      setDisponibilidad(respuesta);
+    } catch {
+      // La grilla se vuelve a pedir al cambiar sede o fecha.
+    }
+  }
+
+  async function handleCancelar(reservaId: string) {
+    if (!accessToken) {
+      setErrorReserva(
+        "Tu sesión expiró. Volvé a iniciar sesión."
+      );
+      return;
+    }
+
+    try {
+      setCancelandoId(reservaId);
+      setErrorReserva("");
+
+      const reserva = await cancelarReserva(
+        reservaId,
+        accessToken
+      );
+
+      setMisReservas((reservas) =>
+        reservas.map((item) =>
+          item.id === reserva.id ? reserva : item
+        )
+      );
+      setReservaCreada((actual) =>
+        actual?.id === reserva.id ? reserva : actual
+      );
+      await recargarDisponibilidad();
+    } catch (err) {
+      setErrorReserva(
+        err instanceof Error
+          ? err.message
+          : "No se pudo cancelar la reserva."
+      );
+    } finally {
+      setCancelandoId("");
     }
   }
 
@@ -440,7 +504,7 @@ function Canchas() {
           {reservaMostrada.estado === "pendiente" && (
             <button
               onClick={() => handlePagar(reservaMostrada.id)}
-              disabled={procesandoPago}
+              disabled={procesandoPago || cancelandoId !== ""}
             >
               {procesandoPago
                 ? "Conectando con la pasarela..."
@@ -448,12 +512,53 @@ function Canchas() {
             </button>
           )}
 
+          {(reservaMostrada.estado === "pendiente" ||
+            reservaMostrada.estado === "confirmada") && (
+            <button
+              onClick={() => handleCancelar(reservaMostrada.id)}
+              disabled={
+                procesandoPago || cancelandoId === reservaMostrada.id
+              }
+            >
+              {cancelandoId === reservaMostrada.id
+                ? "Cancelando..."
+                : "Cancelar reserva"}
+            </button>
+          )}
+
           {reservaMostrada.estado === "cancelada" && (
-            <p>
-              El pago no se completó y la reserva fue cancelada.
-            </p>
+            <p>La reserva quedó cancelada.</p>
           )}
         </div>
+      )}
+
+      {accessToken && misReservas.length > 0 && (
+        <section>
+          <h2>Mis reservas</h2>
+          <ul className="mis-reservas">
+            {misReservas.map((reserva) => (
+              <li key={reserva.id}>
+                <p>
+                  {nombreCancha(reserva.canchaId)} ·{" "}
+                  {formatearInicio(reserva.inicio)} · {reserva.estado}
+                </p>
+                {(reserva.estado === "pendiente" ||
+                  reserva.estado === "confirmada") && (
+                  <button
+                    onClick={() => handleCancelar(reserva.id)}
+                    disabled={
+                      procesandoPago || cancelandoId === reserva.id
+                    }
+                  >
+                    {cancelandoId === reserva.id
+                      ? "Cancelando..."
+                      : "Cancelar"}
+                  </button>
+                )}
+              </li>
+            ))}
+          </ul>
+        </section>
       )}
     </div>
   );

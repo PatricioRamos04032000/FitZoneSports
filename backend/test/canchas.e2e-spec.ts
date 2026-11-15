@@ -169,4 +169,112 @@ describe('Canchas API REST — S4-T06 (e2e)', () => {
 
     expect(res.body).toEqual({ descuentoSocioPct: 10 });
   });
+
+  it('POST /canchas rechaza admin_sede sin sede asignada y crea con gerente', async () => {
+    perfilesRolRepo.findRol.mockResolvedValue('admin_sede');
+    canchasRepo.esAdminDeSede.mockResolvedValue(false);
+    const tokenAdmin = await signer.sign({ sub: USER_ID });
+
+    await request(app.getHttpServer())
+      .post('/canchas')
+      .set('Authorization', `Bearer ${tokenAdmin}`)
+      .send({
+        sedeId: SEDE_CENTRAL_ID,
+        nombre: 'Paddle 2',
+        tipo: 'paddle',
+        precioHora: 20_000,
+      })
+      .expect(403);
+
+    perfilesRolRepo.findRol.mockResolvedValue('gerente');
+    canchasRepo.crearCancha.mockResolvedValue({
+      id: 'a3000000-0000-4000-8000-000000000099',
+      sede_id: SEDE_CENTRAL_ID,
+      tipo: 'paddle',
+      nombre: 'Paddle 2',
+      precio_hora: 20_000,
+      activa: true,
+      created_at: '2026-11-15T15:00:00.000Z',
+    });
+    const tokenGerente = await signer.sign({ sub: USER_ID });
+
+    const res = await request(app.getHttpServer())
+      .post('/canchas')
+      .set('Authorization', `Bearer ${tokenGerente}`)
+      .send({
+        sedeId: SEDE_CENTRAL_ID,
+        nombre: 'Paddle 2',
+        tipo: 'paddle',
+        precioHora: 20_000,
+      })
+      .expect(201);
+
+    expect(res.body).toMatchObject({
+      id: 'a3000000-0000-4000-8000-000000000099',
+      sedeId: SEDE_CENTRAL_ID,
+      nombre: 'Paddle 2',
+      tipo: 'paddle',
+      precioHora: 20_000,
+      activa: true,
+    });
+  });
+
+  it('POST /canchas/:id/mantenimientos sigue los mismos roles', async () => {
+    const url = `/canchas/${CANCHA_PADDLE_ID}/mantenimientos`;
+    const cuerpo = {
+      desde: '2026-11-20T14:00:00-03:00',
+      hasta: '2026-11-20T18:00:00-03:00',
+      motivo: 'Césped',
+    };
+
+    await request(app.getHttpServer()).post(url).send(cuerpo).expect(401);
+
+    perfilesRolRepo.findRol.mockResolvedValue('socio');
+    const tokenSocio = await signer.sign({ sub: USER_ID });
+    await request(app.getHttpServer())
+      .post(url)
+      .set('Authorization', `Bearer ${tokenSocio}`)
+      .send(cuerpo)
+      .expect(403);
+
+    canchasRepo.findById.mockResolvedValue({
+      id: CANCHA_PADDLE_ID,
+      sede_id: SEDE_CENTRAL_ID,
+      tipo: 'paddle',
+      nombre: 'Paddle 1',
+      precio_hora: 20_000,
+      activa: true,
+      created_at: '2026-10-27T20:00:00.000Z',
+    });
+    perfilesRolRepo.findRol.mockResolvedValue('admin_sede');
+    canchasRepo.esAdminDeSede.mockResolvedValue(false);
+    const tokenAdmin = await signer.sign({ sub: USER_ID });
+    await request(app.getHttpServer())
+      .post(url)
+      .set('Authorization', `Bearer ${tokenAdmin}`)
+      .send(cuerpo)
+      .expect(403);
+
+    perfilesRolRepo.findRol.mockResolvedValue('gerente');
+    canchasRepo.crearMantenimiento.mockResolvedValue({
+      id: 'a4000000-0000-4000-8000-000000000001',
+      cancha_id: CANCHA_PADDLE_ID,
+      desde: cuerpo.desde,
+      hasta: cuerpo.hasta,
+      motivo: cuerpo.motivo,
+      created_at: '2026-11-15T15:00:00.000Z',
+    });
+    const tokenGerente = await signer.sign({ sub: USER_ID });
+    const res = await request(app.getHttpServer())
+      .post(url)
+      .set('Authorization', `Bearer ${tokenGerente}`)
+      .send(cuerpo)
+      .expect(201);
+
+    expect(res.body).toMatchObject({
+      id: 'a4000000-0000-4000-8000-000000000001',
+      canchaId: CANCHA_PADDLE_ID,
+      motivo: 'Césped',
+    });
+  });
 });

@@ -34,6 +34,9 @@ function Layout() {
               {esStaff && <Link to="/dashboard">Dashboard</Link>}
               {rol === "socio" && <Link to="/mi-qr">Mi QR</Link>}
               {esStaff && <Link to="/acceso">Acceso</Link>}
+              {esStaff && (
+                <Link to="/canchas/gestionar">Administrar canchas</Link>
+              )}
               {rol === "gerente" && <Link to="/sedes">Sedes</Link>}
               {rol === "gerente" && <Link to="/clases/gestionar">Agenda</Link>}
             </>

@@ -2,7 +2,7 @@
 
 - **Tarea:** C-18
 - **Anexo:** F de los lineamientos de entrega
-- **Fecha:** 2026-11-11 (actualizado 2026-11-13, C-28 Decorator; 2026-11-14, C-29 alta de sedes y C-30 renovación de membresía)
+- **Fecha:** 2026-11-11 (actualizado 2026-11-13, C-28 Decorator; 2026-11-14, C-29 alta de sedes y C-30 renovación de membresía; 2026-11-15, C-32 canchas en pantalla)
 - **Autor:** Patricio Ramos (P1)
 
 Este manual describe el sistema que está en el repositorio. Cada afirmación cita un archivo. Las decisiones largas viven en los ADR: acá se enlazan, no se reescriben. Los diagramas viven en `docs/diagramas/`: acá se listan, no se redibujan.
@@ -81,7 +81,7 @@ La API se arma en [backend/src/app.module.ts](../../backend/src/app.module.ts). 
 | M1 Usuarios y membresías | Login vía BFF, perfil, rol, sede de origen, catálogo y vigencia de la membresía. El gerente crea y edita sedes (`POST /sedes`, `PATCH /sedes/:id`) | [backend/src/usuarios/](../../backend/src/usuarios/) (`auth`, `perfiles`, `membresias`, `sedes`) |
 | M2 Acceso | QR rotativo, check-in, presencia en una sola sede y cola del terminal. `GET /acceso/presencias` incluye `nombre` y `apellido` del perfil | [backend/src/acceso/](../../backend/src/acceso/) |
 | M3 Clases | Agenda del gerente, inscripción, lista de espera y avisos cuando se libera un lugar | [backend/src/clases/](../../backend/src/clases/) |
-| M4 Canchas | Canchas, grilla, precio, reserva y ciclo de la reserva | [backend/src/canchas/](../../backend/src/canchas/) |
+| M4 Canchas | Canchas, grilla, precio, reserva, cancelación y administración de la sede | [backend/src/canchas/](../../backend/src/canchas/) |
 | M5 Pagos | Cobro simulado de la reserva y de la membresía, y token opaco | [backend/src/pagos/](../../backend/src/pagos/) |
 
 M4 se parte en tres piezas que el C4-3 de canchas muestra juntas: el módulo de canchas, `precios/` y `reservas/`. Las registra el mismo `AppModule`.
@@ -89,6 +89,10 @@ M4 se parte en tres piezas que el C4-3 de canchas muestra juntas: el módulo de 
 La renovación de membresía (RF-02) no abre otra pasarela. El socio, en `/perfil`, ve el catálogo (`GET /membresias/planes`) y llama a `POST /membresias/renovar` con el plan. Eso deja un pago `pendiente` de concepto `membresia`, con `pagos.plan` y sin `membresia_id`. La tarjeta `4111…` aprueba y `4000…` rechaza. Si aprueba, `renovar_membresia` cierra las filas `activo` de ese perfil e inserta la nueva con la vigencia del catálogo, y el pago queda vinculado. Si rechaza, la membresía vigente no cambia. El `POST /membresias` de recepción o gerencia usa la misma función y no cobra. El alta de una sede (A4, RNF-04) no abre un servicio nuevo. Solo el rol `gerente` llama a `POST /sedes` y a `PATCH /sedes/:id`, con nombre, dirección, aforo máximo y el flag `activa`. Si el aforo no viene en el alta, queda en 50. El insert lo hace el repositorio de sedes; el trigger `sedes_after_insert_configuracion_pico` crea la fila de horario pico. No hay `DELETE`: `canchas.sede_id` borra en cascada, así que la baja es `activa = false`. Las pantallas públicas dejan de ofrecer esa sede; las reservas ya tomadas siguen. La pantalla es `/sedes`.
 
 La agenda de clases (RF-06) tampoco abre un servicio nuevo. Solo el rol `gerente` llama a `POST /clases` y a `PATCH /clases/:id`. El alta pide sede, tipo, instructor, inicio, fin y capacidad, y nace en `programada`. La sede tiene que existir y estar activa. El tipo y el instructor se recortan y no pueden quedar vacíos; el fin tiene que ser posterior al inicio; la capacidad es un entero mayor a 0. No hay `DELETE`: `inscripciones_clase` y `lista_espera` borran en cascada, así que la baja es `estado = cancelada`. Cancelar no borra esas filas y no emite el aviso de lista de espera. El `PATCH` no cambia la sede: para pasarla de sede se cancela y se crea otra. La capacidad nueva no puede quedar por debajo de los lugares ya ocupados (inscriptos más notificados con plazo vigente). Volver de `cancelada` a `programada` está permitido. Los horarios de la pantalla `/clases/gestionar` se muestran en `America/Argentina/Buenos_Aires`. El listado y la inscripción del socio en `/clases` no cambian.
+
+La administración de canchas (RF-09, RF-11 y RF-12) usa los endpoints que ya existían. `gerente` administra cualquier sede. `admin_sede` solo la sede que figura en `admins_sede`. Socio y externo reciben 403. La pantalla es `/canchas/gestionar`: alta (`sedeId`, `nombre`, `tipo`, `precioHora`), edición de nombre, precio y `activa`, horario pico de la sede y períodos de mantenimiento. El descuento de socio se muestra a los dos roles de staff y el `PUT /configuracion/descuento-socio` lo acepta solo el gerente. Un mantenimiento bloquea turnos futuros y no cancela reservas ya tomadas. La baja de la cancha es `activa = false`. En `/canchas`, el dueño de la reserva llama a `POST /canchas/reservas/:id/cancelar`. Cancelar no devuelve el pago. Los horarios se muestran en `America/Argentina/Buenos_Aires`.
+
+RNF-03 no agrega una medición. `GET /canchas/disponibilidad` se apoya en los índices de [20261027200000_canchas_m4.sql](../../supabase/migrations/20261027200000_canchas_m4.sql): `canchas_sede`, `mantenimientos_cancha_rango`, `reservas_cancha_cancha_inicio` y `reservas_cancha_perfil`. La no sobreventa sigue siendo el índice único `reservas_cancha_sin_sobreventa` (RN-02, ADR-004).
 
 ## 3. Modelo de datos y persistencia
 
