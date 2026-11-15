@@ -17,9 +17,13 @@ import {
 } from "../../services/canchas";
 import { listarSedes, type SedeAdmin } from "../../services/sedes";
 import { useAuth } from "../../store/useAuth";
+import {
+  aDatetimeLocal,
+  desdeDatetimeLocal,
+  formatearHorario,
+} from "../../horario";
 import "../Clases/GestionarClases.css";
 
-const ZONA = "America/Argentina/Buenos_Aires";
 const TIPOS: { valor: TipoCancha; etiqueta: string }[] = [
   { valor: "paddle", etiqueta: "Paddle" },
   { valor: "futbol5", etiqueta: "Fútbol 5" },
@@ -37,41 +41,6 @@ const DIAS = [
 const HORAS = Array.from({ length: 24 }, (_, hora) =>
   `${String(hora).padStart(2, "0")}:00`
 );
-
-function aDatetimeLocal(iso: string) {
-  const fecha = new Date(iso);
-  if (Number.isNaN(fecha.getTime())) {
-    return "";
-  }
-  const partes = new Intl.DateTimeFormat("en-CA", {
-    timeZone: ZONA,
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-    hour: "2-digit",
-    minute: "2-digit",
-    hourCycle: "h23",
-  }).formatToParts(fecha);
-  const valor = (tipo: Intl.DateTimeFormatPartTypes) =>
-    partes.find((parte) => parte.type === tipo)?.value ?? "";
-  return `${valor("year")}-${valor("month")}-${valor("day")}T${valor("hour")}:${valor("minute")}`;
-}
-
-function desdeDatetimeLocal(valor: string) {
-  return `${valor}:00-03:00`;
-}
-
-function formatearHorario(iso: string) {
-  const fecha = new Date(iso);
-  if (Number.isNaN(fecha.getTime())) {
-    return iso;
-  }
-  return fecha.toLocaleString("es-AR", {
-    timeZone: ZONA,
-    dateStyle: "short",
-    timeStyle: "short",
-  });
-}
 
 function textoError(err: unknown, fallback: string) {
   return err instanceof Error ? err.message : fallback;

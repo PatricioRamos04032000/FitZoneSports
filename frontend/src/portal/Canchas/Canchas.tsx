@@ -12,6 +12,7 @@ import {
   type Reserva,
 } from "../../services/canchas";
 
+import { formatearHorario } from "../../horario";
 import { useAuth } from "../../store/useAuth";
 
 // Obtener la fecha actual
@@ -235,18 +236,6 @@ function Canchas() {
     } finally {
       setReservando(false);
     }
-  }
-
-  function formatearInicio(iso: string) {
-    const fecha = new Date(iso);
-    if (Number.isNaN(fecha.getTime())) {
-      return iso;
-    }
-    return fecha.toLocaleString("es-AR", {
-      timeZone: "America/Argentina/Buenos_Aires",
-      dateStyle: "short",
-      timeStyle: "short",
-    });
   }
 
   async function recargarDisponibilidad() {
@@ -540,7 +529,7 @@ function Canchas() {
               <li key={reserva.id}>
                 <p>
                   {nombreCancha(reserva.canchaId)} ·{" "}
-                  {formatearInicio(reserva.inicio)} · {reserva.estado}
+                  {formatearHorario(reserva.inicio)} · {reserva.estado}
                 </p>
                 {(reserva.estado === "pendiente" ||
                   reserva.estado === "confirmada") && (
