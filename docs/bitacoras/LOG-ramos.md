@@ -559,3 +559,21 @@ La API no arrancó en local por un error de TypeScript ya existente en `precios.
 
 - Pendiente: el trabajo está en la rama `C-29`, sin commit.
 
+### 2026-11-14  ·  C-30 (~5 h)
+
+**Actividad**
+
+Cerré tres huecos de RF-02 en la rama `C-30`: el socio ve el catálogo en el perfil, elige un plan y paga con la pasarela simulada; al aprobar, la membresía activa anterior pasa a vencida y se inserta la nueva en la misma operación de base. El alta de staff usa esa misma función y no cobra. Quedó la migración `20261114220000_renovar_membresia.sql`, `POST /membresias/renovar`, el checkout de membresía, unitarios, e2e de rol, Swagger, panorama, manual técnico y el diagrama de clases. En el DER físico sumé `plan enum` a la caja `pagos` (versión 1.1); no hay tabla nueva ni relación nueva, porque la columna es el enum y no una clave foránea.
+
+**Decisión**
+
+No hay ADR nuevo: el cobro sigue siendo la pasarela simulada de RF-13. El pago de membresía queda pendiente con `pagos.plan` y `membresia_id` nulo; recién al aprobar se escribe el estado y la membresía en el mismo update, porque el check no admite un pago aprobado sin membresía. El rechazo no toca la membresía vigente.
+
+**Problema o bloqueo**
+
+No hay `supabase db push` en este entorno (sin `config.toml` ni URL de base en `.env`). La base que usa la API local ya aceptó la columna y la función: el pago de prueba del socio demo pasó y el perfil quedó en plan trimestral hasta el 14/02/2027. El PNG de respaldo dentro de `er-fisico.svg` no se regeneró; no hay exportador de draw.io. El HTML del SVG sí muestra `plan enum`.
+
+**Commits**
+
+- C-30 en esta rama: catálogo en el perfil, alta que cierra la anterior y renovación cobrada por la pasarela simulada.
+

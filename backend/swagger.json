@@ -569,6 +569,52 @@
         ]
       }
     },
+    "/membresias/renovar": {
+      "post": {
+        "operationId": "MembresiasController_renovar",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RenovarMembresiaDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RenovacionMembresiaResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Plan inválido o inactivo"
+          },
+          "401": {
+            "description": "Token ausente, inválido o vencido"
+          },
+          "403": {
+            "description": "Solo para: socio"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Inicia el cobro de un plan del catálogo. La membresía vigente no cambia hasta que el pago se aprueba",
+        "tags": [
+          "membresias"
+        ]
+      }
+    },
     "/membresias": {
       "get": {
         "operationId": "MembresiasController_findAll",
@@ -649,7 +695,7 @@
             "bearer": []
           }
         ],
-        "summary": "Dar de alta o renovar la membresía de un socio (cierra la activa anterior según D1)",
+        "summary": "Dar de alta o renovar la membresía de un socio sin cobro. Cierra la activa anterior en la misma transacción",
         "tags": [
           "membresias"
         ]
@@ -1047,6 +1093,193 @@
         ]
       }
     },
+    "/canchas/reservas": {
+      "post": {
+        "description": "Facade: calcula precio (Strategy) y bloquea el turno en estado pendiente. No cobra: usar POST /:id/pagar y el checkout simulado.",
+        "operationId": "ReservasCanchaController_reservar",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReservarCanchaDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReservaCanchaResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Datos inválidos o turno fuera de reglas"
+          },
+          "401": {
+            "description": "Token ausente, inválido o vencido"
+          },
+          "404": {
+            "description": "Cancha o perfil inexistente"
+          },
+          "409": {
+            "description": "Turno ocupado, cancha inactiva o en mantenimiento"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Reservar una cancha (hold pendiente)",
+        "tags": [
+          "canchas"
+        ]
+      }
+    },
+    "/canchas/reservas/me": {
+      "get": {
+        "description": "Incluye pendientes (para retomar pago), confirmadas y canceladas del perfil del JWT.",
+        "operationId": "ReservasCanchaController_listarMias",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ReservaCanchaResponseDto"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token ausente, inválido o vencido"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Listar mis reservas",
+        "tags": [
+          "canchas"
+        ]
+      }
+    },
+    "/canchas/reservas/{id}/pagar": {
+      "post": {
+        "description": "Idempotente: reutiliza el pago pendiente existente y devuelve la URL del checkout simulado.",
+        "operationId": "ReservasCanchaController_iniciarPago",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID de la reserva",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IniciarPagoResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "La reserva no está pendiente"
+          },
+          "401": {
+            "description": "Token ausente, inválido o vencido"
+          },
+          "403": {
+            "description": "La reserva pertenece a otro usuario"
+          },
+          "404": {
+            "description": "Reserva inexistente"
+          },
+          "409": {
+            "description": "Hold vencido; reserva cancelada"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Iniciar o retomar pago de una reserva pendiente",
+        "tags": [
+          "canchas"
+        ]
+      }
+    },
+    "/canchas/reservas/{id}/cancelar": {
+      "post": {
+        "description": "Delega en el patrón State. Solo el dueño (perfilId del JWT) puede cancelar.",
+        "operationId": "ReservasCanchaController_cancelar",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID de la reserva a cancelar",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReservaCanchaResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "La reserva no admite cancelación"
+          },
+          "401": {
+            "description": "Token ausente, inválido o vencido"
+          },
+          "403": {
+            "description": "La reserva pertenece a otro usuario"
+          },
+          "404": {
+            "description": "Reserva inexistente"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Cancelar una reserva propia",
+        "tags": [
+          "canchas"
+        ]
+      }
+    },
     "/clases": {
       "get": {
         "operationId": "ClasesController_findConCupoPorSede",
@@ -1405,193 +1638,6 @@
         "summary": "Retirarse de la lista de espera (si tenía cupo notificado, promueve y avisa al siguiente por Observer)",
         "tags": [
           "clases"
-        ]
-      }
-    },
-    "/canchas/reservas": {
-      "post": {
-        "description": "Facade: calcula precio (Strategy) y bloquea el turno en estado pendiente. No cobra: usar POST /:id/pagar y el checkout simulado.",
-        "operationId": "ReservasCanchaController_reservar",
-        "parameters": [],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ReservarCanchaDto"
-              }
-            }
-          }
-        },
-        "responses": {
-          "201": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ReservaCanchaResponseDto"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Datos inválidos o turno fuera de reglas"
-          },
-          "401": {
-            "description": "Token ausente, inválido o vencido"
-          },
-          "404": {
-            "description": "Cancha o perfil inexistente"
-          },
-          "409": {
-            "description": "Turno ocupado, cancha inactiva o en mantenimiento"
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
-        "summary": "Reservar una cancha (hold pendiente)",
-        "tags": [
-          "canchas"
-        ]
-      }
-    },
-    "/canchas/reservas/me": {
-      "get": {
-        "description": "Incluye pendientes (para retomar pago), confirmadas y canceladas del perfil del JWT.",
-        "operationId": "ReservasCanchaController_listarMias",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/ReservaCanchaResponseDto"
-                  }
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Token ausente, inválido o vencido"
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
-        "summary": "Listar mis reservas",
-        "tags": [
-          "canchas"
-        ]
-      }
-    },
-    "/canchas/reservas/{id}/pagar": {
-      "post": {
-        "description": "Idempotente: reutiliza el pago pendiente existente y devuelve la URL del checkout simulado.",
-        "operationId": "ReservasCanchaController_iniciarPago",
-        "parameters": [
-          {
-            "name": "id",
-            "required": true,
-            "in": "path",
-            "description": "ID de la reserva",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/IniciarPagoResponseDto"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "La reserva no está pendiente"
-          },
-          "401": {
-            "description": "Token ausente, inválido o vencido"
-          },
-          "403": {
-            "description": "La reserva pertenece a otro usuario"
-          },
-          "404": {
-            "description": "Reserva inexistente"
-          },
-          "409": {
-            "description": "Hold vencido; reserva cancelada"
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
-        "summary": "Iniciar o retomar pago de una reserva pendiente",
-        "tags": [
-          "canchas"
-        ]
-      }
-    },
-    "/canchas/reservas/{id}/cancelar": {
-      "post": {
-        "description": "Delega en el patrón State. Solo el dueño (perfilId del JWT) puede cancelar.",
-        "operationId": "ReservasCanchaController_cancelar",
-        "parameters": [
-          {
-            "name": "id",
-            "required": true,
-            "in": "path",
-            "description": "ID de la reserva a cancelar",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ReservaCanchaResponseDto"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "La reserva no admite cancelación"
-          },
-          "401": {
-            "description": "Token ausente, inválido o vencido"
-          },
-          "403": {
-            "description": "La reserva pertenece a otro usuario"
-          },
-          "404": {
-            "description": "Reserva inexistente"
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
-        "summary": "Cancelar una reserva propia",
-        "tags": [
-          "canchas"
         ]
       }
     },
@@ -2662,6 +2708,57 @@
           "vigente_hasta"
         ]
       },
+      "RenovarMembresiaDto": {
+        "type": "object",
+        "properties": {
+          "plan": {
+            "type": "string",
+            "enum": [
+              "mensual",
+              "trimestral",
+              "anual"
+            ],
+            "example": "mensual",
+            "description": "Plan del catálogo que el socio quiere pagar"
+          }
+        },
+        "required": [
+          "plan"
+        ]
+      },
+      "RenovacionMembresiaResponseDto": {
+        "type": "object",
+        "properties": {
+          "pagoId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "checkoutUrl": {
+            "type": "string",
+            "example": "http://localhost:3000/pasarela-simulada/checkout/…"
+          },
+          "monto": {
+            "type": "number",
+            "example": 25000,
+            "description": "Precio del plan en ARS"
+          },
+          "plan": {
+            "type": "string",
+            "enum": [
+              "mensual",
+              "trimestral",
+              "anual"
+            ],
+            "example": "mensual"
+          }
+        },
+        "required": [
+          "pagoId",
+          "checkoutUrl",
+          "monto",
+          "plan"
+        ]
+      },
       "CrearMembresiaDto": {
         "type": "object",
         "properties": {
@@ -3003,6 +3100,103 @@
           "sedeId",
           "items",
           "ocupacion"
+        ]
+      },
+      "ReservarCanchaDto": {
+        "type": "object",
+        "properties": {
+          "canchaId": {
+            "type": "string",
+            "example": "3f1c2a9e-8b7d-4c6e-9a1f-2b3c4d5e6f70",
+            "description": "ID de la cancha a reservar"
+          },
+          "inicio": {
+            "type": "string",
+            "example": "2026-11-15T19:00:00-03:00",
+            "description": "Inicio del turno (hora en punto, futuro, dentro de 1 mes). ISO 8601."
+          }
+        },
+        "required": [
+          "canchaId",
+          "inicio"
+        ]
+      },
+      "ReservaCanchaResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "canchaId": {
+            "type": "string"
+          },
+          "perfilId": {
+            "type": "string"
+          },
+          "inicio": {
+            "type": "string"
+          },
+          "fin": {
+            "type": "string"
+          },
+          "precio": {
+            "type": "number",
+            "example": 20000
+          },
+          "detalle": {
+            "type": "object",
+            "example": {
+              "precioBase": 20000,
+              "reglasAplicadas": [
+                "StandardPricing",
+                "PeakHourPricing"
+              ],
+              "descuentoSocioAplicado": false
+            }
+          },
+          "estado": {
+            "type": "string",
+            "enum": [
+              "pendiente",
+              "confirmada",
+              "cancelada"
+            ]
+          },
+          "createdAt": {
+            "type": "string"
+          },
+          "venceEn": {
+            "type": "string",
+            "description": "Fin de la ventana de hold (solo relevante si estado = pendiente). ISO 8601."
+          }
+        },
+        "required": [
+          "id",
+          "canchaId",
+          "perfilId",
+          "inicio",
+          "fin",
+          "precio",
+          "detalle",
+          "estado",
+          "createdAt"
+        ]
+      },
+      "IniciarPagoResponseDto": {
+        "type": "object",
+        "properties": {
+          "pagoId": {
+            "type": "string"
+          },
+          "checkoutUrl": {
+            "type": "string",
+            "example": "http://localhost:3000/pasarela-simulada/checkout/...",
+            "description": "URL del checkout simulado (estilo MercadoPago)."
+          }
+        },
+        "required": [
+          "pagoId",
+          "checkoutUrl"
         ]
       },
       "ClaseConCupoResponseDto": {
@@ -3367,103 +3561,6 @@
           "perfil_id",
           "estado",
           "created_at"
-        ]
-      },
-      "ReservarCanchaDto": {
-        "type": "object",
-        "properties": {
-          "canchaId": {
-            "type": "string",
-            "example": "3f1c2a9e-8b7d-4c6e-9a1f-2b3c4d5e6f70",
-            "description": "ID de la cancha a reservar"
-          },
-          "inicio": {
-            "type": "string",
-            "example": "2026-11-15T19:00:00-03:00",
-            "description": "Inicio del turno (hora en punto, futuro, dentro de 1 mes). ISO 8601."
-          }
-        },
-        "required": [
-          "canchaId",
-          "inicio"
-        ]
-      },
-      "ReservaCanchaResponseDto": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string"
-          },
-          "canchaId": {
-            "type": "string"
-          },
-          "perfilId": {
-            "type": "string"
-          },
-          "inicio": {
-            "type": "string"
-          },
-          "fin": {
-            "type": "string"
-          },
-          "precio": {
-            "type": "number",
-            "example": 20000
-          },
-          "detalle": {
-            "type": "object",
-            "example": {
-              "precioBase": 20000,
-              "reglasAplicadas": [
-                "StandardPricing",
-                "PeakHourPricing"
-              ],
-              "descuentoSocioAplicado": false
-            }
-          },
-          "estado": {
-            "type": "string",
-            "enum": [
-              "pendiente",
-              "confirmada",
-              "cancelada"
-            ]
-          },
-          "createdAt": {
-            "type": "string"
-          },
-          "venceEn": {
-            "type": "string",
-            "description": "Fin de la ventana de hold (solo relevante si estado = pendiente). ISO 8601."
-          }
-        },
-        "required": [
-          "id",
-          "canchaId",
-          "perfilId",
-          "inicio",
-          "fin",
-          "precio",
-          "detalle",
-          "estado",
-          "createdAt"
-        ]
-      },
-      "IniciarPagoResponseDto": {
-        "type": "object",
-        "properties": {
-          "pagoId": {
-            "type": "string"
-          },
-          "checkoutUrl": {
-            "type": "string",
-            "example": "http://localhost:3000/pasarela-simulada/checkout/...",
-            "description": "URL del checkout simulado (estilo MercadoPago)."
-          }
-        },
-        "required": [
-          "pagoId",
-          "checkoutUrl"
         ]
       },
       "CanchaResponseDto": {

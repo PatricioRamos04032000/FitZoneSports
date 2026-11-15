@@ -1,12 +1,16 @@
 import { Module, forwardRef } from '@nestjs/common';
 import { ReservasCanchaModule } from '../canchas/reservas/reservas-cancha.module';
+import { MembresiasModule } from '../usuarios/membresias/membresias.module';
 import { CheckoutSimuladoController } from './checkout-simulado.controller';
 import { PASARELA_PAGO } from './pasarela-pago';
 import { PasarelaSimulada } from './pasarela-simulada';
 import { PagosRepository } from './pagos.repository';
 
 @Module({
-  imports: [forwardRef(() => ReservasCanchaModule)],
+  imports: [
+    forwardRef(() => ReservasCanchaModule),
+    forwardRef(() => MembresiasModule),
+  ],
   controllers: [CheckoutSimuladoController],
   providers: [
     PagosRepository,

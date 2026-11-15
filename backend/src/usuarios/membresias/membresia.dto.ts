@@ -7,6 +7,29 @@ import {
   type PlanMembresiaFila,
 } from './membresia.model';
 
+export class RenovarMembresiaDto {
+  @ApiProperty({
+    enum: PLANES_MEMBRESIA,
+    example: 'mensual',
+    description: 'Plan del catálogo que el socio quiere pagar',
+  })
+  plan!: PlanMembresia;
+}
+
+export class RenovacionMembresiaResponseDto {
+  @ApiProperty({ format: 'uuid' })
+  pagoId!: string;
+
+  @ApiProperty({ example: 'http://localhost:3000/pasarela-simulada/checkout/…' })
+  checkoutUrl!: string;
+
+  @ApiProperty({ example: 25000, description: 'Precio del plan en ARS' })
+  monto!: number;
+
+  @ApiProperty({ enum: PLANES_MEMBRESIA, example: 'mensual' })
+  plan!: PlanMembresia;
+}
+
 export class CrearMembresiaDto {
   @ApiProperty({
     format: 'uuid',

@@ -11,7 +11,11 @@ describe('PasarelaSimulada (S7-T02b)', () => {
   let pagos: jest.Mocked<
     Pick<
       PagosRepository,
-      'registrarCobro' | 'findPendientePorReserva' | 'findById' | 'actualizarEstado'
+      | 'registrarCobro'
+      | 'findPendientePorReserva'
+      | 'findPendienteMembresia'
+      | 'findById'
+      | 'actualizarEstado'
     >
   >;
 
@@ -23,6 +27,7 @@ describe('PasarelaSimulada (S7-T02b)', () => {
         ...nuevo,
       })),
       findPendientePorReserva: jest.fn().mockResolvedValue(null),
+      findPendienteMembresia: jest.fn().mockResolvedValue(null),
       findById: jest.fn(),
       actualizarEstado: jest.fn().mockImplementation(async (id, cambios) => ({
         id,
@@ -31,6 +36,7 @@ describe('PasarelaSimulada (S7-T02b)', () => {
         monto: 1000,
         reserva_cancha_id: 'reserva-1',
         membresia_id: null,
+        plan: null,
         created_at: '2026-11-01T12:00:00Z',
         ...cambios,
       })),
@@ -58,6 +64,29 @@ describe('PasarelaSimulada (S7-T02b)', () => {
         estado: 'pendiente',
         token_pasarela: null,
         reserva_cancha_id: 'reserva-1',
+        plan: null,
+      }),
+    );
+  });
+
+  it('crearPreferencia de membresía guarda el plan y no exige reserva', async () => {
+    const result = await pasarela.crearPreferencia({
+      monto: 25000,
+      concepto: 'membresia',
+      referenciaId: 'perfil-1',
+      perfilId: 'perfil-1',
+      plan: 'mensual',
+    });
+
+    expect(result.checkoutUrl).toContain('/pasarela-simulada/checkout/');
+    expect(pagos.findPendientePorReserva).not.toHaveBeenCalled();
+    expect(pagos.registrarCobro).toHaveBeenCalledWith(
+      expect.objectContaining({
+        concepto: 'membresia',
+        plan: 'mensual',
+        reserva_cancha_id: null,
+        membresia_id: null,
+        estado: 'pendiente',
       }),
     );
   });
@@ -72,6 +101,7 @@ describe('PasarelaSimulada (S7-T02b)', () => {
       estado: 'pendiente',
       reserva_cancha_id: 'reserva-1',
       membresia_id: null,
+      plan: null,
       created_at: '2026-11-01T12:00:00Z',
     });
 
@@ -96,6 +126,7 @@ describe('PasarelaSimulada (S7-T02b)', () => {
       estado: 'pendiente',
       reserva_cancha_id: 'reserva-1',
       membresia_id: null,
+      plan: null,
       created_at: '2026-11-01T12:00:00Z',
     });
 
@@ -122,6 +153,7 @@ describe('PasarelaSimulada (S7-T02b)', () => {
       estado: 'pendiente',
       reserva_cancha_id: 'reserva-1',
       membresia_id: null,
+      plan: null,
       created_at: '2026-11-01T12:00:00Z',
     });
 

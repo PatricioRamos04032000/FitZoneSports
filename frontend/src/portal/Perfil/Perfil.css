@@ -263,6 +263,52 @@
   line-height: 1.6;
 }
 
+.planes-lista {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-top: 18px;
+}
+
+.plan-card {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 18px;
+  background: #f5f7fa;
+  border: 1px solid #e5eaf0;
+  border-radius: 10px;
+}
+
+.plan-card h3 {
+  margin: 0;
+}
+
+.plan-card p {
+  margin: 0;
+  color: #475467;
+}
+
+.plan-card strong {
+  font-size: 1.25rem;
+}
+
+.plan-card button {
+  margin-top: 8px;
+  padding: 10px 14px;
+  border: 0;
+  border-radius: 8px;
+  background: #14283f;
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.plan-card button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
 /* Mensajes */
 .perfil-success {
   color: #168044;
@@ -310,7 +356,8 @@
     gap: 15px;
   }
 
-  .membresia-info {
+  .membresia-info,
+  .planes-lista {
     grid-template-columns: 1fr;
     gap: 14px;
   }

@@ -4,6 +4,8 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { AccesoService } from '../../acceso/acceso.service';
+import { PagosRepository } from '../../pagos/pagos.repository';
+import { PasarelaPago } from '../../pagos/pasarela-pago';
 import { RepositoryError } from '../../supabase/repository.error';
 import { Membresia, PlanMembresiaFila } from './membresia.model';
 import { MembresiasRepository } from './membresias.repository';
@@ -24,11 +26,17 @@ describe('MembresiasService', () => {
     findUltimaPorPerfil: jest.Mock<Promise<Membresia | null>, [string]>;
     findPlanesActivos: jest.Mock<Promise<PlanMembresiaFila[]>, []>;
     findPlanActivo: jest.Mock<Promise<PlanMembresiaFila | null>, [string]>;
-    cerrarActivasPorPerfil: jest.Mock<Promise<void>, [string]>;
-    crear: jest.Mock<Promise<Membresia>, [Record<string, unknown>]>;
+    renovar: jest.Mock<Promise<Membresia>, [string, string]>;
   };
   let acceso: {
     ensureTotpSeed: jest.Mock<Promise<void>, [string]>;
+  };
+  let pagos: {
+    actualizarEstado: jest.Mock;
+    aprobarMembresia: jest.Mock;
+  };
+  let pasarela: {
+    crearPreferencia: jest.Mock;
   };
 
   beforeEach(() => {
@@ -38,16 +46,27 @@ describe('MembresiasService', () => {
       findUltimaPorPerfil: jest.fn(),
       findPlanesActivos: jest.fn(),
       findPlanActivo: jest.fn(),
-      cerrarActivasPorPerfil: jest.fn().mockResolvedValue(undefined),
-      crear: jest.fn(),
+      renovar: jest.fn(),
     };
     acceso = {
       ensureTotpSeed: jest.fn().mockResolvedValue(undefined),
+    };
+    pagos = {
+      actualizarEstado: jest.fn().mockResolvedValue({}),
+      aprobarMembresia: jest.fn().mockResolvedValue({}),
+    };
+    pasarela = {
+      crearPreferencia: jest.fn().mockResolvedValue({
+        pagoId: 'pago-1',
+        checkoutUrl: 'http://localhost:3000/pasarela-simulada/checkout/pago-1',
+      }),
     };
 
     service = new MembresiasService(
       repo as unknown as MembresiasRepository,
       acceso as unknown as AccesoService,
+      pagos as unknown as PagosRepository,
+      pasarela as unknown as PasarelaPago,
     );
   });
 
@@ -106,7 +125,7 @@ describe('MembresiasService', () => {
   });
 
   describe('crear (D1, D2 y sanitización del body)', () => {
-    it('lee duracion_meses de planes_membresia, cierra activa previa, ignora campos extra y asegura seed TOTP', async () => {
+    it('delega el cierre y el alta en renovar_membresia y asegura seed TOTP', async () => {
       repo.findPlanActivo.mockResolvedValue({
         plan: 'trimestral',
         duracion_meses: 3,
@@ -121,10 +140,8 @@ describe('MembresiasService', () => {
         vigente_desde: '2026-10-31',
         vigente_hasta: '2027-01-31',
       };
-      repo.crear.mockResolvedValue(insertada);
+      repo.renovar.mockResolvedValue(insertada);
 
-      // 23:45 AR del 31/10 (en UTC ya es 01/11)
-      const ahora = new Date('2026-10-31T23:45:00-03:00');
       const payloadConExtras = {
         perfil_id: PERFIL_SOCIO,
         plan: 'trimestral' as const,
@@ -132,18 +149,20 @@ describe('MembresiasService', () => {
         vigente_hasta: '2099-12-31',
       };
 
-      const resultado = await service.crear(payloadConExtras, ahora);
+      const resultado = await service.crear(payloadConExtras);
 
-      expect(repo.cerrarActivasPorPerfil).toHaveBeenCalledWith(PERFIL_SOCIO);
-      expect(repo.crear).toHaveBeenCalledWith({
-        perfil_id: PERFIL_SOCIO,
-        plan: 'trimestral',
-        estado: 'activo',
-        vigente_desde: '2026-10-31',
-        vigente_hasta: '2027-01-31',
-      });
+      expect(repo.renovar).toHaveBeenCalledWith(PERFIL_SOCIO, 'trimestral');
       expect(acceso.ensureTotpSeed).toHaveBeenCalledWith(PERFIL_SOCIO);
       expect(resultado).toEqual(insertada);
+    });
+
+    it('responde 400 si el plan no está activo y no llama a la función', async () => {
+      repo.findPlanActivo.mockResolvedValue(null);
+
+      await expect(
+        service.crear({ perfil_id: PERFIL_SOCIO, plan: 'mensual' }),
+      ).rejects.toThrow(BadRequestException);
+      expect(repo.renovar).not.toHaveBeenCalled();
     });
 
     it('responde 400 si el plan no es válido', async () => {
@@ -153,7 +172,7 @@ describe('MembresiasService', () => {
           plan: 'semanal' as never,
         }),
       ).rejects.toThrow(BadRequestException);
-      expect(repo.crear).not.toHaveBeenCalled();
+      expect(repo.renovar).not.toHaveBeenCalled();
     });
 
     it('responde 400 si perfil_id no es un UUID válido', async () => {
@@ -172,13 +191,86 @@ describe('MembresiasService', () => {
         precio: 25000,
         activo: true,
       });
-      repo.crear.mockRejectedValue(
+      repo.renovar.mockRejectedValue(
         new RepositoryError('duplicate key', '23505'),
       );
 
       await expect(
         service.crear({ perfil_id: PERFIL_SOCIO, plan: 'mensual' }),
       ).rejects.toThrow(ConflictException);
+    });
+  });
+
+  describe('renovación cobrada', () => {
+    const insertada: Membresia = {
+      id: MEMBRESIA_ID,
+      perfil_id: PERFIL_SOCIO,
+      plan: 'mensual',
+      estado: 'activo',
+      vigente_desde: '2026-11-14',
+      vigente_hasta: '2026-12-14',
+    };
+
+    it('un plan inactivo no abre el checkout', async () => {
+      repo.findPlanActivo.mockResolvedValue(null);
+
+      await expect(
+        service.iniciarRenovacion(PERFIL_SOCIO, 'mensual'),
+      ).rejects.toThrow(BadRequestException);
+      expect(pasarela.crearPreferencia).not.toHaveBeenCalled();
+    });
+
+    it('arma un pago pendiente con el precio del catálogo', async () => {
+      repo.findPlanActivo.mockResolvedValue({
+        plan: 'mensual',
+        duracion_meses: 1,
+        precio: 25000,
+        activo: true,
+      });
+
+      const resultado = await service.iniciarRenovacion(PERFIL_SOCIO, 'mensual');
+
+      expect(pasarela.crearPreferencia).toHaveBeenCalledWith({
+        monto: 25000,
+        concepto: 'membresia',
+        referenciaId: PERFIL_SOCIO,
+        perfilId: PERFIL_SOCIO,
+        plan: 'mensual',
+      });
+      expect(resultado.checkoutUrl).toContain('/pasarela-simulada/checkout/');
+      expect(repo.renovar).not.toHaveBeenCalled();
+    });
+
+    it('un pago rechazado no cierra la membresía vigente', async () => {
+      await service.aplicarResultadoPago(
+        { id: 'pago-1', perfil_id: PERFIL_SOCIO, plan: 'mensual' },
+        false,
+      );
+
+      expect(pagos.actualizarEstado).toHaveBeenCalledWith('pago-1', {
+        estado: 'rechazado',
+        token_pasarela: null,
+      });
+      expect(repo.renovar).not.toHaveBeenCalled();
+      expect(pagos.aprobarMembresia).not.toHaveBeenCalled();
+    });
+
+    it('un pago aprobado cierra la anterior y vincula la nueva', async () => {
+      repo.renovar.mockResolvedValue(insertada);
+
+      await service.aplicarResultadoPago(
+        { id: 'pago-1', perfil_id: PERFIL_SOCIO, plan: 'mensual' },
+        true,
+        'sim-token',
+      );
+
+      expect(repo.renovar).toHaveBeenCalledWith(PERFIL_SOCIO, 'mensual');
+      expect(pagos.aprobarMembresia).toHaveBeenCalledWith(
+        'pago-1',
+        MEMBRESIA_ID,
+        'sim-token',
+      );
+      expect(acceso.ensureTotpSeed).toHaveBeenCalledWith(PERFIL_SOCIO);
     });
   });
 });

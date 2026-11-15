@@ -26,12 +26,16 @@ export interface ResultadoCobro {
   pagoId?: string;
 }
 
+import type { PlanMembresia } from '../usuarios/membresias/membresia.model';
+
 export interface CobroRequest {
   monto: number;
-  concepto: 'reserva_cancha';
-  /** Id de `reservas_cancha` (o membresía en el futuro). */
+  concepto: 'reserva_cancha' | 'membresia';
+  /** Id de la reserva. En un cobro de membresía coincide con el perfil. */
   referenciaId: string;
   perfilId: string;
+  /** Obligatorio cuando el concepto es membresía. */
+  plan?: PlanMembresia;
   /** Opcional: `tok_ok` / `tok_fail` para forzar resultado del simulacro síncrono. */
   tokenPrueba?: string;
 }

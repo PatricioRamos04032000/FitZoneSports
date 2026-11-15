@@ -33,6 +33,13 @@ interface MembresiaData {
   vigente_hasta: string;
 }
 
+interface PlanCatalogo {
+  plan: "mensual" | "trimestral" | "anual";
+  duracion_meses: number;
+  precio: number;
+  activo: boolean;
+}
+
 function Perfil() {
   const { accessToken } = useAuth();
 
@@ -43,6 +50,8 @@ function Perfil() {
   const [membresia, setMembresia] = useState<MembresiaData | null>(null);
   const [cargandoMembresia, setCargandoMembresia] = useState(false);
   const [errorMembresia, setErrorMembresia] = useState("");
+  const [planes, setPlanes] = useState<PlanCatalogo[]>([]);
+  const [pagandoPlan, setPagandoPlan] = useState<string | null>(null);
 
   const [cargando, setCargando] = useState(true);
   const [guardando, setGuardando] = useState(false);
@@ -95,6 +104,7 @@ function Perfil() {
 
         if (perfilData.rol === "socio") {
           void cargarMembresia(accessToken);
+          void cargarPlanes();
         }
       } catch (err) {
         setError(
@@ -109,6 +119,44 @@ function Perfil() {
 
     void cargarDatos();
   }, [accessToken]);
+
+  async function cargarPlanes() {
+    try {
+      const data = (await apiRequest("/membresias/planes")) as PlanCatalogo[];
+      setPlanes(data);
+    } catch (err) {
+      setError(
+        err instanceof Error
+          ? err.message
+          : "No se pudo cargar el catálogo de planes."
+      );
+    }
+  }
+
+  async function pagarPlan(plan: PlanCatalogo["plan"]) {
+    if (!accessToken) return;
+
+    setPagandoPlan(plan);
+    setError("");
+    setMensaje("");
+
+    try {
+      const data = (await apiRequest("/membresias/renovar", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify({ plan }),
+      })) as { checkoutUrl: string };
+
+      window.location.assign(data.checkoutUrl);
+    } catch (err) {
+      setError(
+        err instanceof Error ? err.message : "No se pudo iniciar el pago."
+      );
+      setPagandoPlan(null);
+    }
+  }
 
   function actualizarCampo(
     campo: "nombre" | "apellido" | "dni" | "telefono" | "sede_home_id",
@@ -383,6 +431,47 @@ function Perfil() {
               {errorMembresia ||
                 "No tenés una membresía registrada."}
             </p>
+          )}
+        </div>
+      )}
+
+      {perfil.rol === "socio" && (
+        <div className="perfil-card">
+          <h2>Planes</h2>
+          <p className="perfil-membresia-mensaje">
+            Elegí un plan. El pago con la tarjeta de prueba 4111… lo activa y
+            cierra el anterior. Si el pago se rechaza, tu membresía no cambia.
+          </p>
+          {planes.length === 0 ? (
+            <p className="perfil-estado">Cargando planes...</p>
+          ) : (
+            <div className="planes-lista">
+              {planes.map((plan) => (
+                <article key={plan.plan} className="plan-card">
+                  <h3>
+                    {plan.plan.charAt(0).toUpperCase() + plan.plan.slice(1)}
+                  </h3>
+                  <p>
+                    {plan.duracion_meses}{" "}
+                    {plan.duracion_meses === 1 ? "mes" : "meses"}
+                  </p>
+                  <strong>
+                    {plan.precio.toLocaleString("es-AR", {
+                      style: "currency",
+                      currency: "ARS",
+                      maximumFractionDigits: 0,
+                    })}
+                  </strong>
+                  <button
+                    type="button"
+                    disabled={pagandoPlan !== null}
+                    onClick={() => void pagarPlan(plan.plan)}
+                  >
+                    {pagandoPlan === plan.plan ? "Abriendo pago..." : "Pagar"}
+                  </button>
+                </article>
+              ))}
+            </div>
           )}
         </div>
       )}

@@ -13,9 +13,11 @@ import {
   Redirect,
   forwardRef,
 } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { ApiExcludeController } from '@nestjs/swagger';
 import { randomUUID } from 'crypto';
 import { ReservasCanchaService } from '../canchas/reservas/reservas-cancha.service';
+import { MembresiasService } from '../usuarios/membresias/membresias.service';
 import { PagosRepository } from './pagos.repository';
 import {
   PASARELA_PAGO,
@@ -36,6 +38,9 @@ export class CheckoutSimuladoController {
     @Inject(PASARELA_PAGO) private readonly pasarela: PasarelaPago,
     @Inject(forwardRef(() => ReservasCanchaService))
     private readonly reservas: ReservasCanchaService,
+    @Inject(forwardRef(() => MembresiasService))
+    private readonly membresias: MembresiasService,
+    private readonly config: ConfigService,
   ) {}
 
   @Get('checkout/:pagoId')
@@ -46,11 +51,7 @@ export class CheckoutSimuladoController {
       throw new NotFoundException('Pago no encontrado');
     }
     if (pago.estado !== 'pendiente') {
-      const dest =
-        pago.estado === 'aprobado'
-          ? `/pasarela-simulada/resultado/success?reservaId=${pago.reserva_cancha_id ?? ''}`
-          : `/pasarela-simulada/resultado/failure?reservaId=${pago.reserva_cancha_id ?? ''}`;
-      return this.htmlRedirect(dest);
+      return this.htmlRedirect(this.resultadoPath(pago.estado === 'aprobado', pago));
     }
 
     return this.htmlCheckout(pago.id, Number(pago.monto), pago.concepto);
@@ -81,43 +82,67 @@ export class CheckoutSimuladoController {
     if (pago.estado !== 'pendiente') {
       throw new BadRequestException('El pago ya fue procesado');
     }
-    if (!pago.reserva_cancha_id) {
-      throw new BadRequestException('Pago sin reserva vinculada');
-    }
 
     const numero = (body.numero ?? '').replace(/\s+/g, '');
     const aprobado = numero === TARJETA_PRUEBA_OK;
+    const motivo = aprobado
+      ? undefined
+      : numero === TARJETA_PRUEBA_FAIL
+        ? 'Tarjeta de prueba rechazada'
+        : 'Usá las tarjetas de prueba documentadas (4111… aprueba, 4000… rechaza)';
 
-    await this.pasarela.confirmarPago(pagoId, {
-      aprobado,
-      token: aprobado ? `sim-${randomUUID()}` : undefined,
-      motivo: aprobado
-        ? undefined
-        : numero === TARJETA_PRUEBA_FAIL
-          ? 'Tarjeta de prueba rechazada'
-          : 'Usá las tarjetas de prueba documentadas (4111… aprueba, 4000… rechaza)',
-    });
-
-    await this.reservas.aplicarResultadoPago(pago.reserva_cancha_id, aprobado);
+    if (pago.concepto === 'membresia') {
+      if (!pago.plan) {
+        throw new BadRequestException('Pago de membresía sin plan');
+      }
+      await this.membresias.aplicarResultadoPago(
+        pago,
+        aprobado,
+        aprobado ? `sim-${randomUUID()}` : undefined,
+      );
+    } else {
+      if (!pago.reserva_cancha_id) {
+        throw new BadRequestException('Pago sin reserva vinculada');
+      }
+      await this.pasarela.confirmarPago(pagoId, { aprobado, motivo });
+      await this.reservas.aplicarResultadoPago(pago.reserva_cancha_id, aprobado);
+    }
 
     return {
-      url: aprobado
-        ? `/pasarela-simulada/resultado/success?reservaId=${pago.reserva_cancha_id}`
-        : `/pasarela-simulada/resultado/failure?reservaId=${pago.reserva_cancha_id}`,
+      url: this.resultadoPath(aprobado, pago),
       statusCode: 302,
     };
   }
 
   @Get('resultado/success')
   @Header('Content-Type', 'text/html; charset=utf-8')
-  success(@Query('reservaId') _reservaId?: string): string {
-    return this.htmlResultado(true);
+  success(
+    @Query('reservaId') _reservaId?: string,
+    @Query('concepto') concepto?: string,
+  ): string {
+    return this.htmlResultado(true, concepto === 'membresia');
   }
 
   @Get('resultado/failure')
   @Header('Content-Type', 'text/html; charset=utf-8')
-  failure(@Query('reservaId') _reservaId?: string): string {
-    return this.htmlResultado(false);
+  failure(
+    @Query('reservaId') _reservaId?: string,
+    @Query('concepto') concepto?: string,
+  ): string {
+    return this.htmlResultado(false, concepto === 'membresia');
+  }
+
+  private resultadoPath(
+    aprobado: boolean,
+    pago: { concepto: string; reserva_cancha_id: string | null },
+  ): string {
+    const base = aprobado
+      ? '/pasarela-simulada/resultado/success'
+      : '/pasarela-simulada/resultado/failure';
+    if (pago.concepto === 'membresia') {
+      return `${base}?concepto=membresia`;
+    }
+    return `${base}?reservaId=${pago.reserva_cancha_id ?? ''}`;
   }
 
   private htmlCheckout(pagoId: string, monto: number, concepto: string): string {
@@ -181,12 +206,16 @@ export class CheckoutSimuladoController {
 </html>`;
   }
 
-  private htmlResultado(ok: boolean): string {
+  private htmlResultado(ok: boolean, membresia = false): string {
     const titulo = ok ? 'Pago aprobado' : 'Pago rechazado';
     const color = ok ? '#15803d' : '#b91c1c';
-    const msg = ok
-      ? 'Tu reserva quedó confirmada. Ya podés cerrar esta ventana y volver a FitZone.'
-      : 'No se confirmó la reserva. Podés reintentar el pago desde FitZone si el hold sigue vigente.';
+    const msg = membresia
+      ? ok
+        ? 'Tu membresía quedó vigente. Ya podés cerrar esta ventana y volver al perfil.'
+        : 'No se cambió tu membresía. Podés reintentar el pago desde el perfil.'
+      : ok
+        ? 'Tu reserva quedó confirmada. Ya podés cerrar esta ventana y volver a FitZone.'
+        : 'No se confirmó la reserva. Podés reintentar el pago desde FitZone si el hold sigue vigente.';
     return `<!DOCTYPE html>
 <html lang="es">
 <head>
@@ -208,9 +237,24 @@ export class CheckoutSimuladoController {
     </div>
     <h1>${titulo}</h1>
     <p>${msg}</p>
+    ${
+      membresia
+        ? `<p><a href="${this.perfilUrl()}">Volver al perfil</a></p>`
+        : ''
+    }
   </div>
 </body>
 </html>`;
+  }
+
+  private perfilUrl(): string {
+    const origen = (
+      this.config.get<string>('CORS_ORIGIN') ?? 'http://localhost:5173'
+    )
+      .split(',')[0]
+      .trim()
+      .replace(/\/$/, '');
+    return `${origen}/perfil`;
   }
 
   private htmlRedirect(path: string): string {

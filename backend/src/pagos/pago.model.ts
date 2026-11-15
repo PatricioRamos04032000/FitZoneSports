@@ -1,3 +1,5 @@
+import type { PlanMembresia } from '../usuarios/membresias/membresia.model';
+
 export type ConceptoPago = 'membresia' | 'reserva_cancha';
 export type EstadoPago = 'pendiente' | 'aprobado' | 'rechazado';
 
@@ -11,6 +13,7 @@ export interface Pago {
   estado: EstadoPago;
   reserva_cancha_id: string | null;
   membresia_id: string | null;
+  plan: PlanMembresia | null;
   created_at: string;
 }
 
@@ -22,4 +25,5 @@ export type NuevoPago = {
   estado: EstadoPago;
   reserva_cancha_id: string | null;
   membresia_id: string | null;
+  plan: PlanMembresia | null;
 };
