@@ -73,10 +73,54 @@ function authHeaders(accessToken: string) {
   };
 }
 
+export interface ClaseEditable {
+  tipo: string;
+  instructor: string;
+  inicio: string;
+  fin: string;
+  capacidadMax: number;
+  estado?: EstadoClase;
+}
+
+export interface ClaseCreada {
+  id: string;
+  sede_id: string;
+  tipo: string;
+  instructor: string;
+  inicio: string;
+  fin: string;
+  capacidad_max: number;
+  estado: EstadoClase;
+  created_at: string;
+}
+
 export function listarClases(sedeId: string, accessToken: string) {
   const params = new URLSearchParams({ sedeId });
   return apiRequest<ClaseConCupo[]>(`/clases?${params.toString()}`, {
     headers: authHeaders(accessToken),
+  });
+}
+
+export function crearClase(
+  accessToken: string,
+  datos: ClaseEditable & { sedeId: string }
+) {
+  return apiRequest<ClaseCreada>("/clases", {
+    method: "POST",
+    headers: authHeaders(accessToken),
+    body: JSON.stringify(datos),
+  });
+}
+
+export function editarClase(
+  accessToken: string,
+  id: string,
+  datos: Partial<ClaseEditable>
+) {
+  return apiRequest<ClaseCreada>(`/clases/${id}`, {
+    method: "PATCH",
+    headers: authHeaders(accessToken),
+    body: JSON.stringify(datos),
   });
 }
 

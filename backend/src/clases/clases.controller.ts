@@ -7,6 +7,7 @@ import {
   HttpStatus,
   Param,
   ParseUUIDPipe,
+  Patch,
   Post,
   Query,
   Req,
@@ -34,6 +35,9 @@ import { RequiereRol } from '../common/roles.decorator';
 import {
   AnotarseListaEsperaDto,
   ClaseConCupoResponseDto,
+  ClaseResponseDto,
+  CrearClaseDto,
+  EditarClaseDto,
   EntradaListaEsperaResponseDto,
   EsperaConClaseResponseDto,
   InscribirClaseDto,
@@ -57,6 +61,45 @@ export class ClasesController {
   @ApiUnauthorizedResponse({ description: 'Falta o es inválido el token Bearer' })
   findConCupoPorSede(@Query('sedeId', ParseUUIDPipe) sedeId: string) {
     return this.clasesService.findConCupoPorSede(sedeId);
+  }
+
+  @Post()
+  @RequiereRol('gerente')
+  @HttpCode(HttpStatus.CREATED)
+  @ApiOperation({
+    summary: 'Crear una clase en la agenda (RF-06, A4)',
+    description:
+      'El estado inicial es programada. La sede tiene que existir y estar activa. No hay DELETE: la baja es estado cancelada.',
+  })
+  @ApiCreatedResponse({ type: ClaseResponseDto })
+  @ApiBadRequestResponse({
+    description:
+      'Texto vacío, horario inválido, capacidad no positiva o sede inactiva',
+  })
+  @ApiNotFoundResponse({ description: 'La sede solicitada no existe' })
+  crear(@Body() body: CrearClaseDto) {
+    return this.clasesService.crear(body);
+  }
+
+  @Patch(':id')
+  @RequiereRol('gerente')
+  @ApiOperation({
+    summary: 'Editar una clase de la agenda (RF-06, A4)',
+    description:
+      'No cambia la sede. Cancelar pone estado cancelada, conserva las inscripciones y no avisa a la lista de espera. Se puede volver a programada. La capacidad no puede quedar bajo los lugares ya ocupados.',
+  })
+  @ApiParam({ name: 'id', format: 'uuid' })
+  @ApiOkResponse({ type: ClaseResponseDto })
+  @ApiBadRequestResponse({
+    description:
+      'Body vacío, sedeId presente, horario inválido o capacidad bajo los lugares ocupados',
+  })
+  @ApiNotFoundResponse({ description: 'La clase solicitada no existe' })
+  editar(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() body: EditarClaseDto,
+  ) {
+    return this.clasesService.editar(id, body);
   }
 
   @Get('inscripciones/mias')

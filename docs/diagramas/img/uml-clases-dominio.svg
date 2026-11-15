@@ -395,34 +395,38 @@
 <text x="820.0" y="2090.0" text-anchor="middle" font-size="13" font-weight="700" fill="#333">Nest — Clases / Observer / Notificaciones</text>
 <rect x="1660.0" y="2068.0" width="900.0" height="720.0" fill="#f7f9fc" stroke="#999999" stroke-dasharray="4 3" fill-opacity="0.9"/>
 <text x="2110.0" y="2090.0" text-anchor="middle" font-size="13" font-weight="700" fill="#333">Infra común</text>
-<rect x="40.0" y="2108.0" width="260.0" height="130.0" fill="#ffe6cc" stroke="#d79b00" stroke-width="1.2"/>
+<rect x="40.0" y="2108.0" width="260.0" height="168.0" fill="#ffe6cc" stroke="#d79b00" stroke-width="1.2"/>
 <text x="170.0" y="2124.0" text-anchor="middle" font-size="12" font-weight="700" fill="#333">ClasesController</text>
 <line x1="40.0" y1="2136.0" x2="300.0" y2="2136.0" stroke="#d79b00" stroke-width="1"/>
 <text x="48.0" y="2144.0" font-size="11" fill="#333">GET /clases</text>
-<text x="48.0" y="2160.0" font-size="11" fill="#333">POST/DELETE inscripciones</text>
-<text x="48.0" y="2176.0" font-size="11" fill="#333">lista-espera + confirmar</text>
-<rect x="40.0" y="2278.0" width="260.0" height="120.0" fill="#dae8fc" stroke="#6c8ebf" stroke-width="1.2"/>
-<text x="170.0" y="2294.0" text-anchor="middle" font-size="12" font-weight="700" fill="#333">ClasesService</text>
-<line x1="40.0" y1="2306.0" x2="300.0" y2="2306.0" stroke="#6c8ebf" stroke-width="1"/>
-<text x="48.0" y="2314.0" font-size="11" fill="#333">listaEspera: Publisher</text>
-<line x1="40.0" y1="2326.0" x2="300.0" y2="2326.0" stroke="#6c8ebf" stroke-width="1"/>
-<text x="48.0" y="2334.0" font-size="11" fill="#333">+listar()</text>
-<text x="48.0" y="2350.0" font-size="11" fill="#333">+inscribir()</text>
-<text x="48.0" y="2366.0" font-size="11" fill="#333">+cancelar()</text>
-<text x="48.0" y="2382.0" font-size="11" fill="#333">+procesarListaEspera()</text>
-<rect x="40.0" y="2438.0" width="260.0" height="100.0" fill="#d5e8d4" stroke="#82b366" stroke-width="1.2"/>
-<text x="170.0" y="2454.0" text-anchor="middle" font-size="12" font-weight="700" fill="#333">ClasesRepository</text>
-<line x1="40.0" y1="2466.0" x2="300.0" y2="2466.0" stroke="#82b366" stroke-width="1"/>
-<text x="48.0" y="2474.0" font-size="11" fill="#333">+inscribir()</text>
-<text x="48.0" y="2490.0" font-size="11" fill="#333">+cancelar()</text>
-<text x="48.0" y="2506.0" font-size="11" fill="#333">+procesarListaEspera()</text>
-<rect x="40.0" y="2578.0" width="260.0" height="100.0" fill="#e1d5e7" stroke="#9673a6" stroke-width="1.2"/>
-<text x="170.0" y="2594.0" text-anchor="middle" font-size="12" font-weight="700" fill="#333">ClaseDto / InscripcionDto</text>
-<line x1="40.0" y1="2606.0" x2="300.0" y2="2606.0" stroke="#9673a6" stroke-width="1"/>
-<text x="48.0" y="2614.0" font-size="11" fill="#333">claseId</text>
-<text x="48.0" y="2630.0" font-size="11" fill="#333">cupo</text>
-<text x="48.0" y="2646.0" font-size="11" fill="#333">inscrito</text>
-<line x1="40.0" y1="2658.0" x2="300.0" y2="2658.0" stroke="#9673a6" stroke-width="1"/>
+<text x="48.0" y="2160.0" font-size="11" fill="#333">POST /clases</text>
+<text x="48.0" y="2176.0" font-size="11" fill="#333">PATCH /clases/:id</text>
+<text x="48.0" y="2192.0" font-size="11" fill="#333">POST/DELETE inscripciones</text>
+<text x="48.0" y="2208.0" font-size="11" fill="#333">lista-espera + confirmar</text>
+<rect x="40.0" y="2296.0" width="260.0" height="156.0" fill="#dae8fc" stroke="#6c8ebf" stroke-width="1.2"/>
+<text x="170.0" y="2312.0" text-anchor="middle" font-size="12" font-weight="700" fill="#333">ClasesService</text>
+<line x1="40.0" y1="2324.0" x2="300.0" y2="2324.0" stroke="#6c8ebf" stroke-width="1"/>
+<text x="48.0" y="2332.0" font-size="11" fill="#333">listaEspera: Publisher</text>
+<line x1="40.0" y1="2344.0" x2="300.0" y2="2344.0" stroke="#6c8ebf" stroke-width="1"/>
+<text x="48.0" y="2352.0" font-size="11" fill="#333">+crear()</text>
+<text x="48.0" y="2368.0" font-size="11" fill="#333">+editar()</text>
+<text x="48.0" y="2384.0" font-size="11" fill="#333">+listar()</text>
+<text x="48.0" y="2400.0" font-size="11" fill="#333">+inscribir()</text>
+<text x="48.0" y="2416.0" font-size="11" fill="#333">+cancelar()</text>
+<text x="48.0" y="2432.0" font-size="11" fill="#333">+procesarListaEspera()</text>
+<rect x="40.0" y="2472.0" width="260.0" height="100.0" fill="#d5e8d4" stroke="#82b366" stroke-width="1.2"/>
+<text x="170.0" y="2488.0" text-anchor="middle" font-size="12" font-weight="700" fill="#333">ClasesRepository</text>
+<line x1="40.0" y1="2500.0" x2="300.0" y2="2500.0" stroke="#82b366" stroke-width="1"/>
+<text x="48.0" y="2508.0" font-size="11" fill="#333">+inscribir()</text>
+<text x="48.0" y="2524.0" font-size="11" fill="#333">+cancelar()</text>
+<text x="48.0" y="2540.0" font-size="11" fill="#333">+procesarListaEspera()</text>
+<rect x="40.0" y="2592.0" width="260.0" height="100.0" fill="#e1d5e7" stroke="#9673a6" stroke-width="1.2"/>
+<text x="170.0" y="2608.0" text-anchor="middle" font-size="12" font-weight="700" fill="#333">ClaseDto / InscripcionDto</text>
+<line x1="40.0" y1="2620.0" x2="300.0" y2="2620.0" stroke="#9673a6" stroke-width="1"/>
+<text x="48.0" y="2628.0" font-size="11" fill="#333">claseId</text>
+<text x="48.0" y="2644.0" font-size="11" fill="#333">cupo</text>
+<text x="48.0" y="2660.0" font-size="11" fill="#333">inscrito</text>
+<line x1="40.0" y1="2672.0" x2="300.0" y2="2672.0" stroke="#9673a6" stroke-width="1"/>
 <rect x="360.0" y="2108.0" width="280.0" height="100.0" fill="#dae8fc" stroke="#6c8ebf" stroke-width="1.2"/>
 <text x="500.0" y="2124.0" text-anchor="middle" font-size="12" font-weight="700" fill="#333">ListaEsperaPublisher</text>
 <line x1="360.0" y1="2136.0" x2="640.0" y2="2136.0" stroke="#6c8ebf" stroke-width="1"/>
@@ -503,16 +507,16 @@
 <text x="2008.0" y="2280.0" font-size="11" fill="#333">email</text>
 <text x="2008.0" y="2296.0" font-size="11" fill="#333">rol</text>
 <line x1="2000.0" y1="2308.0" x2="2220.0" y2="2308.0" stroke="#9673a6" stroke-width="1"/>
-<text x="20.0" y="2824.0" font-size="12" fill="#333" font-weight="700">Página 3/4 — Clases, Observer, notificaciones e infra. Los repositorios de dominio extienden SupabaseRepository (detalle en pág. 4). Autor: Patricio Ramos · 2026-11-13 · C-28.3</text>
-<line x1="170.0" y1="2238.0" x2="170.0" y2="2278.0" stroke="#222" stroke-width="1.6" marker-end="url(#arrow)"/>
-<rect x="156.0" y="2249.0" width="28" height="14" fill="#fff" fill-opacity="0.9"/>
-<text x="170.0" y="2260.0" text-anchor="middle" font-size="10" fill="#222" font-weight="600">usa</text>
-<line x1="170.0" y1="2398.0" x2="170.0" y2="2438.0" stroke="#222" stroke-width="1.6" marker-end="url(#arrow)"/>
-<rect x="156.0" y="2409.0" width="28" height="14" fill="#fff" fill-opacity="0.9"/>
-<text x="170.0" y="2420.0" text-anchor="middle" font-size="10" fill="#222" font-weight="600">usa</text>
-<line x1="280.0" y1="2278.0" x2="408.3" y2="2208.0" stroke="#222" stroke-width="1.6" marker-end="url(#arrow)"/>
-<rect x="319.3666666666667" y="2234.0" width="49.6" height="14" fill="#fff" fill-opacity="0.9"/>
-<text x="344.1666666666667" y="2245.0" text-anchor="middle" font-size="10" fill="#222" font-weight="600">notifica</text>
+<text x="20.0" y="2824.0" font-size="12" fill="#333" font-weight="700">Página 3/4 — Clases, Observer, notificaciones e infra. Los repositorios de dominio extienden SupabaseRepository (detalle en pág. 4). Autor: Patricio Ramos · 2026-11-14 · C-31 (POST/PATCH de la agenda)</text>
+<line x1="170.0" y1="2276.0" x2="170.0" y2="2296.0" stroke="#222" stroke-width="1.6" marker-end="url(#arrow)"/>
+<rect x="156.0" y="2277.0" width="28" height="14" fill="#fff" fill-opacity="0.9"/>
+<text x="170.0" y="2288.0" text-anchor="middle" font-size="10" fill="#222" font-weight="600">usa</text>
+<line x1="170.0" y1="2452.0" x2="170.0" y2="2472.0" stroke="#222" stroke-width="1.6" marker-end="url(#arrow)"/>
+<rect x="156.0" y="2453.0" width="28" height="14" fill="#fff" fill-opacity="0.9"/>
+<text x="170.0" y="2464.0" text-anchor="middle" font-size="10" fill="#222" font-weight="600">usa</text>
+<line x1="289.2" y1="2296.0" x2="423.6" y2="2208.0" stroke="#222" stroke-width="1.6" marker-end="url(#arrow)"/>
+<rect x="331.58888888888885" y="2243.0" width="49.6" height="14" fill="#fff" fill-opacity="0.9"/>
+<text x="356.38888888888886" y="2254.0" text-anchor="middle" font-size="10" fill="#222" font-weight="600">notifica</text>
 <line x1="493.3" y1="2208.0" x2="488.0" y2="2248.0" stroke="#222" stroke-width="1.6" marker-end="url(#arrow)"/>
 <rect x="475.16666666666663" y="2219.0" width="31.0" height="14" fill="#fff" fill-opacity="0.9"/>
 <text x="490.66666666666663" y="2230.0" text-anchor="middle" font-size="10" fill="#222" font-weight="600">emite</text>
@@ -534,7 +538,7 @@
 <line x1="1831.3" y1="2478.0" x2="1826.0" y2="2438.0" stroke="#222" stroke-width="1.6" stroke-dasharray="5 3" marker-end="url(#arrow)"/>
 <rect x="1814.6666666666665" y="2449.0" width="28" height="14" fill="#fff" fill-opacity="0.9"/>
 <text x="1828.6666666666665" y="2460.0" text-anchor="middle" font-size="10" fill="#222" font-weight="600">usa</text>
-<line x1="300.0" y1="2492.3" x2="1700.0" y2="2538.4" stroke="#222" stroke-width="1.6" stroke-dasharray="5 3" marker-end="url(#hollow)"/>
+<line x1="300.0" y1="2523.6" x2="1700.0" y2="2541.2" stroke="#222" stroke-width="1.6" stroke-dasharray="5 3" marker-end="url(#hollow)"/>
 <line x1="1240.0" y1="2334.7" x2="1700.0" y2="2494.4" stroke="#222" stroke-width="1.6" stroke-dasharray="5 3" marker-end="url(#hollow)"/>
 <text x="24" y="2934.0" font-size="16" font-weight="700" fill="#222">4 Repository</text>
 <rect x="40.0" y="2974.0" width="1900.0" height="780.0" fill="#f7f9fc" stroke="#999999" stroke-dasharray="4 3" fill-opacity="0.9"/>

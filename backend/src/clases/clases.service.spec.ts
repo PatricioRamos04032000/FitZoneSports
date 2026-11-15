@@ -20,6 +20,8 @@ import {
 } from './clase.model';
 import { ClasesRepository } from './clases.repository';
 import { ClasesService, PLAZO_CONFIRMACION_ESPERA } from './clases.service';
+import { SedesRepository } from '../usuarios/sedes/sedes.repository';
+import { Sede } from '../usuarios/sedes/sede.model';
 
 const SEDE_ID = '42363e91-8c03-4d52-b160-5c1345be8656';
 const CLASE_ID = 'c1000000-0000-4000-8000-000000000001';
@@ -77,7 +79,10 @@ describe('ClasesService', () => {
     retirarEspera: jest.Mock<Promise<EntradaListaEspera | null>, [string]>;
     procesarListaEspera: jest.Mock<Promise<EsperaNotificada[]>, [string, string]>;
     confirmarLugarEspera: jest.Mock<Promise<InscripcionClase>, [string]>;
+    crear: jest.Mock;
+    actualizar: jest.Mock;
   };
+  let sedes: { findById: jest.Mock };
   let membresias: {
     findActivaPorPerfil: jest.Mock<Promise<unknown>, [string, Date?]>;
   };
@@ -101,6 +106,18 @@ describe('ClasesService', () => {
       retirarEspera: jest.fn(),
       procesarListaEspera: jest.fn().mockResolvedValue([]),
       confirmarLugarEspera: jest.fn(),
+      crear: jest.fn(),
+      actualizar: jest.fn(),
+    };
+    sedes = {
+      findById: jest.fn().mockResolvedValue({
+        id: SEDE_ID,
+        nombre: 'FitZone Central',
+        direccion: null,
+        aforo_max: 100,
+        activa: true,
+        created_at: '2026-11-01T10:00:00Z',
+      } satisfies Sede),
     };
     membresias = {
       findActivaPorPerfil: jest
@@ -115,6 +132,7 @@ describe('ClasesService', () => {
       repo as unknown as ClasesRepository,
       membresias as unknown as MembresiasService,
       listaEspera as unknown as ListaEsperaPublisher,
+      sedes as unknown as SedesRepository,
     );
   });
 
@@ -440,6 +458,165 @@ describe('ClasesService', () => {
         claseResumen,
         siguiente,
       );
+    });
+  });
+
+  describe('crear y editar la agenda (RF-06)', () => {
+    const INICIO = '2026-11-20T18:00:00-03:00';
+    const FIN = '2026-11-20T19:00:00-03:00';
+
+    it('crear recorta los textos, deja la clase programada y exige sede activa', async () => {
+      const creada = crearClaseMock(INICIO);
+      repo.crear.mockResolvedValue(creada);
+
+      const res = await service.crear({
+        sedeId: SEDE_ID,
+        tipo: '  Yoga  ',
+        instructor: '  Ana Pérez  ',
+        inicio: INICIO,
+        fin: FIN,
+        capacidadMax: 12,
+      });
+
+      expect(res).toEqual(creada);
+      expect(repo.crear).toHaveBeenCalledWith({
+        sede_id: SEDE_ID,
+        tipo: 'Yoga',
+        instructor: 'Ana Pérez',
+        inicio: new Date(INICIO).toISOString(),
+        fin: new Date(FIN).toISOString(),
+        capacidad_max: 12,
+        estado: 'programada',
+      });
+      expect(listaEspera.notificarLugaresLiberados).not.toHaveBeenCalled();
+    });
+
+    it('crear rechaza tipo vacío, horario invertido y capacidad no positiva', async () => {
+      await expect(
+        service.crear({
+          sedeId: SEDE_ID,
+          tipo: '   ',
+          instructor: 'Ana',
+          inicio: INICIO,
+          fin: FIN,
+          capacidadMax: 12,
+        }),
+      ).rejects.toBeInstanceOf(BadRequestException);
+
+      await expect(
+        service.crear({
+          sedeId: SEDE_ID,
+          tipo: 'Yoga',
+          instructor: 'Ana',
+          inicio: FIN,
+          fin: INICIO,
+          capacidadMax: 12,
+        }),
+      ).rejects.toBeInstanceOf(BadRequestException);
+
+      await expect(
+        service.crear({
+          sedeId: SEDE_ID,
+          tipo: 'Yoga',
+          instructor: 'Ana',
+          inicio: INICIO,
+          fin: FIN,
+          capacidadMax: 1.5,
+        }),
+      ).rejects.toBeInstanceOf(BadRequestException);
+
+      expect(repo.crear).not.toHaveBeenCalled();
+    });
+
+    it('crear responde 404 si la sede no existe y 400 si está inactiva', async () => {
+      sedes.findById.mockResolvedValueOnce(null);
+      await expect(
+        service.crear({
+          sedeId: SEDE_ID,
+          tipo: 'Yoga',
+          instructor: 'Ana',
+          inicio: INICIO,
+          fin: FIN,
+          capacidadMax: 12,
+        }),
+      ).rejects.toBeInstanceOf(NotFoundException);
+
+      sedes.findById.mockResolvedValueOnce({
+        id: SEDE_ID,
+        nombre: 'FitZone Norte',
+        direccion: null,
+        aforo_max: 40,
+        activa: false,
+        created_at: '2026-11-01T10:00:00Z',
+      });
+      await expect(
+        service.crear({
+          sedeId: SEDE_ID,
+          tipo: 'Yoga',
+          instructor: 'Ana',
+          inicio: INICIO,
+          fin: FIN,
+          capacidadMax: 12,
+        }),
+      ).rejects.toBeInstanceOf(BadRequestException);
+      expect(repo.crear).not.toHaveBeenCalled();
+    });
+
+    it('editar rechaza un cambio de sede y un body vacío', async () => {
+      await expect(
+        service.editar(CLASE_ID, { sedeId: SEDE_ID, tipo: 'Yoga' }),
+      ).rejects.toBeInstanceOf(BadRequestException);
+      await expect(service.editar(CLASE_ID, {})).rejects.toBeInstanceOf(
+        BadRequestException,
+      );
+      expect(repo.findById).not.toHaveBeenCalled();
+      expect(repo.actualizar).not.toHaveBeenCalled();
+    });
+
+    it('editar responde 404 si la clase no existe', async () => {
+      repo.findById.mockResolvedValue(null);
+
+      await expect(
+        service.editar(CLASE_ID, { instructor: 'Ana' }),
+      ).rejects.toBeInstanceOf(NotFoundException);
+      expect(repo.actualizar).not.toHaveBeenCalled();
+    });
+
+    it('editar rechaza una capacidad por debajo de los lugares ocupados', async () => {
+      repo.findById.mockResolvedValue(crearClaseMock(INICIO));
+      repo.findConCupoById.mockResolvedValue({
+        ...crearClaseMock(INICIO),
+        cupos_libres: 2,
+        en_espera: 0,
+      });
+
+      await expect(
+        service.editar(CLASE_ID, { capacidadMax: 17 }),
+      ).rejects.toBeInstanceOf(BadRequestException);
+      expect(repo.actualizar).not.toHaveBeenCalled();
+    });
+
+    it('editar cancela sin avisar a la lista de espera y permite reabrir', async () => {
+      const clase = crearClaseMock(INICIO);
+      repo.findById.mockResolvedValue(clase);
+      repo.actualizar.mockResolvedValueOnce({ ...clase, estado: 'cancelada' });
+
+      await expect(
+        service.editar(CLASE_ID, { estado: 'cancelada' }),
+      ).resolves.toMatchObject({ estado: 'cancelada' });
+
+      expect(repo.actualizar).toHaveBeenCalledWith(CLASE_ID, {
+        estado: 'cancelada',
+      });
+      expect(listaEspera.notificarLugaresLiberados).not.toHaveBeenCalled();
+      expect(repo.procesarListaEspera).not.toHaveBeenCalled();
+
+      repo.findById.mockResolvedValue({ ...clase, estado: 'cancelada' });
+      repo.actualizar.mockResolvedValueOnce(clase);
+
+      await expect(
+        service.editar(CLASE_ID, { estado: 'programada' }),
+      ).resolves.toMatchObject({ estado: 'programada' });
     });
   });
 });

@@ -1324,6 +1324,114 @@
         "tags": [
           "clases"
         ]
+      },
+      "post": {
+        "description": "El estado inicial es programada. La sede tiene que existir y estar activa. No hay DELETE: la baja es estado cancelada.",
+        "operationId": "ClasesController_crear",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CrearClaseDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClaseResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Texto vacío, horario inválido, capacidad no positiva o sede inactiva"
+          },
+          "401": {
+            "description": "Token ausente, inválido o vencido"
+          },
+          "403": {
+            "description": "Solo para: gerente"
+          },
+          "404": {
+            "description": "La sede solicitada no existe"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Crear una clase en la agenda (RF-06, A4)",
+        "tags": [
+          "clases"
+        ]
+      }
+    },
+    "/clases/{id}": {
+      "patch": {
+        "description": "No cambia la sede. Cancelar pone estado cancelada, conserva las inscripciones y no avisa a la lista de espera. Se puede volver a programada. La capacidad no puede quedar bajo los lugares ya ocupados.",
+        "operationId": "ClasesController_editar",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EditarClaseDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClaseResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Body vacío, sedeId presente, horario inválido o capacidad bajo los lugares ocupados"
+          },
+          "401": {
+            "description": "Token ausente, inválido o vencido"
+          },
+          "403": {
+            "description": "Solo para: gerente"
+          },
+          "404": {
+            "description": "La clase solicitada no existe"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Editar una clase de la agenda (RF-06, A4)",
+        "tags": [
+          "clases"
+        ]
       }
     },
     "/clases/inscripciones/mias": {
@@ -3271,6 +3379,151 @@
           "cupos_libres",
           "en_espera"
         ]
+      },
+      "CrearClaseDto": {
+        "type": "object",
+        "properties": {
+          "sedeId": {
+            "type": "string",
+            "format": "uuid",
+            "example": "42363e91-8c03-4d52-b160-5c1345be8656",
+            "description": "Sede activa donde se dicta la clase"
+          },
+          "tipo": {
+            "type": "string",
+            "example": "Yoga"
+          },
+          "instructor": {
+            "type": "string",
+            "example": "Ana Pérez"
+          },
+          "inicio": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-11-20T18:00:00-03:00",
+            "description": "Inicio en hora de América/Argentina/Buenos Aires"
+          },
+          "fin": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-11-20T19:00:00-03:00"
+          },
+          "capacidadMax": {
+            "type": "number",
+            "example": 12,
+            "description": "Entero mayor a 0"
+          }
+        },
+        "required": [
+          "sedeId",
+          "tipo",
+          "instructor",
+          "inicio",
+          "fin",
+          "capacidadMax"
+        ]
+      },
+      "ClaseResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "example": "c1000000-0000-4000-8000-000000000001"
+          },
+          "sede_id": {
+            "type": "string",
+            "format": "uuid",
+            "example": "42363e91-8c03-4d52-b160-5c1345be8656"
+          },
+          "tipo": {
+            "type": "string",
+            "example": "Spinning"
+          },
+          "instructor": {
+            "type": "string",
+            "example": "Lucía Fernández"
+          },
+          "inicio": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-11-20T21:00:00.000Z"
+          },
+          "fin": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-11-20T22:00:00.000Z"
+          },
+          "capacidad_max": {
+            "type": "number",
+            "example": 20
+          },
+          "estado": {
+            "type": "string",
+            "enum": [
+              "programada",
+              "cancelada"
+            ],
+            "example": "programada"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-11-14T20:00:00.000Z"
+          }
+        },
+        "required": [
+          "id",
+          "sede_id",
+          "tipo",
+          "instructor",
+          "inicio",
+          "fin",
+          "capacidad_max",
+          "estado",
+          "created_at"
+        ]
+      },
+      "EditarClaseDto": {
+        "type": "object",
+        "properties": {
+          "sedeId": {
+            "type": "string",
+            "description": "No se acepta. Para pasar la clase de sede hay que cancelarla y crear otra."
+          },
+          "tipo": {
+            "type": "string",
+            "example": "Yoga"
+          },
+          "instructor": {
+            "type": "string",
+            "example": "Ana Pérez"
+          },
+          "inicio": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-11-20T18:00:00-03:00"
+          },
+          "fin": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-11-20T19:00:00-03:00"
+          },
+          "capacidadMax": {
+            "type": "number",
+            "example": 12,
+            "description": "No puede quedar por debajo de los inscriptos más los notificados con plazo vigente"
+          },
+          "estado": {
+            "type": "string",
+            "enum": [
+              "programada",
+              "cancelada"
+            ],
+            "example": "cancelada",
+            "description": "La baja es cancelada. No borra inscripciones ni avisa a la lista de espera. Se puede volver a programada."
+          }
+        }
       },
       "ClaseResumenDto": {
         "type": "object",

@@ -577,3 +577,21 @@ No hay `supabase db push` en este entorno (sin `config.toml` ni URL de base en `
 
 - C-30 en esta rama: catálogo en el perfil, alta que cierra la anterior y renovación cobrada por la pasarela simulada.
 
+### 2026-11-14  ·  C-31 (~5 h)
+
+**Actividad**
+
+Alta y edición de la agenda de clases para el gerente (RF-06, A4), en la rama `C-31`. Checks de tipo e instructor, `POST /clases` y `PATCH /clases/:id` solo con rol gerente, pantalla `/clases/gestionar`, unitarios y e2e de rol. El listado y la inscripción del socio en `/clases` quedaron como estaban.
+
+**Decisión**
+
+No hay ADR nuevo ni cambio de DER. La baja es `estado = cancelada` porque borrar la clase cascada inscripciones y lista de espera. Cancelar no emite el Observer. El `PATCH` no cambia la sede: para pasarla de sede se cancela y se crea otra. La capacidad nueva no puede quedar bajo los lugares ya ocupados.
+
+**Problema o bloqueo**
+
+La migración `20261114230000_clases_checks.sql` queda en el repo. Este entorno no aplica `supabase db push`. El servicio ya rechaza el texto vacío, así que el alta desde la pantalla no depende de que el check esté cargado en la base.
+
+**Commits**
+
+- Pendiente: el trabajo está en la rama `C-31`, sin commit.
+

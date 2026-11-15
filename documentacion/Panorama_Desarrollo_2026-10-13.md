@@ -17,12 +17,12 @@ Los porcentajes del 13 de octubre (base ~40 %, backend ~35 %, frontend ~5 %) ya 
 | Capa | Lectura al 14/11 |
 |------|------------------|
 | Base de datos | Tablas y funciones de M1 a M5 están migradas, incluida la garantía de no sobreventa. No hay Storage para la foto ni tabla o archivo de comprobante PDF. |
-| Backend | El guion del socio y el de recepción responden por API: registro de externo, perfil, membresía, clases con lista de espera, reserva y pago simulado de cancha, QR, check-in con cola offline y alta o edición de sedes del gerente. No hay ABM de clases, ni PDF, ni renovación de membresía cobrada. |
+| Backend | El guion del socio y el de recepción responden por API: registro de externo, perfil, membresía, clases con lista de espera, reserva y pago simulado de cancha, QR, check-in con cola offline, alta o edición de sedes y la agenda de clases del gerente, y la renovación cobrada de la membresía. No hay PDF. |
 | Testing | Las reglas críticas tienen unitario (RN-01, RN-02, RN-03, D5, D6, Decorator, pasarela, sync). El e2e cubre auth, roles y una parte de canchas; no recorre el checkout HTML ni el acceso. No hay tests de frontend. |
-| Frontend | Login, registro, perfil con membresía, canchas (grilla, reserva, checkout), clases (inscribir, cancelar, lista de espera), notificaciones, Mi QR, Acceso (check-in, aforo, sync) y Sedes para el gerente. El dashboard es un placeholder. No hay pantallas de canchas/clases de administración ni descarga de PDF. |
+| Frontend | Login, registro, perfil con membresía, canchas (grilla, reserva, checkout), clases (inscribir, cancelar, lista de espera), notificaciones, Mi QR, Acceso (check-in, aforo, sync), Sedes y la agenda de clases para el gerente. El dashboard es un placeholder. No hay pantallas de administración de canchas ni descarga de PDF. |
 | Documentación de la regla | ADR ×10, 14 diagramas, manual técnico y justificación de patrones están alineados al código. Faltan el manual de usuario y el de instalación. El enunciado de RF-11 sigue diciendo Strategy; el código es Decorator. |
 
-El guion de Demo Day (login → ver membresía → reservar paddle y pagar → QR → check-in) se puede recorrer en la UI. Quedan fuera de ese recorrido: alta de clases, mantenimiento de canchas, comprobante PDF y reportes.
+El guion de Demo Day (login → ver membresía → reservar paddle y pagar → QR → check-in) se puede recorrer en la UI. Quedan fuera de ese recorrido: la agenda de clases, el mantenimiento de canchas, el comprobante PDF y los reportes.
 
 ---
 
@@ -67,7 +67,7 @@ El guion de Demo Day (login → ver membresía → reservar paddle y pagar → Q
 
 | Regla | BD | Backend | Testing | Frontend | Documentación | Hueco |
 |-------|----|---------|---------|----------|---------------|-------|
-| RF-06 Crear y editar clases | ✅ `clases` | ❌ no hay `POST` ni `PATCH` | ❌ | ❌ | 🟡 solo el enunciado | La agenda se carga por SQL o seed |
+| RF-06 Crear y editar clases | ✅ `clases` y checks de tipo e instructor | ✅ `POST /clases` y `PATCH /clases/:id` solo gerente | ✅ unitario del servicio y e2e 401/403/201/200 | ✅ `/clases/gestionar` | ✅ manual técnico M3 y el diagrama de clases | La baja es `estado = cancelada`. No cambia la sede ni avisa a la lista de espera |
 | Listar con cupo | ✅ vista `clases_con_cupo` | ✅ `GET /clases?sedeId` con JWT | 🟡 e2e de auth; el unitario se concentra en inscribir | ✅ `/clases` | 🟡 manual técnico §2 | Falta el manual de usuario (C-16) |
 | RF-07 Inscribir, ventana de 48 h (D5) y RN-03 | ✅ `inscribir_en_clase` | ✅ el servicio exige membresía vigente y 48 h; el perfil sale del JWT | ✅ `clases.service.spec` | ✅ botón de inscribir | ✅ enunciado; D5 quedó cerrada en el servicio (ya no es decisión abierta) | — |
 | RF-07 Cancelar; tardía si faltan menos de 2 h (D6) | ✅ `cancelar_inscripcion` | ✅ la hora se lee de la base, no del body | ✅ el spec cubre `esTardia` y el aviso | ✅ cancelar en `/clases` | ✅ | — |
@@ -108,6 +108,7 @@ El guion de Demo Day (login → ver membresía → reservar paddle y pagar → Q
 | Hold, vencimiento y `confirmar_reserva_cancha` | M4 / M5 | ✅ | `20261101200000_hold_reserva_pendiente.sql`, `20261031200000_confirmar_reserva_cancha.sql` |
 | `totp_seeds`, `presencias`, `check_ins`, `registrar_check_in` / `out` | M2 | ✅ | `20261101210000_acceso_m2.sql` |
 | Checks de `sedes` (nombre y aforo) | Transversal / RNF-04 | ✅ | `20261114203000_sedes_checks.sql` |
+| Checks de tipo e instructor en `clases` | M3 / RF-06 | ✅ | `20261114230000_clases_checks.sql` |
 | `renovar_membresia` como función | M1 | ❌ el cierre de la anterior lo hace el servicio de Nest | — |
 | Storage de la foto, archivo de PDF | M1 / M5 | ❌ | — |
 
@@ -117,9 +118,9 @@ Scripts SQL de reglas, solo en local: `supabase/tests/membresias_clases.test.sql
 
 ## 4. Backend y frontend, en una frase cada uno
 
-**API.** Módulos `usuarios`, `acceso`, `clases`, `canchas` y `pagos`. Identidad tomada del JWT. Swagger en el proceso de Nest. Lo que la matriz marca ❌ no tiene endpoint: ABM de clases, reportes, PDF y cobro de la renovación. El alta de sedes sí: `POST /sedes` y `PATCH /sedes/:id`.
+**API.** Módulos `usuarios`, `acceso`, `clases`, `canchas` y `pagos`. Identidad tomada del JWT. Swagger en el proceso de Nest. Lo que la matriz marca ❌ no tiene endpoint: reportes y PDF. El alta de sedes sí: `POST /sedes` y `PATCH /sedes/:id`. La agenda de clases sí: `POST /clases` y `PATCH /clases/:id`.
 
-**Web.** React + Vite. Cliente en `frontend/src/services/api.ts` (token y 401). Estado de sesión en `AuthProvider`. Rutas: `/login`, `/signup`, `/perfil`, `/canchas`, `/clases`, `/notificaciones`, `/mi-qr`, `/acceso`, `/sedes` (gerente), `/dashboard`. No hay tests de frontend. Atomic Design llega a átomos (`Button`, `Input`, `Spinner`) y al `Layout`.
+**Web.** React + Vite. Cliente en `frontend/src/services/api.ts` (token y 401). Estado de sesión en `AuthProvider`. Rutas: `/login`, `/signup`, `/perfil`, `/canchas`, `/clases`, `/clases/gestionar` (gerente), `/notificaciones`, `/mi-qr`, `/acceso`, `/sedes` (gerente), `/dashboard`. No hay tests de frontend. Atomic Design llega a átomos (`Button`, `Input`, `Spinner`) y al `Layout`.
 
 ---
 
@@ -128,7 +129,7 @@ Scripts SQL de reglas, solo en local: `supabase/tests/membresias_clases.test.sql
 | Ítem | Estado al 14/11 |
 |------|------------------|
 | Unitarios de backend | ✅ auth, perfiles, sedes, membresías, clases, observers, acceso, TOTP, canchas, precios, reservas, pasarela, guards |
-| E2E de backend | 🟡 auth, perfiles, roles, sedes (GET y alta/edición por rol), notificaciones, membresías/clases (seguridad y lista de espera), canchas (GET público y 401/403). No hay e2e de acceso ni del checkout |
+| E2E de backend | 🟡 auth, perfiles, roles, sedes (GET y alta/edición por rol), notificaciones, membresías/clases (seguridad, lista de espera y agenda por rol), canchas (GET público y 401/403). No hay e2e de acceso ni del checkout |
 | SQL de reglas | 🟡 M3 y M4, manuales |
 | CI | 🟡 [`.github/workflows/ci-backend.yml`](../.github/workflows/ci-backend.yml) en pull requests a `desarrollo`. No corre el frontend |
 | Cobertura | 🟡 umbral del 60 % de sentencias declarado en [ADR-008](../docs/adr/ADR-008-pruebas-cobertura.md). El reporte publicado hay que regenerarlo con `npm run test:cov` |
@@ -161,11 +162,10 @@ Ordenado por lo que impide decir que la regla está cerrada de punta a punta.
 | Prioridad | Hueco | Regla |
 |-----------|-------|-------|
 | 1 | PDF con cancha, horario y monto después del pago | RF-14 |
-| 2 | ABM de clases (hoy la agenda entra por SQL) | RF-06 |
-| 3 | Pantallas de alta de cancha, mantenimiento, horario pico y descuento de socio | RF-09, RF-12, RF-11 |
-| 4 | Cancelar una reserva de cancha desde `/canchas` y check-out desde `/acceso` | RF-10, RN-01 |
-| 5 | Foto (Storage) y alta de socio, no solo de externo | RF-01 |
-| 6 | Manual de usuario y manual de instalación | C-16, C-17 |
-| 7 | Docker o un arranque de cinco pasos, y el seed de 25 sedes | ADR-009, carga de prueba |
+| 2 | Pantallas de alta de cancha, mantenimiento, horario pico y descuento de socio | RF-09, RF-12, RF-11 |
+| 3 | Cancelar una reserva de cancha desde `/canchas` y check-out desde `/acceso` | RF-10, RN-01 |
+| 4 | Foto (Storage) y alta de socio, no solo de externo | RF-01 |
+| 5 | Manual de usuario y manual de instalación | C-16, C-17 |
+| 6 | Docker o un arranque de cinco pasos, y el seed de 25 sedes | ADR-009, carga de prueba |
 
-Quedan fuera de esta entrega, ya escritos como corte: app móvil, MercadoPago real, Circuit Breaker y reportes del gerente. El offline de recepción es la cola del navegador más el sync, no un nodo por sede. El alta de sedes del gerente ya está en `/sedes`. La renovación cobrada de la membresía ya está en el perfil del socio.
+Quedan fuera de esta entrega, ya escritos como corte: app móvil, MercadoPago real, Circuit Breaker y reportes del gerente. El offline de recepción es la cola del navegador más el sync, no un nodo por sede. El alta de sedes del gerente ya está en `/sedes`. La agenda de clases del gerente ya está en `/clases/gestionar`. La renovación cobrada de la membresía ya está en el perfil del socio.

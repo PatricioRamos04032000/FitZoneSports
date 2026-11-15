@@ -14,6 +14,7 @@ import Notificaciones from "./portal/Notificaciones/Notificaciones";
 import MiQr from "./portal/MiQr/MiQr";
 import Acceso from "./admin/Acceso/Acceso";
 import Sedes from "./admin/Sedes/Sedes";
+import GestionarClases from "./admin/Clases/GestionarClases";
 
 function App() {
   return (
@@ -47,6 +48,7 @@ function App() {
 
             <Route element={<RoleRoute allowedRoles={["gerente"]} />}>
               <Route path="/sedes" element={<Sedes />} />
+              <Route path="/clases/gestionar" element={<GestionarClases />} />
             </Route>
           </Route>
         </Route>
