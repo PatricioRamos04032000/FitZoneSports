@@ -595,3 +595,21 @@ La migración `20261114230000_clases_checks.sql` queda en el repo. Este entorno 
 
 - Pendiente: el trabajo está en la rama `C-31`, sin commit.
 
+### 2026-11-15  ·  C-32 (~6 h)
+
+**Actividad**
+
+Dejé en pantalla lo que la API de canchas ya resolvía (RF-09, RF-10, RF-11, RF-12 y RNF-03), en la rama `C-32`. `/canchas/gestionar` da de alta y edita la cancha, el horario pico y el mantenimiento; el descuento de socio lo guarda el gerente. En `/canchas` el dueño cancela su reserva. El e2e afirma el alta y un mantenimiento por rol. No hay migración ni diagrama nuevo.
+
+**Decisión**
+
+No hay ADR nuevo. Los roles quedan como estaban: el gerente administra cualquier sede y el admin de sede solo la suya. Cancelar no cambia el State ni devuelve el pago. RNF-03 se cierra nombrando los cuatro índices que ya usa la grilla; no se mide latencia.
+
+**Problema o bloqueo**
+
+Ninguno de contrato. La grilla, la reserva y el pago de `/canchas` no se reescribieron.
+
+**Commits**
+
+- C-32 en esta rama: alta, precio, pico, descuento y mantenimiento en pantalla, y cancelación de la reserva propia.
+

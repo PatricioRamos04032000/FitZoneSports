@@ -15,6 +15,7 @@ import MiQr from "./portal/MiQr/MiQr";
 import Acceso from "./admin/Acceso/Acceso";
 import Sedes from "./admin/Sedes/Sedes";
 import GestionarClases from "./admin/Clases/GestionarClases";
+import GestionarCanchas from "./admin/Canchas/GestionarCanchas";
 
 function App() {
   return (
@@ -44,6 +45,7 @@ function App() {
             >
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/acceso" element={<Acceso />} />
+              <Route path="/canchas/gestionar" element={<GestionarCanchas />} />
             </Route>
 
             <Route element={<RoleRoute allowedRoles={["gerente"]} />}>
