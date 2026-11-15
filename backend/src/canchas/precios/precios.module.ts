@@ -1,10 +1,7 @@
 import { Module } from '@nestjs/common';
 import { PreciosService } from './precios.service';
-import {
-  PRICING_CHAIN,
-  PRICING_DECORATORS,
-  PricingComponent,
-} from './pricing.component';
+import { PRICING_CHAIN, PRICING_DECORATORS } from './pricing.component';
+import type { PricingComponent } from './pricing.component';
 import { PricingDecorator } from './decorators/pricing.decorator';
 import { MemberDiscountPricingDecorator } from './decorators/member-discount-pricing.decorator';
 import { PeakHourPricingDecorator } from './decorators/peak-hour-pricing.decorator';

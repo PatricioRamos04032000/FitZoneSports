@@ -1,5 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { PRICING_CHAIN, PricingComponent } from './pricing.component';
+import { PRICING_CHAIN } from './pricing.component';
+import type { PricingComponent } from './pricing.component';
 import { ContextoPrecio, PrecioCalculado } from './pricing.types';
 
 /**
