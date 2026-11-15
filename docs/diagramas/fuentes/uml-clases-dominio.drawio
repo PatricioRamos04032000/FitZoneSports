@@ -228,14 +228,17 @@
                 <mxCell id="mdto" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;b&gt;MembresiaDto&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0px;margin-left:6px;text-align:left;&quot;&gt;plan&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:6px;text-align:left;&quot;&gt;estado&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:6px;text-align:left;&quot;&gt;vigencia&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;" style="shape=umlClass;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontColor=#333333;fontSize=11;align=center;verticalAlign=top;" parent="1" vertex="1">
                     <mxGeometry x="2080" y="430" width="240" height="90" as="geometry"/>
                 </mxCell>
-                <mxCell id="sc" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;b&gt;SedesController&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0px;margin-left:6px;text-align:left;&quot;&gt;GET /sedes&lt;/p&gt;" style="shape=umlClass;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontColor=#333333;fontSize=11;align=center;verticalAlign=top;" parent="1" vertex="1">
-                    <mxGeometry x="1280" y="420" width="220" height="80" as="geometry"/>
+                <mxCell id="sc" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;b&gt;SedesController&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0px;margin-left:6px;text-align:left;&quot;&gt;GET /sedes&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:6px;text-align:left;&quot;&gt;POST /sedes&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:6px;text-align:left;&quot;&gt;PATCH /sedes/:id&lt;/p&gt;" style="shape=umlClass;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontColor=#333333;fontSize=11;align=center;verticalAlign=top;" parent="1" vertex="1">
+                    <mxGeometry x="1280" y="400" width="240" height="110" as="geometry"/>
                 </mxCell>
-                <mxCell id="ss" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;b&gt;SedesService&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0px;margin-left:6px;text-align:left;&quot;&gt;+listar()&lt;/p&gt;" style="shape=umlClass;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontColor=#333333;fontSize=11;align=center;verticalAlign=top;" parent="1" vertex="1">
-                    <mxGeometry x="1280" y="530" width="220" height="80" as="geometry"/>
+                <mxCell id="sdto" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;b&gt;SedeDto / Crear / Actualizar&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0px;margin-left:6px;text-align:left;&quot;&gt;nombre&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:6px;text-align:left;&quot;&gt;direccion&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:6px;text-align:left;&quot;&gt;aforo_max&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:6px;text-align:left;&quot;&gt;activa&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;" style="shape=umlClass;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontColor=#333333;fontSize=11;align=center;verticalAlign=top;" parent="1" vertex="1">
+                    <mxGeometry x="1540" y="390" width="240" height="120" as="geometry"/>
                 </mxCell>
-                <mxCell id="sr" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;b&gt;SedesRepository&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0px;margin-left:6px;text-align:left;&quot;&gt;+findAll()&lt;/p&gt;" style="shape=umlClass;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontColor=#333333;fontSize=11;align=center;verticalAlign=top;" parent="1" vertex="1">
-                    <mxGeometry x="1540" y="530" width="220" height="80" as="geometry"/>
+                <mxCell id="ss" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;b&gt;SedesService&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0px;margin-left:6px;text-align:left;&quot;&gt;+findAll()&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:6px;text-align:left;&quot;&gt;+crear()&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:6px;text-align:left;&quot;&gt;+actualizar()&lt;/p&gt;" style="shape=umlClass;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontColor=#333333;fontSize=11;align=center;verticalAlign=top;" parent="1" vertex="1">
+                    <mxGeometry x="1280" y="530" width="240" height="110" as="geometry"/>
+                </mxCell>
+                <mxCell id="sr" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;b&gt;SedesRepository&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0px;margin-left:6px;text-align:left;&quot;&gt;+findAll()&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:6px;text-align:left;&quot;&gt;+crear()&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:6px;text-align:left;&quot;&gt;+actualizar()&lt;/p&gt;" style="shape=umlClass;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontColor=#333333;fontSize=11;align=center;verticalAlign=top;" parent="1" vertex="1">
+                    <mxGeometry x="1540" y="530" width="240" height="110" as="geometry"/>
                 </mxCell>
                 <mxCell id="eu1" value="usa" style="endArrow=open;endFill=0;html=1;rounded=0;strokeColor=#333333;fontSize=11;fontColor=#333333;labelBackgroundColor=#ffffff;" parent="1" source="auc" target="aus" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
@@ -252,13 +255,16 @@
                 <mxCell id="eu5" value="usa" style="endArrow=open;endFill=0;html=1;rounded=0;strokeColor=#333333;fontSize=11;fontColor=#333333;labelBackgroundColor=#ffffff;" parent="1" source="ms" target="mr" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
+                <mxCell id="eu6b" value="DTO" style="dashed=1;endArrow=open;endFill=0;html=1;rounded=0;strokeColor=#333333;fontSize=11;fontColor=#333333;labelBackgroundColor=#ffffff;" parent="1" source="sc" target="sdto" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
                 <mxCell id="eu6" value="usa" style="endArrow=open;endFill=0;html=1;rounded=0;strokeColor=#333333;fontSize=11;fontColor=#333333;labelBackgroundColor=#ffffff;" parent="1" source="sc" target="ss" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
                 <mxCell id="eu7" value="usa" style="endArrow=open;endFill=0;html=1;rounded=0;strokeColor=#333333;fontSize=11;fontColor=#333333;labelBackgroundColor=#ffffff;" parent="1" source="ss" target="sr" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="pie2" value="Página 2/4 — Acceso y usuarios. Autor: Patricio Ramos · 2026-11-13 · C-28.3" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=12;fontColor=#333333;fontStyle=1;whiteSpace=wrap;" parent="1" vertex="1">
+                <mxCell id="pie2" value="Página 2/4 — Acceso y usuarios. Autor: Patricio Ramos · 2026-11-14 · C-29 (sedes: alta y edición)" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=12;fontColor=#333333;fontStyle=1;whiteSpace=wrap;" parent="1" vertex="1">
                     <mxGeometry x="20" y="740" width="2000" height="24" as="geometry"/>
                 </mxCell>
             </root>

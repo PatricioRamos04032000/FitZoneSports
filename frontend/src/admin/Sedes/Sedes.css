@@ -1,0 +1,148 @@
+.sedes-container {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 45px 30px;
+  font-family: Arial, sans-serif;
+  color: #14283f;
+}
+
+.sedes-header {
+  margin-bottom: 28px;
+}
+
+.sedes-header h1 {
+  margin: 0 0 12px;
+  font-size: 30px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: #0f1c2e;
+}
+
+.sedes-header p {
+  margin: 0;
+  line-height: 1.6;
+  color: #475467;
+  font-size: 16px;
+}
+
+.sedes-card {
+  background: white;
+  padding: 28px 34px;
+  margin-bottom: 24px;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(20, 40, 63, 0.07);
+}
+
+.sedes-card h2 {
+  margin: 0 0 20px;
+  font-size: 22px;
+  font-weight: 700;
+  color: #0f1c2e;
+}
+
+.sedes-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 16px;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.sedes-field input {
+  padding: 12px 14px;
+  border: 1px solid #d5dce5;
+  border-radius: 7px;
+  font-size: 15px;
+  font-family: Arial, sans-serif;
+  color: #14283f;
+  background: white;
+  font-weight: normal;
+}
+
+.sedes-field input:focus {
+  outline: none;
+  border-color: #58c9e8;
+  box-shadow: 0 0 0 2px rgba(88, 201, 232, 0.12);
+}
+
+.sedes-check {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 16px;
+  font-weight: 600;
+}
+
+.sedes-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.sedes-button {
+  padding: 12px 22px;
+  border: none;
+  border-radius: 7px;
+  background: #14283f;
+  color: white;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.sedes-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.sedes-button-ghost {
+  background: transparent;
+  color: #14283f;
+  border: 1px solid #d5dce5;
+}
+
+.sedes-error {
+  color: #9b2335;
+}
+
+.sedes-ok {
+  color: #146c43;
+}
+
+.sedes-lista {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.sedes-lista li {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: center;
+  padding: 14px 0;
+  border-top: 1px solid #e6ebf1;
+}
+
+.sedes-lista p {
+  margin: 4px 0 0;
+  color: #475467;
+  font-size: 14px;
+}
+
+.sedes-lista span {
+  display: inline-block;
+  margin-left: 10px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #475467;
+}
+
+.sedes-lista button {
+  padding: 8px 14px;
+  border: 1px solid #d5dce5;
+  border-radius: 7px;
+  background: white;
+  color: #14283f;
+  cursor: pointer;
+}

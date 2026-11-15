@@ -5,7 +5,7 @@
 **Congelamiento / tag:** jueves **19/11/2026, 18:00** → `v1.0-entrega`  
 **Demo Day:** semana 23–29/11 (sin desarrollo)  
 **Fuente de orden:** [Lineamientos de Entrega](./Lineamientos_Entrega_TIF_FitZone_Sports_2do_Cuatrimestre_2026.pdf) · **Anexo G**  
-**Estado de partida:** relevado el 2026-11-06 sobre `desarrollo` (API canchas/clases/acceso fuertes; entonces UI canchas mock; docs de entrega incompletas). **Actualización 2026-11-13:** C-01 y S7-T08 cerrados — canchas en UI y pase demo solo UI; C-24 (ensayo 5 min cronometrado) sigue sobre el guion ya pulido. **Misma fecha:** se agregó **C-28** (Strategy → Decorator + UML Nest), no listada en el plan original; entra en T2 antes del congelamiento T3.
+**Estado de partida:** relevado el 2026-11-06 sobre `desarrollo` (API canchas/clases/acceso fuertes; entonces UI canchas mock; docs de entrega incompletas). **Actualización 2026-11-13:** C-01 y S7-T08 cerrados — canchas en UI y pase demo solo UI; C-24 (ensayo 5 min cronometrado) sigue sobre el guion ya pulido. **Misma fecha:** se agregó **C-28** (Strategy → Decorator + UML Nest), no listada en el plan original; entra en T2 antes del congelamiento T3. **2026-11-14:** se agregó **C-29** (alta y edición de sedes, A4 / RNF-04), rama `C-29`, Patricio.
 
 **Estados** (lista Trello → este plan): `por hacer` → **Por hacer** · `tambien en desarrollo` → **En desarrollo** · `finalizado` → **Finalizado**. El 2026-11-11 las listas `en desarrollo` y `Blocked` estaban vacías.
 
@@ -84,6 +84,7 @@ Después del tag: solo ensayo Demo Day.
 | C-11 | Pantalla Clases mínima (listar + inscribir). **Cerrada 2026-11-13** por **Patricio** (tomó la tarjeta de Lucas; UI `/clases`; RF-07 + RF-08 lista espera) | Patricio (antes Lucas) | 3–4 | **Finalizado** | RF-07 demoable en UI | 14 RF |
 | C-12 | Notificaciones in-app (lista + leída) stretch | Lucas | 1–2 | **Por hacer** | Si sobra | — |
 | C-28 | Precios Strategy → Decorator GoF + UML Nest completo + docs (serie C-28.1…C-28.5) | Patricio | 5–7 | **Finalizado** | Suite precios verde; UML Nest (controllers/services/DTOs/repos + Decorator); secuencia + C4-3; manual §4.1/weekend; justificación Unidad III; defensa cita Decorator | Patrones / diagramas |
+| C-29 | Alta y edición de sedes (A4, RNF-04): checks, `POST/PATCH /sedes` solo gerente, UI `/sedes`, tests y docs. Rama `C-29` | Patricio | 3–4 | **Finalizado** | El gerente crea y edita una sede sin SQL; la baja es `activa = false`; no hay ADR nuevo | RNF-04 |
 
 #### 4.2 Repositorio y docs (admisibilidad §6.1)
 
@@ -159,7 +160,7 @@ Situación (5 min): agregar canchas de tenis (manual técnico C-18).
 | App móvil React Native / APK | Unidad VI; no entra en 13 días con docs |
 | Acceso UX v2 (cámara, DNI) | Stretch; pegar JSON alcanza para demo |
 | MercadoPago real / Circuit Breaker | Fuera de RF-13 simulado |
-| Reportes gerente / ABM sedes completo | No bloquean tag si RNF-04 está documentado |
+| Reportes del gerente y asignación de `admins_sede` | El alta y la edición de sedes entró en C-29. Reportes y admins de sede siguen fuera |
 | Tests frontend / Storybook completo | Suficiente: componentes documentados en manual + README Atomic mínimo |
 | Reescritura total de historia del repo | Solo mapear estructura y limpiar README |
 
@@ -171,7 +172,7 @@ Situación (5 min): agregar canchas de tenis (manual técnico C-18).
 |----------------|-----------------|
 | Repositorio y entrega | C-13, C-23, C-25, C-26, C-27 |
 | Código | C-07, C-08, C-09, C-10 |
-| Funcionalidad | C-01…C-05, C-11, C-04 |
+| Funcionalidad | C-01…C-05, C-11, C-04, C-29 |
 | Documentación | C-14…C-18 |
 | Bitácoras | C-19 |
 | Planificación | C-20, C-21 |

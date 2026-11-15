@@ -1021,4 +1021,14 @@ Patricio Ramos (P1) cierra el refactor de precios de Strategy a **Decorator GoF*
 
 ---
 
+## 2026-11-14 — C-29: alta y edición de sedes (Patricio)
+
+**Tipo:** funcionalidad / RNF-04  
+**Registrado por:** Patricio Ramos (P1)  
+**Tarea:** C-29 · rama `C-29`
+
+El gerente crea y edita sedes desde `/sedes` (`POST /sedes`, `PATCH /sedes/:id`). La baja es `activa = false`. No se abre un ADR: la decisión de RNF-04 ya estaba aceptada. C4-1 y C4-2 actualizan la etiqueta del gerente. El manual técnico (M1) ya describe el endpoint.
+
+---
+
 *FitZone Sports · Programación V · UNER*

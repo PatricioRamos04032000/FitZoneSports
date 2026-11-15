@@ -300,7 +300,7 @@ def main() -> None:
     bodies.append(
         f'<text x="{MARGIN}" y="{y + 28}" font-size="12" fill="#555">'
         f"Exportado desde uml-clases-dominio.drawio · Controllers · Services · DTOs · "
-        f"Repositories · Decorator / Facade / State / Observer · 2026-11-13</text>"
+        f"Repositories · Decorator / Facade / State / Observer · 2026-11-14</text>"
     )
     y += 44
 

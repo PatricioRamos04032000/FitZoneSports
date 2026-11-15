@@ -107,7 +107,7 @@ Administrador global de la cadena: configuración comercial, sedes y visión con
 
 | Área | Funcionalidad |
 |------|----------------|
-| Sedes | Crear y administrar sedes (alta/configuración) |
+| Sedes | Crear y editar sedes en `/sedes` (`POST /sedes`, `PATCH /sedes/:id`). La baja es `activa = false`, no un borrado (RNF-04) |
 | Precios | Definir costos por hora y tipo de cancha; políticas de precio (estándar, descuento socio, pico) (RF-09, RF-11) |
 | Recursos | Alta de canchas por sede; inhabilitar canchas por mantenimiento (RF-09, RF-12) |
 | Clases | Crear/gestionar agenda de clases: tipo, instructor, horario, capacidad (RF-06) |

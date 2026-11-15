@@ -163,7 +163,112 @@
             "description": "Error al consultar Supabase"
           }
         },
-        "summary": "Lista todas las sedes",
+        "summary": "Lista todas las sedes, incluidas las inactivas",
+        "tags": [
+          "sedes"
+        ]
+      },
+      "post": {
+        "description": "Una sede nueva es una fila: no hay deploy. El trigger de Postgres crea la configuración de horario pico.",
+        "operationId": "SedesController_crear",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CrearSedeDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SedeDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Nombre vacío o aforo no positivo"
+          },
+          "401": {
+            "description": "Token ausente, inválido o vencido"
+          },
+          "403": {
+            "description": "Solo para: gerente"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Dar de alta una sede (A4, RNF-04)",
+        "tags": [
+          "sedes"
+        ]
+      }
+    },
+    "/sedes/{id}": {
+      "patch": {
+        "description": "Cambia nombre, dirección, aforo o el flag activa. Desactivar no borra la sede ni sus canchas.",
+        "operationId": "SedesController_actualizar",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ActualizarSedeDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SedeDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Body vacío o datos inválidos"
+          },
+          "401": {
+            "description": "Token ausente, inválido o vencido"
+          },
+          "403": {
+            "description": "Solo para: gerente"
+          },
+          "404": {
+            "description": "La sede solicitada no existe"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Editar una sede (A4, RNF-04)",
         "tags": [
           "sedes"
         ]
@@ -2215,7 +2320,8 @@
           },
           "direccion": {
             "type": "string",
-            "example": "San Martín 1234"
+            "example": "San Martín 1234",
+            "nullable": true
           },
           "aforo_max": {
             "type": "number",
@@ -2240,6 +2346,56 @@
           "activa",
           "created_at"
         ]
+      },
+      "CrearSedeDto": {
+        "type": "object",
+        "properties": {
+          "nombre": {
+            "type": "string",
+            "example": "FitZone Norte"
+          },
+          "direccion": {
+            "type": "string",
+            "example": "Av. Almafuerte 500",
+            "nullable": true
+          },
+          "aforo_max": {
+            "type": "number",
+            "example": 80,
+            "description": "Capacidad máxima. Si se omite, queda en 50."
+          },
+          "activa": {
+            "type": "boolean",
+            "example": true,
+            "description": "Si se omite, la sede nace activa."
+          }
+        },
+        "required": [
+          "nombre"
+        ]
+      },
+      "ActualizarSedeDto": {
+        "type": "object",
+        "properties": {
+          "nombre": {
+            "type": "string",
+            "example": "FitZone Norte"
+          },
+          "direccion": {
+            "type": "string",
+            "example": "Av. Almafuerte 500",
+            "nullable": true
+          },
+          "aforo_max": {
+            "type": "number",
+            "example": 120
+          },
+          "activa": {
+            "type": "boolean",
+            "example": false,
+            "description": "false oculta la sede en los selectores públicos. No borra la fila."
+          }
+        }
       },
       "PerfilMeDto": {
         "type": "object",
