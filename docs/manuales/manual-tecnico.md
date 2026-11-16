@@ -205,9 +205,10 @@ Qué corre hoy:
 
 - El socio pide el código al portal. `TotpService` lo genera en la API (`GET /acceso/totp/me/codigo`). El navegador del socio muestra el QR.
 - Con red, recepción llama a la API y el check-in entra por `registrar_check_in`. La clave de `presencias` impone una sola sede a la vez (RN-01), en [20261101210000_acceso_m2.sql](../../supabase/migrations/20261101210000_acceso_m2.sql).
-- Sin red, la web de recepción no valida membresía, TOTP ni RN-01. Guarda el ingreso en `localStorage`, clave `fitzone.acceso.cola`, con `clientEventId`, `perfilId`, `code`, `sedeId` y `ocurrioEn`.
-- La cola sale cuando el navegador dispara `online` o cuando recepción sincroniza. El POST es `/acceso/check-ins/sync`, de a lo sumo 50 ítems.
-- En el servidor, el mismo `clientEventId` es idempotente. El ítem nuevo pasa por membresía, TOTP y `registrar_check_in`. Si la presencia ya existe, la base responde `YA_DENTRO` o `YA_EN_OTRA_SEDE`. El ítem queda en la cola con error. La presencia anterior no se cierra sola.
+- La salida está en `/acceso`: no pide QR, libera la presencia y, sin red, sin servidor o sin base, queda en la misma cola del ingreso.
+- Sin red, la web de recepción no valida membresía, TOTP ni RN-01. Guarda el movimiento en `localStorage`, clave `fitzone.acceso.cola`, con `clientEventId`, `perfilId`, `sedeId`, `ocurrioEn` y `tipo` (`entrada` o `salida`). Una entrada lleva `code`. Una salida no. Un ítem viejo sin `tipo` se lee como entrada.
+- La cola sale cuando el navegador dispara `online` o cuando recepción sincroniza. El POST es `/acceso/check-ins/sync`, de a lo sumo 50 ítems, en el orden en que se encolaron.
+- En el servidor, el mismo `clientEventId` es idempotente. Una entrada pasa por membresía, TOTP y `registrar_check_in`. Una salida no pide TOTP y llama a `registrar_check_out`. Si la presencia ya existe, la base responde `YA_DENTRO` o `YA_EN_OTRA_SEDE`. El ítem queda en la cola con error. La presencia anterior no se cierra sola.
 
 Queda fuera de esta entrega, y así lo registran los dos ADR: el paquete de seeds TOTP en la sede, un servicio local por sede, la validación del QR sin API, los tornos y la app móvil instalable. Hasta el sync, el aforo no cuenta a quien está solo en la cola. Un código de 60 segundos puede vencer mientras el puesto sigue offline, y el sync lo rechaza.
 

@@ -77,8 +77,8 @@ El guion de Demo Day (login → ver membresía → reservar paddle y pagar → Q
 | Regla | BD | Backend | Testing | Frontend | Documentación | Hueco |
 |-------|----|---------|---------|----------|---------------|-------|
 | RF-04 QR dinámico (TOTP) | ✅ `totp_seeds` | ✅ `TotpService`, `GET /acceso/totp/me` y `/codigo`; se emite al crear la membresía | ✅ `totp.service.spec` y `acceso.service.spec`. Sin e2e | ✅ `/mi-qr` (solo socio) | ✅ [ADR-003](../docs/adr/ADR-003-estrategia-offline-acceso.md), [ADR-007](../docs/adr/ADR-007-acceso-totp-cola-offline.md), C4-3 acceso, manual §6 | Sin cámara: recepción pega el código |
-| Validar el ingreso | ✅ `check_ins` | ✅ `POST /acceso/check-ins`, check-out y listados | ✅ unitario del check-in feliz y de TOTP inválido. Sin e2e | ✅ `/acceso` | ✅ secuencia [sec-acceso-offline](../docs/diagramas/fuentes/sec-acceso-offline.mmd) | Check-out solo por API |
-| RN-01 Una sede a la vez | ✅ `presencias` | ✅ `registrar_check_in` devuelve `YA_DENTRO` / `YA_EN_OTRA_SEDE` | ✅ el unitario mapea `YA_EN_OTRA_SEDE` a 409 | 🟡 el error se ve; no hay salida guiada en la UI | ✅ ADR-007 y [propuesta RN-01](../docs/rnf/Propuesta_RN01_Presencia_Una_Sede.md) | Timeout de 3 h: está en el ADR, no en el código |
+| Validar el ingreso | ✅ `check_ins` | ✅ `POST /acceso/check-ins`, check-out y listados | ✅ unitario del check-in feliz, de TOTP inválido y de la salida. Sin e2e | ✅ `/acceso` con Salir | ✅ secuencia [sec-acceso-offline](../docs/diagramas/fuentes/sec-acceso-offline.mmd) | — |
+| RN-01 Una sede a la vez | ✅ `presencias` | ✅ `registrar_check_in` devuelve `YA_DENTRO` / `YA_EN_OTRA_SEDE`; `registrar_check_out` libera la presencia | ✅ el unitario mapea `YA_EN_OTRA_SEDE` a 409 y `PRESENCIA_NO_EXISTE` a 404; el sync de una salida no pide TOTP | ✅ Salir en `/acceso`; sin red, sin servidor o sin base la salida entra en la misma cola del ingreso | ✅ ADR-007 y [propuesta RN-01](../docs/rnf/Propuesta_RN01_Presencia_Una_Sede.md) | Timeout de 3 h: está en el ADR, no en el código |
 | RF-05 Aforo | ✅ `sedes.aforo_max` | ✅ `GET /acceso/presencias` informa ocupación y máximo; no bloquea | ❌ no hay un caso del aviso | 🟡 `/acceso` muestra `ocupación / máximo` | 🟡 [plan M2](./Plan_M2_Acceso_QR_Patricio.md): soft a propósito | — |
 | RNF-01 Sin internet en recepción | — la cola es del navegador | ✅ `POST /acceso/check-ins/sync` (lote e idempotencia) | ✅ unitario de lote, tope de 50 e idempotencia | ✅ `localStorage` y botón de sync | ✅ ADR-003 y ADR-007. El nodo por sede quedó descartado por escrito | No mide el 99,5 % del enunciado. No hay tornos |
 
@@ -181,8 +181,7 @@ Ordenado por lo que impide decir que la regla está cerrada de punta a punta.
 | Prioridad | Hueco | Regla |
 |-----------|-------|-------|
 | 1 | PDF con cancha, horario y monto después del pago | RF-14 |
-| 2 | Check-out desde `/acceso` | RN-01 |
-| 3 | Manual de usuario y manual de instalación | C-16, C-17 |
-| 4 | Docker o un arranque de cinco pasos, y el seed de 25 sedes | ADR-009, carga de prueba |
+| 2 | Manual de usuario y manual de instalación | C-16, C-17 |
+| 3 | Docker o un arranque de cinco pasos, y el seed de 25 sedes | ADR-009, carga de prueba |
 
-Quedan fuera de esta entrega, ya escritos como corte: app móvil, MercadoPago real, Circuit Breaker, reportes del gerente y la foto de perfil. El tipo socio o externo lo da la membresía vigente, no un alta aparte. El offline de recepción es la cola del navegador más el sync, no un nodo por sede. El alta de sedes del gerente ya está en `/sedes`. La agenda de clases del gerente ya está en `/clases/gestionar`. La administración de canchas ya está en `/canchas/gestionar` y la cancelación de la reserva propia, en `/canchas`. La renovación cobrada de la membresía ya está en el perfil del socio.
+Quedan fuera de esta entrega, ya escritos como corte: app móvil, MercadoPago real, Circuit Breaker, reportes del gerente y la foto de perfil. El tipo socio o externo lo da la membresía vigente, no un alta aparte. El offline de recepción es la cola del navegador más el sync, no un nodo por sede. El alta de sedes del gerente ya está en `/sedes`. La agenda de clases del gerente ya está en `/clases/gestionar`. La administración de canchas ya está en `/canchas/gestionar` y la cancelación de la reserva propia, en `/canchas`. La renovación cobrada de la membresía ya está en el perfil del socio. La salida de la sede ya está en `/acceso`: no pide QR y, sin red, sin servidor o sin base, entra en la misma cola del ingreso.

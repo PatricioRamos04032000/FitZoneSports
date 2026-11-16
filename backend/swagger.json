@@ -867,7 +867,7 @@
     },
     "/acceso/check-ins/sync": {
       "post": {
-        "description": "Procesa la cola local. HTTP 200 siempre; cada ítem trae ok o code tipado. Reintento con el mismo clientEventId es idempotente (no revalida TOTP). Máx. 50 ítems.",
+        "description": "Procesa la cola local de entradas y salidas, en el orden del lote. HTTP 200 siempre; cada ítem trae ok o code tipado. Una salida no valida TOTP y llama a registrar_check_out. Reintento con el mismo clientEventId es idempotente. Máx. 50 ítems.",
         "operationId": "AccesoController_syncCheckIns",
         "parameters": [],
         "requestBody": {
@@ -2978,9 +2978,17 @@
             "type": "string",
             "format": "uuid"
           },
+          "tipo": {
+            "type": "string",
+            "enum": [
+              "entrada",
+              "salida"
+            ],
+            "description": "entrada o salida. Si falta, se lee como entrada para no romper una cola ya guardada."
+          },
           "code": {
             "type": "string",
-            "description": "Código TOTP capturado al escanear (puede estar vencido al sync)"
+            "description": "Código TOTP capturado al escanear (puede estar vencido al sync). Lo lleva una entrada. Una salida no lo lleva."
           },
           "sedeId": {
             "type": "string",
@@ -2994,7 +3002,6 @@
         "required": [
           "clientEventId",
           "perfilId",
-          "code",
           "sedeId"
         ]
       },

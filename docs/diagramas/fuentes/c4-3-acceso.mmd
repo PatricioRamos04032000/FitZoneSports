@@ -5,25 +5,25 @@ C4Component
 
     Boundary(actores, " ", "") {
         Person(socio, "Socio activo", "Consulta su QR en el portal")
-        Person(recep, "Recepcionista / administrador de sede", "Ingreso y aforo de su sede")
+        Person(recep, "Recepcionista / administrador de sede", "Ingreso, salida y aforo de su sede")
     }
 
     Container_Boundary(fitzone, "FitZone Sports") {
         Boundary(frente, " ", "") {
             Container(portal, "Portal del socio", "React", "Muestra el QR rotativo.")
             Container_Boundary(terminal, "Terminal de sede") {
-                Component(mostrador, "Check-in", "React", "Con red llama a la API.")
-                Component(cola, "Cola local", "localStorage", "Sin red guarda el check-in.")
+                Component(mostrador, "Recepción", "React", "Con red registra el ingreso y la salida.")
+                Component(cola, "Cola local", "localStorage", "Sin red guarda la entrada o la salida.")
             }
         }
         Container_Boundary(m2, "M2 Acceso") {
             Boundary(entrada, " ", "") {
-                Component(acceso, "AccesoService", "NestJS", "Check-in online y sincronización de la cola.")
+                Component(acceso, "AccesoService", "NestJS", "Ingreso, salida y sincronización de la cola.")
             }
             Boundary(servicios, " ", "") {
                 Component(totp, "TotpService", "NestJS", "Genera y verifica el código. Solo corre en la API.")
-                Component(membresias, "MembresiasService", "NestJS", "Membresía activa al ingresar o al sincronizar.")
-                Component(repo, "AccesoRepository", "Supabase", "RPC registrar_check_in. La base impone RN-01.")
+                Component(membresias, "MembresiasService", "NestJS", "Membresía activa en el ingreso y en el sync de una entrada.")
+                Component(repo, "AccesoRepository", "Supabase", "registrar_check_in y registrar_check_out. RN-01 en la base.")
             }
         }
     }
@@ -31,7 +31,7 @@ C4Component
     Boundary(leyenda, "Leyenda", "") {
         Person(legPersona, "Persona", "Quien usa el portal o el terminal")
         Container(legCont, "Contenedor", "Aplicación", "Portal o terminal")
-        Component(legComp, "Componente", "Pieza de un contenedor", "Servicio, check-in o cola")
+        Component(legComp, "Componente", "Pieza de un contenedor", "Servicio, recepción o cola")
     }
 
     UpdateElementStyle(actores, $bgColor="none", $fontColor="none", $borderColor="none")
@@ -40,14 +40,14 @@ C4Component
     UpdateElementStyle(servicios, $bgColor="none", $fontColor="none", $borderColor="none")
 
     Rel_R(socio, portal, "Consulta su QR")
-    Rel_R(recep, mostrador, "Registra ingresos")
+    Rel_R(recep, mostrador, "Registra ingresos y salidas")
     Rel_R(portal, acceso, "Pide el QR", "HTTPS, GET /acceso/totp/me")
-    Rel_R(mostrador, acceso, "Check-in", "HTTPS, POST /acceso/check-ins")
+    Rel_R(mostrador, acceso, "Ingreso y salida", "POST /check-ins y /check-outs")
     Rel_D(mostrador, cola, "Sin red, encola")
     Rel_R(cola, acceso, "Al reconectar", "HTTPS, POST /acceso/check-ins/sync")
-    Rel_R(acceso, totp, "Verifica el código")
-    Rel_R(acceso, membresias, "Consulta la membresía")
-    Rel_R(acceso, repo, "Registra el ingreso", "RPC registrar_check_in")
+    Rel_R(acceso, totp, "TOTP de la entrada")
+    Rel_R(acceso, membresias, "Membresía de la entrada")
+    Rel_R(acceso, repo, "Registra ingreso o salida", "check_in o check_out")
 
     UpdateRelStyle(socio, portal, $offsetY="-20")
     UpdateRelStyle(recep, mostrador, $offsetY="-16")
@@ -59,9 +59,10 @@ C4Component
 
 %% C4-3 Componentes — Acceso — FitZone Sports
 %% Autor: Patricio Ramos
-%% Fecha: 2026-11-10
-%% Versión: 1.0
-%% No hay validación TOTP en el navegador. ADR-003 y ADR-007 validan el código al sincronizar con la API.
+%% Fecha: 2026-11-15
+%% Versión: 1.1
+%% No hay validación TOTP en el navegador. ADR-003 y ADR-007.
+%% El sync de una entrada verifica el código. El de una salida llama a registrar_check_out y no pide TOTP.
 %% Las personas quedan en una columna, fuera del límite. FitZone está a su derecha.
 %% El portal queda arriba del terminal. AccesoService queda a la izquierda de los otros servicios de M2.
 %% La leyenda es el bloque de abajo.

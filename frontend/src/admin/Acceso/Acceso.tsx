@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useAuth } from "../../store/useAuth";
 import { apiRequest, ApiError } from "../../services/api";
 import {
@@ -111,6 +111,8 @@ function Acceso() {
 
   const [cargando, setCargando] = useState(true);
   const [enviando, setEnviando] = useState(false);
+  const [saliendoIds, setSaliendoIds] = useState<string[]>([]);
+  const saliendoRef = useRef(new Set<string>());
   const [sincronizando, setSincronizando] = useState(false);
   const [feedback, setFeedback] = useState<{
     tipo: "ok" | "error" | "info";
@@ -201,13 +203,17 @@ function Acceso() {
         method: "POST",
         headers: authHeaders(),
         body: JSON.stringify({
-          items: pendientes.map((i) => ({
-            clientEventId: i.clientEventId,
-            perfilId: i.perfilId,
-            code: i.code,
-            sedeId: i.sedeId,
-            ocurrioEn: i.ocurrioEn,
-          })),
+          items: pendientes.map((i) => {
+            const tipo = i.tipo === "salida" ? "salida" : "entrada";
+            return {
+              clientEventId: i.clientEventId,
+              perfilId: i.perfilId,
+              sedeId: i.sedeId,
+              ocurrioEn: i.ocurrioEn,
+              tipo,
+              ...(tipo === "entrada" ? { code: i.code } : {}),
+            };
+          }),
         }),
       })) as SyncResponse;
 
@@ -286,6 +292,7 @@ function Acceso() {
         code,
         sedeId,
         ocurrioEn,
+        tipo: "entrada",
       });
       setCola(next);
       setFeedback({
@@ -322,13 +329,103 @@ function Acceso() {
     }
   }
 
+  function esFalloDeBase(err: unknown): boolean {
+    return (
+      err instanceof ApiError &&
+      err.status === 500 &&
+      err.message === "Error al acceder a los datos"
+    );
+  }
+
+  async function salir(perfilId: string) {
+    if (!accessToken || !sedeId || saliendoRef.current.has(perfilId)) return;
+
+    saliendoRef.current.add(perfilId);
+    setSaliendoIds((prev) =>
+      prev.includes(perfilId) ? prev : [...prev, perfilId]
+    );
+    setFeedback(null);
+
+    const clientEventId = crypto.randomUUID();
+    const ocurrioEn = new Date().toISOString();
+
+    const encolar = (motivo: string) => {
+      const next = enqueueCheckIn({
+        clientEventId,
+        perfilId,
+        sedeId,
+        ocurrioEn,
+        tipo: "salida",
+      });
+      setCola(next);
+      setPresencias((prev) => {
+        if (!prev) return prev;
+        const items = prev.items.filter((p) => p.perfilId !== perfilId);
+        return { ...prev, items, ocupacion: items.length };
+      });
+      setFeedback({
+        tipo: "info",
+        texto: `${motivo} La salida quedó pendiente de sincronizar.`,
+      });
+    };
+
+    if (!navigator.onLine) {
+      encolar("Sin red.");
+      saliendoRef.current.delete(perfilId);
+      setSaliendoIds((prev) => prev.filter((id) => id !== perfilId));
+      return;
+    }
+
+    try {
+      await apiRequest("/acceso/check-outs", {
+        method: "POST",
+        headers: authHeaders(),
+        body: JSON.stringify({ perfilId, sedeId }),
+      });
+      setFeedback({ tipo: "ok", texto: "Salida registrada." });
+      void cargarPresencias(sedeId);
+    } catch (err) {
+      if (err instanceof ApiError && err.code === "RED_NO_DISPONIBLE") {
+        encolar("Fallo de red.");
+      } else if (esFalloDeBase(err)) {
+        encolar("Sin base de datos.");
+      } else {
+        setFeedback({
+          tipo: "error",
+          texto:
+            err instanceof ApiError
+              ? err.message
+              : "No se pudo registrar la salida.",
+        });
+      }
+    } finally {
+      saliendoRef.current.delete(perfilId);
+      setSaliendoIds((prev) => prev.filter((id) => id !== perfilId));
+    }
+  }
+
+  const salidasEnCola = new Set(
+    cola
+      .filter(
+        (item) =>
+          item.estado === "pendiente" &&
+          item.tipo === "salida" &&
+          item.sedeId === sedeId
+      )
+      .map((item) => item.perfilId)
+  );
+  const enSede = (presencias?.items ?? []).filter(
+    (p) => !salidasEnCola.has(p.perfilId)
+  );
+
   return (
     <div className="acceso-container">
       <header className="acceso-header">
         <h1>Acceso / Recepción</h1>
         <p>
-          Escaneá o pegá el código del QR del socio. Sin red, el ingreso se
-          guarda y se sincroniza después.
+          Escaneá o pegá el código del QR del socio. Salir no pide el código.
+          Sin red, el ingreso se guarda y se sincroniza después. La salida,
+          además, se encola si no hay servidor o si la base no responde.
         </p>
       </header>
 
@@ -415,12 +512,12 @@ function Acceso() {
         <h2>
           En la sede
           {presencias
-            ? ` (${presencias.ocupacion}${
+            ? ` (${enSede.length}${
                 presencias.aforoMax != null ? ` / ${presencias.aforoMax}` : ""
               })`
             : ""}
         </h2>
-        {!presencias || presencias.items.length === 0 ? (
+        {!presencias || enSede.length === 0 ? (
           <p className="acceso-empty">Nadie dentro en esta sede.</p>
         ) : (
           <table className="acceso-table">
@@ -428,13 +525,24 @@ function Acceso() {
               <tr>
                 <th>Socio</th>
                 <th>Desde</th>
+                <th>Salir</th>
               </tr>
             </thead>
             <tbody>
-              {presencias.items.map((p) => (
+              {enSede.map((p) => (
                 <tr key={p.perfilId}>
                   <td>{nombrePresencia(p)}</td>
                   <td>{new Date(p.desde).toLocaleString()}</td>
+                  <td>
+                    <button
+                      type="button"
+                      className="acceso-button acceso-button-compact"
+                      disabled={saliendoIds.includes(p.perfilId)}
+                      onClick={() => void salir(p.perfilId)}
+                    >
+                      {saliendoIds.includes(p.perfilId) ? "Saliendo…" : "Salir"}
+                    </button>
+                  </td>
                 </tr>
               ))}
             </tbody>
@@ -462,6 +570,7 @@ function Acceso() {
             <thead>
               <tr>
                 <th>Estado</th>
+                <th>Movimiento</th>
                 <th>Evento</th>
                 <th>Socio</th>
                 <th>Detalle</th>
@@ -478,6 +587,7 @@ function Acceso() {
                       {item.estado}
                     </span>
                   </td>
+                  <td>{item.tipo === "salida" ? "Salida" : "Entrada"}</td>
                   <td>
                     <code>{item.clientEventId.slice(0, 8)}…</code>
                   </td>

@@ -613,3 +613,21 @@ Ninguno de contrato. La grilla, la reserva y el pago de `/canchas` no se reescri
 
 - C-32 en esta rama: alta, precio, pico, descuento y mantenimiento en pantalla, y cancelación de la reserva propia.
 
+### 2026-11-15  ·  C-33 (~5 h)
+
+**Actividad**
+
+Salida desde `/acceso` (RN-01), en la rama `C-33`. Cada fila de «En la sede» tiene Salir y llama a `POST /acceso/check-outs`. Si no hay red, el servidor no responde o la base contesta 500 «Error al acceder a los datos», la salida entra en la misma cola del ingreso, con `tipo: 'salida'` y sin código. El sync aplica el lote en orden y una salida no pasa por TOTP: llama a `registrar_check_out` con origen `offline_sync`. Un 400 o un 404 muestran el mensaje del servicio y no se encolan.
+
+**Decisión**
+
+No hay ADR nuevo ni cambio de DER. RN-01 sigue en ADR-007. El diagrama de clases ya nombraba `POST check-outs` y `checkOut()`. En las páginas 2 y 4, `AccesoRepository` suma `registrarCheckOut()`. La secuencia offline y el C4-3 distinguen la salida: no pasa por TOTP y llama a `registrar_check_out`. Un ítem de cola sin `tipo` se lee como entrada, para no romper una cola ya guardada. El ingreso no cambia su regla de encolado: sigue siendo sin red o fetch fallido.
+
+**Problema o bloqueo**
+
+Ninguno de contrato. `registrar_check_out` y el endpoint ya existían; faltaba la pantalla y que el sync aceptara la salida.
+
+**Commits**
+
+- Pendiente: el trabajo está en la rama `C-33`, sin commit.
+

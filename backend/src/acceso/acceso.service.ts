@@ -121,7 +121,9 @@ export class AccesoService {
 
   /**
    * Flush de cola offline: HTTP 200 siempre; ok/error tipado por ítem.
-   * Si clientEventId ya existe → ok idempotente sin revalidar TOTP.
+   * El lote se aplica en orden. Si clientEventId ya existe → ok idempotente.
+   * `tipo: 'salida'` no valida TOTP y llama a registrar_check_out.
+   * Sin `tipo`, o con `entrada`, sigue el check-in (membresía + TOTP).
    */
   async syncCheckIns(
     actor: { id: string; rol: RolUsuario },
@@ -170,6 +172,25 @@ export class AccesoService {
           ok: true,
           checkIn: this.toCheckInDto(existente),
         };
+      }
+
+      if (item.tipo === 'salida') {
+        try {
+          const fila = await this.repository.registrarCheckOut({
+            perfilId: item.perfilId,
+            sedeId: item.sedeId,
+            origen: 'offline_sync',
+            ocurrioEn: item.ocurrioEn,
+            clientEventId,
+          });
+          return {
+            clientEventId,
+            ok: true,
+            checkIn: this.toCheckInDto(fila),
+          };
+        } catch (e) {
+          this.rethrowRpc(e);
+        }
       }
 
       await this.assertMembresiaActiva(item.perfilId);

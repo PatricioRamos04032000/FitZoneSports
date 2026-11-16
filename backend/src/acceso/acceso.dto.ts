@@ -143,8 +143,18 @@ export class SyncCheckInItemDto {
   @ApiProperty({ format: 'uuid' })
   perfilId: string;
 
-  @ApiProperty({ description: 'Código TOTP capturado al escanear (puede estar vencido al sync)' })
-  code: string;
+  @ApiPropertyOptional({
+    enum: ['entrada', 'salida'],
+    description:
+      'entrada o salida. Si falta, se lee como entrada para no romper una cola ya guardada.',
+  })
+  tipo?: 'entrada' | 'salida';
+
+  @ApiPropertyOptional({
+    description:
+      'Código TOTP capturado al escanear (puede estar vencido al sync). Lo lleva una entrada. Una salida no lo lleva.',
+  })
+  code?: string;
 
   @ApiProperty({ format: 'uuid' })
   sedeId: string;

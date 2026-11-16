@@ -7,7 +7,8 @@ sequenceDiagram
     participant Terminal
     participant Cola as Cola local
     participant Acceso as AccesoService
-    participant Rpc as registrar_check_in
+    participant RpcIn as registrar_check_in
+    participant RpcOut as registrar_check_out
 
     Socio->>Portal: Pide su QR
     Portal->>Totp: GET /acceso/totp/me/codigo
@@ -16,23 +17,29 @@ sequenceDiagram
     Portal-->>Socio: Muestra el QR
 
     Note over Terminal, Cola: Sin red, el terminal no llama a la API.
-    Recep->>Terminal: Registra el ingreso
-    Terminal->>Cola: Encola el check-in
-    Note over Cola: localStorage, clave fitzone.acceso.cola
+    Recep->>Terminal: Registra el ingreso o la salida
+    Terminal->>Cola: Encola entrada o salida
+    Note over Cola: localStorage, clave fitzone.acceso.cola. La salida no lleva código.
 
-    Note over Terminal, Acceso: Al reconectar
+    Note over Terminal, Acceso: Al reconectar, el lote se aplica en orden
     Terminal->>Acceso: POST /acceso/check-ins/sync
-    Acceso->>Totp: Verifica el código
-    Totp-->>Acceso: Código válido
-    Acceso->>Acceso: Consulta la membresía
-    Acceso->>Rpc: registrar_check_in
-    Note over Rpc: RN-01, una sede a la vez
-    Rpc-->>Acceso: Check-in registrado
+    alt entrada
+        Acceso->>Totp: Verifica el código
+        Totp-->>Acceso: Código válido
+        Acceso->>Acceso: Consulta la membresía
+        Acceso->>RpcIn: registrar_check_in
+        Note over RpcIn: RN-01, una sede a la vez
+        RpcIn-->>Acceso: Ingreso registrado
+    else salida
+        Note over Acceso, RpcOut: No pide TOTP ni membresía
+        Acceso->>RpcOut: registrar_check_out
+        RpcOut-->>Acceso: Presencia liberada
+    end
     Acceso-->>Terminal: Ítem ok
 
 %% Secuencia — Acceso offline — FitZone Sports
 %% Autor: Patricio Ramos
-%% Fecha: 2026-11-10
-%% Versión: 1.0
+%% Fecha: 2026-11-15
+%% Versión: 1.1
 %% Sin red no hay validación TOTP en el navegador. ADR-003 y ADR-007.
-%% El código se verifica al sincronizar con la API.
+%% Una entrada se verifica al sincronizar. Una salida de la misma cola no pide TOTP.
