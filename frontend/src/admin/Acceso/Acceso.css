@@ -102,6 +102,11 @@
   cursor: not-allowed;
 }
 
+.acceso-button-compact {
+  padding: 6px 14px;
+  font-size: 13px;
+}
+
 .acceso-button-secondary {
   background: #58c9e8;
   color: #14283f;

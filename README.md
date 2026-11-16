@@ -316,11 +316,11 @@ Requiere migración Acceso M2 y `npm run seed`. Colección: [`postman/FitZoneSpo
 1. Socio → **Mi QR**: código de 6 dígitos + QR, ~60 s.
 2. Recepción → **Acceso**: código del QR → ingreso → lista **En la sede** con nombres (`GET /acceso/presencias` incluye `nombre`/`apellido`).
 3. **Offline (RNF-01 acotado):** DevTools → Offline → encolar → Online → **Sincronizar** (`ok` o error tipado en API; la UI muestra frases de recepción).
-4. **Check-out:** por ahora vía API/Swagger `POST /acceso/check-outs` (sin botón de salida en la UI).
+4. **Check-out:** en **Acceso**, botón **Salir** de la fila (`POST /acceso/check-outs`). No pide el QR. Sin red, sin servidor o sin base, la salida queda en la misma cola del ingreso.
 
 ### 6.5 Qué no esperar aún en la demo
 
-- Check-out amigable en Acceso; cámara para escanear QR; app móvil nativa (Unidad VI).
+- Cámara para escanear QR; app móvil nativa (Unidad VI).
 - Listado real de notificaciones in-app (pantalla stub; C-12).
 - Rediseño de grilla/calendario de Canchas y pantalla Mis reservas (pendiente en otra rama).
 - Nodo/servidor por sede ni validación TOTP 100 % offline (MVP = cola local + sync; [ADR-007](docs/adr/ADR-007-acceso-totp-cola-offline.md)).

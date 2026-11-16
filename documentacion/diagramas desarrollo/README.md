@@ -59,10 +59,10 @@ M4: PreciosService a la izquierda y ReservasCanchaService a su derecha. El socio
 | SVG | [img/c4-3-acceso.svg](../../docs/diagramas/img/c4-3-acceso.svg) |
 | Referencia | [ADR-003](../../docs/adr/ADR-003-estrategia-offline-acceso.md), [ADR-007](../../docs/adr/ADR-007-acceso-totp-cola-offline.md) |
 | Autor | Patricio Ramos |
-| Fecha | 2026-11-10 |
-| Versión | 1.0 |
+| Fecha | 2026-11-15 |
+| Versión | 1.1 |
 
-M2 y el camino del QR. El socio consulta el QR en el portal y la recepcionista registra el ingreso en el terminal. Sin red, la cola queda en `localStorage` y sincroniza al volver. `TotpService` solo corre en la API. RN-01 lo impone `registrar_check_in`. La leyenda está debajo.
+M2 y el camino del QR. El socio consulta el QR en el portal y la recepcionista registra el ingreso y la salida en el terminal. Sin red, la cola de `localStorage` guarda la entrada o la salida y sincroniza al volver. `TotpService` solo corre en la API, y solo para una entrada. La salida llama a `registrar_check_out` y no pide el código. RN-01 lo impone la base. La leyenda está debajo.
 
 C4-2 se regenera con `mermaid-c42.config.json`. Los dos C4-3, con `mermaid-bloques.config.json`:
 
@@ -127,10 +127,10 @@ Dos socios piden el mismo turno. El índice `reservas_cancha_sin_sobreventa` dej
 | SVG | [img/sec-acceso-offline.svg](../../docs/diagramas/img/sec-acceso-offline.svg) |
 | Referencia | [ADR-003](../../docs/adr/ADR-003-estrategia-offline-acceso.md), [ADR-007](../../docs/adr/ADR-007-acceso-totp-cola-offline.md) |
 | Autor | Patricio Ramos |
-| Fecha | 2026-11-10 |
-| Versión | 1.0 |
+| Fecha | 2026-11-15 |
+| Versión | 1.1 |
 
-El portal pide el código a la API. Sin red, el terminal lo encola en `localStorage`. Al reconectar, `POST /acceso/check-ins/sync` verifica el código y registra el ingreso con RN-01.
+El portal pide el código a la API. Sin red, el terminal encola la entrada o la salida en `localStorage`. Al reconectar, `POST /acceso/check-ins/sync` aplica el lote en orden: una entrada verifica el código y llama a `registrar_check_in`; una salida no pide TOTP y llama a `registrar_check_out`.
 
 Para regenerar las tres secuencias:
 
