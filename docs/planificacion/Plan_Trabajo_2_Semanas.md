@@ -48,7 +48,7 @@ Reunión de equipo. Fuente: tablero Trello, lista «tambien en desarrollo». Las
 | Integrante | ID | Tarea | Estado |
 | --- | --- | --- | --- |
 | Patricio Ramos (P1) | C-22 | Recorrer el Anexo G casilla por casilla | **En desarrollo** |
-| Bruno Conti (P2) | C-09 | Exportar `backend/swagger.json` y enlazarlo en el README | **En desarrollo** |
+| Bruno Conti (P2) | C-09 | Exportar `backend/swagger.json` y enlazarlo en el README | **Finalizado** (2026-11-13) |
 | Lucas Coquet (P3) | C-02 | Membresía en UI (`GET /membresias/mia`) | **En desarrollo** |
 | Lucas Coquet (P3) | S6-T09 | Notificaciones in-app (listar y marcar leída) | **En desarrollo** |
 | Matias Goncevat (P4) | C-19d | Bitácora individual (`docs/bitacoras/LOG-goncevat.md`) | **En desarrollo** |
@@ -138,7 +138,7 @@ Al 2026-11-11, S4-T06, S3-T05 y S4-T10 a S4-T15 están finalizadas. Siguen **Por
 Lo que el tablero deja en **Por hacer** para el cierre está en el plan del 6–19/11. Por persona, además de lo que ya está en desarrollo:
 
 1. Patricio: C-23, C-24, C-25, C-26 y C-27, después de C-22.
-2. Bruno: C-04 (PDF comprobante) y C-19b (bitácora), en paralelo con C-09.
+2. Bruno: C-04 (PDF comprobante); C-09 y C-19b finalizadas.
 3. Lucas: S7-T07 (hermana de C-02), C-12 (hermana de S6-T09), C-16 y C-19c. **S7-T06/C-11 y S7-T08** las cerró Patricio (2026-11-13). **S7-T09** la cerró Patricio (2026-11-16).
 4. Matias: C-07, C-08, C-10, C-17, C-20 y C-21, en paralelo con C-19d.
 

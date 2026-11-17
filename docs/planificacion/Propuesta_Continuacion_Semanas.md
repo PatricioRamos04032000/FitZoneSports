@@ -201,7 +201,7 @@ Cada tarea tiene entregable, dependencia y criterio de cierre. Las horas son tec
    - Entregar: anotarse / confirmar; al cancelar se llama al publisher; aviso in-app.  
    - Cierra cuando: cancelar una inscripción llena notifica al primero de la lista.
 
-2. **Swagger al día (1 h) — Finalizado (S7-T05, tablero 2026-11-11). El export `swagger.json` es C-09 y está en desarrollo.**  
+2. **Swagger al día (1 h) — Finalizado (S7-T05, tablero 2026-11-11). El export `swagger.json` (C-09) quedó finalizado el 2026-11-13 (`5546109`).**  
    - Entregar: canchas, perfil y lista de espera documentados.  
    - Cierra cuando: no quedan endpoints nuevos sin `@Api…` básico.
 
