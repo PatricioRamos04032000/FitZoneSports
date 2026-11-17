@@ -2,7 +2,7 @@
 
 - **Tarea:** C-18
 - **Anexo:** F de los lineamientos de entrega
-- **Fecha:** 2026-11-11 (actualizado 2026-11-13, C-28 Decorator; 2026-11-14, C-29 alta de sedes y C-30 renovación de membresía; 2026-11-15, C-32 canchas en pantalla)
+- **Fecha:** 2026-11-11 (actualizado 2026-11-13, C-28 Decorator; 2026-11-14, C-29 alta de sedes y C-30 renovación de membresía; 2026-11-15, C-32 canchas en pantalla; 2026-11-16, S7-T09 catálogo de componentes)
 - **Autor:** Patricio Ramos (P1)
 
 Este manual describe el sistema que está en el repositorio. Cada afirmación cita un archivo. Las decisiones largas viven en los ADR: acá se enlazan, no se reescriben. Los diagramas viven en `docs/diagramas/`: acá se listan, no se redibujan.
@@ -71,6 +71,10 @@ Hay 14 diagramas. La fuente editable está en `docs/diagramas/fuentes/` y el SVG
 | 12 | DER físico | [er-fisico.drawio](../diagramas/fuentes/er-fisico.drawio) | [svg](../diagramas/img/er-fisico.svg) |
 | 13 | Despliegue | [dep-despliegue.drawio](../diagramas/fuentes/dep-despliegue.drawio) | [svg](../diagramas/img/dep-despliegue.svg) |
 | 14 | Pipeline | [pipe-ci.drawio](../diagramas/fuentes/pipe-ci.drawio) | [svg](../diagramas/img/pipe-ci.svg) |
+
+### 1.3 Componentes de la web
+
+La interfaz es propia, ordenada con Atomic Design y sin kit de UI ([ADR-006](../adr/ADR-006-frontend-react-estado.md)). El catálogo, con el nivel, las props y la pantalla que usa cada pieza, está en [frontend/src/components/README.md](../../frontend/src/components/README.md). Son seis: los átomos `Button`, `Input`, `Select` y `Spinner`, la molécula `Alerta` y el organismo `Layout`. Las páginas no se movieron: siguen en [frontend/src/portal/](../../frontend/src/portal/) y [frontend/src/admin/](../../frontend/src/admin/). Login y Canchas conservan su adaptación de ancho en `Login.css` y `Canchas.css`.
 
 ## 2. Los cinco módulos
 

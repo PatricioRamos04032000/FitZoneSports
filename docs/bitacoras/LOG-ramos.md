@@ -635,6 +635,26 @@ Ninguno de contrato. `registrar_check_out` y el endpoint ya existían; faltaba l
 
 ## Sprint 8 — Cierre — Semana del 2026-11-16
 
+### 2026-11-16  ·  S7-T09 (~2 h)
+
+**Actividad**
+
+Tomé y cerré los componentes documentados que estaban a cargo de Lucas (S7-T09). Sumé el átomo `Select` y la molécula `Alerta` a `Button`, `Input`, `Spinner` y `Layout`. `Select` reemplaza los dos desplegables de Canchas; `Alerta` reemplaza el error de Login y los tres de Canchas. Dejé el catálogo en `frontend/src/components/README.md`, saqué la plantilla de Vite del README del frontend y cité las seis piezas en el manual técnico (§1.3), el ADR-006 y el panorama. El responsive de Login y Canchas ya estaba cerrado en C-03; lo revisé al cablear los componentes. No instalé Storybook.
+
+**Decisión**
+
+La evidencia de la Unidad IV es el catálogo en el repo, no un Storybook. Los botones de Canchas siguen con su CSS: `atom-button` es de ancho completo y chocaría con el máximo de 250 px de la tarjeta. El resto de las pantallas no migran sus `<select>` ni sus párrafos de error en esta tarjeta.
+
+**Problema o bloqueo**
+
+Ninguno. La tarjeta de Trello queda para moverla a mano.
+
+**Commits**
+
+- El cierre queda en la rama `S7-T09`.
+
+---
+
 ### 2026-11-16  ·  Revisión C-11
 
 **Actividad**

@@ -39,8 +39,8 @@ Excel hermano (mismas filas + columna Observación):
 | **C-12** | Notificaciones in-app (stretch) | por hacer | Relacionada con **S6-T09**. Mismo: listar + marcar leída. Stretch del cierre. | Sí → S6-T09 |
 | **S6-T09** | Notificaciones in-app | tambien en desarrollo | Relacionada con **C-12**. Mismo trabajo; priorizar C-12 si se hace. | Sí → C-12 |
 | **S5-T08** | Layout post-login y rutas protegidas | finalizado | Relacionada con **S5-T06**/**S5-T07** (finalizadas). En repo ya hay Layout + ProtectedRoute/RoleRoute. Contrastar y, si aplica, pasar a finalizado. | Cubierta por login/sesión hechos |
-| **S5-T09** | Átomos de UI | finalizado | Relacionada con **S7-T09** (componentes documentados). Átomos vs catálogo Unidad IV; no son la misma entrega. | Parcial → S7-T09 |
-| **S7-T09** | Componentes documentados (Unidad IV) | por hacer | Relacionada con **S5-T09** y con evidencia en manual/README. Más amplia que tres átomos. | Parcial → S5-T09 |
+| **S5-T09** | Átomos de UI | finalizado | Relacionada con **S7-T09** (componentes documentados). Átomos vs catálogo Unidad IV; no son la misma entrega. S7-T09 cerró el catálogo el 2026-11-16. | Parcial → S7-T09 |
+| **S7-T09** | Componentes documentados (Unidad IV) | finalizado | Relacionada con **S5-T09**. Cerrada 2026-11-16 por **Patricio** (tomó la de Lucas): seis piezas (`Button`, `Input`, `Select`, `Spinner`, `Alerta`, `Layout`) y catálogo en `frontend/src/components/README.md`. Sin Storybook. | Parcial → S5-T09 |
 | **S6-T06** | Cliente API completo | finalizado | Relacionada con **S5-T07** (finalizada). Base api/sesión ya está; revisar si falta tipado/401 sedes y cerrar. | Casi cubierta por S5-T07 |
 | **S7-T03** | Ensayo demo + checklist del guion | finalizado | Relacionada con **C-06** / **C-24** y bloqueada por **C-01**. Smoke API **S7-T11** ya finalizado ≠ ensayo UI. | Parcial → C-06/C-24 |
 | **C-06** | Ensayo corto guion API+UI | finalizado | Relacionada con **S7-T03** y con **C-01**. Ensayo del 2026-11-08 sin errores de flujo; el pulido visual queda fuera de esta tarjeta. | Sí (versión T1 de S7-T03) |

@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link, Navigate } from "react-router-dom";
 import { useAuth } from "../../store/useAuth";
 import { Button, Input, Spinner } from "../../components/atoms";
+import { Alerta } from "../../components/molecules";
 import { apiRequest } from "../../services/api";
 import "./Login.css";
 
@@ -75,7 +76,7 @@ function Login() {
                         required
                     />
 
-                    {error && <p className="login-error">{error}</p>}
+                    {error && <Alerta>{error}</Alerta>}
 
                     <Button type="submit" disabled={cargando} aria-busy={cargando}>
                         {cargando && <Spinner label="Ingresando" />}

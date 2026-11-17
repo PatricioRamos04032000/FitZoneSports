@@ -49,14 +49,6 @@
     gap: 12px;
 }
 
-.login-card .login-error {
-    color: #c0392b;
-    margin: 0 0 12px;
-    text-align: center;
-    font-size: 14px;
-    overflow-wrap: anywhere;
-}
-
 .login-signup {
     margin-top: 22px;
 }

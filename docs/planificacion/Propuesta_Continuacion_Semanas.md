@@ -219,9 +219,9 @@ Cada tarea tiene entregable, dependencia y criterio de cierre. Las horas son tec
    - Entregado: menú por sesión/rol (Dashboard solo staff); Home sin nav duplicada; Acceso con mensajes de recepción; Presencias con nombre/apellido; canchas UI sin mock en el pase.  
    - Cierre: un pase de ~5 minutos se hace solo con la UI (guion C-06 + README §6 actualizados).
 
-4. **Componentes documentados (2 h) — Por hacer (S7-T09, entregable IV)**  
-   - Entregar: 5+ componentes + README Atomic Design o Storybook mínimo; responsive básico de Login y Canchas.  
-   - Cierra cuando: hay evidencia clara para la Unidad IV (15%).
+4. **Componentes documentados (2 h) — Finalizada 2026-11-16 (S7-T09)** por **Patricio Ramos (P1)** (tomó la tarea asignada a Lucas)  
+   - Entregado: seis piezas en `frontend/src/components` (átomos `Button`, `Input`, `Select` y `Spinner`; molécula `Alerta`; organismo `Layout`) y el catálogo en `frontend/src/components/README.md`. `Select` y `Alerta` entran en Canchas; `Alerta` también en Login. El responsive de Login y Canchas ya estaba (C-03) y se revisó al cablearlos. Sin Storybook.  
+   - Cierre: hay evidencia del catálogo para la Unidad IV (15 %).
 
 ### Matias (4 h)
 

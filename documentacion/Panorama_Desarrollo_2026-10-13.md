@@ -139,7 +139,7 @@ Scripts SQL de reglas, solo en local: `supabase/tests/membresias_clases.test.sql
 
 **API.** Módulos `usuarios`, `acceso`, `clases`, `canchas` y `pagos`. Identidad tomada del JWT. Swagger en el proceso de Nest. Lo que la matriz marca ❌ no tiene endpoint: reportes y PDF. El alta de sedes sí: `POST /sedes` y `PATCH /sedes/:id`. La agenda de clases sí: `POST /clases` y `PATCH /clases/:id`.
 
-**Web.** React + Vite. Cliente en `frontend/src/services/api.ts` (token y 401). Estado de sesión en `AuthProvider`. Rutas: `/login`, `/signup`, `/perfil`, `/canchas`, `/canchas/gestionar` (gerente y admin de sede), `/clases`, `/clases/gestionar` (gerente), `/notificaciones`, `/mi-qr`, `/acceso`, `/sedes` (gerente), `/dashboard`. No hay tests de frontend. Atomic Design llega a átomos (`Button`, `Input`, `Spinner`) y al `Layout`.
+**Web.** React + Vite. Cliente en `frontend/src/services/api.ts` (token y 401). Estado de sesión en `AuthProvider`. Rutas: `/login`, `/signup`, `/perfil`, `/canchas`, `/canchas/gestionar` (gerente y admin de sede), `/clases`, `/clases/gestionar` (gerente), `/notificaciones`, `/mi-qr`, `/acceso`, `/sedes` (gerente), `/dashboard`. No hay tests de frontend. Atomic Design: átomos `Button`, `Input`, `Select` y `Spinner`, molécula `Alerta` y organismo `Layout` ([catálogo](../frontend/src/components/README.md)).
 
 ---
 

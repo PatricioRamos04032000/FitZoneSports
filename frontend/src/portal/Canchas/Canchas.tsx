@@ -12,6 +12,8 @@ import {
   type Reserva,
 } from "../../services/canchas";
 
+import { Select } from "../../components/atoms";
+import { Alerta } from "../../components/molecules";
 import { formatearHorario } from "../../horario";
 import { useAuth } from "../../store/useAuth";
 
@@ -328,7 +330,9 @@ function Canchas() {
       {cargandoSedes ? (
         <p>Cargando sedes...</p>
       ) : (
-        <select
+        <Select
+          id="sede"
+          label="Sede"
           value={sedeSeleccionada}
           onChange={(e) =>
             setSedeSeleccionada(e.target.value)
@@ -341,7 +345,7 @@ function Canchas() {
               {sede.nombre}
             </option>
           ))}
-        </select>
+        </Select>
       )}
 
       {sedeActual && (
@@ -361,7 +365,9 @@ function Canchas() {
       {/* Selección de horario */}
       <h2>Seleccionar horario</h2>
 
-      <select
+      <Select
+        id="horario"
+        label="Horario"
         value={horarioSeleccionado}
         onChange={(e) =>
           setHorarioSeleccionado(e.target.value)
@@ -375,12 +381,12 @@ function Canchas() {
             {hora}
           </option>
         ))}
-      </select>
+      </Select>
 
       {/* Listado de canchas */}
       <h2>Canchas</h2>
 
-      {error && <p className="canchas-error">{error}</p>}
+      {error && <Alerta>{error}</Alerta>}
 
       {cargandoCanchas && (
         <p>Consultando disponibilidad...</p>
@@ -458,13 +464,9 @@ function Canchas() {
         })}
 
       {/* Resultado de la reserva */}
-      {errorMisReservas && (
-        <p className="canchas-error">{errorMisReservas}</p>
-      )}
+      {errorMisReservas && <Alerta>{errorMisReservas}</Alerta>}
 
-      {errorReserva && (
-        <p className="canchas-error">{errorReserva}</p>
-      )}
+      {errorReserva && <Alerta>{errorReserva}</Alerta>}
 
       {reservaMostrada && (
         <div className="reserva-confirmacion">

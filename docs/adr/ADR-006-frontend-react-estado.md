@@ -26,7 +26,7 @@ La app móvil seguía diferida. El frontend no llama a Supabase: habla con la AP
 
 ## Decisión
 
-La aplicación web es una SPA React 19 con TypeScript, Vite 8 y React Router 7. React se publica bajo licencia MIT y lo gobierna Meta. Los componentes son propios, ordenados con Atomic Design (`frontend/src/components`: átomos, y el layout como organismo). Los estilos son CSS por componente, sin librería de UI.
+La aplicación web es una SPA React 19 con TypeScript, Vite 8 y React Router 7. React se publica bajo licencia MIT y lo gobierna Meta. Los componentes son propios, ordenados con Atomic Design (`frontend/src/components`: átomos `Button`, `Input`, `Select` y `Spinner`, la molécula `Alerta`, y el layout como organismo). El catálogo está en `frontend/src/components/README.md`. Los estilos son CSS por componente, sin librería de UI.
 
 El estado global es la sesión: `AuthProvider` expone token, usuario, rol y el cierre de sesión por React Context. El access token se guarda en `sessionStorage`. Cada pantalla carga sus datos con el cliente HTTP de `frontend/src/services` y los mantiene en estado local.
 
