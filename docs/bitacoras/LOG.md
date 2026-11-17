@@ -1055,4 +1055,19 @@ Patricio Ramos (P1) toma la tarea que estaba a cargo de Lucas Coquet (P3).
 
 ---
 
+## 2026-11-16 — Revisión del cierre de C-11 (Patricio)
+
+**Tipo:** frontend / revisión  
+**Registrado por:** Patricio Ramos (P1)  
+**Tarea:** C-11 / S7-T06 — finalizadas el 2026-11-13. Esta entrada no cambia el estado de la tarjeta.
+
+Recorrido en `/clases` con el socio del seed, sede FitZone Central. El cierre sigue en pie. No hay defecto de pantalla ni del cliente.
+
+- El listado muestra cupos libres, capacidad y la cantidad en espera.
+- Inscribir en Spinning (7/10) muestra en la pantalla: «Solo se puede reservar una clase con al menos 48 horas de anticipación». Ninguna clase programada del seed está a 48 h o más, así que no hubo un alta nueva. El mensaje se ve.
+- Cancelar la inscripción de Smoke UI (16/11, 17:00) deja «Inscripción cancelada.», el cupo pasa de 1 libre de 2 a 2 libres de 2 y la fila sale de Mis inscripciones. Esa inscripción no se puede rehacer desde la UI: la clase ya no cumple la ventana de 48 h.
+- Retirar la lista de espera de Smoke Espera (18/11) baja el contador de 2 a 1 y vacía Mi lista de espera. Volver a anotarse restaura «Quedaste en la lista de espera.» y el contador en 2. En esa clase no había una fila `notificado`. Más tarde, en Aviso prueba (20/11, 18:00), el socio estaba `notificado` y **Confirmar lugar** dejó «Lugar confirmado. Ya estás inscripto.»: el cupo sigue en 0 libres de 1 y la fila pasa a Mis inscripciones.
+
+---
+
 *FitZone Sports · Programación V · UNER*

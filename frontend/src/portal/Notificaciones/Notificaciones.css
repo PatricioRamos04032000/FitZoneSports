@@ -23,6 +23,7 @@
 .notificaciones-header h1 {
   margin: 0 0 10px;
   font-size: 30px;
+  color: #14283f;
 }
 
 .notificaciones-header p {
@@ -84,8 +85,8 @@
 }
 
 .notificacion-card.no-leida {
-  border-left: 4px solid #58c9e8;
-  background-color: #f8fcff;
+  border-left: 6px solid #0e7490;
+  background-color: #e7f6fb;
 }
 
 .notificacion-card.leida {
@@ -106,7 +107,9 @@
 
 .notificacion-titulo h2 {
   margin: 0;
-  font-size: 17px;
+  font-size: 20px;
+  font-weight: 700;
+  color: #14283f;
 }
 
 .notificacion-nueva {
@@ -163,6 +166,7 @@
 .notificaciones-vacias h2 {
   margin: 0 0 10px;
   font-size: 19px;
+  color: #14283f;
 }
 
 .notificaciones-vacias p,
