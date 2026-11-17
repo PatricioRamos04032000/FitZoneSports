@@ -79,7 +79,7 @@ Después del tag: solo ensayo Demo Day.
 |----|-------|-------|---|--------|---------------|---------|
 | C-07 | `docker-compose.yml` (+ Dockerfiles) que levante API + front; BD Supabase documentada o Postgres local | Matias | 6–8 | **Por hacer** | `docker compose up --build` o README de 5 pasos en máquina limpia | Código Docker |
 | C-08 | Seed ≥ **25 sedes** + canchas/clases mínimas + 4 roles (o script aparte `seed:entrega`) | Matias | 4–5 | **Por hacer** | Cumple §5.4.1 carga de prueba | Seed 25 sedes |
-| C-09 | Exportar `backend/swagger.json`; link en README | Bruno | 0,5 | **En desarrollo** | Archivo en repo + UI docs | swagger.json |
+| C-09 | Exportar `backend/swagger.json`; link en README. **Cerrada 2026-11-13** (`5546109`) | Bruno | 0,5 | **Finalizado** | Archivo en repo + UI docs | swagger.json |
 | C-10 | Suite verde: unit + e2e críticos; actualizar reporte cobertura; declarar umbral en ADR-008 (cátedra) | Matias | 3–4 | **Por hacer** | CI verde + reporte | Cobertura / tests |
 | C-11 | Pantalla Clases mínima (listar + inscribir). **Cerrada 2026-11-13** por **Patricio** (tomó la tarjeta de Lucas; UI `/clases`; RF-07 + RF-08 lista espera) | Patricio (antes Lucas) | 3–4 | **Finalizado** | RF-07 demoable en UI | 14 RF |
 | C-12 | Notificaciones in-app (lista + leída) stretch | Lucas | 1–2 | **Por hacer** | Si sobra | — |
@@ -105,7 +105,7 @@ Después del tag: solo ensayo Demo Day.
 | C-20 | Planificación completa (§5.6 + Anexo H): plan, EDT, cronograma visual, trazabilidad RF/RN/RNF, seguimiento, riesgos, desvíos | Matias | 6–8 | **Por hacer** | Paquete en `docs/planificacion/` | Planificación |
 | C-21 | Exportar tablero (Trello/GitHub/xlsx) con fechas de creación/cierre reales | Matias | 1–2 | **Por hacer** | Archivo `PROGV-2026-TIF-EquipoNN-Registro.xlsx` | Tablero |
 
-**C-19 en el tablero (2026-11-11):** C-19a Patricio **Finalizado** · C-19d Matias **En desarrollo** · C-19b Bruno y C-19c Lucas **Por hacer**.
+**C-19 en el tablero (2026-11-11, actualizado 2026-11-17):** C-19a Patricio **Finalizado** · C-19b Bruno **Finalizado** (`LOG-conti.md`) · C-19d Matias **En desarrollo** · C-19c Lucas **Por hacer**.
 
 **Salida T2:** checklist Anexo G de Documentación + Bitácoras + Planificación casi todo marcado.
 
