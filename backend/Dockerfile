@@ -1,38 +1,49 @@
 # =============================================================================
 # FitZone Sports — Backend (NestJS 12)
-# Dockerfile multi-stage: deps → build → run
+# Dockerfile multi-stage: build → run
+#
+# Node 22: @supabase/supabase-js y Nest lo piden. bookworm-slim evita
+# fallos de npm vistos con la imagen alpine en este entorno.
 # =============================================================================
 
-# --- Stage 1: dependencias ---------------------------------------------------
-FROM node:20-alpine AS deps
-RUN apk add --no-cache libc6-compat
+# --- Stage 1: build ---------------------------------------------------------
+FROM node:22-bookworm-slim AS build
 WORKDIR /app
 
-# Copiar solo los manifiestos para aprovechar caché de Docker
 COPY package.json package-lock.json ./
-RUN npm ci --omit=dev --ignore-scripts
+COPY certs ./certs
 
-# --- Stage 2: build ---------------------------------------------------------
-FROM node:20-alpine AS build
-WORKDIR /app
-
-# Instalar TODAS las dependencias (incluido dev) para poder compilar con Nest CLI
-COPY package.json package-lock.json ./
-RUN npm ci
+# Si hay un CA local (antivirus que intercepta HTTPS), Node lo usa para npm.
+RUN set -eu; \
+    if [ -s certs/extra-ca.crt ]; then \
+      export NODE_EXTRA_CA_CERTS=/app/certs/extra-ca.crt; \
+    fi; \
+    npm ci
 
 COPY . .
 RUN npm run build
 
-# --- Stage 3: runtime -------------------------------------------------------
-FROM node:20-alpine AS run
+# --- Stage 2: runtime -------------------------------------------------------
+FROM node:22-bookworm-slim AS run
 WORKDIR /app
 
-# Solo artefactos necesarios para ejecutar
 COPY --from=build /app/dist ./dist
 COPY --from=build /app/node_modules ./node_modules
 COPY --from=build /app/package.json ./package.json
+# El seed corre con ts-node sobre estos scripts (npm run seed:entrega).
+COPY --from=build /app/scripts ./scripts
+COPY --from=build /app/certs ./certs
+
+RUN printf '%s\n' \
+      '#!/bin/sh' \
+      'if [ -s /app/certs/extra-ca.crt ]; then' \
+      '  export NODE_EXTRA_CA_CERTS=/app/certs/extra-ca.crt' \
+      'fi' \
+      'exec "$@"' \
+      > /usr/local/bin/docker-entrypoint.sh; \
+    chmod +x /usr/local/bin/docker-entrypoint.sh
 
 EXPOSE 3000
 
-# El punto de entrada de NestJS queda en dist/main.js
+ENTRYPOINT ["docker-entrypoint.sh"]
 CMD ["node", "dist/main"]
