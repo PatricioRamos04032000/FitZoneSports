@@ -11,5 +11,5 @@
     "types": ["node"]
   },
   "rootDir": ".",
-  "include": ["./seed-demo.ts", "./smoke-demo.ts"]
+  "include": ["./seed-demo.ts", "./seed-entrega.ts", "./smoke-demo.ts"]
 }

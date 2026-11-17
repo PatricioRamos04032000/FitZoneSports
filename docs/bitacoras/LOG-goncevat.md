@@ -260,6 +260,28 @@ La suite ya pasaba localmente, pero el pipeline no lo validaba de forma automát
 
 ---
 
+## Sprint 6 — Cierre y documentación — Semana del 2026-11-17
+
+### 2026-11-17  ·  3 h
+
+**Actividad**
+
+Cerré la tarea C-08 de carga de prueba por Anexo G. Creé `backend/scripts/seed-entrega.ts` que inserta 25 sedes (>= 25 requeridas por §5.4.1), 1 cancha mínima y 1 clase mínima por sede (25 de cada una), y perfiles con los 4 roles (gerente, admin_sede, socio, externo). El script es idempotente (upsert por `id`), sigue el mismo patrón de `seed-demo.ts` y requiere las mismas variables de entorno (`SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, `SEED_PASSWORD`). Agregé el script `npm run seed:entrega` a `backend/package.json` y registre `seed-entrega.ts` en `scripts/tsconfig.seed.json`.
+
+**Decisión**
+
+Preferí un script aparte (`seed:entrega`) en lugar de extender el `seed` de demo (S5, 2 sedes) para no mezclar la carga de prueba de 25 sedes con el mínimo de demo, manteniendo ambos independientes y ejecutibles por separado.
+
+**Problema o bloqueo**
+
+No se pudo ejecutar el seed contra Supabase real por falta de credenciales de entorno en esta sesión; el código queda listo para correr con `npm run seed:entrega` una vez se provean las variables. No hubo errores de sintaxis ni de estructura en el script.
+
+**Commits**
+
+- (pendiente de commit por el autor)
+
+---
+
 ## Resumen de contribución
 
 Mi aporte principal fue sostener la calidad operativa del proyecto y la trazabilidad del trabajo: validación de flujo, pruebas E2E y Postman, configuración de CI, documentación de setup, planificación y cierre de entregables. Esa combinación de tareas me dejó centrado en QA / DevOps / Mobile, con foco en que el proyecto pudiera ejecutarse, probarse y documentarse sin depender de la memoria del equipo.
