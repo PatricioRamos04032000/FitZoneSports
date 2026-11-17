@@ -17,8 +17,6 @@
 #   • Las migraciones SQL se aplican automáticamente al iniciar db.
 # =============================================================================
 
-version: "3.8"
-
 services:
   # -------------------------------------------------------------------------
   # Base de datos PostgreSQL (ornamental / referencia)
@@ -69,7 +67,7 @@ services:
       SUPABASE_SERVICE_ROLE_KEY: ${SUPABASE_SERVICE_ROLE_KEY:-}
       SUPABASE_ANON_KEY: ${SUPABASE_ANON_KEY:-}
       # CORS y seed
-      CORS_ORIGIN: http://frontend:80,http://localhost:5173
+      CORS_ORIGIN: ${CORS_ORIGIN:-http://localhost,http://localhost:5173,http://frontend:80}
       SEED_PASSWORD: ${SEED_PASSWORD:-fitzone-demo}
       TOTP_SEED_ENCRYPTION_KEY: ${TOTP_SEED_ENCRYPTION_KEY:-}
     ports:
@@ -83,13 +81,14 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile
+      args:
+        # URL que usa el navegador en el host. `backend` solo existe dentro de la red Docker.
+        VITE_API_URL: ${VITE_API_URL:-http://localhost:3000}
+        VITE_SUPABASE_URL: ${VITE_SUPABASE_URL:-}
+        VITE_SUPABASE_PUBLISHABLE_KEY: ${VITE_SUPABASE_PUBLISHABLE_KEY:-}
     container_name: fitzone-frontend
     depends_on:
       - backend
-    environment:
-      VITE_API_URL: http://backend:3000
-      VITE_SUPABASE_URL: ${VITE_SUPABASE_URL:-http://localhost:3000}
-      VITE_SUPABASE_PUBLISHABLE_KEY: ${VITE_SUPABASE_PUBLISHABLE_KEY:-}
     ports:
       - "80:80"
     restart: unless-stopped
@@ -97,10 +96,11 @@ services:
   # -------------------------------------------------------------------------
   # Seed de entrega (C-08): 25 sedes, canchas, clases y 4 roles.
   # Ejecutar una sola vez tras levantar los servicios:
-  #   docker compose up --build
-  #   docker compose run --rm seed
+#   docker compose up --build
+#   docker compose --profile seed run --rm seed
   # -------------------------------------------------------------------------
   seed:
+    profiles: ["seed"]
     build:
       context: ./backend
       dockerfile: Dockerfile

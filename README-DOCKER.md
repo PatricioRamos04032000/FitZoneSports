@@ -34,6 +34,22 @@ Sin estas credenciales reales en un archivo `.env`, **el backend no puede conect
    - `SUPABASE_ANON_KEY` (clave anon/public de Supabase)
    - Opcionalmente `SEED_PASSWORD` (por defecto `fitzone-demo`)
 
+### Si la máquina tiene Avast con escaneo HTTPS
+
+Avast firma el tráfico con una CA propia, distinta en cada PC. El certificado de otra máquina no sirve y no va en el repositorio. Sin el de esa PC, `npm ci` y las llamadas del backend a Supabase fallan dentro de Docker con `UNABLE_TO_VERIFY_LEAF_SIGNATURE`.
+
+En Windows, desde la raíz del repositorio:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts/exportar-ca-avast.ps1
+```
+
+Eso escribe `backend/certs/extra-ca.crt` y `frontend/certs/extra-ca.crt` (ambos en `.gitignore`). Los Dockerfiles los usan solo si el archivo existe. Después hay que reconstruir: `docker compose up --build`.
+
+Si el script dice que no hay CA de Avast, no hay nada que hacer. Si el escaneo HTTPS está apagado en Avast, tampoco.
+
+A mano, el mismo archivo se saca de `certmgr.msc` → Entidades de certificación raíz de confianza → `Avast Web/Mail Shield Root` → Exportar → X.509 codificado en Base-64 (`.cer`). Hay que dejar una copia con el nombre `extra-ca.crt` en `backend/certs/` y otra en `frontend/certs/`.
+
 ## Comandos de uso
 
 ### 1. Construir y levantar todos los servicios
@@ -47,7 +63,7 @@ Esto crea e inicia `db`, `backend` y `frontend`. El servicio `db` puede fallar a
 ### 2. Ejecutar el seed de entrega (una sola vez)
 
 ```bash
-docker compose run --rm seed
+docker compose --profile seed run --rm seed
 ```
 
 Este servicio depende de que `backend` ya esté levantado y de que las credenciales de Supabase estén correctas en `.env`. Carga:
