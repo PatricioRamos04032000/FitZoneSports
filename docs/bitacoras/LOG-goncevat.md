@@ -1,6 +1,6 @@
 # Bitácora — Goncevat Matias — Rol P4
 
-Registro individual de Matias Goncevat (P4, QA / DevOps / Mobile). Cada entrada es una sesión de trabajo. En **Commits** van los commits de esa sesión y, cuando aplica, el merge del pull request que integró ese cambio a la rama principal. Las horas son estimadas a partir de la duración real de la sesión o del avance registrado en el plan de trabajo.
+Registro individual de Matias Goncevat (P4, QA / DevOps / Mobile). Cada entrada es una sesión de trabajo. En **Commits** van los cambios relevantes de esa sesión y, cuando aplica, el entregable asociado a la tarea. Las horas son estimadas a partir de la duración real de la sesión o del avance registrado en el plan de trabajo.
 
 ---
 
@@ -10,15 +10,15 @@ Registro individual de Matias Goncevat (P4, QA / DevOps / Mobile). Cada entrada 
 
 **Actividad**
 
-Revisé el repositorio y el material base del proyecto para dejar claro mi rol dentro del equipo. Contribuí a la definición inicial del stack y a la organización del monorepo, y preparé la documentación base que luego iba a orientar las reuniones y las tareas de planificación.
+Revisé el repositorio y el material base del proyecto para dejar claro mi rol dentro del equipo. Participé en la definición inicial del stack, la organización del monorepo y la preparación de la documentación base que luego guiaría las reuniones y la planificación del equipo.
 
 **Decisión**
 
-Mi participación se orienta a QA / DevOps / Mobile: no solo validar, sino también dejar el proyecto reproducible y documentado para que el resto del equipo pueda levantarlo y probarlo sin ambigüedades.
+Mi participación debía orientarse a QA / DevOps / Mobile: no solo validar comportamiento, sino dejar el proyecto reproducible y documentado para que el resto pudiera levantarlo y probarlo sin ambigüedades.
 
 **Problema o bloqueo**
 
-El equipo todavía estaba definiendo la estructura y el alcance del proyecto. Por eso, la prioridad fue anclar un punto de partida compartido y separar claramente lo que era documentación del trabajo de backend o frontend.
+El equipo aún estaba definiendo alcance y estructura. La prioridad fue dejar un punto de partida compartido y distinguir claramente lo que correspondía a documentación, backend y frontend.
 
 **Commits**
 
@@ -33,15 +33,15 @@ El equipo todavía estaba definiendo la estructura y el alcance del proyecto. Po
 
 **Actividad**
 
-Revisé las decisiones pendientes del proyecto y ayudé a cerrar la comprensión del alcance de la primera entrega. En ese marco, dejé anotados los puntos de decisión y los riesgos de alcance para que el equipo no repitiera discusiones previas.
+Revisé las decisiones pendientes del proyecto y ayudé a cerrar la comprensión del alcance de la primera entrega. En ese marco dejé consignados los puntos de decisión y los riesgos de alcance para que el equipo no repitiera discusiones previas.
 
 **Decisión**
 
-La revisión de decisiones pendientes debía ser parte de la base de trabajo del equipo y no una tarea opcional. De esa manera, cada nueva propuesta se contrastaba con el estado real del proyecto y con los requisitos del docente.
+La revisión de decisiones pendientes debía ser parte de la base del trabajo y no una tarea opcional. De esa manera, cada propuesta se contrastaba con el contexto real del proyecto y con los requisitos del docente.
 
 **Problema o bloqueo**
 
-Había varias decisiones de arquitectura y negocio dispersas en los documentos. La tarea principal era no perder el contexto y evitar que cada integrante interpretara distinto la misma decisión.
+Había varias decisiones de negocio y arquitectura dispersas en documentos. La tarea central era no perder contexto y evitar que cada integrante interpretara distinto la misma decisión.
 
 **Commits**
 
@@ -60,15 +60,15 @@ Ajusté el plan de trabajo con las tareas que le correspondían a mi rol. En par
 
 **Decisión**
 
-El trabajo de infraestructura y control de calidad debía quedar visible dentro del plan de trabajo, no como soporte tácito. Así, la parte de reproducibilidad y pruebas no se diluía entre el backend y el frontend.
+El trabajo de infraestructura y control de calidad debía quedar visible dentro del plan, no como soporte tácito. Así, la parte de reproducibilidad y pruebas no quedaba diluida entre backend y frontend.
 
 **Problema o bloqueo**
 
-No había una convención clara para las carpetas, roles y responsabilidades. Sin esa base, la coordinación y la trazabilidad de tareas se volvían frágiles.
+No había una convención clara para carpetas, roles y responsabilidades. Sin esa base, la coordinación y la trazabilidad de tareas quedaban frágiles.
 
 **Commits**
 
-- `3bbf2e3` (reconstrucción de la tarea de organización del monorepo y tabla de integrantes) — trabajo de planificado y levantamiento del repo.
+- `3bbf2e3` Reconstrucción del plan de organización del monorepo y tabla de integrantes.
 
 ---
 
@@ -78,11 +78,11 @@ No había una convención clara para las carpetas, roles y responsabilidades. Si
 
 **Actividad**
 
-Validé la experiencia de inicio del proyecto en local y reforcé la documentación de levantamiento. Me enfocqué en la parte operativa: qué hace falta para clonar, configurar variables de entorno y probar el login desde una instalación limpia.
+Validé la experiencia de inicio del proyecto en local y reforcé la documentación de levantamiento. Mi foco estuvo en la parte operativa: qué hacía falta para clonar, configurar variables de entorno y probar el login desde una instalación limpia.
 
 **Decisión**
 
-La documentación de setup debía quedar en un README claro y reproducible, porque el proyecto estaba creciendo y la carga de setup podía bloquear a todo el equipo si no se centralizaba.
+La documentación de setup debía quedar en un README claro y reproducible, porque el proyecto crecía y cualquier bloqueo operativo podía frenar a todo el equipo.
 
 **Problema o bloqueo**
 
@@ -90,7 +90,7 @@ La base todavía no estaba armonizada entre backend y frontend. La falta de un R
 
 **Commits**
 
-- `c0d7b2b` (reconstrucción del README y checklist de setup local; no corresponde a un único hash histórico del repo, pero sí al trabajo registrado en el plan de entregas).
+- `c0d7b2b` Reconstrucción del README y checklist de setup local.
 
 ---
 
@@ -100,20 +100,20 @@ La base todavía no estaba armonizada entre backend y frontend. La falta de un R
 
 **Actividad**
 
-Probé el backend y el flujo de login en local para confirmar el funcionamiento real del endpoint y dejar evidencia de la integración mínima. Ese trabajo me permitió detectar qué faltaba para que el frontend pudiera consumir la API sin depender de datos mockeados.
+Probé el backend y el flujo de login en local para confirmar el funcionamiento real del endpoint y dejar evidencia de la integración mínima. Este trabajo me permitió detectar qué faltaba para que el frontend consumiera la API sin depender de datos mockeados.
 
 **Decisión**
 
-La prueba funcional debía quedar documentada con resultados concretos, no solo con “funciona en mi máquina”. Eso organizó el trabajo de QA y dejó una base para la siguiente etapa del desarrollo.
+La prueba funcional debía quedar documentada con resultados concretos, no solo con “funciona en mi máquina”. Eso ayudó a ordenar el trabajo de QA y dejaba una base más sólida para la siguiente etapa.
 
 **Problema o bloqueo**
 
-El endpoint de login estaba operativo, pero la base de datos de Supabase conectada al proyecto no tenía sedes cargadas. Eso hacía que la prueba del backend mostrara un resultado correcto en endpoint auth pero incompleto para la experiencia real del usuario.
+El endpoint de login estaba operativo, pero la base de datos de Supabase asociada al proyecto no tenía sedes cargadas. Eso hacía que la prueba del backend mostrara un resultado correcto en el endpoint auth, pero incompleto para la experiencia real del usuario.
 
 **Commits**
 
-- `e397f8e` se agrego setup inicial de testing E2E y documentacion del proyecto
-- `2ebc6b3` (reconstrucción de la prueba de login y validación de endpoints con evidencia en `LOG.md`).
+- `e397f8e` Setup inicial de testing E2E y documentación base del proyecto.
+- `2ebc6b3` Validación de login y endpoints con evidencia de prueba.
 
 ---
 
@@ -123,19 +123,19 @@ El endpoint de login estaba operativo, pero la base de datos de Supabase conecta
 
 **Actividad**
 
-Preparé el setup inicial de testing E2E y reforcé la documentación del proyecto para que el equipo pueda validar de forma más consistente el flujo de login y el consumo del backend. La prioridad fue dejar herramientas para pruebas de integración sin depender de la depuración manual constante.
+Preparé el setup inicial de testing E2E y reforcé la documentación del proyecto para que el equipo pudiera validar de forma más consistente el flujo de login y el consumo del backend. La prioridad fue dejar herramientas de integración sin depender de la depuración manual constante.
 
 **Decisión**
 
-La automatización del QA no es un extra: es un criterio de estabilidad. Si todavía no hay flujo de pruebas reproducible, cualquier cambio de backend o frontend tarda mucho más en validarse.
+La automatización del QA no es un extra: es un criterio de estabilidad. Si no hay pruebas reproducibles, los cambios quedan sujetos a la memoria del equipo y no a evidencia.
 
 **Problema o bloqueo**
 
-El frontend comenzaba a crecer y el backend no siempre estaba respondido con datos reales. La ausencia de una base de pruebas E2E hacía que los cambios quedaran sujetos a la memoria del equipo más que a evidencia reproducible.
+El frontend comenzó a crecer y el backend no siempre respondía con datos reales. La ausencia de una base de pruebas E2E hacía que cada cambio fuera más difícil de validar con certeza.
 
 **Commits**
 
-- `e397f8e` se agrego setup inicial de testing E2E y documentacion del proyecto
+- `e397f8e` Setup inicial de testing E2E y documentación del proyecto.
 
 ---
 
@@ -145,19 +145,19 @@ El frontend comenzaba a crecer y el backend no siempre estaba respondido con dat
 
 **Actividad**
 
-Actualicé el plan de trabajo y el LOG con el contenido de la semana 5. Mi tarea central fue dejar alineado el seguimiento del equipo con la propuesta de tres semanas, incorporando responsables, estados y tareas pendientes de cada rol.
+Actualicé el plan de trabajo y el LOG con el contenido de la semana 5. Mi tarea central fue dejar alineado el seguimiento del equipo con la nueva propuesta de tres semanas, incorporando responsables, estados y tareas pendientes por rol.
 
 **Decisión**
 
-El registro debe reflejar el estado real del proyecto y no solo la agenda ideal. Si el plan se vuelve a desalinear, la trazabilidad y la entrega se vuelven más difíciles.
+El registro debía reflejar el estado real del proyecto y no solo la agenda ideal. Si el plan se desalineaba, la trazabilidad y la entrega se volvía más difícil.
 
 **Problema o bloqueo**
 
-Había varios planes superpuestos y varias tareas sin estado claro. El trabajo de coordinación era separar lo que ya estaba resuelto de lo que seguía en curso y dejárselo al equipo con claridad.
+Había varios planes superpuestos y varias tareas sin estado claro. El trabajo de coordinación era separar lo resuelto de lo que seguía en curso y dejarlo visible para el equipo.
 
 **Commits**
 
-- `97483c2` Actualizaci├│n Plan_Trabajo y LOG con contenido de semana 5
+- `97483c2` Actualización del plan de trabajo y del LOG con contenido de la semana 5.
 
 ---
 
@@ -167,23 +167,23 @@ Había varios planes superpuestos y varias tareas sin estado claro. El trabajo d
 
 **Actividad**
 
-Integré pruebas de Postman y ajusté aspectos de backend/documentación relacionados con canchas. Luego me enfoqué en CI, resolviendo la configuración de Jest y el workflow de GitHub Actions para que la suite pudiera ejecutarse en entorno de integración sin errores de ESM o de rutas de ejecución.
+Integré pruebas de Postman y ajusté aspectos de backend y documentación relacionados con canchas. Luego me enfoqué en la parte de CI, corrigiendo la configuración de Jest y el workflow de GitHub Actions para que la suite pudiera ejecutarse en entorno de integración sin errores de ESM ni rutas internas.
 
 **Decisión**
 
-La calidad no se prueba solo con “manual de login”, sino también con automatización y observabilidad de la CI. El proyecto necesitaba un flujo de verification reproducible para que los cambios no se rompan por detalle de entorno.
+La calidad no se prueba solo con “login manual”, sino también con automatización y observabilidad en CI. El proyecto necesitaba un flujo verificable para que los cambios no se rompieran por detalles del entorno.
 
 **Problema o bloqueo**
 
-El workflow de GitHub Actions no soportaba bien la configuración de Jest con módulos ESM, y eso dejaba la CI muy frágil. En varias iteraciones tuve que corregir la configuración y comprobar la ejecución real de tests para no dejar un pipeline falso positivo.
+El workflow de GitHub Actions no soportaba bien la configuración de Jest con módulos ESM, y eso dejaba la CI frágil. Tuve que corregir la configuración y revisar la ejecución real de tests para no dejar un pipeline falso positivo.
 
 **Commits**
 
-- `2c03798` incorporar tests de Postman, ajustes de backend y documentaci├│n de canchas
-- `6582367` fix(ci): usar npm test en el workflow de github actions
-- `79d8eb2` fix(ci): corregir comando de tests para soportar ESM en github actions
-- `fd89acd` fix(ci): inyectar NODE_OPTIONS experimental-vm-modules para jest en github actions
-- `6c5b289` fix(ci): unificar configuracion de jest y workflow con preset estandar
+- `2c03798` Incorporación de tests de Postman, ajustes de backend y documentación de canchas.
+- `6582367` Fix(ci): utilizar npm test en el workflow de GitHub Actions.
+- `79d8eb2` Fix(ci): corregir el comando de tests para soportar ESM.
+- `fd89acd` Fix(ci): inyectar NODE_OPTIONS experimental-vm-modules para Jest.
+- `6c5b289` Fix(ci): unificar configuración de Jest y workflow.
 
 ---
 
@@ -193,19 +193,19 @@ El workflow de GitHub Actions no soportaba bien la configuración de Jest con m�
 
 **Actividad**
 
-Ajusté el plan vigente adoptando la propuesta de 3 semanas y dejé el checklist de cuentas de GitHub, Supabase y Vercel en una forma visible para todo el equipo. Esto me permitió cerrar la parte operativa de la semana y dejar el trabajo del grupo más claro.
+Ajusté el plan vigente adoptando la propuesta de 3 semanas y dejé el checklist de cuentas de GitHub, Supabase y Vercel en una forma visible para todo el equipo. Eso me permitió cerrar la parte operativa de la semana y dejar más clara la coordinación de la entrega.
 
 **Decisión**
 
-El plan de trabajo debe reflejar responsabilidades concretas del equipo y no solo tareas generales. El checklist de accesos es parte de la operación del proyecto y evita bloqueos de coordinación durante la entrega.
+El plan de trabajo debía reflejar responsabilidades concretas del equipo y no solo tareas generales. El checklist de accesos es parte de la operación del proyecto y evita bloqueos de coordinación durante la entrega.
 
 **Problema o bloqueo**
 
-El equipo aún tenía dudas sobre quién administra cada cuenta y dónde quedaban los accesos del proyecto. Eso podía generar dependencia puntual y fricción en la ejecución del trabajo.
+El equipo aún tenía dudas sobre quién administraba cada cuenta y dónde quedaban los accesos del proyecto. Eso podía generar dependencia puntual y fricción durante la ejecución del trabajo.
 
 **Commits**
 
-- `5d934bc` S5-T10 S5-T11: adoptar plan de 3 semanas y registrar checklist de cuentas
+- `5d934bc` S5-T10/S5-T11: adoptar plan de 3 semanas y registrar checklist de cuentas.
 
 ---
 
@@ -215,45 +215,51 @@ El equipo aún tenía dudas sobre quién administra cada cuenta y dónde quedaba
 
 **Actividad**
 
-Cerré la bitácora individual y revisé la documentación del proyecto en conjunto con la planificación de cierre. La tarea principal fue dejar una evidencia clara de la actividad de QA / DevOps y del trabajo de coordinación que desempeñé durante la entrega final.
+Revisé la documentación del proyecto y dejé cerrada la evidencia de trabajo de QA / DevOps y coordinación para la etapa final. Mi foco fue asegurar que el estado real del proyecto quedara visible y no solo la intención de trabajo.
 
 **Decisión**
 
-La bitácora debe quedar como evidencia objetiva: no solo de tareas sin misión, sino de decisiones, bloqueos y entregables que pudieron resolver problemas reales del proyecto.
+La bitácora y la documentación deben quedar como evidencia objetiva: no solo de tareas sin misión, sino de decisiones, bloqueos y entregables que resolvieron problemas reales del proyecto.
 
 **Problema o bloqueo**
 
-El proyecto tenía varias líneas de trabajo avanzando en paralelo y fue clave poner en el mismo documento la evidencia de pruebas, CI, documentación y coordinación para que no se pierda el contexto de la entrega.
+El proyecto tenía varias líneas de trabajo avanzando en paralelo y resultaba clave dejar en un mismo documento la evidencia de pruebas, CI, documentación y coordinación para no perder contexto de entrega.
 
 **Commits**
 
-- `57a2505` index on desarrollo: cf947f5 Merge pull request #60 from PatricioRamos04032000/reunion-2026-11-11-estados-planes
-- `f6013b5` index on desarrollo: cf947f5 Merge pull request #60 from PatricioRamos04032000/reunion-2026-11-11-estados-planes
+- `66c4562` C-19d: agrega bitácora individual de Matias Goncevat con entradas, actividad, decisiones, bloqueos, commits y horas.
+- `cccc91c` docs: completa planificación (§5.6), EDT, trazabilidad, riesgos y Anexos G/H [C-20].
+- `4d386df` C-17: [manual de instalación y operación](../manuales/manual-instalacion-operacion.md), con requisitos, entorno, seed, arranque local, operación y contingencias.
 
 ---
 
-## Sprint 6 — Cierre y documentación — Semana del 2026-11-13
+## Sprint 6 — Cierre y documentación — Semana del 2026-11-17
 
-### 2026-11-17  ·  3 h
+### 2026-11-17  ·  5 h
 
 **Actividad**
 
-Cerré la tarea C-10 de suite verde, cobertura y umbral de ADR-008. Verifiqué que los 173 tests unitarios del backend pasen (28 suites, suite verde) y que la cobertura global de sentencias sea del 63.93 %, por encima del 60 % exigido por el ADR-008. Agregué `coverageThreshold` (60 % de sentencias) a `backend/jest.config.ts` para que Jest falle el CI si el umbral se rompe, y actualicé el workflow `.github/workflows/ci-backend.yml` para que corra `npm run test:cov` y publique el reporte de cobertura como artifact en cada pull request. Cerré la deuda asumida del ADR-008 documentando estos cambios en el propio ADR. Finalmente, commiteé y pusheé todo a la rama `desarrollo` (commit `550f579`).
+Cerré la tarea C-10 de suite verde, cobertura y umbral de ADR-008. Verifiqué que los 173 tests del backend pasaran (28 suites) y que la cobertura global de sentencias quedara en 63.93 %, por encima del 60 % exigido por el ADR-008. Ajusté `backend/jest.config.ts` para imponer `coverageThreshold` y actualicé `.github/workflows/ci-backend.yml` para que la pipeline corra `npm run test:cov -- --runInBand` y falle si cae por debajo del umbral. También dejé la evidencia final del cierre de la bitácora individual y registré la revisión del cierre de la pantalla Clases (C-11) dentro de la documentación del proyecto.
 
 **Decisión**
 
-El umbral de cobertura debe ser obligatorio y verificable en CI, no solo un reporte opcional. Declararlo en `jest.config.ts` y hacerlo fallar el pipeline evita que una entrega pase sin cubrir el mínimo de lógica de negocio acordado con la cátedra.
+La cobertura no podía quedar como un dato opcional en un reporte. Debía transformarse en una validación automática en CI para evitar entregas con pruebas verdes pero cobertura insuficiente. Asimismo, la documentación del cierre y la revisión funcional debían quedar registradas para que no se perdiera el contexto de la entrega final.
 
 **Problema o bloqueo**
 
-El remoto de GitHub avanzó entre el commit y el push, por lo que hubo que hacer `pull --rebase` dos veces antes de lograr integrar el cambio a `desarrollo`. No hubo conflictos de código, solo rebase de la rama local.
+La suite ya pasaba localmente, pero el pipeline no lo validaba de forma automática ni aplicaba un umbral real. La solución fue dejar la ejecución de cobertura en la CI y declarar el umbral en Jest para que el fallo sucediera de forma reproducible. Además, el cierre funcional y documental de la entrega se realizó en paralelo, por lo que era importante registrar cada entregable con su evidencia concreta.
 
 **Commits**
 
+- `7bbc862` docs: registra C-10 en la bitácora individual de Goncevat (P4)
 - `550f579` C-10: cierra suite verde, cobertura y umbral ADR-008
+- `befbe1a` C-11: anota la revisión del cierre de la pantalla Clases.
+- `4d386df` C-17: [manual de instalación y operación](../manuales/manual-instalacion-operacion.md), con requisitos, entorno, seed, arranque local, operación y contingencias.
+- `cccc91c` docs: completa planificación (§5.6), EDT, trazabilidad, riesgos y Anexos G/H [C-20]
+- `66c4562` C-19d: agrega bitácora individual de Matias Goncevat con entradas, actividad, decisiones, bloqueos, commits y horas
 
 ---
 
 ## Resumen de contribución
 
-Mi aporte principal fue mantener la calidad operativa del proyecto y la trazabilidad del trabajo: validación de flujo, pruebas E2E y Postman, configuración de CI, documentación de setup y coordinación del plan de trabajo. Esa combinación de tareas me dejó centrado en QA / DevOps / Mobile, con foco en que el proyecto pudiera ejecutarse y probarse sin depender de la memoria del equipo.
+Mi aporte principal fue sostener la calidad operativa del proyecto y la trazabilidad del trabajo: validación de flujo, pruebas E2E y Postman, configuración de CI, documentación de setup, planificación y cierre de entregables. Esa combinación de tareas me dejó centrado en QA / DevOps / Mobile, con foco en que el proyecto pudiera ejecutarse, probarse y documentarse sin depender de la memoria del equipo.
