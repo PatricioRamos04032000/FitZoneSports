@@ -199,3 +199,19 @@
     color: #14283f;
     cursor: pointer;
 }
+
+.mis-reservas-acciones {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.reserva-confirmacion button + button {
+    margin-left: 10px;
+}
+
+@media (max-width: 600px) {
+    .reserva-confirmacion button + button {
+        margin-left: 0;
+    }
+}

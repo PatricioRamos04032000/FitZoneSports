@@ -1093,6 +1093,83 @@
         ]
       }
     },
+    "/pagos/mios": {
+      "get": {
+        "description": "Devuelve los pagos aprobados del usuario autenticado para descargar sus comprobantes.",
+        "operationId": "PagosController_listarMios",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PagoResumenDto"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token ausente, inválido o vencido"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Listar mis pagos aprobados",
+        "tags": [
+          "pagos"
+        ]
+      }
+    },
+    "/pagos/{id}/comprobante": {
+      "get": {
+        "description": "Genera un comprobante interno no fiscal en PDF. Solo el titular del pago puede descargarlo.",
+        "operationId": "PagosController_descargarComprobante",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID del pago aprobado",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Archivo PDF del comprobante"
+          },
+          "401": {
+            "description": "Token ausente, inválido o vencido"
+          },
+          "403": {
+            "description": "El pago pertenece a otro usuario"
+          },
+          "404": {
+            "description": "Pago no encontrado"
+          },
+          "409": {
+            "description": "El pago no está aprobado"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Descargar comprobante PDF de un pago aprobado (RF-14)",
+        "tags": [
+          "pagos"
+        ]
+      }
+    },
     "/canchas/reservas": {
       "post": {
         "description": "Facade: calcula precio (Strategy) y bloquea el turno en estado pendiente. No cobra: usar POST /:id/pagar y el checkout simulado.",
@@ -1225,6 +1302,49 @@
           }
         ],
         "summary": "Iniciar o retomar pago de una reserva pendiente",
+        "tags": [
+          "canchas"
+        ]
+      }
+    },
+    "/canchas/reservas/{id}/comprobante": {
+      "get": {
+        "description": "Emite el comprobante FitZone no fiscal con sede, cancha, horario y monto abonado.",
+        "operationId": "ReservasCanchaController_comprobante",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID de la reserva",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Archivo PDF del comprobante"
+          },
+          "401": {
+            "description": "Token ausente, inválido o vencido"
+          },
+          "403": {
+            "description": "La reserva pertenece a otro usuario"
+          },
+          "404": {
+            "description": "Reserva inexistente"
+          },
+          "409": {
+            "description": "La reserva no tiene un pago aprobado"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Descargar comprobante PDF de una reserva pagada (RF-14)",
         "tags": [
           "canchas"
         ]
@@ -3215,6 +3335,65 @@
           "sedeId",
           "items",
           "ocupacion"
+        ]
+      },
+      "PagoResumenDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "d290f1ee-6c54-4b01-90e6-d701748f0851"
+          },
+          "concepto": {
+            "type": "string",
+            "enum": [
+              "membresia",
+              "reserva_cancha"
+            ]
+          },
+          "monto": {
+            "type": "number",
+            "example": 24000
+          },
+          "estado": {
+            "type": "string",
+            "enum": [
+              "pendiente",
+              "aprobado",
+              "rechazado"
+            ]
+          },
+          "reservaCanchaId": {
+            "type": "object",
+            "nullable": true
+          },
+          "membresiaId": {
+            "type": "object",
+            "nullable": true
+          },
+          "plan": {
+            "type": "string",
+            "nullable": true,
+            "enum": [
+              "mensual",
+              "trimestral",
+              "anual"
+            ]
+          },
+          "createdAt": {
+            "type": "string",
+            "example": "2026-11-15T19:00:00.000Z"
+          }
+        },
+        "required": [
+          "id",
+          "concepto",
+          "monto",
+          "estado",
+          "reservaCanchaId",
+          "membresiaId",
+          "plan",
+          "createdAt"
         ]
       },
       "ReservarCanchaDto": {

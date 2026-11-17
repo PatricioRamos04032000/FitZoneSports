@@ -11,13 +11,17 @@ import {
   Post,
   Query,
   Redirect,
+  Res,
+  StreamableFile,
   forwardRef,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { ApiExcludeController } from '@nestjs/swagger';
 import { randomUUID } from 'crypto';
+import type { Response } from 'express';
 import { ReservasCanchaService } from '../canchas/reservas/reservas-cancha.service';
 import { MembresiasService } from '../usuarios/membresias/membresias.service';
+import { ComprobantesService } from './comprobantes/comprobantes.service';
 import { PagosRepository } from './pagos.repository';
 import {
   PASARELA_PAGO,
@@ -40,6 +44,7 @@ export class CheckoutSimuladoController {
     private readonly reservas: ReservasCanchaService,
     @Inject(forwardRef(() => MembresiasService))
     private readonly membresias: MembresiasService,
+    private readonly comprobantes: ComprobantesService,
     private readonly config: ConfigService,
   ) {}
 
@@ -119,8 +124,14 @@ export class CheckoutSimuladoController {
   success(
     @Query('reservaId') _reservaId?: string,
     @Query('concepto') concepto?: string,
+    @Query('pagoId') pagoId?: string,
+    @Query('sig') sig?: string,
   ): string {
-    return this.htmlResultado(true, concepto === 'membresia');
+    const comprobanteUrl =
+      pagoId && sig
+        ? `/pasarela-simulada/comprobante/${encodeURIComponent(pagoId)}?sig=${encodeURIComponent(sig)}`
+        : undefined;
+    return this.htmlResultado(true, concepto === 'membresia', comprobanteUrl);
   }
 
   @Get('resultado/failure')
@@ -132,17 +143,34 @@ export class CheckoutSimuladoController {
     return this.htmlResultado(false, concepto === 'membresia');
   }
 
+  @Get('comprobante/:pagoId')
+  async descargarComprobante(
+    @Param('pagoId') pagoId: string,
+    @Query('sig') sig: string | undefined,
+    @Res({ passthrough: true }) res: Response,
+  ): Promise<StreamableFile> {
+    const archivo = await this.comprobantes.generarPorPagoFirmado(pagoId, sig);
+    res.set({
+      'Content-Type': 'application/pdf',
+      'Content-Disposition': `inline; filename="${archivo.filename}"`,
+    });
+    return new StreamableFile(archivo.buffer);
+  }
+
   private resultadoPath(
     aprobado: boolean,
-    pago: { concepto: string; reserva_cancha_id: string | null },
+    pago: { id: string; concepto: string; reserva_cancha_id: string | null },
   ): string {
     const base = aprobado
       ? '/pasarela-simulada/resultado/success'
       : '/pasarela-simulada/resultado/failure';
+    const firma = aprobado
+      ? `&pagoId=${encodeURIComponent(pago.id)}&sig=${encodeURIComponent(this.comprobantes.firmarPago(pago.id))}`
+      : '';
     if (pago.concepto === 'membresia') {
-      return `${base}?concepto=membresia`;
+      return `${base}?concepto=membresia${firma}`;
     }
-    return `${base}?reservaId=${pago.reserva_cancha_id ?? ''}`;
+    return `${base}?reservaId=${pago.reserva_cancha_id ?? ''}${firma}`;
   }
 
   private htmlCheckout(pagoId: string, monto: number, concepto: string): string {
@@ -206,16 +234,22 @@ export class CheckoutSimuladoController {
 </html>`;
   }
 
-  private htmlResultado(ok: boolean, membresia = false): string {
+  private htmlResultado(
+    ok: boolean,
+    membresia = false,
+    comprobanteUrl?: string,
+  ): string {
     const titulo = ok ? 'Pago aprobado' : 'Pago rechazado';
     const color = ok ? '#15803d' : '#b91c1c';
     const msg = membresia
       ? ok
-        ? 'Tu membresía quedó vigente. Ya podés cerrar esta ventana y volver al perfil.'
+        ? 'Tu membresía quedó vigente. Podés descargar tu comprobante o volver al perfil.'
         : 'No se cambió tu membresía. Podés reintentar el pago desde el perfil.'
       : ok
-        ? 'Tu reserva quedó confirmada. Ya podés cerrar esta ventana y volver a FitZone.'
+        ? 'Tu reserva quedó confirmada. Podés descargar tu comprobante o volver a FitZone.'
         : 'No se confirmó la reserva. Podés reintentar el pago desde FitZone si el hold sigue vigente.';
+    const rutaRetorno = membresia ? '/perfil' : '/canchas';
+    const textoRetorno = membresia ? 'Volver al perfil' : 'Volver a Canchas';
     return `<!DOCTYPE html>
 <html lang="es">
 <head>
@@ -228,6 +262,9 @@ export class CheckoutSimuladoController {
     .card { background:#fff; padding:2rem; border-radius:12px; width:min(420px,92vw);
       box-shadow:0 12px 40px rgba(15,23,42,.12); text-align:center; }
     h1 { color:${color}; font-size:1.35rem; }
+    .btn-pdf { display:inline-block; margin:.75rem 0; padding:.65rem 1.15rem; border-radius:8px;
+      background:#0284c7; color:#fff; text-decoration:none; font-weight:600; }
+    .btn-pdf:hover { background:#0369a1; }
   </style>
 </head>
 <body>
@@ -238,23 +275,24 @@ export class CheckoutSimuladoController {
     <h1>${titulo}</h1>
     <p>${msg}</p>
     ${
-      membresia
-        ? `<p><a href="${this.perfilUrl()}">Volver al perfil</a></p>`
+      ok && comprobanteUrl
+        ? `<p><a class="btn-pdf" href="${comprobanteUrl}" target="_blank" rel="noopener">Descargar comprobante (PDF)</a></p>`
         : ''
     }
+    <p><a href="${this.frontendUrl(rutaRetorno)}">${textoRetorno}</a></p>
   </div>
 </body>
 </html>`;
   }
 
-  private perfilUrl(): string {
+  private frontendUrl(ruta: string): string {
     const origen = (
       this.config.get<string>('CORS_ORIGIN') ?? 'http://localhost:5173'
     )
       .split(',')[0]
       .trim()
       .replace(/\/$/, '');
-    return `${origen}/perfil`;
+    return `${origen}${ruta}`;
   }
 
   private htmlRedirect(path: string): string {

@@ -27,3 +27,44 @@ export type NuevoPago = {
   membresia_id: string | null;
   plan: PlanMembresia | null;
 };
+
+export interface TitularComprobante {
+  id: string;
+  nombre: string | null;
+  apellido: string | null;
+  dni: string | null;
+}
+
+export interface ReservaComprobante {
+  id: string;
+  cancha_id: string;
+  perfil_id: string;
+  inicio: string;
+  fin: string;
+  precio: number;
+  estado: string;
+  detalle: Record<string, unknown>;
+  canchaNombre: string;
+  canchaTipo: string;
+  sedeNombre: string;
+  sedeDireccion: string | null;
+}
+
+export interface MembresiaComprobante {
+  id: string;
+  plan: PlanMembresia;
+  vigente_desde: string;
+  vigente_hasta: string;
+  estado: string;
+}
+
+export interface ResumenPago {
+  id: string;
+  concepto: ConceptoPago;
+  monto: number;
+  estado: EstadoPago;
+  reservaCanchaId: string | null;
+  membresiaId: string | null;
+  plan: PlanMembresia | null;
+  createdAt: string;
+}

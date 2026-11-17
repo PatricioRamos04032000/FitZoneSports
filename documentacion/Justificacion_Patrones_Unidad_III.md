@@ -89,7 +89,7 @@ classDiagram
 ```
 
 - `SupabaseRepository<T>` resuelve lo común: `findAll`, `findById`, llamadas RPC y `unwrap`, que registra el error real en el log y lanza `RepositoryError`.
-- Cada repositorio concreto define su tabla y sus consultas propias. `findAll` está escrito una vez en la base y cada subclase solo aporta `table`, que es la idea del **Template Method** (GoF). Con eso alcanza por ahora. El comprobante PDF (RF-14) usaría el mismo patrón recién cuando existan dos documentos (cancha y membresía): mismo esqueleto, distinto contenido. Con un solo comprobante, una función alcanza.
+- Cada repositorio concreto define su tabla y sus consultas propias. `findAll` está escrito una vez en la base y cada subclase solo aporta `table`, que es la idea del **Template Method** (GoF). El mismo patrón se usa en los comprobantes PDF no fiscales (RF-14, `backend/src/pagos/comprobantes/`): `ComprobantePdfTemplate` fija el esqueleto común (encabezado, titular, monto y pie) y `ComprobanteReservaPdf` / `ComprobanteMembresiaPdf` completan el detalle de cada operación.
 - `RepositoryErrorFilter` convierte un `RepositoryError` no tratado en un 500 genérico, sin exponer detalles de la base al cliente.
 - Los errores de negocio de las funciones SQL (`raise exception 'CLASE_LLENA'`) llegan como `RepositoryError` con su código, y el servicio los traduce a 404 o 409.
 
@@ -938,7 +938,7 @@ No son el foco de la Unidad III, pero aparecen y conviene nombrarlos en la defen
 
 | Patrón | Dónde |
 |--------|-------|
-| **Template Method** (GoF) | Ya aplicado en `SupabaseRepository<T>`: `findAll`/`findById` en la base, cada subclase aporta la tabla. Comprobante PDF: anotado para cuando haya cancha y membresía; no se diseña aparte ahora |
+| **Template Method** (GoF) | Aplicado en `SupabaseRepository<T>` (`findAll`/`findById` en la base, cada subclase aporta la tabla) y en los comprobantes PDF (`ComprobantePdfTemplate` → `ComprobanteReservaPdf` y `ComprobanteMembresiaPdf`, RF-14) |
 | **Inyección de dependencias** | Todo el backend (NestJS): servicios, repositorios, observadores. La instancia única la da el contenedor; no escribimos Singleton ([§12](#12-singleton--descartado)) |
 | **Guards** | `JwtAuthGuard` → `RolesGuard` (`@RequiereRol`). Cortan la petición si falla el token o el rol. Ver [§6](#6-chain-of-responsibility--descartado): no implementamos Chain of Responsibility aparte |
 | **Decorator de TypeScript** (no el GoF) | `@RequiereRol`, `@CurrentUser`, `@OnEvent`. El Decorator GoF de precios está en [§3](#3-decorator--precio-de-canchas); el transversal (caché/log) sigue descartado en [§10](#10-decorator-transversal--descartado) |

@@ -11,6 +11,7 @@ import {
   type DisponibilidadSede,
   type Reserva,
 } from "../../services/canchas";
+import { descargarComprobanteReserva } from "../../services/pagos";
 
 import { Select } from "../../components/atoms";
 import { Alerta } from "../../components/molecules";
@@ -59,6 +60,7 @@ function Canchas() {
   // Estado de pago
   const [procesandoPago, setProcesandoPago] = useState(false);
   const [cancelandoId, setCancelandoId] = useState("");
+  const [descargandoComprobanteId, setDescargandoComprobanteId] = useState("");
 
   // Cargar sedes
   useEffect(() => {
@@ -290,6 +292,29 @@ function Canchas() {
     }
   }
 
+  async function handleDescargarComprobante(reservaId: string) {
+    if (!accessToken) {
+      setErrorReserva(
+        "Tu sesión expiró. Volvé a iniciar sesión."
+      );
+      return;
+    }
+
+    try {
+      setDescargandoComprobanteId(reservaId);
+      setErrorReserva("");
+      await descargarComprobanteReserva(reservaId, accessToken);
+    } catch (err) {
+      setErrorReserva(
+        err instanceof Error
+          ? err.message
+          : "No se pudo descargar el comprobante."
+      );
+    } finally {
+      setDescargandoComprobanteId("");
+    }
+  }
+
   // Iniciar el pago de una reserva
   async function handlePagar(reservaId: string) {
     if (!accessToken) {
@@ -503,6 +528,17 @@ function Canchas() {
             </button>
           )}
 
+          {reservaMostrada.estado === "confirmada" && (
+            <button
+              onClick={() => handleDescargarComprobante(reservaMostrada.id)}
+              disabled={descargandoComprobanteId === reservaMostrada.id}
+            >
+              {descargandoComprobanteId === reservaMostrada.id
+                ? "Descargando PDF..."
+                : "Descargar comprobante PDF"}
+            </button>
+          )}
+
           {(reservaMostrada.estado === "pendiente" ||
             reservaMostrada.estado === "confirmada") && (
             <button
@@ -533,19 +569,31 @@ function Canchas() {
                   {nombreCancha(reserva.canchaId)} ·{" "}
                   {formatearHorario(reserva.inicio)} · {reserva.estado}
                 </p>
-                {(reserva.estado === "pendiente" ||
-                  reserva.estado === "confirmada") && (
-                  <button
-                    onClick={() => handleCancelar(reserva.id)}
-                    disabled={
-                      procesandoPago || cancelandoId === reserva.id
-                    }
-                  >
-                    {cancelandoId === reserva.id
-                      ? "Cancelando..."
-                      : "Cancelar"}
-                  </button>
-                )}
+                <div className="mis-reservas-acciones">
+                  {reserva.estado === "confirmada" && (
+                    <button
+                      onClick={() => handleDescargarComprobante(reserva.id)}
+                      disabled={descargandoComprobanteId === reserva.id}
+                    >
+                      {descargandoComprobanteId === reserva.id
+                        ? "Descargando..."
+                        : "Comprobante PDF"}
+                    </button>
+                  )}
+                  {(reserva.estado === "pendiente" ||
+                    reserva.estado === "confirmada") && (
+                    <button
+                      onClick={() => handleCancelar(reserva.id)}
+                      disabled={
+                        procesandoPago || cancelandoId === reserva.id
+                      }
+                    >
+                      {cancelandoId === reserva.id
+                        ? "Cancelando..."
+                        : "Cancelar"}
+                    </button>
+                  )}
+                </div>
               </li>
             ))}
           </ul>

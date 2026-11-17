@@ -63,7 +63,7 @@ Después del tag: solo ensayo Demo Day.
 | C-01 | **S4-T13** — `/canchas` real: sede → `GET /disponibilidad` → reservar → `POST .../pagar` → checkout | Lucas | 6–8 | **Finalizado** | Paddle del seed se reserva y confirma desde la UI | Funcionalidad / portal teléfono |
 | C-02 | Membresía en UI (`GET /membresias/mia` en Perfil o bloque propio) | Lucas | 1–2 | **En desarrollo** | Se ve plan/estado/vigencia del socio seed | RF-02 demostrable |
 | C-03 | Lectura responsive: Login, Canchas, Mi QR usables en viewport móvil | Lucas | 2 | **Finalizado** | QR legible; reserva posible en teléfono | Portal desde teléfono |
-| C-04 | RF-14: PDF **comprobante FitZone** post-pago (cancha, horario, monto); no factura fiscal | Bruno | 3–4 | **Por hacer** | Tras pagar se descarga/abre PDF con esos datos | RF-14 |
+| C-04 | RF-14: PDF **comprobante FitZone** post-pago (cancha, horario, monto); no factura fiscal | Bruno | 3–4 | **Finalizado** | Tras pagar se descarga/abre PDF con esos datos | RF-14 |
 | C-05 | Decisión escrita RNF-01: reforzar offline real **o** documentar MVP cola+sync + mail a cátedra (§7.2) | Patricio | 1 | **Finalizado** | ADR alineado + si hace falta aviso formal | RNF-01 |
 | C-06 | Ensayo corto API+UI del guion (sin cronómetro aún) | Todos 30–45 min | 1 | **Finalizado** | Lista de bugs del flujo | Defensa |
 
