@@ -39,7 +39,7 @@ El criterio determinante fue fijar un número que obligue a cubrir lógica de ne
 
 - **Positivas:** el porcentaje deja de ser opcional; la no sobreventa tiene una prueba en la base, aparte de los unitarios del servicio; el CI ya frena un pull request si los unitarios fallan.
 - **Negativas:** el 60 % no mira el frontend ni los tests HTTP; un módulo nuevo sin tests diluye el número; el script SQL queda fuera del pipeline y alguien tiene que acordarse de correrlo.
-- **Deuda asumida:** `coverageThreshold` todavía no está en `jest.config.ts` y el workflow no corre `test:cov`. Lo cierra C-10. Si esa medición queda bajo 60 %, no se baja el número en este archivo: se agregan tests o se supera este ADR con uno nuevo. No hay Vitest, Testing Library ni Playwright. El reporte HTML de cobertura no se versiona (`backend/coverage/` está ignorado).
+- **Deuda asumida (cerrada en C-10):** `coverageThreshold` está declarado en `backend/jest.config.ts` (60 % de sentencias global) y el workflow `.github/workflows/ci-backend.yml` corre `npm run test:cov`, sube el reporte de cobertura como artifact y hace fallar el pull request si la medición cae bajo 60 %. No hay Vitest, Testing Library ni Playwright. El reporte HTML de cobertura no se versiona (`backend/coverage/` está ignorado por `.gitignore`).
 
 ## Requisitos relacionados
 
