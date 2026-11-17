@@ -1070,4 +1070,21 @@ Recorrido en `/clases` con el socio del seed, sede FitZone Central. El cierre si
 
 ---
 
+## 2026-11-17 — C-04: comprobante PDF no fiscal post-pago (RF-14)
+
+**Tipo:** backend + frontend / M5 pagos  
+**Registrado por:** Bruno Conti (P2)  
+**Tarea:** C-04 (extiende S7-T02) · rama `c-04`  
+**Cierre:** tras aprobarse el pago de una reserva de cancha o una membresía se descarga el PDF FitZone (no válido como factura fiscal, sin datos de tarjeta según RNF-02).
+
+### Entregado
+
+- Generación PDF en [`backend/src/pagos/comprobantes/`](../../backend/src/pagos/comprobantes/) con `pdfkit` y **Template Method** (`ComprobantePdfTemplate` → `ComprobanteReservaPdf` y `ComprobanteMembresiaPdf`).
+- Endpoints protegidos con `JwtAuthGuard` y titularidad: `GET /pagos/mios`, `GET /pagos/:id/comprobante` y `GET /canchas/reservas/:id/comprobante`.
+- Descarga directa en la pantalla de pago aprobado de la pasarela simulada (`/pasarela-simulada/comprobante/:pagoId?sig=...` con firma HMAC) y enlace de retorno a `/canchas`.
+- Botones de descarga en [`frontend/src/portal/Canchas/Canchas.tsx`](../../frontend/src/portal/Canchas/Canchas.tsx) (reserva confirmada y Mis reservas) y [`frontend/src/portal/Perfil/Perfil.tsx`](../../frontend/src/portal/Perfil/Perfil.tsx) (Mi membresía) vía [`frontend/src/services/pagos.ts`](../../frontend/src/services/pagos.ts).
+- Tests unitarios (`comprobantes.service.spec.ts`), e2e (`test/comprobantes.e2e-spec.ts`), `backend/swagger.json` actualizado y nota de Template Method al día en `Justificacion_Patrones_Unidad_III.md`.
+
+---
+
 *FitZone Sports · Programación V · UNER*

@@ -1,6 +1,11 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "../../store/useAuth";
 import { apiRequest } from "../../services/api";
+import {
+  descargarComprobantePago,
+  obtenerMisPagos,
+  type ResumenPago,
+} from "../../services/pagos";
 import "./Perfil.css";
 
 interface PerfilData {
@@ -50,6 +55,8 @@ function Perfil() {
   const [membresia, setMembresia] = useState<MembresiaData | null>(null);
   const [cargandoMembresia, setCargandoMembresia] = useState(false);
   const [errorMembresia, setErrorMembresia] = useState("");
+  const [pagosMembresia, setPagosMembresia] = useState<ResumenPago[]>([]);
+  const [descargandoComprobante, setDescargandoComprobante] = useState(false);
   const [planes, setPlanes] = useState<PlanCatalogo[]>([]);
   const [pagandoPlan, setPagandoPlan] = useState<string | null>(null);
 
@@ -83,6 +90,17 @@ function Perfil() {
     }
   }
 
+  async function cargarPagos(token: string) {
+    try {
+      const lista = await obtenerMisPagos(token);
+      setPagosMembresia(
+        lista.filter((p) => p.concepto === "membresia" && p.estado === "aprobado")
+      );
+    } catch {
+      setPagosMembresia([]);
+    }
+  }
+
   useEffect(() => {
     if (!accessToken) return;
 
@@ -104,6 +122,7 @@ function Perfil() {
 
         if (perfilData.rol === "socio") {
           void cargarMembresia(accessToken);
+          void cargarPagos(accessToken);
           void cargarPlanes();
         }
       } catch (err) {
@@ -119,6 +138,23 @@ function Perfil() {
 
     void cargarDatos();
   }, [accessToken]);
+
+  async function handleDescargarComprobanteMembresia(pagoId: string) {
+    if (!accessToken) return;
+    try {
+      setDescargandoComprobante(true);
+      setError("");
+      await descargarComprobantePago(pagoId, accessToken);
+    } catch (err) {
+      setError(
+        err instanceof Error
+          ? err.message
+          : "No se pudo descargar el comprobante."
+      );
+    } finally {
+      setDescargandoComprobante(false);
+    }
+  }
 
   async function cargarPlanes() {
     try {
@@ -432,6 +468,28 @@ function Perfil() {
                 "No tenés una membresía registrada."}
             </p>
           )}
+
+          {membresia &&
+            (() => {
+              const pagoMembresia =
+                pagosMembresia.find((p) => p.membresiaId === membresia.id) ??
+                pagosMembresia[0];
+              if (!pagoMembresia) return null;
+              return (
+                <button
+                  type="button"
+                  className="perfil-button"
+                  disabled={descargandoComprobante}
+                  onClick={() =>
+                    void handleDescargarComprobanteMembresia(pagoMembresia.id)
+                  }
+                >
+                  {descargandoComprobante
+                    ? "Descargando PDF..."
+                    : "Descargar comprobante PDF"}
+                </button>
+              );
+            })()}
         </div>
       )}
 

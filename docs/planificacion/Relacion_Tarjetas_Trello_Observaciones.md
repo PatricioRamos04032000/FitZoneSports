@@ -57,7 +57,7 @@ Excel hermano (mismas filas + columna Observación):
 | **S6-T05** | API Canchas reserva | finalizado | Relacionada con **S7-T01** (finalizada) y con alcance original de S4-T06. Mismo: POST reserva/RPC + Strategy. | Sí → S7-T01 (hecho) |
 | **S7-T01** | Patrones en la reserva | finalizado | Relacionada con **S6-T05**. Facade/State + POST reservas; es la implementación de la reserva. | Sí → S6-T05 |
 | **S7-T02** | Pago mock mínimo | finalizado | Relacionada con **C-04**. S7-T02 = checkout/token; C-04 = **PDF comprobante** encima del pago. | No (C-04 es extra RF-14) |
-| **C-04** | RF-14 PDF comprobante FitZone | por hacer | Relacionada con **S7-T02** (pago ya hecho). No reemplaza el pago: agrega PDF post-pago. | Extiende S7-T02 |
+| **C-04** | RF-14 PDF comprobante FitZone | finalizado | Relacionada con **S7-T02** (pago ya hecho). No reemplaza el pago: agrega PDF post-pago (`ComprobantePdfTemplate` para reserva y membresía, endpoints + botón en pasarela, `/canchas` y `/perfil`). | Extiende S7-T02 |
 | **S5-T04** | Guards Clases y Membresías | finalizado | Relacionada con **S4-T10** (mergeada en desarrollo, sin tarjeta S4-T10). Guards/JWT/roles ya en código. | Sí → S4-T10 (hecho) |
 | **S5-T05** | Ventana 48 h en inscribir (D5) | finalizado | Relacionada con **S4-T10** / cierre de guards. Ventana 48 h ya en `ClasesService`. | Sí → hecha con S4-T10 |
 | **S7-T04** | Lista de espera + Observer | finalizado | Relacionada con **S4-T14** (hecha en desarrollo, sin tarjeta S4-T14). Mismo flujo lista espera. | Sí → S4-T14 (hecho) |
