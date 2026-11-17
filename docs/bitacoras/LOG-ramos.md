@@ -713,5 +713,5 @@ La API no arrancó al primer intento porque `pdfkit` no estaba en `node_modules`
 
 **Commits**
 
-- El commit de esta entrada es el de la rama `C-16` que agrega el manual.
+- `ba82d03` C-16: agrega el manual de usuario con las capturas del sistema.
 
