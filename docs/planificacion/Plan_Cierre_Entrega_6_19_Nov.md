@@ -105,7 +105,7 @@ Después del tag: solo ensayo Demo Day.
 | C-20 | Planificación completa (§5.6 + Anexo H): plan, EDT, cronograma visual, trazabilidad RF/RN/RNF, seguimiento, riesgos, desvíos | Matias | 6–8 | **Por hacer** | Paquete en `docs/planificacion/` | Planificación |
 | C-21 | Exportar tablero (Trello/GitHub/xlsx) con fechas de creación/cierre reales | Matias | 1–2 | **Por hacer** | Archivo `PROGV-2026-TIF-EquipoNN-Registro.xlsx` | Tablero |
 
-**C-19 en el tablero (2026-11-11, actualizado 2026-11-17):** C-19a Patricio **Finalizado** · C-19b Bruno **Finalizado** (`LOG-conti.md`) · C-19d Matias **En desarrollo** · C-19c Lucas **Por hacer**.
+**C-19 en el tablero (2026-11-11, actualizado 2026-11-17):** C-19a Patricio **Finalizado** · C-19b Bruno **Finalizado** (`LOG-conti.md`) · C-19c Patricio **Finalizado** (`LOG-coquet.md`, 2026-11-17) · C-19d Matias **En desarrollo**.
 
 **Salida T2:** checklist Anexo G de Documentación + Bitácoras + Planificación casi todo marcado.
 
