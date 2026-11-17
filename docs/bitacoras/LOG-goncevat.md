@@ -278,7 +278,7 @@ No se pudo ejecutar el seed contra Supabase real por falta de credenciales de en
 
 **Commits**
 
-- (pendiente de commit por el autor)
+- `11c9e2c` C-08: seed de entrega final con >= 25 sedes, canchas/clases mínimas y 4 roles
 
 ---
 
