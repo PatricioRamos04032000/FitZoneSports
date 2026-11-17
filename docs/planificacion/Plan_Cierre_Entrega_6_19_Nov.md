@@ -5,7 +5,7 @@
 **Congelamiento / tag:** jueves **19/11/2026, 18:00** → `v1.0-entrega`  
 **Demo Day:** semana 23–29/11 (sin desarrollo)  
 **Fuente de orden:** [Lineamientos de Entrega](./Lineamientos_Entrega_TIF_FitZone_Sports_2do_Cuatrimestre_2026.pdf) · **Anexo G**  
-**Estado de partida:** relevado el 2026-11-06 sobre `desarrollo` (API canchas/clases/acceso fuertes; entonces UI canchas mock; docs de entrega incompletas). **Actualización 2026-11-13:** C-01 y S7-T08 cerrados — canchas en UI y pase demo solo UI; C-24 (ensayo 5 min cronometrado) sigue sobre el guion ya pulido. **Misma fecha:** se agregó **C-28** (Strategy → Decorator + UML Nest), no listada en el plan original; entra en T2 antes del congelamiento T3. **2026-11-14:** se agregó **C-29** (alta y edición de sedes, A4 / RNF-04), rama `C-29`, Patricio. **Misma fecha:** se agregó **C-30** (catálogo, alta atómica y renovación cobrada de membresía, RF-02), rama `C-30`, Patricio. **Misma fecha:** se agregó **C-31** (crear y editar la agenda de clases, RF-06), rama `C-31`, Patricio. **2026-11-15:** se agregó **C-32** (canchas en pantalla: alta, precio, cancelar, pico, descuento y mantenimiento), rama `C-32`, Patricio. **Misma fecha:** se agregó **C-33** (check-out desde `/acceso`, RN-01), rama `C-33`, Patricio.
+**Estado de partida:** relevado el 2026-11-06 sobre `desarrollo` (API canchas/clases/acceso fuertes; entonces UI canchas mock; docs de entrega incompletas). **Actualización 2026-11-13:** C-01 y S7-T08 cerrados — canchas en UI y pase demo solo UI; C-24 (ensayo 5 min cronometrado) sigue sobre el guion ya pulido. **Misma fecha:** se agregó **C-28** (Strategy → Decorator + UML Nest), no listada en el plan original; entra en T2 antes del congelamiento T3. **2026-11-14:** se agregó **C-29** (alta y edición de sedes, A4 / RNF-04), rama `C-29`, Patricio. **Misma fecha:** se agregó **C-30** (catálogo, alta atómica y renovación cobrada de membresía, RF-02), rama `C-30`, Patricio. **Misma fecha:** se agregó **C-31** (crear y editar la agenda de clases, RF-06), rama `C-31`, Patricio. **2026-11-15:** se agregó **C-32** (canchas en pantalla: alta, precio, cancelar, pico, descuento y mantenimiento), rama `C-32`, Patricio. **Misma fecha:** se agregó **C-33** (check-out desde `/acceso`, RN-01), rama `C-33`, Patricio. **2026-11-16:** se agregó **C-34** (el título del aviso de lugar liberado se lee sobre la tarjeta), rama `C-34`, Patricio.
 
 **Estados** (lista Trello → este plan): `por hacer` → **Por hacer** · `tambien en desarrollo` → **En desarrollo** · `finalizado` → **Finalizado**. El 2026-11-11 las listas `en desarrollo` y `Blocked` estaban vacías.
 
@@ -89,6 +89,7 @@ Después del tag: solo ensayo Demo Day.
 | C-31 | Crear y editar la agenda de clases (RF-06): checks de texto, `POST/PATCH /clases` solo gerente, UI `/clases/gestionar`, tests y docs. Rama `C-31` | Patricio | 4–6 | **Finalizado** | El gerente crea y edita una clase sin SQL; la baja es `estado = cancelada`; el `PATCH` no cambia la sede; no hay ADR nuevo | RF-06 |
 | C-32 | Canchas en pantalla (RF-09, RF-10, RF-11, RF-12, RNF-03): `/canchas/gestionar`, cancelar la reserva propia y e2e del alta. Rama `C-32` | Patricio | 5–7 | **Finalizado** | El gerente y el admin de la sede administran cancha, pico y mantenimiento sin SQL; el descuento lo edita el gerente; cancelar no devuelve el pago | RF-09 a RF-12 |
 | C-33 | Check-out desde `/acceso` (RN-01): botón Salir, `POST /acceso/check-outs` y la misma cola del ingreso si no hay red, servidor o base. Rama `C-33` | Patricio | 4–5 | **Finalizado** | Salir libera la presencia; un 400 o un 404 se muestran; sin red, sin servidor o sin base la salida queda en la cola y el sync no pide TOTP | RN-01 |
+| C-34 | Contraste del aviso de lugar liberado en `/notificaciones`: el título queda en azul oscuro sobre la tarjeta blanca. Rama `C-34` | Patricio | 0,5 | **Finalizado** | «Se liberó un lugar en Aviso prueba» se lee en modo oscuro | — |
 
 #### 4.2 Repositorio y docs (admisibilidad §6.1)
 
@@ -176,7 +177,7 @@ Situación (5 min): agregar canchas de tenis (manual técnico C-18).
 |----------------|-----------------|
 | Repositorio y entrega | C-13, C-23, C-25, C-26, C-27 |
 | Código | C-07, C-08, C-09, C-10 |
-| Funcionalidad | C-01…C-05, C-11, C-04, C-29, C-30, C-31, C-32, C-33 |
+| Funcionalidad | C-01…C-05, C-11, C-04, C-29, C-30, C-31, C-32, C-33, C-34 |
 | Documentación | C-14…C-18 |
 | Bitácoras | C-19 |
 | Planificación | C-20, C-21 |

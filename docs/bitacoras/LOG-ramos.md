@@ -631,3 +631,45 @@ Ninguno de contrato. `registrar_check_out` y el endpoint ya existían; faltaba l
 
 - Pendiente: el trabajo está en la rama `C-33`, sin commit.
 
+---
+
+## Sprint 8 — Cierre — Semana del 2026-11-16
+
+### 2026-11-16  ·  Revisión C-11
+
+**Actividad**
+
+Revisé el cierre de C-11 / S7-T06 sobre `desarrollo`, sin reabrir la tarjeta. En `/clases`, con el socio del seed y la sede FitZone Central, el listado muestra cupo. Cancelar la inscripción de Smoke UI (16/11, 17:00) actualiza el cupo de 1/2 a 2/2 y saca la fila de Mis inscripciones. Retirar la lista de espera de Smoke Espera (18/11) y volver a anotarse deja de nuevo «Quedaste en la lista de espera.» y el contador en 2. No había una fila `notificado`.
+
+**Decisión**
+
+El cierre sigue en pie. No toqué código. Inscribir en Spinning muestra en la pantalla «Solo se puede reservar una clase con al menos 48 horas de anticipación»: ninguna clase programada del seed está a 48 h o más, así que no hubo un alta nueva. Ese aviso ya estaba anotado el 2026-11-13 y se ve.
+
+**Problema o bloqueo**
+
+Ninguno de la pantalla. La inscripción de Smoke UI que cancelé en el recorrido no se puede rehacer desde la UI.
+
+**Commits**
+
+- Sin commit de código. Esta entrada es la revisión.
+
+### 2026-11-16  ·  C-34 (~0,5 h)
+
+**Actividad**
+
+Probé el aviso de lugar liberado: el externo ocupó el único cupo de la clase Aviso prueba (20/11, 18:00), el socio quedó en espera y, al cancelar el externo, el socio pasó a `notificado`. El aviso llegó a `/notificaciones` y al log del servidor. El título «Se liberó un lugar en Aviso prueba» no se leía: en modo oscuro el navegador lo pintaba de blanco sobre la tarjeta blanca. Lo dejé en azul oscuro y en negrita. La tarjeta quedó anotada en el plan de cierre.
+
+**Decisión**
+
+El arreglo va solo en la rama `C-34`, aparte de la revisión de C-11. No hay ADR: es contraste del título, no un cambio de la regla de la lista de espera. El mail sigue siendo un log.
+
+**Problema o bloqueo**
+
+Ninguno del aviso. Para la prueba el externo fue socio un momento y tuvo una membresía de staff; después volvió a externo y esa membresía quedó vencida.
+
+**Commits**
+
+- `ca6e6ed` el título del aviso se lee sobre la tarjeta.
+- `e443fa1` C-34 queda anotada en el plan de cierre.
+- Pull request: https://github.com/PatricioRamos04032000/FitZoneSports/pull/69
+
