@@ -937,7 +937,7 @@ La tarjeta homónima de Lucas (S1-T16) sigue archivada en «por hacer». No se l
 
 ### Dónde quedó el resto
 
-S5 está cerrada (S5-T01 a S5-T11). De S6 queda abierta solo S6-T09. De S7, al 11/11, seguían en por hacer S7-T06, S7-T07, S7-T08 y S7-T09 (Lucas). **Actualización 2026-11-13:** S7-T06/C-11 y S7-T08 quedaron finalizadas (Patricio); ver entradas de ese día. **Actualización 2026-11-16:** S7-T09 quedó finalizada (Patricio); ver la entrada de ese día. El plan de cierre tiene en por hacer, entre otras, C-04 (Bruno), C-07, C-08, C-10, C-17, C-20 y C-21 (Matias), C-12, C-16 y C-19c (Lucas), y C-23 a C-27 (Patricio).
+S5 está cerrada (S5-T01 a S5-T11). De S6 queda abierta solo S6-T09. De S7, al 11/11, seguían en por hacer S7-T06, S7-T07, S7-T08 y S7-T09 (Lucas). **Actualización 2026-11-13:** S7-T06/C-11 y S7-T08 quedaron finalizadas (Patricio); ver entradas de ese día. **Actualización 2026-11-16:** S7-T09 quedó finalizada (Patricio); ver la entrada de ese día. **Actualización 2026-11-17:** C-19c quedó finalizada (Patricio); ver la entrada de ese día. El plan de cierre tiene en por hacer, entre otras, C-04 (Bruno), C-07, C-08, C-10, C-17, C-20 y C-21 (Matias), C-12 y C-16 (Lucas), y C-23 a C-27 (Patricio).
 
 Queda suelta, en por hacer y sin responsable, la tarjeta «Preparar API REST del módulo perfil». S6-T01 (`GET`/`PATCH /perfiles/me`) ya está finalizada.
 
@@ -1084,6 +1084,28 @@ Recorrido en `/clases` con el socio del seed, sede FitZone Central. El cierre si
 - Descarga directa en la pantalla de pago aprobado de la pasarela simulada (`/pasarela-simulada/comprobante/:pagoId?sig=...` con firma HMAC) y enlace de retorno a `/canchas`.
 - Botones de descarga en [`frontend/src/portal/Canchas/Canchas.tsx`](../../frontend/src/portal/Canchas/Canchas.tsx) (reserva confirmada y Mis reservas) y [`frontend/src/portal/Perfil/Perfil.tsx`](../../frontend/src/portal/Perfil/Perfil.tsx) (Mi membresía) vía [`frontend/src/services/pagos.ts`](../../frontend/src/services/pagos.ts).
 - Tests unitarios (`comprobantes.service.spec.ts`), e2e (`test/comprobantes.e2e-spec.ts`), `backend/swagger.json` actualizado y nota de Template Method al día en `Justificacion_Patrones_Unidad_III.md`.
+
+---
+
+## 2026-11-17 — C-19c: Patricio toma y cierra la bitácora de Lucas
+
+**Tipo:** documentación / bitácora  
+**Registrado por:** Patricio Ramos (P1)  
+**Tarea:** C-19c — asignada originalmente a Lucas Coquet (P3); la toma y cierra Patricio.
+
+Patricio Ramos (P1) toma la tarea que estaba a cargo de Lucas Coquet (P3).  
+**Cierre:** [`docs/bitacoras/LOG-coquet.md`](./LOG-coquet.md), ocho entradas, una por sprint. C-19c queda finalizada en el índice, el plan de cierre, el plan de dos semanas y la relación con Trello.
+
+### Entregado
+
+- Ocho sesiones, del 02/09 al 17/11, con actividad, decisión, problema, horas y commits.
+- Los trece hashes son de `LucasCoquet` y ya están en `desarrollo`. Las reuniones del 02/09 y del 21/10 no tienen commit propio: se citan el LOG y el acta.
+- S4-T04, S5-T08, S7-T06/C-11, S7-T08 y S7-T09 no se reclaman acá. Siguen en `LOG-ramos.md`.
+
+### Fuera de este cierre
+
+- C-02 sigue en desarrollo, C-12 y C-16 siguen por hacer. Esta entrada no les cambia el estado.
+- Mover la tarjeta C-19c a finalizado en Trello.
 
 ---
 

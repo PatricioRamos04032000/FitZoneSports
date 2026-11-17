@@ -80,7 +80,7 @@ Estas C-xx / S* no compiten entre sí por el mismo entregable; la observación e
 | **C-08** | Seed 25 sedes. Extiende **S5-T03** (seed mínimo finalizado), no es lo mismo. |
 | **C-10** | Cobertura/umbral ADR. Relacionada con **S7-T10** (reporte cobertura finalizado): C-10 actualiza umbral + suite. |
 | **C-13, C-15, C-18** | Finalizadas en el tablero el 2026-11-11. Sin par S5–S7 equivalente. |
-| **C-16, C-17, C-19c, C-20, C-21, C-23, C-25…C-27** | Docs/admisibilidad del cierre, en por hacer. C-19a y C-19b finalizadas; C-19d en desarrollo. C-22 (Anexo G) en desarrollo, a cargo de Patricio. |
+| **C-16, C-17, C-20, C-21, C-23, C-25…C-27** | Docs/admisibilidad del cierre, en por hacer. C-19a, C-19b y C-19c finalizadas (C-19c la cerró Patricio el 2026-11-17, `LOG-coquet.md`); C-19d en desarrollo. C-22 (Anexo G) en desarrollo, a cargo de Patricio. |
 | **C-28** | Nueva 2026-11-13 (no estaba en el plan original). Solapa con **S4-T01** por el patrón de precios (ver §2); no compite con C-04 ni S7-T01. |
 | **C-29** | Nueva 2026-11-14, Patricio, rama `C-29`. Alta y edición de sedes (A4, RNF-04). No es **C-08** (seed de 25 sedes) ni los reportes del gerente. |
 | **C-14** | Diez ADR obligatorios escritos el 2026-11-09 (rama `c-14`, `docs/adr/`, ninguno Propuesto). El 60 % lo hace cumplir **C-10**; el Compose, **C-07**. Trello: finalizado. |
