@@ -232,6 +232,28 @@ El proyecto tenía varias líneas de trabajo avanzando en paralelo y fue clave p
 
 ---
 
+## Sprint 6 — Cierre y documentación — Semana del 2026-11-13
+
+### 2026-11-17  ·  3 h
+
+**Actividad**
+
+Cerré la tarea C-10 de suite verde, cobertura y umbral de ADR-008. Verifiqué que los 173 tests unitarios del backend pasen (28 suites, suite verde) y que la cobertura global de sentencias sea del 63.93 %, por encima del 60 % exigido por el ADR-008. Agregué `coverageThreshold` (60 % de sentencias) a `backend/jest.config.ts` para que Jest falle el CI si el umbral se rompe, y actualicé el workflow `.github/workflows/ci-backend.yml` para que corra `npm run test:cov` y publique el reporte de cobertura como artifact en cada pull request. Cerré la deuda asumida del ADR-008 documentando estos cambios en el propio ADR. Finalmente, commiteé y pusheé todo a la rama `desarrollo` (commit `550f579`).
+
+**Decisión**
+
+El umbral de cobertura debe ser obligatorio y verificable en CI, no solo un reporte opcional. Declararlo en `jest.config.ts` y hacerlo fallar el pipeline evita que una entrega pase sin cubrir el mínimo de lógica de negocio acordado con la cátedra.
+
+**Problema o bloqueo**
+
+El remoto de GitHub avanzó entre el commit y el push, por lo que hubo que hacer `pull --rebase` dos veces antes de lograr integrar el cambio a `desarrollo`. No hubo conflictos de código, solo rebase de la rama local.
+
+**Commits**
+
+- `550f579` C-10: cierra suite verde, cobertura y umbral ADR-008
+
+---
+
 ## Resumen de contribución
 
 Mi aporte principal fue mantener la calidad operativa del proyecto y la trazabilidad del trabajo: validación de flujo, pruebas E2E y Postman, configuración de CI, documentación de setup y coordinación del plan de trabajo. Esa combinación de tareas me dejó centrado en QA / DevOps / Mobile, con foco en que el proyecto pudiera ejecutarse y probarse sin depender de la memoria del equipo.
