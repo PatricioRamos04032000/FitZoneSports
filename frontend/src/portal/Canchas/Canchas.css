@@ -21,10 +21,19 @@
     color: #14283f;
 }
 
-.canchas-container > select,
+.canchas-container > .atom-select,
 .canchas-container > input {
     width: 100%;
     max-width: 450px;
+    box-sizing: border-box;
+}
+
+.canchas-container > .atom-select {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.canchas-container > input {
     min-height: 44px;
     padding: 10px 12px;
     border: 1px solid #ccd5df;
@@ -32,19 +41,12 @@
     background-color: white;
     color: #14283f;
     font-size: 15px;
-    box-sizing: border-box;
 }
 
 .canchas-container > p {
     color: #64748b;
     line-height: 1.5;
     overflow-wrap: anywhere;
-}
-
-.canchas-error {
-    margin-top: 16px;
-    color: #b91c1c;
-    line-height: 1.5;
 }
 
 .cancha-card {
@@ -132,10 +134,13 @@
         font-size: 18px;
     }
 
-    .canchas-container > select,
+    .canchas-container > .atom-select,
     .canchas-container > input {
-        width: 100%;
         max-width: none;
+    }
+
+    .canchas-container > input,
+    .canchas-container .atom-select select {
         min-height: 46px;
         font-size: 16px;
     }

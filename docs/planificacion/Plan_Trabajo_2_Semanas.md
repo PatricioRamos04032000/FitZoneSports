@@ -139,7 +139,7 @@ Lo que el tablero deja en **Por hacer** para el cierre está en el plan del 6–
 
 1. Patricio: C-23, C-24, C-25, C-26 y C-27, después de C-22.
 2. Bruno: C-04 (PDF comprobante) y C-19b (bitácora), en paralelo con C-09.
-3. Lucas: S7-T07 (hermana de C-02), S7-T09, C-12 (hermana de S6-T09), C-16 y C-19c. **S7-T06/C-11 y S7-T08** las cerró Patricio (2026-11-13).
+3. Lucas: S7-T07 (hermana de C-02), C-12 (hermana de S6-T09), C-16 y C-19c. **S7-T06/C-11 y S7-T08** las cerró Patricio (2026-11-13). **S7-T09** la cerró Patricio (2026-11-16).
 4. Matias: C-07, C-08, C-10, C-17, C-20 y C-21, en paralelo con C-19d.
 
 ## Fuera del alcance inmediato

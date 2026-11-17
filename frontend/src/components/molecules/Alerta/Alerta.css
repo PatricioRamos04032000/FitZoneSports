@@ -1,0 +1,10 @@
+.molecule-alerta {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+.molecule-alerta-error {
+  color: #b91c1c;
+}

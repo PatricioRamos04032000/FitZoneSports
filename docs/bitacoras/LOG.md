@@ -937,7 +937,7 @@ La tarjeta homónima de Lucas (S1-T16) sigue archivada en «por hacer». No se l
 
 ### Dónde quedó el resto
 
-S5 está cerrada (S5-T01 a S5-T11). De S6 queda abierta solo S6-T09. De S7, al 11/11, seguían en por hacer S7-T06, S7-T07, S7-T08 y S7-T09 (Lucas). **Actualización 2026-11-13:** S7-T06/C-11 y S7-T08 quedaron finalizadas (Patricio); ver entradas de ese día. El plan de cierre tiene en por hacer, entre otras, C-04 (Bruno), C-07, C-08, C-10, C-17, C-20 y C-21 (Matias), C-12, C-16 y C-19c (Lucas), y C-23 a C-27 (Patricio).
+S5 está cerrada (S5-T01 a S5-T11). De S6 queda abierta solo S6-T09. De S7, al 11/11, seguían en por hacer S7-T06, S7-T07, S7-T08 y S7-T09 (Lucas). **Actualización 2026-11-13:** S7-T06/C-11 y S7-T08 quedaron finalizadas (Patricio); ver entradas de ese día. **Actualización 2026-11-16:** S7-T09 quedó finalizada (Patricio); ver la entrada de ese día. El plan de cierre tiene en por hacer, entre otras, C-04 (Bruno), C-07, C-08, C-10, C-17, C-20 y C-21 (Matias), C-12, C-16 y C-19c (Lucas), y C-23 a C-27 (Patricio).
 
 Queda suelta, en por hacer y sin responsable, la tarjeta «Preparar API REST del módulo perfil». S6-T01 (`GET`/`PATCH /perfiles/me`) ya está finalizada.
 
@@ -996,7 +996,7 @@ Patricio Ramos (P1) toma la tarea que estaba a cargo de Lucas Coquet (P3).
 ### Fuera de este cierre
 
 - Rediseño Canchas (calendario/grilla/precio único), pantalla Mis reservas y check-out UI (otra rama).
-- Notificaciones reales (C-12), ensayo cronometrado (C-24), S7-T09.
+- Notificaciones reales (C-12) y ensayo cronometrado (C-24). **Actualización 2026-11-16:** S7-T09 quedó cerrada; ver la entrada de ese día.
 
 ---
 
@@ -1028,6 +1028,30 @@ Patricio Ramos (P1) cierra el refactor de precios de Strategy a **Decorator GoF*
 **Tarea:** C-29 · rama `C-29`
 
 El gerente crea y edita sedes desde `/sedes` (`POST /sedes`, `PATCH /sedes/:id`). La baja es `activa = false`. No se abre un ADR: la decisión de RNF-04 ya estaba aceptada. C4-1 y C4-2 actualizan la etiqueta del gerente. El manual técnico (M1) ya describe el endpoint.
+
+---
+
+## 2026-11-16 — S7-T09: Patricio toma y cierra los componentes documentados (antes Lucas)
+
+**Tipo:** frontend / Unidad IV  
+**Registrado por:** Patricio Ramos (P1)  
+**Tarea:** S7-T09 — asignada originalmente a Lucas Coquet (P3); la toma y cierra Patricio.
+
+Patricio Ramos (P1) toma la tarea que estaba a cargo de Lucas Coquet (P3).  
+**Cierre:** seis componentes propios y un catálogo Atomic Design. S7-T09 queda finalizada en Relacion_Trello, Plan_Trabajo_2_Semanas y Propuesta_Continuacion. Sin Storybook.
+
+### Entregado
+
+- Átomo `Select` y molécula `Alerta`, junto a los que ya estaban (`Button`, `Input`, `Spinner`, `Layout`).
+- `Select` en la sede y el horario de `/canchas`. `Alerta` en el error de `/login` y en los tres errores de `/canchas`.
+- Catálogo en `frontend/src/components/README.md`. El `frontend/README.md` deja la plantilla de Vite y apunta a ese catálogo.
+- Manual técnico §1.3, ADR-006 y el panorama nombran las seis piezas.
+
+### Fuera de este cierre
+
+- Mover la tarjeta S7-T09 a finalizado en Trello.
+- Migrar los `<select>` y los párrafos de error del resto de las pantallas.
+- Storybook.
 
 ---
 

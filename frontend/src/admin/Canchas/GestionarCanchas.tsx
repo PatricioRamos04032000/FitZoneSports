@@ -1,4 +1,4 @@
-import { FormEvent, useEffect, useState } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import {
   actualizarCancha,
   crearCancha,
@@ -17,11 +17,7 @@ import {
 } from "../../services/canchas";
 import { listarSedes, type SedeAdmin } from "../../services/sedes";
 import { useAuth } from "../../store/useAuth";
-import {
-  aDatetimeLocal,
-  desdeDatetimeLocal,
-  formatearHorario,
-} from "../../horario";
+import { desdeDatetimeLocal, formatearHorario } from "../../horario";
 import "../Clases/GestionarClases.css";
 
 const TIPOS: { valor: TipoCancha; etiqueta: string }[] = [
