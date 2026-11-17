@@ -693,3 +693,25 @@ Ninguno del aviso. Para la prueba el externo fue socio un momento y tuvo una mem
 - `e443fa1` C-34 queda anotada en el plan de cierre.
 - Pull request: https://github.com/PatricioRamos04032000/FitZoneSports/pull/69
 
+---
+
+## Cierre — Entrega TIF
+
+### 2026-11-17  ·  C-16
+
+**Actividad**
+
+Tomé la tarjeta de Lucas y escribí el manual de usuario del Anexo D en `docs/manuales/manual-usuario.md`, rama `C-16`. Recorrí el portal local con el socio, la recepción y el gerente del seed, y dejé cada captura dentro de la sección que explica. El índice de manuales y la fila C-16 del plan de cierre quedaron alineados a ese archivo.
+
+**Decisión**
+
+El manual describe la pantalla que está en `desarrollo`. La agenda de clases queda en la sección 4.2 del Anexo D, con la aclaración de que el enlace **Agenda** lo abre el gerente. Los reportes consolidados se declaran fuera de esta entrega: **Dashboard** no es un panel. La contraseña del seed no se copia: se remite a `SEED_PASSWORD` del README.
+
+**Problema o bloqueo**
+
+La API no arrancó al primer intento porque `pdfkit` no estaba en `node_modules`, aunque ya figuraba en `package.json`. Lo instalé en local para poder sacar las capturas. No cambié dependencias del repositorio.
+
+**Commits**
+
+- El commit de esta entrada es el de la rama `C-16` que agrega el manual.
+

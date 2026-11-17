@@ -98,7 +98,7 @@ Después del tag: solo ensayo Demo Day.
 | C-13 | Reorganizar a `docs/` según la estructura del punto 4 | Patricio | 2–3 | **Finalizado** | Cátedra encuentra ADR/diagramas/manuales/bitácoras/plan | Estructura carpetas |
 | C-14 | **10 ADR obligatorios** (§5.2.1): mapear existentes + crear faltantes (concurrencia, offline, pruebas/umbral, despliegue/Docker, tokenización, FE/estado, …). **Cerrada 2026-11-09**, rama `c-14`, índice `docs/adr/README.md` | Patricio | 5–6 | **Finalizado** | 10 archivos, ninguno «Propuesto», con alternativas | ADR ×10 |
 | C-15 | **14 diagramas** + fuente editable + PNG/SVG (C4×4, UML, DER, despliegue, pipeline) | Patricio | 8–10 | **Finalizado** | Carpeta `docs/diagramas/` completa | Diagramas ×14 |
-| C-16 | Manual usuario (Anexo D) + capturas del sistema **entregado** | Lucas | 4–5 | **Por hacer** | Secciones socio / recepción / gerente | Manuales |
+| C-16 | Manual usuario (Anexo D) + capturas del sistema **entregado**. **Cerrada 2026-11-17** por **Patricio** (tomó la tarjeta de Lucas; `docs/manuales/manual-usuario.md`, rama `C-16`) | Patricio (antes Lucas) | 4–5 | **Finalizado** | Secciones socio / recepción / gerente, con las capturas en el texto | Manuales |
 | C-17 | Manual instalación/operación (Anexo E) | Matias | 3–4 | **Por hacer** | Incluye Docker/env/seed/rollback | Manuales |
 | C-18 | Manual técnico (Anexo F) + casos extensión tenis y Strategy | Patricio | 3–4 | **Finalizado** | Dos casos resueltos | Manual técnico |
 | C-19 | Bitácoras individuales `docs/bitacoras/LOG-<apellido>.md` ×4 (≥8 entradas c/u, commits, decisión, problema). En el tablero está partida en C-19a…d | **Cada uno** | 3–4 c/u | **Parcial** | Cuatro archivos distintos | Bitácoras |
