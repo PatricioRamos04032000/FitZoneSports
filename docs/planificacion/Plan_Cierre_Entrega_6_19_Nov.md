@@ -115,7 +115,7 @@ Después del tag: solo ensayo Demo Day.
 
 | ID | Tarea | Quién | h | Estado | Cierra cuando | Anexo G |
 |----|-------|-------|---|--------|---------------|---------|
-| C-22 | Recorrer Anexo G casilla por casilla; bugs solo críticos del guion | Patricio | 3–4 | **En desarrollo** | Lista residual aceptada | Checklist |
+| C-22 | Recorrer Anexo G casilla por casilla; bugs solo críticos del guion. **Pase 2026-11-18:** RNF-03 medido en `/canchas` (786 ms hasta ver la grilla de FitZone Central). Sigue el residual en `documentacion/C-22_Anexo_G_Pendiente.md`: tag `v1.0-entrega`, dossier en Moodle, acceso de lectura de la cátedra, paquete de planificación (C-20, C-21, C-37, C-38), ensayo C-24 y el portal en el teléfono sobre Vercel. | Patricio | 3–4 | **En desarrollo** | Lista residual aceptada | Checklist |
 | C-23 | README raíz según §4.1 (equipo, 5 pasos, seed users, links, cobertura). **Cerrada 2026-11-17** por **Patricio** (`README.md`: cinco pasos con Docker, usuarios del seed, enlaces y cobertura 65,15 % de sentencias) | Patricio | 2 | **Finalizado** | Máquina limpia sin preguntar | README |
 | C-24 | Ensayo demo **5 min cronometrado** + plan B sin red | Patricio | 1–2 | **Por hacer** | Guion escrito + cronómetro OK | Defensa |
 | C-25 | Dossier PDF (Anexo A) + hash `git rev-parse` | Patricio | 2 | **Por hacer** | `PROGV-2026-TIF-EquipoNN-Dossier.pdf` | Moodle |

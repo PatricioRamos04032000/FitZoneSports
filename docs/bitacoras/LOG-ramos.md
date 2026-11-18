@@ -903,3 +903,23 @@ Ninguno.
 
 - Este registro es el de `v0.51.1`.
 
+---
+
+### 2026-11-18  ·  C-22
+
+**Actividad**
+
+Recorrí el Anexo G. Medí RNF-03 en el navegador, en `/canchas`, como el tiempo hasta la respuesta visual. Con el socio del seed, la sede FitZone Central y la fecha 2026-11-19, `GET /canchas/disponibilidad` respondió 200 y «Consultando disponibilidad...» dejó lugar a «Cancha 1» y 15 horarios en 786 ms. Lo anoté en el manual técnico. El residual quedó en `documentacion/C-22_Anexo_G_Pendiente.md`.
+
+**Decisión**
+
+La medición es la espera que se ve en la pantalla, no un benchmark del servidor. C-22 sigue en desarrollo hasta aceptar ese residual. No se crea el tag ni se reescribe la planificación.
+
+**Problema o bloqueo**
+
+La sede que el portal elige sola no tenía canchas para esa fecha. La medición es de la sede FitZone Central del seed, la que muestra «Cancha 1».
+
+**Commits**
+
+- Este registro es el del pase. No hay commit de código.
+
