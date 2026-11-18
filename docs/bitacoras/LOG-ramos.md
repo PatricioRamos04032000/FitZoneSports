@@ -733,5 +733,5 @@ Ninguno de la redacción. Sin las tres claves de Supabase el login no funciona: 
 
 **Commits**
 
-Sin commit en esta sesión. El README, la fila del plan de cierre y esta entrada quedan en el working tree.
+- `b8d14af` C-23: reescribe el README de la raíz según el punto 4.1.
 
