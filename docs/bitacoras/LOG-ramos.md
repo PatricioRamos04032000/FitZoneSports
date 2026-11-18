@@ -811,5 +811,5 @@ La primera sede del listado no tiene canchas, y la grilla sigue ofreciendo horar
 
 **Commits**
 
-- Sin commit en esta sesión.
+- `a67831c` C-40: agrega el E2E de reserva con Playwright.
 
