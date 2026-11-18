@@ -771,5 +771,5 @@ Al principio la API respondía 500: PostgREST no encontraba la vista (PGRST205) 
 
 **Commits**
 
-El trabajo está en la rama `C-39`. El hash se anota cuando se commitee.
+- `92fbc4e` C-39: el gerente lee el resumen de la cadena desde una vista.
 
