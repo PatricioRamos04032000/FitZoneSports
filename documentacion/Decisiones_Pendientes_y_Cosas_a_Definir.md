@@ -347,19 +347,19 @@ Más `precio_base`, `precio_final` a nivel reserva (como hoy).
 
 **Cuándo:** no bloquea el scaffolding inicial; evaluar al tener llamadas reales a Supabase desde Nest (Semanas 3–4 en adelante).
 
-### 3.7 CQRS nivel 2 — reportes del gerente (pendiente)
+### 3.7 CQRS nivel 2 — reportes del gerente (implementado)
 
-**Anotado 2026-10-27.** No implementar hasta tener reservas (M4) y el alcance de reportes del gerente. Detalle en [Justificación §16](./Justificacion_Patrones_Unidad_III.md#16-cqrs-nivel-2--reportes-del-gerente).
+**Anotado 2026-10-27. Implementado 2026-11-18 (C-39).** Detalle en [Justificación §16](./Justificacion_Patrones_Unidad_III.md#16-cqrs-nivel-2--reportes-del-gerente).
 
-La cátedra (Unidad III clase 2) pide separar lectura de escritura en **escalones**. FitZone, para el tablero/reportes del gerente, apunta al **nivel 2**: misma base, pero las consultas de ocupación/consolidados **no** pasan por el modelo/repositorio de dominio de reservas; usan **SQL propio o vistas** y DTOs de lectura.
+La cátedra (Unidad III clase 2) pide separar lectura de escritura en **escalones**. FitZone, para el tablero del gerente, quedó en el **nivel 2**: misma base, y la consulta no pasa por el repositorio de reservas. Lee la vista `reporte_resumen_sede` y un DTO.
 
-- [ ] Definir qué reportes mínimos muestra el gerente (ocupación por sede/mes, totales de cadena, etc.)
-- [ ] Crear vista(s) o consulta agregada en migraciones (`ocupacion_por_sede_mes` o equivalente)
-- [ ] Puerto de lectura (`OcupacionQuery` / query repository) + endpoint `GET` con `@RequiereRol('gerente')`
-- [ ] No reutilizar el repositorio/Facade de reserva para armar el reporte
-- [ ] Nivel 3 (otra base / eventual) descartado salvo acuerdo de negocio
+- [x] Definir qué reportes mínimos muestra el gerente: ocupación actual, reservas del día, clases del día y el total de la cadena
+- [x] Vista `reporte_resumen_sede` en `supabase/migrations/20261117230000_reporte_resumen_sede.sql`
+- [x] Puerto de lectura `ReportesResumenRepository` y `GET /reportes/resumen` con `@RequiereRol('gerente')`
+- [x] No reutilizar el repositorio ni el Facade de reserva para armar el reporte
+- [x] Nivel 3 (otra base / eventual) descartado
 
-**Cuándo:** al implementar reportes A4 / cuando M4 tenga datos de ocupación suficientes para demo.
+**Cuándo:** cerrado en C-39. La pantalla es `/dashboard`.
 
 ### 3.8 Mejora — respuesta cuando la base / Supabase no responde (anotado 2026-10-29)
 

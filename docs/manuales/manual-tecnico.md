@@ -2,7 +2,7 @@
 
 - **Tarea:** C-18
 - **Anexo:** F de los lineamientos de entrega
-- **Fecha:** 2026-11-11 (actualizado 2026-11-13, C-28 Decorator; 2026-11-14, C-29 alta de sedes y C-30 renovación de membresía; 2026-11-15, C-32 canchas en pantalla; 2026-11-16, S7-T09 catálogo de componentes)
+- **Fecha:** 2026-11-11 (actualizado 2026-11-13, C-28 Decorator; 2026-11-14, C-29 alta de sedes y C-30 renovación de membresía; 2026-11-15, C-32 canchas en pantalla; 2026-11-16, S7-T09 catálogo de componentes; 2026-11-18, C-39 dashboard del gerente)
 - **Autor:** Patricio Ramos (P1)
 
 Este manual describe el sistema que está en el repositorio. Cada afirmación cita un archivo. Las decisiones largas viven en los ADR: acá se enlazan, no se reescriben. Los diagramas viven en `docs/diagramas/`: acá se listan, no se redibujan.
@@ -90,6 +90,8 @@ La API se arma en [backend/src/app.module.ts](../../backend/src/app.module.ts). 
 
 M4 se parte en tres piezas que el C4-3 de canchas muestra juntas: el módulo de canchas, `precios/` y `reservas/`. Las registra el mismo `AppModule`.
 
+El dashboard del gerente no abre un sexto módulo de negocio. [ReportesModule](../../backend/src/reportes/reportes.module.ts) es el puerto de lectura: `GET /reportes/resumen` lo llama solo el rol `gerente`. Devuelve ocupación actual, reservas del día y clases del día por sede, y la suma de la cadena. La pantalla es `/dashboard`. La recepción no tiene ese enlace. El detalle está en la sección 4.5.
+
 La renovación de membresía (RF-02) no abre otra pasarela. El socio, en `/perfil`, ve el catálogo (`GET /membresias/planes`) y llama a `POST /membresias/renovar` con el plan. Eso deja un pago `pendiente` de concepto `membresia`, con `pagos.plan` y sin `membresia_id`. La tarjeta `4111…` aprueba y `4000…` rechaza. Si aprueba, `renovar_membresia` cierra las filas `activo` de ese perfil e inserta la nueva con la vigencia del catálogo, y el pago queda vinculado. Si rechaza, la membresía vigente no cambia. El `POST /membresias` de recepción o gerencia usa la misma función y no cobra. El alta de una sede (A4, RNF-04) no abre un servicio nuevo. Solo el rol `gerente` llama a `POST /sedes` y a `PATCH /sedes/:id`, con nombre, dirección, aforo máximo y el flag `activa`. Si el aforo no viene en el alta, queda en 50. El insert lo hace el repositorio de sedes; el trigger `sedes_after_insert_configuracion_pico` crea la fila de horario pico. No hay `DELETE`: `canchas.sede_id` borra en cascada, así que la baja es `activa = false`. Las pantallas públicas dejan de ofrecer esa sede; las reservas ya tomadas siguen. La pantalla es `/sedes`.
 
 La agenda de clases (RF-06) tampoco abre un servicio nuevo. Solo el rol `gerente` llama a `POST /clases` y a `PATCH /clases/:id`. El alta pide sede, tipo, instructor, inicio, fin y capacidad, y nace en `programada`. La sede tiene que existir y estar activa. El tipo y el instructor se recortan y no pueden quedar vacíos; el fin tiene que ser posterior al inicio; la capacidad es un entero mayor a 0. No hay `DELETE`: `inscripciones_clase` y `lista_espera` borran en cascada, así que la baja es `estado = cancelada`. Cancelar no borra esas filas y no emite el aviso de lista de espera. El `PATCH` no cambia la sede: para pasarla de sede se cancela y se crea otra. La capacidad nueva no puede quedar por debajo de los lugares ya ocupados (inscriptos más notificados con plazo vigente). Volver de `cancelada` a `programada` está permitido. Los horarios de la pantalla `/clases/gestionar` se muestran en `America/Argentina/Buenos_Aires`. El listado y la inscripción del socio en `/clases` no cambian.
@@ -117,6 +119,7 @@ Las migraciones, en orden, están en `supabase/migrations/`:
 | `20261114203000_sedes_checks.sql` | Nombre de sede no vacío y aforo mayor a 0 (RNF-04) |
 | `20261114220000_renovar_membresia.sql` | `pagos.plan`, pago de membresía pendiente y `renovar_membresia` (RF-02) |
 | `20261114230000_clases_checks.sql` | Tipo e instructor de la clase no vacíos (RF-06) |
+| `20261117230000_reporte_resumen_sede.sql` | Vista `reporte_resumen_sede` del dashboard del gerente (C-39) |
 
 Convenciones que el SQL ya usa:
 
@@ -171,7 +174,7 @@ La actividad de la lista está en [act-lista-espera.mmd](../diagramas/fuentes/ac
 
 [SupabaseRepository](../../backend/src/supabase/supabase.repository.ts) es la plantilla: cada repositorio de dominio define `table` y usa `from()`, `rpc()` y `unwrap()`. El cliente de Supabase no se usa fuera de esa capa. El comentario del archivo lo fija.
 
-Repositorios concretos: `SedesRepository`, `PerfilesRepository`, `MembresiasRepository`, `ClasesRepository`, `CanchasRepository`, `ReservasCanchaRepository`, `PagosRepository`, `AccesoRepository`, `NotificacionesRepository`, `PreferenciasRepository` y `PerfilesRolRepository`.
+Repositorios concretos: `SedesRepository`, `PerfilesRepository`, `MembresiasRepository`, `ClasesRepository`, `CanchasRepository`, `ReservasCanchaRepository`, `PagosRepository`, `AccesoRepository`, `NotificacionesRepository`, `PreferenciasRepository`, `PerfilesRolRepository` y `ReportesResumenRepository`. El último no escribe: lee la vista `reporte_resumen_sede` (sección 4.5).
 
 Diagrama de clases del patrón: [uml-clases-dominio.drawio](../diagramas/fuentes/uml-clases-dominio.drawio) (página 4) y [uml-clases-dominio.svg](../diagramas/img/uml-clases-dominio.svg) (zona inferior «Repository — patrón GoF»).
 
@@ -186,6 +189,23 @@ Estos tres están en el código. La factory de `precios.module.ts` es el contene
 **State.** El ciclo de la reserva está en [backend/src/canchas/reservas/estado/](../../backend/src/canchas/reservas/estado/). `EstadoReserva` declara `pagar` y `cancelar`. Los estados concretos son `PendienteDePago`, `Confirmada` y `Cancelada`. `Reserva.desdeFila` reconstruye el estado desde el enum SQL. Un estado terminal rechaza la acción que no le corresponde. El diagrama es [est-reserva.mmd](../diagramas/fuentes/est-reserva.mmd).
 
 **Puerto de cobro.** [pasarela-pago.ts](../../backend/src/pagos/pasarela-pago.ts) define `PasarelaPago` y el token `PASARELA_PAGO`. El servicio de reservas depende de ese puerto. En esta entrega la implementación es el simulacro (`tok_ok`, `tok_fail`). La tarjeta no se persiste ([ADR-010](../adr/ADR-010-tokenizacion-medios-de-pago.md)).
+
+### 4.5 CQRS nivel 2 — dashboard del gerente
+
+La reserva de una cancha y el tablero del gerente no comparten camino. Reservar necesita la fila de `reservas_cancha` y el RPC `reservar_cancha` (sección 5). El tablero necesita totales ya armados. Forzar el reporte por `ReservasCanchaRepository` mezclaría esa escritura con una lectura que recorre varias sedes.
+
+El nivel 2 de la cátedra separa el modelo de lectura en la misma base. No hay una segunda base ni eventos (eso sería nivel 3, y queda fuera). La proyección es la vista `reporte_resumen_sede` ([20261117230000_reporte_resumen_sede.sql](../../supabase/migrations/20261117230000_reporte_resumen_sede.sql)): una fila por sede, con `security_invoker` y `select` solo para `service_role`.
+
+Cada fila trae:
+
+- `ocupacion`: cuántas filas hay en `presencias` de esa sede, y `aforo_max`.
+- `reservas_del_dia`: reservas `pendiente` o `confirmada` cuyo `inicio` cae en el día de `America/Argentina/Buenos_Aires`.
+- `clases_del_dia`: clases `programada` cuyo `inicio` cae en ese mismo día.
+- `fecha`: ese día local.
+
+[ReportesResumenRepository](../../backend/src/reportes/reportes-resumen.repository.ts) hace `from('reporte_resumen_sede')`. [ReportesService](../../backend/src/reportes/reportes.service.ts) copia las filas a un DTO y suma `cadena`. No llama a `ReservasCanchaRepository`, `ClasesRepository` ni `AccesoRepository`. El total no es un árbol de sedes: es la suma de esas filas.
+
+`GET /reportes/resumen` lleva `@RequiereRol('gerente')`. Sin token responde 401. Socio y `admin_sede` responden 403 y el repositorio de la vista no se consulta. El contrato está en `backend/swagger.json`, tag `reportes`.
 
 ## 5. Control de concurrencia en las reservas
 

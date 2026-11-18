@@ -2387,6 +2387,40 @@
           "canchas"
         ]
       }
+    },
+    "/reportes/resumen": {
+      "get": {
+        "description": "Solo lectura. Ocupación actual, reservas del día y clases del día por sede, más el total de la cadena. El día es el de America/Argentina/Buenos_Aires.",
+        "operationId": "ReportesController_resumen",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResumenReporteDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token ausente, inválido o vencido"
+          },
+          "403": {
+            "description": "Solo para: gerente"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Resumen de la cadena para el gerente (A4)",
+        "tags": [
+          "reportes"
+        ]
+      }
     }
   },
   "info": {
@@ -4394,6 +4428,103 @@
         },
         "required": [
           "descuentoSocioPct"
+        ]
+      },
+      "ResumenSedeDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "nombre": {
+            "type": "string",
+            "example": "FitZone Central"
+          },
+          "activa": {
+            "type": "boolean",
+            "example": true
+          },
+          "aforo_max": {
+            "type": "number",
+            "example": 50,
+            "description": "Aforo máximo de la sede"
+          },
+          "ocupacion": {
+            "type": "number",
+            "example": 3,
+            "description": "Personas adentro ahora (filas de presencias)"
+          },
+          "reservas_del_dia": {
+            "type": "number",
+            "example": 4,
+            "description": "Reservas pendiente o confirmada cuyo inicio cae hoy en America/Argentina/Buenos_Aires"
+          },
+          "clases_del_dia": {
+            "type": "number",
+            "example": 2,
+            "description": "Clases programada cuyo inicio cae hoy en America/Argentina/Buenos_Aires"
+          }
+        },
+        "required": [
+          "id",
+          "nombre",
+          "activa",
+          "aforo_max",
+          "ocupacion",
+          "reservas_del_dia",
+          "clases_del_dia"
+        ]
+      },
+      "ResumenCadenaDto": {
+        "type": "object",
+        "properties": {
+          "ocupacion": {
+            "type": "number",
+            "example": 8
+          },
+          "aforo_max": {
+            "type": "number",
+            "example": 200
+          },
+          "reservas_del_dia": {
+            "type": "number",
+            "example": 12
+          },
+          "clases_del_dia": {
+            "type": "number",
+            "example": 6
+          }
+        },
+        "required": [
+          "ocupacion",
+          "aforo_max",
+          "reservas_del_dia",
+          "clases_del_dia"
+        ]
+      },
+      "ResumenReporteDto": {
+        "type": "object",
+        "properties": {
+          "fecha": {
+            "type": "string",
+            "example": "2026-11-17",
+            "description": "Día calendario de America/Argentina/Buenos_Aires"
+          },
+          "sedes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ResumenSedeDto"
+            }
+          },
+          "cadena": {
+            "$ref": "#/components/schemas/ResumenCadenaDto"
+          }
+        },
+        "required": [
+          "fecha",
+          "sedes",
+          "cadena"
         ]
       }
     }

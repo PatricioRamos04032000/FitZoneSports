@@ -1109,4 +1109,14 @@ Patricio Ramos (P1) toma la tarea que estaba a cargo de Lucas Coquet (P3).
 
 ---
 
+## 2026-11-18 — C-39: dashboard del gerente (Patricio)
+
+**Tipo:** funcionalidad / reportes A4  
+**Registrado por:** Patricio Ramos (P1)  
+**Tarea:** C-39 · rama `C-39`
+
+El gerente lee ocupación, reservas del día, clases del día y el total de la cadena en `/dashboard` (`GET /reportes/resumen`). La consulta es la vista `reporte_resumen_sede`. No se abre un ADR: CQRS nivel 2 ya estaba decidido. C4-1 y C4-2 suman el reporte en la etiqueta del gerente. El diagrama de clases suma el puerto de lectura. La recepción no llama al endpoint.
+
+---
+
 *FitZone Sports · Programación V · UNER*

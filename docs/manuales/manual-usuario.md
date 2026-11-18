@@ -158,7 +158,7 @@ Este es el PDF de la reserva de Cancha 1 en FitZone Central, el 9/11/2026 de 19:
 
 ## 4. Manual del recepcionista
 
-Entrá con `admin.central@fitzone.com`. El menú suma **Dashboard**, **Acceso** y **Administrar canchas**. No aparecen **Mi QR**, **Sedes** ni **Agenda**.
+Entrá con `admin.central@fitzone.com`. El menú suma **Acceso** y **Administrar canchas**. No aparecen **Mi QR**, **Dashboard**, **Sedes** ni **Agenda**.
 
 ### 4.1 Validación de ingreso y lectura del aforo
 
@@ -209,7 +209,7 @@ La captura con el estado **offline** está en la [sección 3.4](#34-si-el-qr-no-
 
 ## 5. Manual del gerente central
 
-Entrá con `gerente@fitzone.com`. Además de las pantallas de recepción, el menú muestra **Sedes** y **Agenda**.
+Entrá con `gerente@fitzone.com`. Además de las pantallas de recepción, el menú muestra **Dashboard**, **Sedes** y **Agenda**.
 
 ### 5.1 Alta y configuración de una sede
 
@@ -241,7 +241,20 @@ El socio ve el resultado en **Canchas**: precio socio, precio externo y la leyen
 
 ### 5.3 Lectura de los reportes consolidados
 
-Esta entrega no incluye reportes consolidados entre sedes. **Dashboard** no es un panel de reportes. El aforo del día se lee en **Acceso**, sede por sede, como muestra la [sección 4.1](#41-validación-de-ingreso-y-lectura-del-aforo).
+Abrí **Dashboard**. La pantalla es de solo lectura y muestra el día en hora de Argentina.
+
+Arriba, el total de la cadena:
+
+- **Ocupación:** personas que están adentro ahora, sobre la suma de los aforos.
+- **Reservas del día:** turnos de cancha pendientes o confirmados que empiezan hoy.
+- **Clases del día:** clases programadas que empiezan hoy.
+- **Sedes:** cuántas sedes entran en la cuenta, incluidas las inactivas.
+
+La tabla de abajo repite esas tres cifras sede por sede. Una sede dada de baja figura como **Inactiva**. El aforo de una sola sede, con la lista de quién está adentro, sigue en **Acceso** ([sección 4.1](#41-validación-de-ingreso-y-lectura-del-aforo)). La recepción no abre este panel.
+
+En la captura del 18/11/2026 la cadena está en **0 / 1430**, sin reservas del día, con **26** clases y **27** sedes. Cada sede del seed tiene una clase programada para ese día, salvo una de las dos **FitZone Norte**.
+
+![Dashboard del 18/11/2026: ocupación 0 / 1430, 26 clases del día y 27 sedes](./capturas/gerente-dashboard.png)
 
 ## 6. Preguntas frecuentes
 
@@ -261,4 +274,4 @@ Esta entrega no incluye reportes consolidados entre sedes. **Dashboard** no es u
 
 **La recepción no encuentra Agenda.** La agenda la abre el gerente, en **Agenda**.
 
-**¿Dónde están los reportes de toda la cadena?** No forman parte de esta entrega. El aforo se consulta en **Acceso**.
+**¿Dónde están los reportes de toda la cadena?** En **Dashboard**, con el usuario `gerente@fitzone.com`. La recepción no ve ese enlace. El aforo de una sede, persona por persona, se consulta en **Acceso**.
