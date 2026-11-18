@@ -61,10 +61,12 @@ def demote(text: str, levels: int = 2) -> str:
         if line.startswith("```"):
             fence = not fence
         if not fence:
-            match = re.match(r"^(#{1,6})(\s+.*)$", line)
-            if match:
-                level = min(6, len(match.group(1)) + levels)
-                line = ("#" * level) + match.group(2)
+            marcas = 0
+            while marcas < len(line) and line[marcas] == "#":
+                marcas += 1
+            if 1 <= marcas <= 6 and marcas < len(line) and line[marcas].isspace():
+                level = min(6, marcas + levels)
+                line = ("#" * level) + line[marcas:]
         lines.append(line)
     return "\n".join(lines).strip() + "\n"
 

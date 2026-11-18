@@ -33,7 +33,7 @@ services:
     environment:
       POSTGRES_DB: fitzone
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     ports:
       - "5432:5432"
     volumes:
@@ -90,7 +90,8 @@ services:
     depends_on:
       - backend
     ports:
-      - "80:80"
+      # nginx escucha 8080 dentro de la imagen, sin ser root. El host sigue en el puerto 80.
+      - "80:8080"
     restart: unless-stopped
 
   # -------------------------------------------------------------------------

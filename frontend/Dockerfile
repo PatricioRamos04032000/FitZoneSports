@@ -16,7 +16,7 @@ RUN set -eu; \
     if [ -s certs/extra-ca.crt ]; then \
       export NODE_EXTRA_CA_CERTS=/app/certs/extra-ca.crt; \
     fi; \
-    npm ci
+    npm ci --ignore-scripts
 
 COPY . .
 
@@ -37,9 +37,11 @@ WORKDIR /usr/share/nginx/html
 
 # Copiar el build de Vite (genera ./dist)
 COPY --from=build /app/dist .
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+COPY nginx.conf /etc/nginx/nginx.conf
+RUN chown -R nginx:nginx /usr/share/nginx/html
 
-# Exponer puerto 80 (nginx)
-EXPOSE 80
+# El host publica el puerto 80. Dentro de la imagen nginx no es root y escucha 8080.
+USER nginx
+EXPOSE 8080
 
-CMD ["nginx", "-g", "daemon off;"]
+ENTRYPOINT ["nginx", "-g", "daemon off;"]
