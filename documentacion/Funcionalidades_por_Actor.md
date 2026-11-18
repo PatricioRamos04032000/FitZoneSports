@@ -111,7 +111,7 @@ Administrador global de la cadena: configuración comercial, sedes y visión con
 | Precios | Definir costos por hora y tipo de cancha; políticas de precio (estándar, descuento socio, pico) (RF-09, RF-11) |
 | Recursos | Alta de canchas por sede; inhabilitar canchas por mantenimiento (RF-09, RF-12) |
 | Clases | Crear/gestionar agenda de clases: tipo, instructor, horario, capacidad (RF-06) |
-| Reportes | Visualizar reportes consolidados entre sedes |
+| Reportes | En `/dashboard`, `GET /reportes/resumen`: ocupación actual, reservas del día, clases del día y el total de la cadena. Solo el gerente |
 | Alcance | Operación multi-sede a nivel cadena |
 
 ### Restringido

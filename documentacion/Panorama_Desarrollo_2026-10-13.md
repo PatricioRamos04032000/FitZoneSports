@@ -19,7 +19,7 @@ Los porcentajes del 13 de octubre (base ~40 %, backend ~35 %, frontend ~5 %) ya 
 | Base de datos | Tablas y funciones de M1 a M5 están migradas, incluida la garantía de no sobreventa. No hay Storage para la foto ni tabla o archivo de comprobante PDF. |
 | Backend | El guion del socio y el de recepción responden por API: registro de externo, perfil, membresía, clases con lista de espera, reserva y pago simulado de cancha, QR, check-in con cola offline, alta o edición de sedes y la agenda de clases del gerente, y la renovación cobrada de la membresía. No hay PDF. |
 | Testing | Las reglas críticas tienen unitario (RN-01, RN-02, RN-03, D5, D6, Decorator, pasarela, sync). El e2e cubre auth, roles y una parte de canchas; no recorre el checkout HTML ni el acceso. No hay tests de frontend. |
-| Frontend | Login, registro, perfil con membresía, canchas (grilla, reserva, pago, cancelar y administración de alta, precio, pico y mantenimiento), clases (inscribir, cancelar, lista de espera), notificaciones, Mi QR, Acceso (check-in, aforo, sync), Sedes y la agenda de clases para el gerente. El dashboard es un placeholder. No hay descarga de PDF. |
+| Frontend | Login, registro, perfil con membresía, canchas (grilla, reserva, pago, cancelar y administración de alta, precio, pico y mantenimiento), clases (inscribir, cancelar, lista de espera), notificaciones, Mi QR, Acceso (check-in, aforo, sync), Sedes, la agenda de clases y el dashboard de la cadena para el gerente. No hay descarga de PDF. |
 | Documentación de la regla | ADR ×10, 14 diagramas, manual técnico y justificación de patrones están alineados al código. Faltan el manual de usuario y el de instalación. El enunciado de RF-11 sigue diciendo Strategy; el código es Decorator. |
 
 El guion de Demo Day (login → ver membresía → reservar paddle y pagar → QR → check-in) se puede recorrer en la UI. Quedan fuera de ese recorrido de cinco minutos: la agenda de clases, la administración de canchas, el comprobante PDF y los reportes. La agenda y la administración ya tienen pantalla.
@@ -56,7 +56,7 @@ El guion de Demo Day (login → ver membresía → reservar paddle y pagar → Q
 | Listar sedes | ✅ `sedes` | ✅ `GET /sedes` | ✅ unitario y e2e | ✅ select en Perfil, Canchas y Clases | 🟡 enunciado | No hay manual de usuario |
 | Alta y edición de sedes (A4, RNF-04) | ✅ checks de nombre y aforo; el trigger de pico corre al insertar | ✅ `POST /sedes` y `PATCH /sedes/:id` solo gerente | ✅ unitario del servicio y e2e 401/403/201/200 | ✅ `/sedes` | ✅ manual técnico M1; la decisión de RNF-04 sigue en ADR-001 y ADR-002 | La baja es `activa = false`. No asigna `admins_sede` |
 | `admins_sede` | ✅ tabla | ✅ acota a `admin_sede` en acceso y canchas | ✅ `acceso.service.spec` (sin asignación → 403) | ❌ no hay ABM | 🟡 manual técnico, módulo M2 | El gerente no asigna admins desde la UI |
-| Reportes consolidados (A4) | — | ❌ | ❌ | ❌ `/dashboard` es un texto fijo | 🟡 cortado en el plan de cierre | — |
+| Reportes consolidados (A4) | ✅ vista `reporte_resumen_sede` | ✅ `GET /reportes/resumen` solo gerente | ✅ unitario del servicio y e2e 401/403/200 | ✅ `/dashboard` | ✅ manual técnico §4.5; CQRS nivel 2 en la justificación §16 | La recepción no llama al endpoint |
 | Preferencia de email | ✅ `perfiles.notificar_por_email` | ✅ `GET/PATCH /notificaciones/preferencias` | ✅ e2e de notificaciones | 🟡 el perfil guarda el flag | ✅ [diseño Observer](./Diseno_Observer_S4-T02_Notificaciones.md) | — |
 
 ### M1 — Usuarios y membresías
@@ -137,9 +137,9 @@ Scripts SQL de reglas, solo en local: `supabase/tests/membresias_clases.test.sql
 
 ## 4. Backend y frontend, en una frase cada uno
 
-**API.** Módulos `usuarios`, `acceso`, `clases`, `canchas` y `pagos`. Identidad tomada del JWT. Swagger en el proceso de Nest. Lo que la matriz marca ❌ no tiene endpoint: reportes y PDF. El alta de sedes sí: `POST /sedes` y `PATCH /sedes/:id`. La agenda de clases sí: `POST /clases` y `PATCH /clases/:id`.
+**API.** Módulos `usuarios`, `acceso`, `clases`, `canchas`, `pagos` y el puerto de lectura `reportes`. Identidad tomada del JWT. Swagger en el proceso de Nest. `GET /reportes/resumen` está en el tag `reportes`. El alta de sedes sí: `POST /sedes` y `PATCH /sedes/:id`. La agenda de clases sí: `POST /clases` y `PATCH /clases/:id`.
 
-**Web.** React + Vite. Cliente en `frontend/src/services/api.ts` (token y 401). Estado de sesión en `AuthProvider`. Rutas: `/login`, `/signup`, `/perfil`, `/canchas`, `/canchas/gestionar` (gerente y admin de sede), `/clases`, `/clases/gestionar` (gerente), `/notificaciones`, `/mi-qr`, `/acceso`, `/sedes` (gerente), `/dashboard`. No hay tests de frontend. Atomic Design: átomos `Button`, `Input`, `Select` y `Spinner`, molécula `Alerta` y organismo `Layout` ([catálogo](../frontend/src/components/README.md)).
+**Web.** React + Vite. Cliente en `frontend/src/services/api.ts` (token y 401). Estado de sesión en `AuthProvider`. Rutas: `/login`, `/signup`, `/perfil`, `/canchas`, `/canchas/gestionar` (gerente y admin de sede), `/clases`, `/clases/gestionar` (gerente), `/notificaciones`, `/mi-qr`, `/acceso`, `/sedes` (gerente), `/dashboard` (gerente). No hay tests de frontend. Atomic Design: átomos `Button`, `Input`, `Select` y `Spinner`, molécula `Alerta` y organismo `Layout` ([catálogo](../frontend/src/components/README.md)).
 
 ---
 
@@ -184,4 +184,4 @@ Ordenado por lo que impide decir que la regla está cerrada de punta a punta.
 | 2 | Manual de usuario y manual de instalación | C-16, C-17 |
 | 3 | Docker o un arranque de cinco pasos, y el seed de 25 sedes | ADR-009, carga de prueba |
 
-Quedan fuera de esta entrega, ya escritos como corte: app móvil, MercadoPago real, Circuit Breaker, reportes del gerente y la foto de perfil. El tipo socio o externo lo da la membresía vigente, no un alta aparte. El offline de recepción es la cola del navegador más el sync, no un nodo por sede. El alta de sedes del gerente ya está en `/sedes`. La agenda de clases del gerente ya está en `/clases/gestionar`. La administración de canchas ya está en `/canchas/gestionar` y la cancelación de la reserva propia, en `/canchas`. La renovación cobrada de la membresía ya está en el perfil del socio. La salida de la sede ya está en `/acceso`: no pide QR y, sin red, sin servidor o sin base, entra en la misma cola del ingreso.
+Quedan fuera de esta entrega, ya escritos como corte: app móvil, MercadoPago real, Circuit Breaker y la foto de perfil. El dashboard del gerente está en `/dashboard` (`GET /reportes/resumen`). El tipo socio o externo lo da la membresía vigente, no un alta aparte. El offline de recepción es la cola del navegador más el sync, no un nodo por sede. El alta de sedes del gerente ya está en `/sedes`. La agenda de clases del gerente ya está en `/clases/gestionar`. La administración de canchas ya está en `/canchas/gestionar` y la cancelación de la reserva propia, en `/canchas`. La renovación cobrada de la membresía ya está en el perfil del socio. La salida de la sede ya está en `/acceso`: no pide QR y, sin red, sin servidor o sin base, entra en la misma cola del ingreso.

@@ -43,12 +43,12 @@ function App() {
                 <RoleRoute allowedRoles={["admin_sede", "gerente"]} />
               }
             >
-              <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/acceso" element={<Acceso />} />
               <Route path="/canchas/gestionar" element={<GestionarCanchas />} />
             </Route>
 
             <Route element={<RoleRoute allowedRoles={["gerente"]} />}>
+              <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/sedes" element={<Sedes />} />
               <Route path="/clases/gestionar" element={<GestionarClases />} />
             </Route>

@@ -746,7 +746,7 @@ Las fuentes de lo que sigue son el plan de cierre del 6 al 19 de noviembre, el p
 
 Entra el portal web con cuatro roles: gerente, administrador de sede, socio y cliente externo. Entran el registro y el perfil, la membresía con catálogo y renovación cobrada, el acceso multi-sede con QR rotativo, el aforo de la sede, la agenda de clases, la inscripción, la lista de espera, la grilla de canchas, el precio compuesto, el mantenimiento, la pasarela simulada y el PDF de comprobante. Entran también los ADR, los catorce diagramas, los tres manuales, las cuatro bitácoras y este dossier.
 
-Queda afuera la app móvil, la cámara y el DNI en el acceso, MercadoPago real, el alta de administradores de sede, Storybook, los reportes consolidados de toda la cadena y la reescritura de la historia del repositorio. El dashboard del gerente es la tarjeta C-39 y sigue por hacer. La foto de perfil está en el enunciado de RF-01 y quedó fuera de este corte: el alta pide los datos de la persona y no la imagen.
+Queda afuera la app móvil, la cámara y el DNI en el acceso, MercadoPago real, el alta de administradores de sede, Storybook y la reescritura de la historia del repositorio. El dashboard del gerente entró en C-39: `GET /reportes/resumen` y la pantalla `/dashboard`, solo lectura. La foto de perfil está en el enunciado de RF-01 y quedó fuera de este corte: el alta pide los datos de la persona y no la imagen.
 
 ### 8.2 Supuestos y restricciones
 
@@ -2418,7 +2418,7 @@ El archivo `PROGV-2026-TIF-Equipo03-Registro.xlsx` es la tarjeta C-21 y todavía
 | C-36 | Archivo LICENSE | Patricio | Finalizado |
 | C-37 | Ordenar la planificación | Matias | Por hacer |
 | C-38 | Reescribir la planificación | Matias | Por hacer |
-| C-39 | Dashboard del gerente | Patricio | Por hacer |
+| C-39 | Dashboard del gerente | Patricio | Finalizado |
 | C-40 | E2E con Playwright | Patricio | Por hacer |
 | C-41 | SQL de RN-02 en el CI | Patricio | Por hacer |
 

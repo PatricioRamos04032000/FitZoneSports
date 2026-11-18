@@ -7,7 +7,7 @@ C4Context
         Person(socio, "Socio activo", "Membresía, clases, canchas con descuento, QR y pagos")
         Person(externo, "Cliente externo", "Alquila canchas a tarifa plena y paga")
         Person(recep, "Recepcionista / administrador de sede", "Ingreso, aforo y operación de su sede")
-        Person(gerente, "Gerente central", "Sedes, precios, horario pico y canchas")
+        Person(gerente, "Gerente central", "Sedes, precios, horario pico, canchas y reportes")
     }
 
     Boundary(nucleo, " ", "") {
@@ -54,7 +54,7 @@ C4Context
     Rel_R(socio, fitzone, "Gestiona su membresía, reserva y paga")
     Rel_R(externo, fitzone, "Reserva canchas<br/>y paga")
     Rel_R(recep, fitzone, "Registra ingresos y consulta el aforo")
-    Rel_R(gerente, fitzone, "Configura sedes y precios")
+    Rel_R(gerente, fitzone, "Configura sedes y lee reportes")
     Rel_R(fitzone, pasarela, "Solicita el cobro<br/>y recibe el token")
 
     UpdateRelStyle(externo, fitzone, $offsetX="-55", $offsetY="-22")
@@ -64,6 +64,6 @@ C4Context
 %% hueco, huecoB, hueco2 y hueco2b bajan el sistema y la pasarela. puenteSys abre la flecha. No se dibujan.
 %% La segunda fila es la leyenda: persona, sistema y sistema externo.
 %% Autor: Patricio Ramos
-%% Fecha: 2026-11-10 (etiqueta del gerente, 2026-11-14, C-29)
+%% Fecha: 2026-11-10 (etiqueta del gerente, 2026-11-14, C-29; reportes, 2026-11-18, C-39)
 %% Versión: 1.1
 %% Nota: la pasarela de esta entrega no es un proveedor externo real; ver ADR-010.

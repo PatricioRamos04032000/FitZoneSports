@@ -22,7 +22,7 @@
 | [Abstract Factory](#13-abstract-factory--descartado) | Familias de objetos (pasarela por país) | — | **Descartado** (2026-10-15). Una pasarela y un solo país |
 | [Composite](#14-composite--descartado) | Árbol red, región, sede y cancha | Reportes | **Descartado** (2026-10-15). No hay árbol; el total es una consulta |
 | [Circuit Breaker](#15-circuit-breaker--pasarela-real) | MercadoPago | RF-13, M5 | **Diseñado** (2026-10-15); código con M5. No aplica a Supabase ni al simulacro |
-| [CQRS nivel 2](#16-cqrs-nivel-2--reportes-del-gerente) | Reportes consolidados del gerente | Consigna TI (reserva vs reportes) | **Pendiente** (2026-10-27). Hacerlo cuando existan reportes / M4 con datos de ocupación |
+| [CQRS nivel 2](#16-cqrs-nivel-2--reportes-del-gerente) | Reportes consolidados del gerente | Consigna TI (reserva vs reportes) | **Implementado** (2026-11-18, C-39). Vista `reporte_resumen_sede` y `GET /reportes/resumen` |
 
 Cada sección de patrón aplicado sigue el mismo orden: problema, por qué este patrón, alternativas descartadas, estructura, dónde está en el código, consecuencias y cómo se prueba. Las secciones de descarte (Factory, Chain, Builder, Decorator transversal, etc.) también puntúan en la defensa.
 
@@ -851,7 +851,7 @@ Composite arma un árbol y trata igual a la hoja y a la rama. El ejemplo para Fi
 
 ### Por qué no
 
-Ese árbol no existe. Las sedes son una lista plana: no hay región ni un nodo "red". Una cancha pertenece a una sede. El reporte del gerente, cuando exista, es ocupación por sede y un total de la cadena: un `GROUP BY`, no un objeto que se recorre recursivamente. Inventar nodos solo para poder sumar es el costo que el patrón no paga. Además, si cada nodo consultara la base, el recorrido sería un N+1. Ese reporte se resuelve con **CQRS nivel 2** (§16), no con Composite.
+Ese árbol no existe. Las sedes son una lista plana: no hay región ni un nodo "red". Una cancha pertenece a una sede. El reporte del gerente es ocupación por sede y un total de la cadena: un `GROUP BY`, no un objeto que se recorre recursivamente. Inventar nodos solo para poder sumar es el costo que el patrón no paga. Además, si cada nodo consultara la base, el recorrido sería un N+1. Ese reporte se resuelve con **CQRS nivel 2** (§16), no con Composite.
 
 Si más adelante el negocio agrega regiones de verdad, se reabre. Hoy no hay un `instanceof` que eliminar.
 
@@ -894,7 +894,7 @@ En M5, junto al adaptador. Umbrales (cuántos fallos, cuánto tiempo abierto) se
 
 ## 16. CQRS nivel 2 — Reportes del gerente
 
-**Decisión:** 2026-10-27 · **Pendiente de implementar** cuando existan reportes del gerente (ocupación / consolidados entre sedes) y datos de reservas (M4).  
+**Decisión:** 2026-10-27 · **Implementado** el 2026-11-18 (C-39).  
 **Referencia de clase:** Unidad III clase 2, bloque CQRS ([UnidadIII_Clase2_Aplicacion_y_Refactoring.pdf](./UnidadIII_Clase2_Aplicacion_y_Refactoring.pdf)). También en [Decisiones pendientes §3.7](./Decisiones_Pendientes_y_Cosas_a_Definir.md).
 
 ### Problema
@@ -918,12 +918,12 @@ Forzar un solo camino (p. ej. cargar entidades de reserva vía el repositorio de
 | **2** | Modelo de **lectura** aparte: SQL propio, proyecciones a DTO o **vistas** (misma base; consistencia fuerte) | **Reportes del gerente** |
 | 3 | Dos almacenes + sync por eventos (consistencia eventual) | Fuera del TI |
 
-### Qué hay que hacer cuando toque
+### Dónde está
 
-1. Interfaz de lectura aparte del repositorio de dominio, p. ej. `OcupacionQuery.porMes(...)` → DTOs planos (`OcupacionPorSede`), no entidades `Reserva`.
-2. Vista SQL (o consulta con `GROUP BY`) en Postgres; Nest la lee vía un query/repo de solo lectura (Supabase `.from('vista…')` o RPC de lectura). Referencia cercana ya en el repo: la vista `clases_con_cupo` (lectura optimizada, write path de inscripción aparte).
-3. Endpoint solo para `gerente` (`@RequiereRol`); **no** reutilizar `ReservasRepository` / Facade de `reservar()`.
-4. Pregunta de defensa: *«¿Por qué el reporte no usa el ReservaRepository?»* — porque leer y escribir tienen requisitos opuestos; en nivel 2 eso cuesta una interfaz y una consulta/vista.
+1. Vista `reporte_resumen_sede` en [20261117230000_reporte_resumen_sede.sql](../supabase/migrations/20261117230000_reporte_resumen_sede.sql). Una fila por sede: ocupación (presencias de ahora), reservas `pendiente` o `confirmada` del día y clases `programada` del día. El día es `America/Argentina/Buenos_Aires`.
+2. `ReportesResumenRepository` lee solo esa vista (`backend/src/reportes/`). `ReportesService` suma el total de la cadena sobre el DTO. No llama a `ReservasCanchaRepository`.
+3. `GET /reportes/resumen` con `@RequiereRol('gerente')`. La pantalla es `/dashboard`. Socio y `admin_sede` reciben 403 y no disparan la lectura.
+4. Pregunta de defensa: *«¿Por qué el reporte no usa el ReservaRepository?»* — porque leer y escribir tienen requisitos opuestos; en nivel 2 eso cuesta una interfaz y una vista.
 
 ### Qué no hacer
 

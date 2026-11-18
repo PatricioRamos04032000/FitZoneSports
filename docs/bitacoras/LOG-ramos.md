@@ -755,3 +755,21 @@ Ninguno.
 
 - `ba3f111` C-36: agrega la licencia MIT en la raíz y la enlaza desde el README.
 
+### 2026-11-18  ·  C-39
+
+**Actividad**
+
+Armé el dashboard del gerente en la rama `C-39`. La vista `reporte_resumen_sede` deja, por sede, la ocupación de ahora, las reservas del día y las clases del día. `GET /reportes/resumen` lo lee solo el rol `gerente` y suma el total de la cadena. `/dashboard` muestra esas cifras. La recepción ya no tiene el enlace. Quedaron el Swagger, los tests de rol, el manual de usuario, el manual técnico, C4-1, C4-2 y el diagrama de clases.
+
+**Decisión**
+
+El reporte es CQRS nivel 2: misma base, modelo de lectura aparte. No se abre un ADR. No se usa `ReservasCanchaRepository`. El día es el de `America/Argentina/Buenos_Aires`. No hay diagrama nuevo: siguen siendo 14.
+
+**Problema o bloqueo**
+
+Al principio la API respondía 500: PostgREST no encontraba la vista (PGRST205) porque este entorno no aplica `supabase db push`. La migración se corrió en el SQL editor de Supabase. Después el gerente ve el resumen (el 18/11: ocupación 0 / 1430, 26 clases, 27 sedes) y la captura quedó en el manual de usuario. La recepción no ve **Dashboard** y un `GET` directo responde 403.
+
+**Commits**
+
+El trabajo está en la rama `C-39`. El hash se anota cuando se commitee.
+
