@@ -715,3 +715,23 @@ La API no arrancó al primer intento porque `pdfkit` no estaba en `node_modules`
 
 - `ba82d03` C-16: agrega el manual de usuario con las capturas del sistema.
 
+---
+
+### 2026-11-17  ·  C-23
+
+**Actividad**
+
+Reescribí el `README.md` de la raíz en el orden del punto 4.1 de los lineamientos: qué es el sistema, el equipo con el autor de Git, cinco pasos con Docker, los cuatro usuarios del seed de entrega, la tabla de ADR, diagramas, manuales y bitácoras, y el estado de la suite. Corrí `npm run test:cov` en `backend/`: 29 suites, 179 tests, 65,15 % de sentencias. El umbral del ADR-008 es 60 %. Dejé la fila C-23 del plan de cierre en finalizado.
+
+**Decisión**
+
+Los cinco pasos son los de Docker (`docker compose up --build` y el perfil `seed`). La contraseña que publica el README es `fitzone-demo`, el valor de `SEED_PASSWORD` en `.env.docker.example`, porque el punto 4.1 pide las credenciales de prueba. El porcentaje es el de esta corrida, no el 63,93 % de C-10.
+
+**Problema o bloqueo**
+
+Ninguno de la redacción. Sin las tres claves de Supabase el login no funciona: el README nombra las variables y deja las claves fuera del repositorio.
+
+**Commits**
+
+Sin commit en esta sesión. El README, la fila del plan de cierre y esta entrada quedan en el working tree.
+
