@@ -4,7 +4,7 @@
 #
 # Variables de libpq: PGHOST PGPORT PGUSER PGPASSWORD PGDATABASE
 #
-#   PGHOST=localhost PGPORT=5432 PGUSER=postgres PGPASSWORD=postgres PGDATABASE=fz_test \
+#   PGHOST=localhost PGPORT=5432 PGUSER=postgres PGDATABASE=fz_test \
 #     bash supabase/tests/run-canchas-m4.sh
 set -euo pipefail
 
@@ -24,7 +24,7 @@ psql -v ON_ERROR_STOP=1 -f "$ROOT/supabase/tests/canchas_m4.test.sql" >"$LOG" 2>
 STATUS=$?
 set -e
 cat "$LOG"
-if [ "$STATUS" -ne 0 ]; then
+if [[ "$STATUS" -ne 0 ]]; then
   exit "$STATUS"
 fi
 if ! grep -q 'OK 3' "$LOG"; then
