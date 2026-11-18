@@ -149,7 +149,7 @@ Lo que el tablero deja en **Por hacer** para el cierre está en el plan del 6–
 | App móvil React Native | La app nativa sigue fuera de este plan. El stretch S7-T12 (QR/móvil) está finalizado en el tablero. |
 | Pagos reales o pasarela de pago | Módulo M5; el pago mock (S7-T02) está finalizado. La pasarela real no. |
 | Membresías con pago/renovación completa | Requiere lógica de renovación y módulo de pagos. La seguridad de altas ya está en S5-T04. |
-| Docker y despliegue | El CI de backend (S6-T10) está finalizado. Docker sigue en C-07, por hacer. |
+| Docker y despliegue | El CI de backend (S6-T10) está finalizado y no despliega. El Compose y los Dockerfiles ya están (C-07 y C-07-2). C-07 sigue abierta por la prueba en máquina limpia. C-07-3 corrige la documentación que todavía decía que el archivo no existía. |
 | Gestión integral de sedes, clases, reportes y acceso/aforo | Son funcionalidades pendientes de los módulos M1–M5; no se presentan como terminadas en este plan. |
 
 ## Control de avance

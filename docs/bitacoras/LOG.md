@@ -899,7 +899,7 @@ ADR-001 a ADR-010 ya estaban usados con otros temas, tres de ellos reemplazados.
 ### Fuera de este cierre
 
 - El 60 % todavía no está en `jest.config.ts` ni en el CI. Lo hace cumplir C-10. Si la medición queda debajo, no se baja el número en el ADR: se agregan tests o se supera el registro.
-- No hay `docker-compose.yml`. El ADR-009 fija Compose de API y frontend, con PostgreSQL en Supabase. El archivo es C-07.
+- No hay `docker-compose.yml`. El ADR-009 fija Compose de API y frontend, con PostgreSQL en Supabase. El archivo es C-07. **Actualización 2026-11-17 (C-07-3):** el Compose y los Dockerfiles ya están. La API sigue en Supabase. El servicio `db` del Compose es una referencia del esquema y la API no se conecta a él. C-07 sigue abierta: no hay una corrida registrada de `docker compose up --build` en una máquina limpia.
 - El checkout simulado recibe el número de prueba en el POST y no lo guarda. La pasarela real queda afuera.
 - La tarjeta C-14 pasó a finalizado en Trello el 2026-11-09 a la noche (quedó anotado al día siguiente, en la entrada del 2026-11-11).
 

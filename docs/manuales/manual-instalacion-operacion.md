@@ -304,15 +304,20 @@ Las mismas variables de `.env` deben estar en el entorno de despliegue, con valo
 - revisar el health endpoint y Swagger antes de cada entrega;
 - mantener los usuarios seed y los perfiles de acceso bien documentados.
 
-### 9.4 Docker (ruta recomendada cuando exista Compose)
+### 9.4 Docker
 
-El repositorio define la estrategia de despliegue y operación con Docker como objetivo de la entrega, según la documentación de ADR-009. Cuando exista un `docker-compose.yml` y los Dockerfiles del proyecto, el arranque esperado es:
+El arranque de la entrega es Docker Compose, como fija [ADR-009](../adr/ADR-009-despliegue-contenedores-reversion.md). Los archivos ya están: `docker-compose.yml`, `backend/Dockerfile` y `frontend/Dockerfile`. Las variables y el caso de Avast están en [README-DOCKER.md](../../README-DOCKER.md).
 
 ```bash
 docker compose up --build
+docker compose --profile seed run --rm seed
 ```
 
-Si el proyecto no tiene aún el compose configurado, la ruta oficial de operación es la local con backend + frontend + Supabase. Para la entrega final, la documentación debe dejar claro cuál fue la ruta utilizada y cuál es la alternativa de respaldo.
+El primer comando levanta la API en el puerto 3000 y el portal en el puerto 80. El segundo carga el seed de entrega (25 sedes, una cancha y una clase por sede, y los cuatro roles) cuando la API ya responde.
+
+La API usa Supabase. En `.env`, copiado desde `.env.docker.example`, tienen que estar `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY` y `SUPABASE_ANON_KEY`. Sin esas tres variables el login no funciona. El servicio `db` es una referencia del esquema: si falla al aplicar migraciones, la API y el portal siguen en marcha.
+
+El arranque con npm, backend y frontend por separado, está en las secciones 5 y 6 de este manual.
 
 ---
 
