@@ -443,7 +443,7 @@ Se dispara en un pull request hacia `desarrollo`. Los pasos, en el directorio `b
 
 El job define `NODE_OPTIONS=--experimental-vm-modules` y claves de Supabase de mentira, para que los módulos que leen `process.env` al arrancar no fallen el build. No hay secretos reales en el workflow.
 
-Ese pipeline no despliega a Vercel ni a Render. El mapa de la demo y la reversión (revertir el commit, promover el deployment anterior en Vercel, volver al deploy anterior en Render) están en [ADR-009](../adr/ADR-009-despliegue-contenedores-reversion.md). El Compose de la entrega lo cierra C-07. Este workflow no lo ejecuta.
+Ese pipeline no despliega a Vercel ni a Render. El mapa de la demo y la reversión (revertir el commit, promover el deployment anterior en Vercel, volver al deploy anterior en Render) están en [ADR-009](../adr/ADR-009-despliegue-contenedores-reversion.md). El Compose de la entrega está en `docker-compose.yml` (API en el puerto 3000, frontend en el puerto 80 y un seed aparte). Este workflow no lo ejecuta.
 
 ## 10. Convenciones de código, ramas y commits
 
