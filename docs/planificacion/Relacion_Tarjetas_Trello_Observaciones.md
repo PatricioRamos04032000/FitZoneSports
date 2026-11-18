@@ -85,6 +85,13 @@ Estas C-xx / S* no compiten entre sí por el mismo entregable; la observación e
 | **C-29** | Nueva 2026-11-14, Patricio, rama `C-29`. Alta y edición de sedes (A4, RNF-04). No es **C-08** (seed de 25 sedes) ni los reportes del gerente. |
 | **C-14** | Diez ADR obligatorios escritos el 2026-11-09 (rama `c-14`, `docs/adr/`, ninguno Propuesto). El 60 % lo hace cumplir **C-10**; el Compose, **C-07**. Trello: finalizado. |
 | **S7-T12** | Stretch móvil. Distinto de **C-03** (web responsive). Trello: finalizado. |
+| **C-35** | Medir `npm ci`, build y `test:cov`. Relacionada con **C-10** (umbral ya declarado) y con **C-04** (`pdfkit`). No es una tarjeta de reparar el build hasta ver la corrida. |
+| **C-36** | `LICENSE` en la raíz. Admisibilidad; no es **C-23** (README). |
+| **C-37** | Ordenar `docs/planificacion/` por sprint. Prepara el path de **C-38**. Relacionada con **C-13** y **C-20**. |
+| **C-38** | Reescritura de **C-20**: matriz única, ocho sprints y desvíos ya ocurridos. Depende de **C-35** y **C-37**. |
+| **C-39** | Dashboard del gerente, consulta de solo lectura. El panorama los había cortado; no es el ABM de `admins_sede` ni **C-29**. La pantalla la usa **C-40**. |
+| **C-40** | Playwright contra la app levantada. Relacionada con **C-10** (la pirámide no sube el 60 %) y con **C-39**. |
+| **C-41** | SQL de no sobreventa en Postgres/Supabase local. Complementa el unitario de **C-10** / ADR-004; no lo reemplaza. |
 
 ---
 
@@ -131,6 +138,13 @@ C-14 → Observación: sin par S5–S7. Diez ADR en docs/adr/ (2026-11-09, rama 
 C-28 → Observación: relacionada con S4-T01 (Strategy histórico). Redefine precios a Decorator + UML Nest; crear en Trello o track solo en plan.
 S4-T01 → Observación: relacionada con C-28 (refactor Decorator antes del tag); no borrar esta tarjeta.
 C-29 → Observación: alta y edición de sedes (A4, RNF-04), Patricio, rama C-29. No es C-08 (seed de 25 sedes) ni los reportes del gerente. Sin ADR nuevo.
+C-35 → Observación: relacionada con C-10 y C-04. Mide la suite; no declara el build roto antes de npm ci y test:cov.
+C-36 → Observación: LICENSE en la raíz. No es C-23.
+C-37 → Observación: relacionada con C-13 y C-20. Ordena docs/planificacion por sprint y prepara C-38.
+C-38 → Observación: cierra C-20 (matriz, 8 sprints, desvíos ocurridos). Depende de C-35 y C-37.
+C-39 → Observación: reportes del gerente, solo lectura. No es C-29 ni el ABM de admins_sede. La usa C-40.
+C-40 → Observación: relacionada con C-39 y C-10. E2E de navegador; el umbral del 60 % no cambia.
+C-41 → Observación: relacionada con C-10 y ADR-004. El SQL de TURNO_OCUPADO corre en Postgres; el unitario mockeado se queda.
 ```
 
 ---

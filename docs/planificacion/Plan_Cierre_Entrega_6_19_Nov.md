@@ -5,7 +5,7 @@
 **Congelamiento / tag:** jueves **19/11/2026, 18:00** → `v1.0-entrega`  
 **Demo Day:** semana 23–29/11 (sin desarrollo)  
 **Fuente de orden:** [Lineamientos de Entrega](./Lineamientos_Entrega_TIF_FitZone_Sports_2do_Cuatrimestre_2026.pdf) · **Anexo G**  
-**Estado de partida:** relevado el 2026-11-06 sobre `desarrollo` (API canchas/clases/acceso fuertes; entonces UI canchas mock; docs de entrega incompletas). **Actualización 2026-11-13:** C-01 y S7-T08 cerrados — canchas en UI y pase demo solo UI; C-24 (ensayo 5 min cronometrado) sigue sobre el guion ya pulido. **Misma fecha:** se agregó **C-28** (Strategy → Decorator + UML Nest), no listada en el plan original; entra en T2 antes del congelamiento T3. **2026-11-14:** se agregó **C-29** (alta y edición de sedes, A4 / RNF-04), rama `C-29`, Patricio. **Misma fecha:** se agregó **C-30** (catálogo, alta atómica y renovación cobrada de membresía, RF-02), rama `C-30`, Patricio. **Misma fecha:** se agregó **C-31** (crear y editar la agenda de clases, RF-06), rama `C-31`, Patricio. **2026-11-15:** se agregó **C-32** (canchas en pantalla: alta, precio, cancelar, pico, descuento y mantenimiento), rama `C-32`, Patricio. **Misma fecha:** se agregó **C-33** (check-out desde `/acceso`, RN-01), rama `C-33`, Patricio. **2026-11-16:** se agregó **C-34** (el título del aviso de lugar liberado se lee sobre la tarjeta), rama `C-34`, Patricio.
+**Estado de partida:** relevado el 2026-11-06 sobre `desarrollo` (API canchas/clases/acceso fuertes; entonces UI canchas mock; docs de entrega incompletas). **Actualización 2026-11-13:** C-01 y S7-T08 cerrados — canchas en UI y pase demo solo UI; C-24 (ensayo 5 min cronometrado) sigue sobre el guion ya pulido. **Misma fecha:** se agregó **C-28** (Strategy → Decorator + UML Nest), no listada en el plan original; entra en T2 antes del congelamiento T3. **2026-11-14:** se agregó **C-29** (alta y edición de sedes, A4 / RNF-04), rama `C-29`, Patricio. **Misma fecha:** se agregó **C-30** (catálogo, alta atómica y renovación cobrada de membresía, RF-02), rama `C-30`, Patricio. **Misma fecha:** se agregó **C-31** (crear y editar la agenda de clases, RF-06), rama `C-31`, Patricio. **2026-11-15:** se agregó **C-32** (canchas en pantalla: alta, precio, cancelar, pico, descuento y mantenimiento), rama `C-32`, Patricio. **Misma fecha:** se agregó **C-33** (check-out desde `/acceso`, RN-01), rama `C-33`, Patricio. **2026-11-16:** se agregó **C-34** (el título del aviso de lugar liberado se lee sobre la tarjeta), rama `C-34`, Patricio. **2026-11-17:** se agregó el lote **C-35…C-41** (medir la suite, `LICENSE`, ordenar `docs/planificacion/`, reescribir la planificación de cierre, dashboard del gerente, E2E de frontend y RN-02 contra Postgres). Import a Trello: [`Plan_Cierre_C35-C41_Trello_Import.xlsx`](./Plan_Cierre_C35-C41_Trello_Import.xlsx).
 
 **Estados** (lista Trello → este plan): `por hacer` → **Por hacer** · `tambien en desarrollo` → **En desarrollo** · `finalizado` → **Finalizado**. El 2026-11-11 las listas `en desarrollo` y `Blocked` estaban vacías.
 
@@ -122,7 +122,21 @@ Después del tag: solo ensayo Demo Day.
 | C-26 | Tag anotado y push **antes de las 18:00** | Patricio | 0,5 | **Por hacer** | `v1.0-entrega` en remoto | Tag |
 | C-27 | Subida Moodle (dossier + URL + tag + hash + plan/xlsx) | Patricio | 0,5 | **Por hacer** | Constancia de fecha | Canal entrega |
 
-**Prohibido en T3:** features nuevas, refactor cosmético, app móvil.
+#### Lote 17/11 · C-35 a C-41
+
+Acordado el 17/11 sobre el plan ya armado. C-38 cierra C-20. El Excel para crear solo estas tarjetas, sin reimportar C-01…C-27, es [`Plan_Cierre_C35-C41_Trello_Import.xlsx`](./Plan_Cierre_C35-C41_Trello_Import.xlsx).
+
+| ID | Tarea | Quién | h | Estado | Cierra cuando | Anexo G |
+|----|-------|-------|---|--------|---------------|---------|
+| C-35 | Medir build y cobertura: `npm ci`, `npm run build` y `npm run test:cov` en `backend/`. Anotar suites, tests y % de sentencias en `LOG-goncevat.md`. Si la instalación o el build fallan, el arreglo es de esta tarjeta | Matias | 1–2 | **Por hacer** | El porcentaje citado en C-38 es el de esta corrida. Umbral ADR-008: 60 % de sentencias | Cobertura / tests |
+| C-36 | Archivo `LICENSE` (MIT, 2026, los cuatro integrantes) en la raíz, enlazado desde el README | Patricio | 0,5 | **Por hacer** | El archivo está en el repo y el README lo apunta | LICENSE |
+| C-37 | Ordenar `docs/planificacion/`: renombrar planes y actas por sprint (S1…S8), índice `README.md`, xlsx/json a `exportaciones/`, enlaces actualizados. S3 no tiene plan propio | Matias | 2–3 | **Por hacer** | La carpeta se lee en orden de sprint | Planificación |
+| C-38 | Reescribir la planificación de cierre (hoy `Planificacion_Completa_C20.md`): matriz única RF-01…14, RN-01…03 y RNF-01…04; ocho sprints; desvíos ya ocurridos. Depende de C-35 y C-37 | Matias | 4–6 | **Por hacer** | C-20 pasa a Finalizado. Sin riesgos escritos en futuro | Planificación |
+| C-39 | Dashboard del gerente (A4): consulta de solo lectura (ocupación, reservas del día, clases del día, total de cadena), `GET /reportes/resumen` solo gerente, y `/dashboard` sin el texto fijo | Patricio | 4–6 | **Por hacer** | El gerente ve las cifras; otro rol no llama al endpoint | Reportes A4 |
+| C-40 | E2E de frontend con Playwright contra Vite y Nest levantados (usuarios del seed): login de socio, dashboard del gerente, un rechazo de acceso. Sin mock de página | Patricio | 4–6 | **Por hacer** | `npm run test:e2e` en verde en local. El 60 % de ADR-008 no cambia | Pruebas E2E |
+| C-41 | Evidencia de RN-02: correr `supabase/tests/canchas_m4.test.sql` (caso `TURNO_OCUPADO`) contra Supabase local en CI. El unitario que simula el 409 se queda | Patricio | 3–4 | **Por hacer** | El job imprime `OK 3` o `LOG-ramos.md` guarda el log de una corrida local y el job queda preparado | RN-02 |
+
+**En T3, además de este lote:** sin refactor cosmético y sin app móvil. El dashboard (C-39) y el E2E de navegador (C-40) son la excepción de funcionalidad acordada el 17/11.
 
 ---
 
@@ -165,8 +179,8 @@ Situación (5 min): agregar canchas de tenis (manual técnico C-18).
 | App móvil React Native / APK | Unidad VI; no entra en 13 días con docs |
 | Acceso UX v2 (cámara, DNI) | Stretch; pegar JSON alcanza para demo |
 | MercadoPago real / Circuit Breaker | Fuera de RF-13 simulado |
-| Reportes del gerente y asignación de `admins_sede` | El alta y la edición de sedes entró en C-29. Reportes y admins de sede siguen fuera |
-| Tests frontend / Storybook completo | Suficiente: componentes documentados en manual + README Atomic mínimo |
+| Asignación de `admins_sede` | El alta y la edición de sedes entró en C-29. El ABM de admins de sede sigue fuera. Los reportes del gerente vuelven acotados en C-39 |
+| Storybook completo | Sigue fuera. El E2E de navegador entra en C-40; no hay tests de componente |
 | Reescritura total de historia del repo | Solo mapear estructura y limpiar README |
 
 ---
@@ -175,12 +189,12 @@ Situación (5 min): agregar canchas de tenis (manual técnico C-18).
 
 | Bloque Anexo G | IDs principales |
 |----------------|-----------------|
-| Repositorio y entrega | C-13, C-23, C-25, C-26, C-27 |
-| Código | C-07, C-08, C-09, C-10 |
-| Funcionalidad | C-01…C-05, C-11, C-04, C-29, C-30, C-31, C-32, C-33, C-34 |
+| Repositorio y entrega | C-13, C-23, C-25, C-26, C-27, C-36 |
+| Código | C-07, C-08, C-09, C-10, C-35, C-41 |
+| Funcionalidad | C-01…C-05, C-11, C-04, C-29, C-30, C-31, C-32, C-33, C-34, C-39, C-40 |
 | Documentación | C-14…C-18 |
 | Bitácoras | C-19 |
-| Planificación | C-20, C-21 |
+| Planificación | C-20, C-21, C-37, C-38 |
 | Defensa | C-06, C-24 |
 
 ---
@@ -206,4 +220,4 @@ Cada integrante dedica **sesión fija a C-19** (bitácora propia) en T2: no se d
 
 ---
 
-*Plan de cierre · FitZone Sports · Programación V · UNER · estados alineados al tablero el 2026-11-11*
+*Plan de cierre · FitZone Sports · Programación V · UNER · estados de C-01…C-34 alineados al tablero; C-35…C-41 agregadas el 2026-11-17*

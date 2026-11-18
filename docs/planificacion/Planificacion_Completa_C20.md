@@ -263,7 +263,11 @@ La actividad C-20 se considera cerrada cuando:
 
 ---
 
-## 11. Estado final proyectado
+## 11. Lote agregado el 17/11
+
+C-35 a C-41 están en el backlog del [plan de cierre](./Plan_Cierre_Entrega_6_19_Nov.md), con el mismo formato que C-01…C-34. C-38 es la reescritura de este archivo. El import a Trello de solo ese lote es [Plan_Cierre_C35-C41_Trello_Import.xlsx](./Plan_Cierre_C35-C41_Trello_Import.xlsx).
+
+## 12. Estado final proyectado
 
 El cierre del proyecto se proyecta con la siguiente secuencia:
 
