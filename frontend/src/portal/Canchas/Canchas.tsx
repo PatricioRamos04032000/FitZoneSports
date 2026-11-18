@@ -90,7 +90,7 @@ function Canchas() {
       }
     }
 
-    cargarSedes();
+    void cargarSedes();
   }, []);
 
   // Cargar disponibilidad cuando cambia la sede o la fecha
@@ -130,7 +130,7 @@ function Canchas() {
       }
     }
 
-    cargarDisponibilidad();
+    void cargarDisponibilidad();
   }, [sedeSeleccionada, fecha]);
 
   // Cargar las reservas del usuario autenticado
@@ -160,7 +160,7 @@ function Canchas() {
       }
     }
 
-    cargarMisReservas();
+    void cargarMisReservas();
 
     window.addEventListener("focus", cargarMisReservas);
     window.addEventListener("pageshow", cargarMisReservas);
@@ -179,7 +179,7 @@ function Canchas() {
         cancha.turnos.map((turno) => turno.hora)
       ) ?? []
     ),
-  ].sort();
+  ].sort((a, b) => a.localeCompare(b));
 
   // Obtener sede seleccionada
   const sedeActual = sedes.find(

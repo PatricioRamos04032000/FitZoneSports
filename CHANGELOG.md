@@ -8,6 +8,13 @@ Cada versión corresponde a un paso de la línea de integración (`desarrollo`) 
 
 ## [Unreleased]
 
+## [0.51.1] - 2026-11-18
+
+### Fixed
+
+- Quality gate de Sonar: las cargas de `/canchas` quedan marcadas con `void`, los horarios se comparan con `localeCompare`, y el Postgres local deja de tener la contraseña escrita en el Compose.
+- Las imágenes de ejecución no corren como root. `npm ci` dentro de la imagen no ejecuta scripts de instalación. El descenso de títulos del dossier no usa la expresión regular que hacía backtracking.
+
 ## [0.51.0] - 2026-11-18
 
 ### Added
@@ -461,6 +468,7 @@ Cada versión corresponde a un paso de la línea de integración (`desarrollo`) 
 
 - Plan de trabajo de las semanas 1 a 4, alineado al tablero.
 
+[0.51.1]: https://github.com/PatricioRamos04032000/FitZoneSports/releases/tag/v0.51.1
 [0.51.0]: https://github.com/PatricioRamos04032000/FitZoneSports/releases/tag/v0.51.0
 [0.50.0]: https://github.com/PatricioRamos04032000/FitZoneSports/releases/tag/v0.50.0
 [0.49.0]: https://github.com/PatricioRamos04032000/FitZoneSports/releases/tag/v0.49.0

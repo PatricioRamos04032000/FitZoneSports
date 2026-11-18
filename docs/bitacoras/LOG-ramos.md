@@ -853,3 +853,23 @@ Ninguno.
 
 - `fe86f88` Merge pull request #81 from PatricioRamos04032000/C-40. El tag `v0.51.0` apunta a ese merge.
 
+---
+
+### 2026-11-18  ·  v0.51.1
+
+**Actividad**
+
+Corregí las diez observaciones de Sonar del PR #82. En `/canchas` las tres cargas quedan con `void` y los horarios se ordenan con `localeCompare`. El Postgres local toma `POSTGRES_PASSWORD` del entorno. Las imágenes de ejecución dejan de ser root y el `npm ci` de la imagen no corre scripts. El dossier baja los títulos sin la expresión regular que hacía backtracking.
+
+**Decisión**
+
+El `npm ci` del CI sigue ejecutando los scripts, porque oxlint los necesita. `SEED_PASSWORD` no cambia: el README sigue publicando `fitzone-demo`. El puerto del host sigue siendo 80; nginx escucha 8080 adentro. No se publican `v1.0.0` ni `v1.0-entrega`.
+
+**Problema o bloqueo**
+
+Ninguno.
+
+**Commits**
+
+- Este registro es el de `v0.51.1`.
+
