@@ -146,7 +146,7 @@ npm run test:cov
 npm run test:e2e
 ```
 
-`npm run test:e2e` ejecuta los tests HTTP y no entra en el 65,15 %. El frontend no tiene script de tests.
+`npm run test:e2e` en `backend/` ejecuta los tests HTTP y no entra en el 65,15 %. En `frontend/`, `npm run test:e2e` corre el E2E de Playwright (login, reserva, pago, consulta y comprobante). Usa `E2E_PASSWORD` o, si no está, `SEED_PASSWORD`. Tampoco mueve ese porcentaje.
 
 ## 7. Asistentes de IA y bibliotecas
 

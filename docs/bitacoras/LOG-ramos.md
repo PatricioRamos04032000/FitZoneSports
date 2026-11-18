@@ -793,3 +793,23 @@ Docker Desktop no estaba en marcha. Lo levanté y corrí el script en un contene
 
 - `2118e94` C-41: corre el SQL de RN-02 en CI y exige OK 3.
 
+---
+
+### 2026-11-18  ·  C-40
+
+**Actividad**
+
+Dejé un E2E de navegador en el frontend, con Playwright. El único caso entra como socio del seed, elige una cancha con turno libre, reserva, paga con la tarjeta de prueba que aprueba, vuelve a Mis reservas y descarga el comprobante PDF. `npm run test:e2e` en `frontend/` terminó con 1 passed. Vite y Nest se reutilizan si ya están arriba. El 60 % del ADR-008 no se mide con este script. La fila C-40 del plan de cierre quedó en finalizado.
+
+**Decisión**
+
+El script vive en `frontend` para no pisar el `test:e2e` de Jest del backend. No se agrega job de CI. No entran el dashboard del gerente ni el rechazo de acceso. Si no hay `E2E_PASSWORD`, el test lee `SEED_PASSWORD` de `backend/.env` y, si no está, usa `fitzone-demo`.
+
+**Problema o bloqueo**
+
+La primera sede del listado no tiene canchas, y la grilla sigue ofreciendo horarios ya pasados como disponibles. El caso salta esa sede y no reserva un turno cuyo inicio ya ocurrió. La instalación de npm falló por el certificado de la red; se repitió con `--use-system-ca`.
+
+**Commits**
+
+- Sin commit en esta sesión.
+

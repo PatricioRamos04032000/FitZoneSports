@@ -29,7 +29,7 @@ La pirámide de esta entrega es:
 
 1. **Base.** Tests unitarios Jest + `ts-jest` sobre `backend/src/**/*.spec.ts` (servicios, guards, decoradores de precio, TOTP, pasarela simulada).
 2. **Medio.** Tests HTTP con Supertest (`backend/test/**/*.e2e-spec.ts`) y el script SQL `supabase/tests/canchas_m4.test.sql`, que rechaza una segunda reserva del mismo turno. El script es secuencial y corre contra un PostgreSQL local. Desde C-41 el job `sql-rn02` lo ejecuta en CI y exige el aviso `OK 3`.
-3. **Cima.** E2E de navegador, fuera de esta entrega.
+3. **Cima.** Un E2E de navegador con Playwright (C-40): login del socio, reserva, pago simulado, consulta y comprobante. No entra en el 60 %.
 
 El umbral mínimo es **60 % de sentencias** en el conjunto de `collectCoverageFrom` de `backend/jest.config.ts` (código de `src/`, sin módulos, DTO, modelos, decoradores, `main.ts` ni `swagger.ts`), medido con `npm run test:cov`. Por debajo de 60 % la entrega no cumple este ADR.
 
@@ -39,8 +39,9 @@ El criterio determinante fue fijar un número que obligue a cubrir lógica de ne
 
 - **Positivas:** el porcentaje deja de ser opcional; la no sobreventa tiene una prueba en la base, aparte de los unitarios del servicio; el CI ya frena un pull request si los unitarios fallan.
 - **Negativas:** el 60 % no mira el frontend ni los tests HTTP; un módulo nuevo sin tests diluye el número.
-- **Deuda asumida (cerrada en C-10):** `coverageThreshold` está declarado en `backend/jest.config.ts` (60 % de sentencias global) y el workflow `.github/workflows/ci-backend.yml` corre `npm run test:cov`, sube el reporte de cobertura como artifact y hace fallar el pull request si la medición cae bajo 60 %. No hay Vitest, Testing Library ni Playwright. El reporte HTML de cobertura no se versiona (`backend/coverage/` está ignorado por `.gitignore`).
+- **Deuda asumida (cerrada en C-10):** `coverageThreshold` está declarado en `backend/jest.config.ts` (60 % de sentencias global) y el workflow `.github/workflows/ci-backend.yml` corre `npm run test:cov`, sube el reporte de cobertura como artifact y hace fallar el pull request si la medición cae bajo 60 %. No hay Vitest ni Testing Library. El reporte HTML de cobertura no se versiona (`backend/coverage/` está ignorado por `.gitignore`).
 - **Deuda asumida (cerrada en C-41):** el job `sql-rn02` del mismo workflow corre `supabase/tests/run-canchas-m4.sh` y falla si la salida no contiene `OK 3`. Sigue sin haber dos sesiones en paralelo. El unitario del 409 no se reemplaza.
+- **Cima (C-40):** `cd frontend && npm run test:e2e` recorre ese caso contra Vite y Nest. El umbral sigue en 60 % de sentencias del backend.
 
 ## Requisitos relacionados
 
