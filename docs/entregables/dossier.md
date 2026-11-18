@@ -2415,7 +2415,7 @@ El archivo `PROGV-2026-TIF-Equipo03-Registro.xlsx` es la tarjeta C-21 y todavía
 | C-33 | Check-out desde Acceso | Patricio | Finalizado |
 | C-34 | Contraste del aviso | Patricio | Finalizado |
 | C-35 | Medir la cobertura | Matias | Por hacer |
-| C-36 | Archivo LICENSE | Patricio | Por hacer |
+| C-36 | Archivo LICENSE | Patricio | Finalizado |
 | C-37 | Ordenar la planificación | Matias | Por hacer |
 | C-38 | Reescribir la planificación | Matias | Por hacer |
 | C-39 | Dashboard del gerente | Patricio | Por hacer |
