@@ -21,11 +21,11 @@ import {
   ApiTags,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
-import { AuthUserDto } from '../auth/auth-user.dto';
-import { CurrentUser } from '../auth/current-user.decorator';
-import type { AuthenticatedRequest } from '../auth/jwt-auth.guard';
-import { RequiereRol } from '../auth/roles.decorator';
-import type { RolUsuario } from '../auth/rol-usuario';
+import { AuthUserDto } from '../common/auth-user.dto';
+import { CurrentUser } from '../common/current-user.decorator';
+import type { AuthenticatedRequest } from '../common/jwt-auth.guard';
+import { RequiereRol } from '../common/roles.decorator';
+import type { RolUsuario } from '../common/rol-usuario';
 import {
   CheckInRequestDto,
   CheckInResponseDto,
@@ -88,8 +88,9 @@ export class AccesoController {
   @ApiOperation({
     summary: 'Sync batch de check-ins offline',
     description:
-      'Procesa la cola local. HTTP 200 siempre; cada ítem trae ok o code tipado. ' +
-      'Reintento con el mismo clientEventId es idempotente (no revalida TOTP). Máx. 50 ítems.',
+      'Procesa la cola local de entradas y salidas, en el orden del lote. HTTP 200 siempre; cada ítem trae ok o code tipado. ' +
+      'Una salida no valida TOTP y llama a registrar_check_out. ' +
+      'Reintento con el mismo clientEventId es idempotente. Máx. 50 ítems.',
   })
   @ApiOkResponse({ type: SyncCheckInsResponseDto })
   @ApiBadRequestResponse({ description: 'Batch inválido o > 50 ítems' })

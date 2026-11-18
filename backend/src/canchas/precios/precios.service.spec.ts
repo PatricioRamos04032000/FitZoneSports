@@ -6,10 +6,10 @@ import {
   ConfiguracionPico,
   ContextoPrecio,
   DESCUENTO_SOCIO_DEFAULT_PCT,
-} from './pricing.strategy';
-import { MemberDiscountPricing } from './strategies/member-discount-pricing.strategy';
-import { PeakHourPricing } from './strategies/peak-hour-pricing.strategy';
-import { StandardPricing } from './strategies/standard-pricing.strategy';
+} from './pricing.types';
+import { MemberDiscountPricingDecorator } from './decorators/member-discount-pricing.decorator';
+import { PeakHourPricingDecorator } from './decorators/peak-hour-pricing.decorator';
+import { StandardPricing } from './decorators/standard-pricing';
 
 const PRECIO_BASE = 20_000;
 
@@ -34,25 +34,27 @@ function crearContexto(overrides: Partial<ContextoPrecio> = {}): ContextoPrecio 
   };
 }
 
-describe('Estrategias de precios individuales (S4-T01)', () => {
+describe('Componentes de precios individuales (C-28 Decorator)', () => {
   describe('StandardPricing', () => {
-    const strategy = new StandardPricing();
+    const component = new StandardPricing();
 
-    it('siempre aplica y devuelve el precio base de la cancha', () => {
+    it('devuelve el precio base de la cancha y registra StandardPricing', () => {
       const ctx = crearContexto({ precioBase: 25_000 });
-      expect(strategy.aplica(ctx)).toBe(true);
-      expect(strategy.calcular(0, ctx)).toBe(25_000);
+      expect(component.calcular(ctx)).toEqual({
+        precio: 25_000,
+        reglasAplicadas: ['StandardPricing'],
+      });
     });
   });
 
-  describe('PeakHourPricing', () => {
-    const strategy = new PeakHourPricing();
+  describe('PeakHourPricingDecorator', () => {
+    const decorator = new PeakHourPricingDecorator();
 
     it('aplica dentro de la franja [desde, hasta) y no aplica en el límite superior', () => {
-      expect(strategy.aplica(crearContexto({ inicio: MARTES_18_HS }))).toBe(false);
-      expect(strategy.aplica(crearContexto({ inicio: MARTES_19_HS }))).toBe(true);
-      expect(strategy.aplica(crearContexto({ inicio: MARTES_20_HS }))).toBe(true);
-      expect(strategy.aplica(crearContexto({ inicio: MARTES_21_HS }))).toBe(false);
+      expect(decorator.aplica(crearContexto({ inicio: MARTES_18_HS }))).toBe(false);
+      expect(decorator.aplica(crearContexto({ inicio: MARTES_19_HS }))).toBe(true);
+      expect(decorator.aplica(crearContexto({ inicio: MARTES_20_HS }))).toBe(true);
+      expect(decorator.aplica(crearContexto({ inicio: MARTES_21_HS }))).toBe(false);
     });
 
     it('no aplica si el día no está en la lista de días pico de la sede', () => {
@@ -63,32 +65,32 @@ describe('Estrategias de precios individuales (S4-T01)', () => {
         dias: [1, 2, 3, 4, 5],
       };
       expect(
-        strategy.aplica(crearContexto({ inicio: SABADO_19_HS, pico: picoLunAVie })),
+        decorator.aplica(crearContexto({ inicio: SABADO_19_HS, pico: picoLunAVie })),
       ).toBe(false);
     });
 
     it('incrementa el precio según el porcentaje configurado en la sede', () => {
       const ctx = crearContexto({ inicio: MARTES_19_HS });
-      expect(strategy.calcular(20_000, ctx)).toBe(24_000);
+      expect(decorator.modificar(20_000, ctx)).toBe(24_000);
     });
   });
 
-  describe('MemberDiscountPricing', () => {
-    const strategy = new MemberDiscountPricing();
+  describe('MemberDiscountPricingDecorator', () => {
+    const decorator = new MemberDiscountPricingDecorator();
 
     it('aplica solo si el socio está activo y tiene porcentaje mayor a cero (RN-03)', () => {
-      expect(strategy.aplica(crearContexto({ esSocioActivo: true }))).toBe(true);
-      expect(strategy.aplica(crearContexto({ esSocioActivo: false }))).toBe(false);
+      expect(decorator.aplica(crearContexto({ esSocioActivo: true }))).toBe(true);
+      expect(decorator.aplica(crearContexto({ esSocioActivo: false }))).toBe(false);
     });
 
     it('descuenta el porcentaje configurado para toda la cadena', () => {
       const ctx = crearContexto({ esSocioActivo: true, descuentoSocioPct: 15 });
-      expect(strategy.calcular(20_000, ctx)).toBe(17_000);
+      expect(decorator.modificar(20_000, ctx)).toBe(17_000);
     });
   });
 });
 
-describe('PreciosService — Casos de negocio S4-T09 (S4-T01)', () => {
+describe('PreciosService — Casos de negocio S4-T09 (C-28 Decorator)', () => {
   let service: PreciosService;
 
   beforeEach(async () => {
@@ -254,9 +256,9 @@ describe('PreciosService — Casos de negocio S4-T09 (S4-T01)', () => {
     });
   });
 
-  describe('Redondeo (P7)', () => {
-    it('redondea al peso entero con Math.round después de aplicar todas las reglas', () => {
-      // 15.555 * 1.15 = 17.888,25 -> 17.888
+  describe('Redondeo hacia arriba (P7, S4-T15)', () => {
+    it('redondea hacia arriba al peso entero (Math.ceil) incluso con fracción menor a 0,50', () => {
+      // 15.555 * 1.15 = 17.888,25 -> con Math.ceil sube a 17.889 (antes 17.888 con Math.round)
       const resultado = service.calcular(
         crearContexto({
           precioBase: 15_555,
@@ -266,7 +268,37 @@ describe('PreciosService — Casos de negocio S4-T09 (S4-T01)', () => {
         }),
       );
 
-      expect(resultado.precioFinal).toBe(17_888);
+      expect(resultado.precioFinal).toBe(17_889);
+    });
+
+    it('redondea una única vez al final luego de encadenar todas las reglas (P4 + P7)', () => {
+      // Sin redondeo intermedio: 10.005 * 1,10 = 11.005,5 -> * 0,90 = 9.904,95 -> ceil = 9.905
+      // (Si redondeara en cada paso: ceil(11.005,5) = 11.006 -> * 0,90 = 9.905,4 -> ceil = 9.906)
+      const resultado = service.calcular(
+        crearContexto({
+          precioBase: 10_005,
+          esSocioActivo: true,
+          descuentoSocioPct: 10,
+          inicio: MARTES_19_HS,
+          pico: { ...CONFIGURACION_PICO_DEFAULT, recargoPct: 10 },
+        }),
+      );
+
+      expect(resultado.precioFinal).toBe(9_905);
+    });
+
+    it('no incrementa montos enteros exactos afectados por imprecisión de punto flotante IEEE-754', () => {
+      // En JS: 20.000 * (1 + 14 / 100) === 22800.000000000004; debe mantenerse en $22.800
+      const resultado = service.calcular(
+        crearContexto({
+          precioBase: 20_000,
+          esSocioActivo: false,
+          inicio: MARTES_19_HS,
+          pico: { ...CONFIGURACION_PICO_DEFAULT, recargoPct: 14 },
+        }),
+      );
+
+      expect(resultado.precioFinal).toBe(22_800);
     });
   });
 
@@ -305,7 +337,7 @@ describe('PreciosService — Casos de negocio S4-T09 (S4-T01)', () => {
     });
 
     it('rareza: ISO sin zona horaria se interpreta como hora de Argentina (−03:00)', () => {
-      // Comportamiento en PeakHourPricing.normalizarFecha (solo un comentario en código).
+      // Comportamiento en PeakHourPricingDecorator.normalizarFecha (solo un comentario en código).
       // Sin el sufijo -03:00, Node trataría el string como hora local del servidor;
       // el código fuerza Argentina. Martes 19:00 AR → entra en pico default.
       const sinZona = '2026-10-06T19:00:00';

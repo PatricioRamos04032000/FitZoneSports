@@ -44,8 +44,50 @@ jobs:
       - name: Ejecutar lint
         run: npm run lint
 
-      - name: Ejecutar tests unitarios
-        run: npm test -- --runInBand
+      - name: Ejecutar tests unitarios con cobertura
+        run: npm run test:cov -- --runInBand
+
+      - name: Publicar reporte de cobertura
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: coverage-backend
+          path: backend/coverage/
+          retention-days: 30
 
       - name: Ejecutar build
         run: npm run build
+
+  # C-41: el SQL de RN-02 corre contra un Postgres vacío, no contra Supabase.
+  # El stub arma auth.users; el insert del test no entra en el auth real.
+  sql-rn02:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:15-alpine
+        env:
+          POSTGRES_USER: postgres
+          # Base vacía, solo visible dentro del job. Sin contraseña no hay un secreto en el workflow.
+          POSTGRES_HOST_AUTH_METHOD: trust
+          POSTGRES_DB: fz_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres -d fz_test"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    steps:
+      - name: Checkout del código
+        uses: actions/checkout@v4
+
+      - name: Instalar cliente psql
+        run: sudo apt-get update && sudo apt-get install -y postgresql-client
+
+      - name: Correr SQL de RN-02
+        env:
+          PGHOST: localhost
+          PGPORT: "5432"
+          PGUSER: postgres
+          PGDATABASE: fz_test
+        run: bash supabase/tests/run-canchas-m4.sh

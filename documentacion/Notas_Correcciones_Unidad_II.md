@@ -50,7 +50,7 @@ Al corregir, completar licencia, entidad que gobierna, EOL y plan de actualizaci
 ## 3. El frontend no usa TanStack Query, y esa librería no cubre el estado de cliente
 
 **Estado:** pendiente de corregir  
-**Dónde:** `frontend/package.json` y las pantallas. La decisión de estado sigue abierta en [Decisiones pendientes](./Decisiones_Pendientes_y_Cosas_a_Definir.md) y en S4-T04 del [plan](./Plan_Trabajo_2_Semanas.md) (Zustand o Context, a cargo de Lucas, por hacer).
+**Dónde:** `frontend/package.json` y las pantallas. La decisión de estado sigue abierta en [Decisiones pendientes](./Decisiones_Pendientes_y_Cosas_a_Definir.md) y en S4-T04 (Zustand o Context). Desde el 2026-11-07 la toma Patricio (P1); antes estaba a cargo de Lucas (ver [LOG](./LOG.md)).
 
 **Qué pide la clase.** TanStack Query es la caché del estado de servidor: catálogo, pedidos, perfil, lo que viene de la API ([clase 2, diapositiva 45](./Unidad_II_Clase_2_Datos_y_APIs.md); [clase 1, diapositivas 43, 47 y 48](./Unidad_II_Clase_1_Frameworks.md)). El estado de cliente es otra cosa: `useState` si lo usa un solo componente, la URL si tiene que sobrevivir a un refresh, Context si cambia poco, Zustand o Jotai si cambia seguido y lo consumen muchos. La clase pide no guardar la respuesta HTTP en el store global.
 

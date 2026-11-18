@@ -3,10 +3,10 @@ import { Test } from '@nestjs/testing';
 import request from 'supertest';
 import { App } from 'supertest/types';
 import { AppModule } from './../src/app.module';
-import { AuthModule } from './../src/auth/auth.module';
-import { PerfilesRolRepository } from './../src/auth/perfiles-rol.repository';
-import { RequiereRol } from './../src/auth/roles.decorator';
-import { SUPABASE_JWKS } from './../src/auth/supabase-jwt.service';
+import { AuthModule } from './../src/usuarios/auth/auth.module';
+import { PerfilesRolRepository } from './../src/common/perfiles-rol.repository';
+import { RequiereRol } from './../src/common/roles.decorator';
+import { SUPABASE_JWKS } from './../src/common/supabase-jwt.service';
 import { createTestSigner, type TestSigner } from './support/supabase-jwt';
 
 @Controller('prueba-roles')

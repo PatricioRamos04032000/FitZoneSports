@@ -2,10 +2,11 @@ import {
   BadRequestException,
   ConflictException,
   ForbiddenException,
+  NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
-import { MembresiasService } from '../membresias/membresias.service';
+import { MembresiasService } from '../usuarios/membresias/membresias.service';
 import { RepositoryError } from '../supabase/repository.error';
 import { AccesoRepository } from './acceso.repository';
 import { AccesoService } from './acceso.service';
@@ -261,6 +262,95 @@ describe('AccesoService', () => {
     expect(results[0].checkIn?.id).toBe('ci-prev');
     expect(totp.verificar).not.toHaveBeenCalled();
     expect(repository.registrarCheckIn).not.toHaveBeenCalled();
+  });
+
+  it('checkOut llama a registrarCheckOut', async () => {
+    repository.registrarCheckOut.mockResolvedValue({
+      id: 'co-1',
+      perfil_id: SOCIO,
+      sede_id: SEDE,
+      tipo: 'salida',
+      origen: 'online',
+      ocurrio_en: new Date().toISOString(),
+      client_event_id: null,
+      created_at: new Date().toISOString(),
+    });
+
+    const result = await service.checkOut(
+      { id: ADMIN, rol: 'admin_sede' },
+      { perfilId: SOCIO, sedeId: SEDE },
+    );
+
+    expect(repository.registrarCheckOut).toHaveBeenCalledWith(
+      expect.objectContaining({
+        perfilId: SOCIO,
+        sedeId: SEDE,
+        origen: 'online',
+      }),
+    );
+    expect(totp.verificar).not.toHaveBeenCalled();
+    expect(result.tipo).toBe('salida');
+  });
+
+  it('checkOut PRESENCIA_NO_EXISTE → 404', async () => {
+    repository.registrarCheckOut.mockRejectedValue(
+      new RepositoryError('PRESENCIA_NO_EXISTE', 'P0001'),
+    );
+
+    const error = await service
+      .checkOut({ id: ADMIN, rol: 'admin_sede' }, { perfilId: SOCIO, sedeId: SEDE })
+      .catch((e: unknown) => e);
+
+    expect(error).toBeInstanceOf(NotFoundException);
+    const notFound = error as NotFoundException;
+    expect(notFound.getStatus()).toBe(404);
+    expect(notFound.getResponse()).toMatchObject({
+      code: 'PRESENCIA_NO_EXISTE',
+    });
+  });
+
+  it('sync: una salida no llama a totp.verificar y sí a registrarCheckOut', async () => {
+    const ocurrioEn = '2026-11-15T12:00:00.000Z';
+    repository.registrarCheckOut.mockResolvedValue({
+      id: 'co-sync-1',
+      perfil_id: SOCIO,
+      sede_id: SEDE,
+      tipo: 'salida',
+      origen: 'offline_sync',
+      ocurrio_en: ocurrioEn,
+      client_event_id: EVENT_OK,
+      created_at: new Date().toISOString(),
+    });
+
+    const { results } = await service.syncCheckIns(
+      { id: ADMIN, rol: 'admin_sede' },
+      [
+        {
+          clientEventId: EVENT_OK,
+          perfilId: SOCIO,
+          sedeId: SEDE,
+          tipo: 'salida',
+          ocurrioEn,
+        },
+      ],
+    );
+
+    expect(totp.verificar).not.toHaveBeenCalled();
+    expect(repository.registrarCheckIn).not.toHaveBeenCalled();
+    expect(membresias.findActivaPorPerfil).not.toHaveBeenCalled();
+    expect(repository.registrarCheckOut).toHaveBeenCalledWith({
+      perfilId: SOCIO,
+      sedeId: SEDE,
+      origen: 'offline_sync',
+      ocurrioEn,
+      clientEventId: EVENT_OK,
+    });
+    expect(results[0]).toMatchObject({
+      clientEventId: EVENT_OK,
+      ok: true,
+    });
+    expect(results[0].checkIn?.tipo).toBe('salida');
+    expect(results[0].checkIn?.origen).toBe('offline_sync');
   });
 
   it('sync: batch > 50 → BadRequestException', async () => {

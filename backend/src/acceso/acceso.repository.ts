@@ -91,14 +91,35 @@ export class AccesoRepository extends SupabaseRepository<CheckIn> {
   }
 
   async listarPresenciasPorSede(sedeId: string): Promise<Presencia[]> {
-    return this.unwrap<Presencia[]>(
+    type PerfilEmbed = { nombre: string | null; apellido: string | null };
+    type Fila = {
+      perfil_id: string;
+      sede_id: string;
+      desde: string;
+      perfiles: PerfilEmbed | PerfilEmbed[] | null;
+    };
+
+    const filas = await this.unwrap<Fila[]>(
       await this.client
         .from('presencias')
-        .select('*')
+        .select('perfil_id, sede_id, desde, perfiles(nombre, apellido)')
         .eq('sede_id', sedeId)
         .order('desde', { ascending: true }),
       'listarPresenciasPorSede',
     );
+
+    return filas.map((f) => {
+      const perfil = Array.isArray(f.perfiles)
+        ? (f.perfiles[0] ?? null)
+        : f.perfiles;
+      return {
+        perfil_id: f.perfil_id,
+        sede_id: f.sede_id,
+        desde: f.desde,
+        nombre: perfil?.nombre ?? null,
+        apellido: perfil?.apellido ?? null,
+      };
+    });
   }
 
   async listarCheckInsPorSede(

@@ -1,0 +1,21 @@
+stateDiagram-v2
+    direction TB
+
+    [*] --> Pendiente: POST /canchas/reservas<br/>hold
+    Pendiente --> Confirmada: Pago aprobado<br/>Reserva.pagar
+    Pendiente --> Cancelada: El socio cancela,<br/>el pago se rechaza<br/>o vence el hold
+    Confirmada --> Cancelada: El dueño cancela
+    Cancelada --> [*]
+
+    note right of Cancelada
+        Estado terminal.
+        Pagar o cancelar de nuevo se rechaza.
+    end note
+
+%% Estados — Reserva de cancha — FitZone Sports
+%% Autor: Patricio Ramos
+%% Fecha: 2026-11-11
+%% Versión: 1.0
+%% RF-10. Los estados del código son pendiente, confirmada y cancelada.
+%% No hay estado cumplida. Cancelar una confirmada no tiene plazo ni penalidad.
+%% La cancelación tardía (menos de 2 h) es de la inscripción a clase, RF-07, no de esta reserva.

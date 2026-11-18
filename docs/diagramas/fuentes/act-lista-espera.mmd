@@ -1,0 +1,38 @@
+flowchart TD
+    inicio((inicio)) --> requisitos{Membresía activa,<br/>clase programada<br/>y sin empezar}
+    requisitos -->|No| fin(((fin)))
+    requisitos -->|Sí| cupo{Hay cupo libre<br/>y la cola está vacía}
+    cupo -->|Sí| directa[Inscripción directa]
+    directa --> fin
+    cupo -->|No| espera[Queda en esperando]
+    espera --> libera[Se libera un lugar:<br/>cancelan una inscripción,<br/>se retira un notificado<br/>o vence su plazo]
+    libera --> procesar[procesar_lista_espera<br/>marca vencidos]
+    procesar --> hay{Hay cupo y<br/>alguien en esperando}
+    hay -->|No| fin
+    hay -->|Sí| avisa[El más antiguo pasa a notificado.<br/>Plazo: 30 min, o el inicio de la clase]
+    avisa --> emite[ListaEsperaPublisher emite<br/>lista-espera.lugar-liberado]
+    emite --> inapp[InApp guarda el aviso]
+    emite --> email{Pide aviso por email}
+    emite --> log[LogObserver registra el evento]
+    email -->|Sí| sim[Email simulado: lo escribe en el log]
+    email -->|No| socio{Confirma antes<br/>de que venza el plazo}
+    sim --> socio
+    inapp --> socio
+    log --> socio
+    socio -->|Sí| inscripto[Pasa a inscripto<br/>y se crea la inscripción]
+    inscripto --> fin
+    socio -->|No| siguiente[Vence o se retira.<br/>El cupo pasa al siguiente]
+    siguiente --> procesar
+
+    classDef extremo fill:#111,color:#fff,stroke:#111
+    class inicio extremo
+
+%% Actividad — Lista de espera — FitZone Sports
+%% Autor: Patricio Ramos
+%% Fecha: 2026-11-11
+%% Versión: 1.0
+%% RF-08. El publisher no conoce a los observers: se suscriben con @OnEvent y corren en paralelo.
+%% El email no se envía: si el socio lo activó, EmailSimulado lo deja en el log.
+%% La cancelación tardía (menos de 2 h) marca la inscripción y no cambia esta cola.
+%% Confirmar también exige membresía activa. Si ya no la tiene, el lugar sigue notificado hasta vencer.
+%% La cola también se procesa al inscribir o al anotarse, para cerrar plazos vencidos antes de mirar el cupo.

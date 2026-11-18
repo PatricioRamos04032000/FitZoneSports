@@ -1,19 +1,39 @@
 {
   "info": {
     "name": "FitZone Sports - API E2E Tests",
-    "description": "Colección de Postman para pruebas End-to-End de la API FitZone Sports. Incluye endpoints de autenticación, sedes, clases, membresías y notificaciones.",
+    "description": "Colección de Postman para pruebas End-to-End de la API FitZone Sports. Incluye endpoints de autenticación, sedes, membresías, clases, lista de espera y notificaciones.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
     "_postman_id": "fitzone-api-e2e-001"
   },
   "variable": [
     {
       "key": "baseUrl",
-      "value": "{{baseUrl}}",
+      "value": "http://localhost:3000",
       "type": "string"
     },
     {
       "key": "authToken",
-      "value": "{{authToken}}",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "sedeId",
+      "value": "42363e91-8c03-4d52-b160-5c1345be8656",
+      "type": "string"
+    },
+    {
+      "key": "claseId",
+      "value": "c1000000-0000-4000-8000-000000000001",
+      "type": "string"
+    },
+    {
+      "key": "inscripcionId",
+      "value": "d1000000-0000-4000-8000-000000000001",
+      "type": "string"
+    },
+    {
+      "key": "esperaId",
+      "value": "e1000000-0000-4000-8000-000000000001",
       "type": "string"
     }
   ],
@@ -32,6 +52,195 @@
               "path": ["health"]
             },
             "description": "Endpoint público que verifica que la API esté levantada y funcionando"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Membresías",
+      "item": [
+        {
+          "name": "GET /membresias/planes - Catálogo de planes",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/membresias/planes",
+              "host": ["{{baseUrl}}"],
+              "path": ["membresias", "planes"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET /membresias/mia - Mi membresía (socio)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/membresias/mia",
+              "host": ["{{baseUrl}}"],
+              "path": ["membresias", "mia"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Clases y Lista de Espera",
+      "item": [
+        {
+          "name": "GET /clases?sedeId=... - Listar clases con cupo",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/clases?sedeId={{sedeId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["clases"],
+              "query": [
+                {
+                  "key": "sedeId",
+                  "value": "{{sedeId}}"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST /clases/inscripciones - Inscribirme en clase",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"claseId\": \"{{claseId}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/clases/inscripciones",
+              "host": ["{{baseUrl}}"],
+              "path": ["clases", "inscripciones"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "DELETE /clases/inscripciones/:id - Cancelar inscripción",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/clases/inscripciones/{{inscripcionId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["clases", "inscripciones", "{{inscripcionId}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST /clases/lista-espera - Anotarme en lista de espera",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"claseId\": \"{{claseId}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/clases/lista-espera",
+              "host": ["{{baseUrl}}"],
+              "path": ["clases", "lista-espera"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET /clases/lista-espera/mias - Mis registros en lista de espera",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/clases/lista-espera/mias",
+              "host": ["{{baseUrl}}"],
+              "path": ["clases", "lista-espera", "mias"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST /clases/lista-espera/:id/confirmar - Confirmar lugar liberado",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/clases/lista-espera/{{esperaId}}/confirmar",
+              "host": ["{{baseUrl}}"],
+              "path": ["clases", "lista-espera", "{{esperaId}}", "confirmar"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "DELETE /clases/lista-espera/:id - Retirarme de lista de espera",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/clases/lista-espera/{{esperaId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["clases", "lista-espera", "{{esperaId}}"]
+            }
           },
           "response": []
         }

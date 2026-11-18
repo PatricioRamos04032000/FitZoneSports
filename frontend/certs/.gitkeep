@@ -1,0 +1,2 @@
+# El certificado local (extra-ca.crt) no se versiona. Hace falta solo si un antivirus
+# intercepta HTTPS, como Avast Web/Mail Shield en esta máquina.

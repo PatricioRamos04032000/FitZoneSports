@@ -4,9 +4,13 @@ import {
   Get,
   HttpCode,
   HttpStatus,
+  Inject,
   Param,
   Post,
+  Res,
+  StreamableFile,
   UseGuards,
+  forwardRef,
 } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
@@ -18,12 +22,15 @@ import {
   ApiOkResponse,
   ApiOperation,
   ApiParam,
+  ApiProduces,
   ApiTags,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
-import { AuthUserDto } from '../../auth/auth-user.dto';
-import { CurrentUser } from '../../auth/current-user.decorator';
-import { JwtAuthGuard } from '../../auth/jwt-auth.guard';
+import type { Response } from 'express';
+import { AuthUserDto } from '../../common/auth-user.dto';
+import { CurrentUser } from '../../common/current-user.decorator';
+import { JwtAuthGuard } from '../../common/jwt-auth.guard';
+import { ComprobantesService } from '../../pagos/comprobantes/comprobantes.service';
 import {
   IniciarPagoResponseDto,
   ReservarCanchaDto,
@@ -37,7 +44,11 @@ import { ReservasCanchaService } from './reservas-cancha.service';
 @UseGuards(JwtAuthGuard)
 @Controller('canchas/reservas')
 export class ReservasCanchaController {
-  constructor(private readonly service: ReservasCanchaService) {}
+  constructor(
+    private readonly service: ReservasCanchaService,
+    @Inject(forwardRef(() => ComprobantesService))
+    private readonly comprobantes: ComprobantesService,
+  ) {}
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
@@ -89,6 +100,32 @@ export class ReservasCanchaController {
     @Param('id') id: string,
   ): Promise<IniciarPagoResponseDto> {
     return this.service.iniciarPago(user.id, id);
+  }
+
+  @Get(':id/comprobante')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({
+    summary: 'Descargar comprobante PDF de una reserva pagada (RF-14)',
+    description:
+      'Emite el comprobante FitZone no fiscal con sede, cancha, horario y monto abonado.',
+  })
+  @ApiParam({ name: 'id', description: 'ID de la reserva' })
+  @ApiProduces('application/pdf')
+  @ApiOkResponse({ description: 'Archivo PDF del comprobante' })
+  @ApiConflictResponse({ description: 'La reserva no tiene un pago aprobado' })
+  @ApiForbiddenResponse({ description: 'La reserva pertenece a otro usuario' })
+  @ApiNotFoundResponse({ description: 'Reserva inexistente' })
+  async comprobante(
+    @CurrentUser() user: AuthUserDto,
+    @Param('id') id: string,
+    @Res({ passthrough: true }) res: Response,
+  ): Promise<StreamableFile> {
+    const archivo = await this.comprobantes.generarPorReserva(id, user.id);
+    res.set({
+      'Content-Type': 'application/pdf',
+      'Content-Disposition': `inline; filename="${archivo.filename}"`,
+    });
+    return new StreamableFile(archivo.buffer);
   }
 
   @Post(':id/cancelar')

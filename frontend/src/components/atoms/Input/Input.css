@@ -1,0 +1,28 @@
+.atom-input {
+  display: flex;
+  flex-direction: column;
+}
+
+.atom-input label {
+  color: #14283f;
+  font-size: 14px;
+  margin-bottom: 7px;
+}
+
+.atom-input input {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 18px;
+  border: 1px solid #ccd5df;
+  border-radius: 6px;
+  font-family: inherit;
+  font-size: 14px;
+  color: #14283f;
+  background-color: white;
+}
+
+.atom-input input:focus {
+  outline: none;
+  border-color: #58c9e8;
+}

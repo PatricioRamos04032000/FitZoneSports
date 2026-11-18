@@ -1,0 +1,26 @@
+.atom-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 13px;
+  margin-top: 5px;
+  background-color: #14283f;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-family: inherit;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.atom-button:hover:not(:disabled) {
+  background-color: #203e5e;
+}
+
+.atom-button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}

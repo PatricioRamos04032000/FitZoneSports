@@ -1,255 +1,187 @@
 # Panorama del desarrollo — FitZone Sports
 
-**Fecha:** 2026-10-13 · **Autor:** Patricio Ramos (P1)  
-**Base:** rama `desarrollo` en `09ef4cf`, [consigna](./Trabajo_Integrador_FitZone_Sports.md), [funcionalidades por actor](./Funcionalidades_por_Actor.md), [ER propuesto](./Propuesta_ER_FitZone.md) y [notas de la clase de patrones](./Notas_UnidadIII_Clase1_vs_FitZone.md)  
-**Relacionados:** [Estructura del backend](./Estructura_Backend.md) · [Correcciones S3-T03 / S3-T04](./Correcciones_S3-T03_S3-T04_Membresias_Clases.md)
+**Corte:** 2026-11-15 · **Autor de esta lectura:** Patricio Ramos (P1)  
+**Archivo:** se mantiene el nombre del 2026-10-13 para no romper enlaces. El contenido de esa fecha quedó reemplazado por esta lectura.  
+**Cómo se armó:** migraciones en `supabase/migrations/`, controllers y `*.spec.ts` / `backend/test/*.e2e-spec.ts`, pantallas en `frontend/src/`, y la documentación vigente en `docs/` (ADR, diagramas, manual técnico). El enunciado sigue en [Trabajo integrador](./Trabajo_Integrador_FitZone_Sports.md).
+
+Leyenda: **✅** la capa cubre la regla · **🟡** existe, pero le falta un pedazo concreto · **❌** no está · **—** esa capa no interviene.
+
+Un ✅ de testing significa que hay un unitario (y, si la regla vive en SQL, un script en `supabase/tests/`) que afirma el comportamiento. Esos scripts SQL se corren a mano contra un Postgres local: no entran en el CI. Un ✅ de documentación significa que un ADR, un diagrama o el manual técnico describen el comportamiento que está en el código, no solo el enunciado.
 
 ---
 
 ## 1. Resumen
 
-| Área | Estado | Comentario |
-|------|--------|------------|
-| Arquitectura (Unidad I) | **Hecho** | C4, ADRs, monolito modular, BFF con Supabase |
-| Base de datos | **~40 %** | Núcleo, membresías, clases y notificaciones. Faltan acceso (M2), canchas (M4) y pagos (M5) |
-| Backend (Unidad II) | **~35 %** | Infraestructura sólida (auth, roles, Repository, Swagger, tests). De negocio: sedes, notificaciones y una primera versión de membresías y clases, que necesita correcciones |
-| Patrones (Unidad III) | **~50 %** | Repository y Observer implementados y justificados; Strategy diseñado. Faltan analizar el resto de los patrones de la clase |
-| Frontend (Unidad IV) | **~5 %** | 4 pantallas estáticas, sin conexión con la API |
-| Testing y CI/CD (Unidad V) | **~15 %** | Tests unitarios y e2e del backend. Sin pipeline, sin Docker, sin tests de frontend |
-| Móvil (Unidad VI) | **0 %** | Diferido por decisión del equipo |
+Los porcentajes del 13 de octubre (base ~40 %, backend ~35 %, frontend ~5 %) ya no describen el repo. Esta lectura no los reemplaza por otro número: dice qué se puede demostrar y qué no.
 
-Lo más urgente: **corregir la seguridad de Clases y Membresías**, **diseñar las tablas de Canchas (M4)**, que bloquean Strategy y la demo, y **conectar el frontend con la API**.
+| Capa | Lectura al 14/11 |
+|------|------------------|
+| Base de datos | Tablas y funciones de M1 a M5 están migradas, incluida la garantía de no sobreventa. No hay Storage para la foto ni tabla o archivo de comprobante PDF. |
+| Backend | El guion del socio y el de recepción responden por API: registro de externo, perfil, membresía, clases con lista de espera, reserva y pago simulado de cancha, QR, check-in con cola offline, alta o edición de sedes y la agenda de clases del gerente, y la renovación cobrada de la membresía. No hay PDF. |
+| Testing | Las reglas críticas tienen unitario (RN-01, RN-02, RN-03, D5, D6, Decorator, pasarela, sync). El e2e cubre auth, roles y una parte de canchas; no recorre el checkout HTML ni el acceso. No hay tests de frontend. |
+| Frontend | Login, registro, perfil con membresía, canchas (grilla, reserva, pago, cancelar y administración de alta, precio, pico y mantenimiento), clases (inscribir, cancelar, lista de espera), notificaciones, Mi QR, Acceso (check-in, aforo, sync), Sedes, la agenda de clases y el dashboard de la cadena para el gerente. No hay descarga de PDF. |
+| Documentación de la regla | ADR ×10, 14 diagramas, manual técnico y justificación de patrones están alineados al código. Faltan el manual de usuario y el de instalación. El enunciado de RF-11 sigue diciendo Strategy; el código es Decorator. |
 
-El guion del Demo Day es: *registrar socio → pagar membresía → reservar cancha de paddle → ver el QR en el móvil*. Hoy no se puede hacer ningún paso desde el frontend; desde la API, solo el login.
+El guion de Demo Day (login → ver membresía → reservar paddle y pagar → QR → check-in) se puede recorrer en la UI. Quedan fuera de ese recorrido de cinco minutos: la agenda de clases, la administración de canchas, el comprobante PDF y los reportes. La agenda y la administración ya tienen pantalla.
+
+**Los 14 requisitos, al 15/11.** Demostrable: se recorre en la UI, sin Swagger ni SQL. Parcial: la API cubre la regla y la pantalla no. Falta: no hay implementación. Son 13 demostrables y 1 que falta. La foto queda fuera de este corte. Socio o externo no es un alta distinta: lo define la membresía vigente.
+
+| RF | Veredicto | Se puede mostrar | Qué falta para cerrarlo |
+|----|-----------|------------------|-------------------------|
+| RF-01 Registro y perfil | Demostrable | `/signup` crea la persona (DNI y contacto) y `/perfil` la edita | La foto queda fuera de este corte. Socio o externo lo da la membresía vigente, no otro formulario |
+| RF-02 Membresía | Demostrable | En `/perfil` el socio ve el catálogo, el estado y paga la renovación | `suspendido` está en el enum y esta entrega no lo asigna. No hay renovación por cron |
+| RF-03 Acceso multi-sede | Demostrable | La membresía no tiene sede: el socio elige sede en clases y canchas, y el check-in no pide sede de origen | No hay un test que lo nombre |
+| RF-04 QR de ingreso | Demostrable | `/mi-qr` muestra el código y `/acceso` lo valida contra la membresía activa | Recepción pega el código; no hay cámara |
+| RF-05 Aforo | Demostrable | `/acceso` muestra ocupación y aforo máximo | No bloquea el ingreso al llegar al tope |
+| RF-06 Agenda de clases | Demostrable | El gerente crea y edita en `/clases/gestionar` | La baja es `cancelada`, no un borrado |
+| RF-07 Reserva de clases | Demostrable | En `/clases` el socio se inscribe (48 h, cupo, membresía vigente) y cancela | — |
+| RF-08 Lista de espera | Demostrable | El socio se anota en `/clases` y el aviso llega a `/notificaciones` | El mail es un log |
+| RF-09 Alta de canchas | Demostrable | En `/canchas/gestionar` se crea la cancha y se edita el precio por hora | La baja es `activa = false` |
+| RF-10 Reserva de turnos | Demostrable | `/canchas` muestra la grilla, reserva, deja el turno bloqueado y cancela la reserva propia | — |
+| RF-11 Precio | Demostrable | La grilla aplica descuento de socio y horario pico; en `/canchas/gestionar` se editan | El enunciado todavía dice Strategy |
+| RF-12 Mantenimiento | Demostrable | En `/canchas/gestionar` se carga el período y la grilla marca esas horas | No cancela las reservas ya tomadas |
+| RF-13 Pasarela simulada | Demostrable | La reserva de cancha y la renovación de membresía pagan en el checkout simulado | MercadoPago real queda fuera |
+| RF-14 Comprobante PDF | Falta | — | No hay PDF |
 
 ---
 
-## 2. Estado por módulo
+## 2. Matriz por regla
 
-Leyenda: ✅ hecho · 🟡 parcial · ❌ falta
+### Transversal
 
-### Transversal (sedes, perfiles, autenticación)
+| Regla | BD | Backend | Testing | Frontend | Documentación | Hueco |
+|-------|----|---------|---------|----------|---------------|-------|
+| Login BFF | ✅ `auth` + `perfiles` | ✅ `POST /auth/login` | ✅ `auth.service.spec` y e2e de `/auth/me` | ✅ `/login` | ✅ [ADR-011](../docs/adr/ADR-011-bff-supabase-auth.md), [ADR-006](../docs/adr/ADR-006-frontend-react-estado.md) | — |
+| Rol del token y rutas por rol | ✅ `perfiles.rol` | ✅ `GET /auth/me`, `@RequiereRol` | ✅ `roles.e2e-spec` | ✅ `RoleRoute` y menú | ✅ ADR-006, manual técnico §1 | — |
+| Listar sedes | ✅ `sedes` | ✅ `GET /sedes` | ✅ unitario y e2e | ✅ select en Perfil, Canchas y Clases | 🟡 enunciado | No hay manual de usuario |
+| Alta y edición de sedes (A4, RNF-04) | ✅ checks de nombre y aforo; el trigger de pico corre al insertar | ✅ `POST /sedes` y `PATCH /sedes/:id` solo gerente | ✅ unitario del servicio y e2e 401/403/201/200 | ✅ `/sedes` | ✅ manual técnico M1; la decisión de RNF-04 sigue en ADR-001 y ADR-002 | La baja es `activa = false`. No asigna `admins_sede` |
+| `admins_sede` | ✅ tabla | ✅ acota a `admin_sede` en acceso y canchas | ✅ `acceso.service.spec` (sin asignación → 403) | ❌ no hay ABM | 🟡 manual técnico, módulo M2 | El gerente no asigna admins desde la UI |
+| Reportes consolidados (A4) | ✅ vista `reporte_resumen_sede` | ✅ `GET /reportes/resumen` solo gerente | ✅ unitario del servicio y e2e 401/403/200 | ✅ `/dashboard` | ✅ manual técnico §4.5; CQRS nivel 2 en la justificación §16 | La recepción no llama al endpoint |
+| Preferencia de email | ✅ `perfiles.notificar_por_email` | ✅ `GET/PATCH /notificaciones/preferencias` | ✅ e2e de notificaciones | 🟡 el perfil guarda el flag | ✅ [diseño Observer](./Diseno_Observer_S4-T02_Notificaciones.md) | — |
 
-| Funcionalidad | BD | Backend | Front |
-|---------------|----|---------|-------|
-| Login (BFF hacia Supabase Auth) | ✅ | ✅ `POST /auth/login` | 🟡 formulario sin conectar |
-| Usuario y rol del token | ✅ | ✅ `GET /auth/me`, `@RequiereRol` | ❌ |
-| Listar sedes | ✅ | ✅ `GET /sedes` | ❌ (el select es fijo) |
-| Crear y editar sedes (A4, RNF-04) | ✅ | ❌ | ❌ |
-| Reportes consolidados (A4) | — | ❌ | ❌ |
-| Asignar administradores de sede (`admins_sede`) | ❌ | ❌ | ❌ |
+### M1 — Usuarios y membresías
 
-### M1 — Usuarios y Membresías (RF-01 a RF-03)
+| Regla | BD | Backend | Testing | Frontend | Documentación | Hueco |
+|-------|----|---------|---------|----------|---------------|-------|
+| RF-01 Registro (DNI, contacto) | ✅ `perfiles` | ✅ `POST /auth/register` crea la persona y no devuelve token hasta confirmar el mail | ✅ `auth.service.spec` (`register`) | ✅ `/signup` | 🟡 ADR-011 (el BFF); el alta no tiene sección propia | Socio o externo lo da la membresía vigente. El alta deja `rol = externo` y ese valor no cambia al contratar |
+| RF-01 Foto | 🟡 columna `foto_url`; Storage sin configurar | 🟡 `PATCH /perfiles/me` acepta una URL de texto | ❌ | ❌ el formulario no la pide | ❌ | Fuera de este corte |
+| Ver y editar mi perfil | ✅ | ✅ `GET/PATCH /perfiles/me` (identidad del JWT) | ✅ `perfiles.service.spec` y `perfiles.e2e-spec` | ✅ `/perfil` | 🟡 manual técnico nombra el módulo | Falta el manual de usuario |
+| RF-02 Catálogo de planes | ✅ `planes_membresia` | ✅ `GET /membresias/planes` | ✅ el e2e comprueba los tres planes | ✅ el perfil del socio muestra plan, duración y precio | ✅ diagrama [est-membresia](../docs/diagramas/fuentes/est-membresia.mmd) | — |
+| RF-02 Membresía activa / vencida | ✅ estados y vigencia | ✅ `GET /membresias/mia` | 🟡 unitario del servicio | ✅ el perfil del socio muestra plan, estado y vigencia | ✅ diagrama de estados, manual técnico §2 | — |
+| RF-02 Alta que cierra la anterior | ✅ `renovar_membresia` cierra e inserta en la misma transacción | ✅ el `POST /membresias` del staff llama a esa función y no cobra | ✅ el unitario espera `renovar` | — el alta de staff no tiene pantalla | ✅ manual técnico M1 | — |
+| RF-02 Renovación cobrada | ✅ `pagos.plan` y el check de un pago pendiente sin `membresia_id` | ✅ `POST /membresias/renovar` y el checkout; el rechazo no toca la vigente | ✅ unitario de rechazo y de aprobación, e2e 401/403 | ✅ botón Pagar en el perfil | ✅ manual técnico M5 | — |
+| RF-03 Acceso multi-sede | ✅ la membresía no tiene sede | ✅ el check-in no exige `sede_home` | ❌ no hay un caso que lo afirme | — el socio elige sede en clases y canchas | ✅ enunciado y manual técnico M1 | La regla es de modelo, no de pantalla |
 
-| Funcionalidad | BD | Backend | Front |
-|---------------|----|---------|-------|
-| RF-01 Registro (DNI, contacto, foto; socio o externo) | ✅ `perfiles` | ❌ no hay `POST /auth/register` | ❌ |
-| Ver y editar mi perfil | ✅ | ❌ no hay `GET/PATCH /perfiles/me` | 🟡 pantalla con datos fijos |
-| Foto de perfil | ❌ (Supabase Storage sin configurar) | ❌ | ❌ |
-| RF-02 Planes y precios | ✅ `planes_membresia` | ❌ | ❌ |
-| RF-02 Membresía activa / vencida | ✅ | 🟡 sin login y con error de fecha | ❌ |
-| RF-02 Alta y renovación | ✅ | 🟡 `POST /membresias` inseguro y no cierra la anterior | ❌ |
-| RF-02 Renovación con pago | — | ❌ (depende de M5) | ❌ |
-| RF-03 Acceso multi-sede | ✅ (la membresía no está atada a una sede) | — | — |
-| Preferencias de notificación | ✅ | ✅ | ❌ |
+### M2 — Acceso
 
-### M2 — Gimnasio y Acceso (RF-04, RF-05, RN-01, RNF-01)
+| Regla | BD | Backend | Testing | Frontend | Documentación | Hueco |
+|-------|----|---------|---------|----------|---------------|-------|
+| RF-04 QR dinámico (TOTP) | ✅ `totp_seeds` | ✅ `TotpService`, `GET /acceso/totp/me` y `/codigo`; se emite al crear la membresía | ✅ `totp.service.spec` y `acceso.service.spec`. Sin e2e | ✅ `/mi-qr` (solo socio) | ✅ [ADR-003](../docs/adr/ADR-003-estrategia-offline-acceso.md), [ADR-007](../docs/adr/ADR-007-acceso-totp-cola-offline.md), C4-3 acceso, manual §6 | Sin cámara: recepción pega el código |
+| Validar el ingreso | ✅ `check_ins` | ✅ `POST /acceso/check-ins`, check-out y listados | ✅ unitario del check-in feliz, de TOTP inválido y de la salida. Sin e2e | ✅ `/acceso` con Salir | ✅ secuencia [sec-acceso-offline](../docs/diagramas/fuentes/sec-acceso-offline.mmd) | — |
+| RN-01 Una sede a la vez | ✅ `presencias` | ✅ `registrar_check_in` devuelve `YA_DENTRO` / `YA_EN_OTRA_SEDE`; `registrar_check_out` libera la presencia | ✅ el unitario mapea `YA_EN_OTRA_SEDE` a 409 y `PRESENCIA_NO_EXISTE` a 404; el sync de una salida no pide TOTP | ✅ Salir en `/acceso`; sin red, sin servidor o sin base la salida entra en la misma cola del ingreso | ✅ ADR-007 y [propuesta RN-01](../docs/rnf/Propuesta_RN01_Presencia_Una_Sede.md) | Timeout de 3 h: está en el ADR, no en el código |
+| RF-05 Aforo | ✅ `sedes.aforo_max` | ✅ `GET /acceso/presencias` informa ocupación y máximo; no bloquea | ❌ no hay un caso del aviso | 🟡 `/acceso` muestra `ocupación / máximo` | 🟡 [plan M2](./Plan_M2_Acceso_QR_Patricio.md): soft a propósito | — |
+| RNF-01 Sin internet en recepción | — la cola es del navegador | ✅ `POST /acceso/check-ins/sync` (lote e idempotencia) | ✅ unitario de lote, tope de 50 e idempotencia | ✅ `localStorage` y botón de sync | ✅ ADR-003 y ADR-007. El nodo por sede quedó descartado por escrito | No mide el 99,5 % del enunciado. No hay tornos |
 
-**Actualizado 2026-11-03** ([Plan M2](./Plan_M2_Acceso_QR_Patricio.md) · [ADR-007](./adr/ADR-007-acceso-totp-cola-offline.md) Aceptado).
+### M3 — Clases
 
-| Funcionalidad | BD | Backend | Front |
-|---------------|----|---------|-------|
-| RF-04 QR dinámico (TOTP) | ✅ `totp_seeds` | ✅ `TotpService` + `GET /acceso/totp/me` (+ `/codigo`); emisión al crear membresía | ✅ `/mi-qr` (socio) |
-| Validación de ingreso en recepción | ✅ `check_ins` | ✅ `POST /acceso/check-ins` (+ out, listados) | ✅ `/acceso` (admin_sede/gerente); pegar JSON/código |
-| RN-01 Una sede a la vez | ✅ `presencias` PK | ✅ RPC `registrar_check_in` mapea `YA_DENTRO` / `YA_EN_OTRA_SEDE` | 🟡 errores visibles; UX de salida en UI aún mínima (API sí) |
-| RF-05 Aforo en tiempo real | ✅ `sedes.aforo_max` | ✅ soft en `GET /acceso/presencias` | 🟡 muestra ocupación / aforo; no bloquea |
-| RNF-01 Acceso sin internet | — | ✅ `POST /acceso/check-ins/sync` (batch + idempotencia) | ✅ cola `localStorage` + sync |
+| Regla | BD | Backend | Testing | Frontend | Documentación | Hueco |
+|-------|----|---------|---------|----------|---------------|-------|
+| RF-06 Crear y editar clases | ✅ `clases` y checks de tipo e instructor | ✅ `POST /clases` y `PATCH /clases/:id` solo gerente | ✅ unitario del servicio y e2e 401/403/201/200 | ✅ `/clases/gestionar` | ✅ manual técnico M3 y el diagrama de clases | La baja es `estado = cancelada`. No cambia la sede ni avisa a la lista de espera |
+| Listar con cupo | ✅ vista `clases_con_cupo` | ✅ `GET /clases?sedeId` con JWT | 🟡 e2e de auth; el unitario se concentra en inscribir | ✅ `/clases` | 🟡 manual técnico §2 | Falta el manual de usuario (C-16) |
+| RF-07 Inscribir, ventana de 48 h (D5) y RN-03 | ✅ `inscribir_en_clase` | ✅ el servicio exige membresía vigente y 48 h; el perfil sale del JWT | ✅ `clases.service.spec` | ✅ botón de inscribir | ✅ enunciado; D5 quedó cerrada en el servicio (ya no es decisión abierta) | — |
+| RF-07 Cancelar; tardía si faltan menos de 2 h (D6) | ✅ `cancelar_inscripcion` | ✅ la hora se lee de la base, no del body | ✅ el spec cubre `esTardia` y el aviso | ✅ cancelar en `/clases` | ✅ | — |
+| RF-08 Anotarse, confirmar y retirarse | ✅ `lista_espera`, `procesar_lista_espera`, `confirmar_lugar_espera` | ✅ `POST/DELETE /clases/lista-espera` y confirmar | ✅ unitario y e2e del flujo | ✅ en `/clases` | ✅ justificación Observer, [actividad](../docs/diagramas/fuentes/act-lista-espera.mmd), diseño S4-T02 | El mail sigue siendo simulado (log) |
+| RF-08 Aviso al liberarse un lugar | ✅ `notificaciones` | ✅ `cancelar` llama a `ListaEsperaPublisher` | ✅ el spec de cancelar publica y hay spec de observers | ✅ `/notificaciones` lista y marca leída | ✅ diseño Observer | — |
 
-**Cerrado en MVP:** TOTP 60 s ±1; seed cifrado con `TOTP_SEED_ENCRYPTION_KEY` (demo en claro); offline = cola cliente + sync (sin nodo por sede). **Pendiente / stretch:** cámara QR, check-out amigable en UI, timeout automático de presencia (convención 3 h en ADR), app móvil.
+### M4 — Canchas
 
-### M3 — Clases Grupales (RF-06 a RF-08)
+| Regla | BD | Backend | Testing | Frontend | Documentación | Hueco |
+|-------|----|---------|---------|----------|---------------|-------|
+| RF-09 Alta y precio por hora | ✅ `canchas` | ✅ `POST /canchas` y `PATCH /canchas/:id` | ✅ e2e 401, 403 y 201 | ✅ `/canchas/gestionar` | ✅ manual técnico M4 | La baja es `activa = false` |
+| RF-10 Grilla | ✅ | ✅ `GET /canchas/disponibilidad` | 🟡 e2e del GET público | ✅ `/canchas`: sede, fecha y horario | ✅ [C4-3 canchas](../docs/diagramas/fuentes/c4-3-canchas.mmd), [secuencia de reserva](../docs/diagramas/fuentes/sec-reserva-pago.mmd) | — |
+| RF-10 Reservar y cancelar | ✅ `reservar_cancha`, `cancelar_reserva_cancha`, hold | ✅ `POST /canchas/reservas`, `GET /canchas/reservas/me`, `POST /canchas/reservas/:id/cancelar` | ✅ `reservas-cancha.service.spec` (hold, pago, cancelar) | ✅ reservar, pagar y cancelar en `/canchas` | ✅ secuencia y [estados de la reserva](../docs/diagramas/fuentes/est-reserva.mmd) | Cancelar no devuelve el pago |
+| RN-02 Sin sobreventa | ✅ índice único `reservas_cancha_sin_sobreventa` | ✅ el 23505 sale como 409 `TURNO_OCUPADO` | ✅ unitario del 409 y `supabase/tests/canchas_m4.test.sql` (manual) | — lo resuelve la API | ✅ [ADR-004](../docs/adr/ADR-004-concurrencia-reservas-canchas.md), secuencia concurrente, manual §5 | El SQL no corre en CI |
+| RF-11 Precio (descuento socio + pico) | ✅ `configuracion_pico`, `configuracion_cadena` | ✅ Decorator (`Standard` → `MemberDiscount` → `PeakHour`); `GET/PUT` de pico y de descuento (el PUT de descuento es de gerente) | ✅ `precios.service.spec`, incluido el socio vencido que paga como externo | ✅ la grilla muestra el precio; `/canchas/gestionar` edita pico y, si el rol es gerente, el descuento | ✅ justificación § Decorator, manual §4.1, [análisis Strategy → Decorator](./diagramas%20desarrollo/analisis-strategy-a-decorator.md), UML de clases. El enunciado todavía nombra Strategy | — |
+| RF-12 Mantenimiento | ✅ `mantenimientos_cancha` (desde–hasta) | ✅ `GET/POST/DELETE .../mantenimientos`; la grilla marca esas horas | ✅ `canchas.service.spec` y e2e de rol | ✅ `/canchas/gestionar` | ✅ justificación: período en tabla, no un estado de la reserva. Manual técnico M4 | No cancela reservas ya tomadas |
+| RNF-03 Disponibilidad rápida | ✅ índices de sede, rango de mantenimiento, cancha+inicio y perfil | — la consulta ya los usa | — no se mide latencia | — | ✅ manual técnico §5 nombra los cuatro índices | El requisito pide índices, no una medición |
 
-| Funcionalidad | BD | Backend | Front |
-|---------------|----|---------|-------|
-| RF-06 Crear y editar clases (admin) | ✅ | ❌ | ❌ |
-| Listar clases con cupo | ✅ vista `clases_con_cupo` | 🟡 sin login | ❌ |
-| RF-07 Reservar | ✅ `inscribir_en_clase` | 🟡 perfil tomado del body, sin control de membresía (RN-03) | ❌ |
-| RF-07 Reservar hasta 48 h antes (D5) | — | ❌ (falta decidir cómo se interpreta) | ❌ |
-| RF-07 Cancelar (tardía con menos de 2 h, D6) | ✅ | 🟡 la hora la manda el cliente | ❌ |
-| RF-08 Anotarse en la lista de espera | ✅ | ❌ | ❌ |
-| RF-08 Aviso al liberarse un lugar (Observer) | ✅ | 🟡 el Observer está, pero Clases no lo llama | ❌ |
-| RF-08 Confirmar el lugar | ✅ `confirmar_lugar_espera` | ❌ | ❌ |
-| Mis notificaciones | ✅ | ✅ | ❌ |
+### M5 — Pagos
 
-### M4 — Canchas (RF-09 a RF-12, RN-02)
-
-| Funcionalidad | BD | Backend | Front |
-|---------------|----|---------|-------|
-| RF-09 Alta de canchas con precio por hora | ❌ `canchas` | ❌ | ❌ |
-| RF-10 Grilla de disponibilidad | ❌ `reservas_cancha` | ❌ | 🟡 pantalla con datos fijos |
-| RF-10 / RN-02 Reservar sin sobreventa | ❌ (índice único o función con bloqueo) | ❌ | ❌ |
-| RF-11 Precio dinámico (Strategy) | ❌ `configuracion_pico`, `configuracion_cadena` | ❌ S4-T01 | ❌ |
-| RF-12 Mantenimiento | ❌ | ❌ | ❌ |
-| RNF-03 Disponibilidad rápida (índices) | ❌ | — | — |
-
-Las reglas de precio ya están decididas en parte ([S4-T09](./Propuesta_Reglas_Negocio_S4-T09.md), P3 y P8). Falta cerrar P1, P2 y P4 a P7.
-
-### M5 — Pagos y Facturación (RF-13, RF-14, RNF-02)
-
-| Funcionalidad | BD | Backend | Front |
-|---------------|----|---------|-------|
-| RF-13 Pasarela simulada (estilo MercadoPago) | ✅ `pagos` (S6-T03) | ✅ checkout HTML + preferencia (S7-T02b) | ❌ |
-| RNF-02 Guardar solo el token de la pasarela | ✅ columna `token_pasarela` | ✅ insert desde Nest (S7-T02b) | — |
-| RF-14 Comprobante PDF | ❌ | ❌ (falta elegir librería) | ❌ |
+| Regla | BD | Backend | Testing | Frontend | Documentación | Hueco |
+|-------|----|---------|---------|----------|---------------|-------|
+| RF-13 Pasarela simulada | ✅ `pagos` | ✅ `PasarelaSimulada`, preferencia y checkout HTML (`/pasarela-simulada/checkout/:pagoId`) | ✅ `pasarela-simulada.spec` y el spec del Facade (aprueba, rechaza, hold vencido). Sin e2e del HTML | ✅ `/canchas` redirige a `checkoutUrl` | ✅ [ADR-010](../docs/adr/ADR-010-tokenizacion-medios-de-pago.md), secuencia de reserva y pago | MercadoPago real y Circuit Breaker quedan fuera |
+| RNF-02 Solo el token | ✅ `token_pasarela` | ✅ el insert guarda el token opaco | ✅ `confirmarPago` afirma que se persiste el token | — | ✅ ADR-010 | No hay un test que lea la fila y niegue un PAN |
+| RF-14 Comprobante PDF | ❌ | ❌ | ❌ | ❌ | 🟡 [plan de cierre, C-04](../docs/planificacion/Plan_Cierre_Entrega_6_19_Nov.md): PDF de la app, no factura. La justificación deja Template Method para cuando exista | Sigue por hacer |
 
 ---
 
 ## 3. Base de datos
 
-| Tabla / objeto | Módulo | Estado | Dónde está |
-|----------------|--------|--------|------------|
-| `sedes`, `perfiles`, `membresias` y enums | Núcleo / M1 | ✅ | `20260915000000_fase_a_nucleo.sql` (S5-T01). Ya estaba en Supabase; el stub `00_fase_a_simulada.sql` solo simula `auth` en local |
-| `planes_membresia` | M1 | ✅ | `20261005220000_membresias_clases.sql` |
-| `clases`, `inscripciones_clase`, `lista_espera`, vista y funciones | M3 | ✅ | `20261005220000_membresias_clases.sql` |
-| `notificaciones`, `perfiles.notificar_por_email` | M3 | ✅ | `20261006190000_notificaciones.sql` |
-| `renovar_membresia` (función) | M1 | ❌ | Propuesta en el doc de correcciones, punto 8 |
-| `canchas`, `reservas_cancha` | M4 | ❌ | ER propuesto y S4-T09 |
-| `configuracion_pico`, `configuracion_cadena` | M4 | ❌ | S4-T09 (P3 y P8 decididos) |
-| `admins_sede` | Transversal | ❌ | S4-T09 |
-| Renombrar el rol `recepcionista` a `admin_sede` | Transversal | ❌ | Decidido en S4-T09 |
-| `presencias`, `check_ins`, `totp_seeds` | M2 | ✅ | `20261101210000_acceso_m2.sql` + Nest `acceso/` + UI `/mi-qr` `/acceso` |
-| `pagos` | M5 | ✅ migración S6-T03; Nest `PasarelaSimulada` escribe filas (S7-T02); PDF / MP real pendientes | ER + migración + módulo `backend/src/pagos/` |
+| Objeto | Módulo | Estado | Migración |
+|--------|--------|--------|-----------|
+| `sedes`, `perfiles`, `membresias` | Núcleo / M1 | ✅ | `20260915000000_fase_a_nucleo.sql` |
+| `planes_membresia`, `clases`, `inscripciones_clase`, `lista_espera`, vista y funciones | M1 / M3 | ✅ | `20261005220000_membresias_clases.sql` |
+| `notificaciones` | M3 | ✅ | `20261006190000_notificaciones.sql` |
+| `canchas`, `mantenimientos_cancha`, `reservas_cancha`, `configuracion_pico`, `configuracion_cadena`, `admins_sede`, `reservar_cancha` | M4 | ✅ | `20261027200000_canchas_m4.sql` |
+| `pagos` | M5 | ✅ | `20261028210000_pagos_m5.sql` |
+| Hold, vencimiento y `confirmar_reserva_cancha` | M4 / M5 | ✅ | `20261101200000_hold_reserva_pendiente.sql`, `20261031200000_confirmar_reserva_cancha.sql` |
+| `totp_seeds`, `presencias`, `check_ins`, `registrar_check_in` / `out` | M2 | ✅ | `20261101210000_acceso_m2.sql` |
+| Checks de `sedes` (nombre y aforo) | Transversal / RNF-04 | ✅ | `20261114203000_sedes_checks.sql` |
+| Checks de tipo e instructor en `clases` | M3 / RF-06 | ✅ | `20261114230000_clases_checks.sql` |
+| `renovar_membresia` y `pagos.plan` | M1 / RF-02 | ✅ | `20261114220000_renovar_membresia.sql` |
+| Storage de la foto, archivo de PDF | M1 / M5 | ❌ | — |
 
-**Hecho (S5-T01, 2026-10-27):** la Fase A está versionada en [`supabase/migrations/20260915000000_fase_a_nucleo.sql`](../supabase/migrations/20260915000000_fase_a_nucleo.sql). En el Supabase del equipo las tablas ya existían; el archivo sirve para recrear un Postgres vacío.
-
----
-
-## 4. Backend
-
-El detalle está en [Estructura_Backend.md](./Estructura_Backend.md). Resumen:
-
-- **Sólido:** login BFF, verificación de JWT, guard de roles, Repository con manejo de errores centralizado, Observer con eventos del framework, Swagger, CORS, 63 tests.
-- **A corregir:** Clases y Membresías (13 puntos en el [doc de correcciones](./Correcciones_S3-T03_S3-T04_Membresias_Clases.md); 6 de prioridad alta, sobre todo seguridad).
-- **Faltan endpoints:**
-  - **Transversal:** registro, perfil propio, ABM de sedes.
-  - **M3:** ABM de clases, lista de espera (anotarse, confirmar, retirarse).
-  - **M4, M5, M2 y reportes:** todo.
-- **Mejoras generales:** `ValidationPipe` global, activar la regla `no-explicit-any`, README propio.
+Scripts SQL de reglas, solo en local: `supabase/tests/membresias_clases.test.sql` y `supabase/tests/canchas_m4.test.sql`. No hay script de acceso ni de pagos.
 
 ---
 
-## 5. Frontend
+## 4. Backend y frontend, en una frase cada uno
 
-**Hoy:** React 19 + Vite + `react-router-dom`. 4 pantallas (`Home`, `Login`, `Perfil`, `Canchas`) con datos fijos y un `Layout` que solo envuelve `Home`.
+**API.** Módulos `usuarios`, `acceso`, `clases`, `canchas`, `pagos` y el puerto de lectura `reportes`. Identidad tomada del JWT. Swagger en el proceso de Nest. `GET /reportes/resumen` está en el tag `reportes`. El alta de sedes sí: `POST /sedes` y `PATCH /sedes/:id`. La agenda de clases sí: `POST /clases` y `PATCH /clases/:id`.
 
-| Falta | Detalle | Tarea |
-|-------|---------|-------|
-| Capa de servicios (cliente de la API) | Un módulo `api/` con la URL base (`VITE_API_URL`), que agregue el token en `Authorization` y maneje 401 | Unidad IV, semana 10 |
-| Login real | Llamar a `POST /auth/login`, guardar el token y redirigir. **Hoy el formulario imprime la contraseña en la consola: hay que sacarlo** | S3-T05 |
-| Estado global | Usuario, token y rol (Zustand o Context) | S4-T04 |
-| Rutas protegidas por rol | Redirigir al login sin token; menú distinto por rol | — |
-| Atomic Design | Átomos, moléculas y organismos reutilizables (botón, input, tarjeta de clase o cancha, tabla) | Unidad IV, semana 8 |
-| Componentes documentados | Entregable de la Unidad IV (15 %): por ejemplo con Storybook | Unidad IV |
-| Estilos | No hay sistema de estilos definido | — |
-| Tests | Ninguno | Unidad V |
-
-**Pantallas necesarias por rol** (según [Funcionalidades por actor](./Funcionalidades_por_Actor.md)):
-
-| Rol | Pantallas |
-|-----|-----------|
-| Todos | Login, registro, mi perfil, notificaciones |
-| Socio (A1) | Mi membresía y renovación, clases (listar, reservar, cancelar, lista de espera, confirmar lugar), canchas (grilla, reservar con precio), pago, comprobantes, QR |
-| Externo (A2) | Canchas, pago, comprobantes |
-| Admin de sede (A3) | Validar ingreso (QR), aforo en tiempo real, agenda de clases de su sede, mantenimiento de canchas, configuración de horario pico |
-| Gerente (A4) | Sedes, canchas y precios, descuento de socio, administradores de sede, reportes consolidados |
-
-**Dependencia:** la pantalla "Mi Perfil" necesita un endpoint que hoy no existe (`GET /perfiles/me`). `/auth/me` solo devuelve id, email y rol.
+**Web.** React + Vite. Cliente en `frontend/src/services/api.ts` (token y 401). Estado de sesión en `AuthProvider`. Rutas: `/login`, `/signup`, `/perfil`, `/canchas`, `/canchas/gestionar` (gerente y admin de sede), `/clases`, `/clases/gestionar` (gerente), `/notificaciones`, `/mi-qr`, `/acceso`, `/sedes` (gerente), `/dashboard` (gerente). No hay tests de frontend. Atomic Design: átomos `Button`, `Input`, `Select` y `Spinner`, molécula `Alerta` y organismo `Layout` ([catálogo](../frontend/src/components/README.md)).
 
 ---
 
-## 6. Testing, CI/CD y despliegue
+## 5. Testing y entrega
 
-| Ítem | Estado |
-|------|--------|
-| Tests unitarios y e2e del backend | ✅ 43 + 20 (sin Clases ni Membresías) |
-| Tests de las funciones SQL | 🟡 `supabase/tests/membresias_clases.test.sql`, manual con un Postgres local |
-| Colección Postman (S4-T07) | ❌ |
-| Pipeline CI (GitHub Actions: lint, test, build) | ❌ no hay `.github/` |
-| Reporte de cobertura (entregable Unidad V) | ✅ (publicado en `documentacion/Reporte_Cobertura_Backend.md`; se genera en `backend/coverage/` con `npm run test:cov`, sin Docker) |
-| Docker | ❌ |
-| Deploy en Render (backend) y Vercel (frontend) | ❌ sin configuración en el repo |
+| Ítem | Estado al 14/11 |
+|------|------------------|
+| Unitarios de backend | ✅ auth, perfiles, sedes, membresías, clases, observers, acceso, TOTP, canchas, precios, reservas, pasarela, guards |
+| E2E de backend | 🟡 auth, perfiles, roles, sedes (GET y alta/edición por rol), notificaciones, membresías/clases (seguridad, lista de espera y agenda por rol), canchas (GET público, alta y mantenimiento por rol). No hay e2e de acceso ni del checkout |
+| SQL de reglas | 🟡 M3 y M4, manuales |
+| CI | 🟡 [`.github/workflows/ci-backend.yml`](../.github/workflows/ci-backend.yml) en pull requests a `desarrollo`. No corre el frontend |
+| Cobertura | 🟡 umbral del 60 % de sentencias declarado en [ADR-008](../docs/adr/ADR-008-pruebas-cobertura.md). El reporte publicado hay que regenerarlo con `npm run test:cov` |
+| Docker Compose | ❌ ADR-009 lo decide; no hay `docker-compose.yml` en el repo |
 | Tests de frontend | ❌ |
 
 ---
 
-## 7. Patrones de diseño
-
-### 7.1 Implementados
+## 6. Patrones, contra el código
 
 | Patrón | Dónde | Estado |
 |--------|-------|--------|
-| **Repository** | Toda la capa de datos | ✅ justificado |
-| **Observer** | Lista de espera, con `@nestjs/event-emitter` | ✅ justificado (con las tres decisiones de la diapositiva 37) |
-| **Template Method** | `SupabaseRepository<T>` | ✅ mencionado |
-| Inyección de dependencias, cadena de guards, decoradores, BFF | Todo el backend | ✅ mencionados |
+| Repository + Template Method | `SupabaseRepository<T>` | ✅ |
+| Observer | Lista de espera; `ClasesService.cancelar` publica | ✅ |
+| Decorator | Precio de cancha (C-28). Reemplaza al Strategy de S4-T01 | ✅ |
+| State | Ciclo de la reserva (pendiente, confirmada, cancelada) | ✅ |
+| Facade | `ReservasCanchaService.reservar` / pagar | ✅ |
+| Adapter | `PasarelaSimulada` detrás de la interfaz de cobro | ✅ el simulacro. `AdaptadorMercadoPago` no se va a escribir para esta entrega |
+| Template Method de PDF | Comprobante | ❌ no hay comprobante |
+| Circuit Breaker | Pasarela real | ❌ diseñado en la justificación; fuera del alcance |
 
-### 7.2 Diseñado, falta implementar
-
-| Patrón | Dónde | Pendiente |
-|--------|-------|-----------|
-| **Strategy** | Precio de canchas (RF-11), S4-T01 | Depende de las tablas de M4. Además, como descuento y recargo **se acumulan**, la clase dice que en rigor es una **cadena de decoradores** (diapositivas 26 y 35): hay que nombrarlo y justificarlo así en el documento |
-
-### 7.3 Por analizar: patrones que el profesor ve en FitZone
-
-Propuesta inicial para discutir en equipo. Cada uno aplicado o descartado tiene que quedar justificado en el documento de la Unidad III.
-
-| Patrón | Caso en FitZone | Propuesta | Por qué | Cuándo |
-|--------|-----------------|-----------|---------|--------|
-| **Facade** | `reservar()` de canchas: disponibilidad, membresía, precio, pago, reserva y aviso | **Aplicar** | Es el caso de uso central del Demo Day y coordina varios módulos. Un `ReservasService.reservar()` que orquesta y oculta los subsistemas es natural | M4 |
-| **Adapter** | Pasarela de pago (estilo MercadoPago) detrás de una interfaz propia | **Aplicar** | Es el uso de manual: una interfaz del dominio (`PasarelaPago`) y un adaptador del mock. Cambiar a MercadoPago real sería otro adaptador | M5 |
-| **Builder** | Armar una reserva (cancha, horario, cliente, precio con detalle, pago) | **Evaluar** | El profesor lo llama "el creacional que casi seguro van a necesitar". Tiene sentido si la reserva junta muchos datos opcionales; si no, es una clase de más | M4 |
-| **Chain of Responsibility** | Validaciones previas a reservar (membresía, mantenimiento, horario, ventana de 48 h), devolviendo todos los errores juntos | **Evaluar** | Ordena las validaciones que hoy se reparten entre SQL y servicio. Ya tenemos la versión con guards | M3 / M4 |
-| **State** | Membresía (activa / vencida / suspendida), cancha (disponible / mantenimiento), reserva (pendiente de pago / confirmada / cancelada) | **Evaluar** (reserva) | En membresía y cancha las transiciones son pocas y un `if` alcanza. La reserva con pago tiene más estados y reglas por estado | M4 / M5 |
-| **Template Method** | Comprobantes PDF: el flujo es igual, cambia el contenido (membresía o reserva) | **Aplicar** si hay dos tipos de comprobante | Ya lo usamos en Repository; acá encaja con RF-14 | M5 |
-| **Factory Method** | Elegir el notificador según el canal | **Probablemente no** | El Observer con `@OnEvent` ya resuelve los canales: cada uno decide si actúa según la preferencia. Escribir por qué no hace falta | — |
-| **Composite** | Árbol red → región → sede → espacio para reportes de ocupación | **Probablemente no** | No tenemos regiones; los reportes son por sede y total de la cadena. Justificar el descarte | Reportes |
-| **Abstract Factory** | Familias de objetos (por país o por pasarela) | **Descartar** | El profesor pide descartarlo por escrito: hay una sola pasarela y un solo país | — |
-| **Circuit Breaker** | Llamadas a la pasarela o a Supabase | **Evaluar** | Lo mencionó el docente (2026-08-28). El candidato natural es la pasarela simulada, que puede "fallar" a propósito para la demo | M5 |
-| **Singleton** | Cliente de Supabase, configuración | **No escribirlo a mano** | Lo da el contenedor de Nest (los providers son únicos). La diapositiva 46 critica "un Singleton propio con contenedor IoC" | — |
+La justificación y el descarte del resto (Abstract Factory, Singleton escrito a mano, Factory de notificadores, Composite de regiones) están en [Justificación de patrones](./Justificacion_Patrones_Unidad_III.md).
 
 ---
 
-## 8. Decisiones pendientes que bloquean trabajo
+## 7. Qué sigue abierto
 
-| Decisión | Bloquea | Quién |
-|----------|---------|-------|
-| S4-T09: P1, P2 y P4 a P7 (precio base, duración del turno, combinación de descuento y recargo, RN-03, precio fijo al reservar, redondeo) | Tablas de M4 y Strategy | Equipo |
-| S4-T09: Q1 plazo para confirmar el lugar (propuesta 30 min), Q2 penalidad por cancelación tardía, Q4 precios de los planes | M3, M1 | Equipo |
-| D5 / Q3: cómo se interpreta "reservar hasta 48 h antes" | M3 | Docente |
-| Renombrar `recepcionista` a `admin_sede`; el gerente asigna administradores, crea sedes y ve reportes | Roles, M4 | Equipo |
-| RN-01: salida explícita o por tiempo en `presencias` | M2 | Docente |
-| QR: TOTP 30 o 60 s, contenido del QR, distribución de semillas | M2, móvil | Equipo |
-| Pasarela simulada: endpoint propio, respuestas fijas o aleatorias | M5 | Equipo |
-| Librería de PDF y dónde se guarda el comprobante | M5 | Equipo |
-| Prefijo `/api` en las rutas | Front y deploy | P1 |
+Ordenado por lo que impide decir que la regla está cerrada de punta a punta.
 
----
+| Prioridad | Hueco | Regla |
+|-----------|-------|-------|
+| 1 | PDF con cancha, horario y monto después del pago | RF-14 |
+| 2 | Manual de usuario y manual de instalación | C-16, C-17 |
+| 3 | Docker o un arranque de cinco pasos, y el seed de 25 sedes | ADR-009, carga de prueba |
 
-## 9. Próximos pasos sugeridos
-
-| Prioridad | Tarea | Responsable sugerido | Depende de |
-|-----------|-------|----------------------|------------|
-| 1 | Correcciones de Clases y Membresías (puntos 1 a 6) | Bruno | — |
-| 1 | Cerrar las decisiones de S4-T09 en reunión | Equipo | — |
-| 1 | Login real, cliente de la API y estado global en el front | Lucas | — |
-| 2 | Diseño y migración de M4: `canchas`, `reservas_cancha` (sin sobreventa), `configuracion_pico`, `configuracion_cadena`, `admins_sede` y renombre de rol | Patricio | S4-T09 |
-| 2 | Función `renovar_membresia` (Fase A ya versionada en S5-T01) | Patricio | — |
-| 2 | Endpoints de registro y perfil propio (`/perfiles/me`) | Patricio o Bruno | — |
-| 2 | Pipeline de CI (lint, test y build de backend y frontend) | Matias | — |
-| 3 | API de Canchas (S4-T06) y Strategy (S4-T01) | Bruno | Migración M4 |
-| 3 | Lista de espera: anotarse, confirmar, retirarse | Bruno | Correcciones |
-| 3 | Atomic Design y pantallas de clases y canchas con datos reales | Lucas | Cliente de la API |
-| 3 | Colección Postman y deploy en Render y Vercel | Matias | — |
-| 4 | Analizar en equipo los patrones de la sección 7.3 y actualizar la justificación | Patricio + Bruno | — |
-| 4 | Diseño de M5 (pagos, Adapter de la pasarela, comprobante PDF) | Patricio | M4 |
-| 5 | M2 (acceso, QR, aforo) y móvil | **Patricio** (plan 2026-11-01); Matias stretch QR si sobra | [Plan_M2_Acceso_QR_Patricio.md](./Plan_M2_Acceso_QR_Patricio.md) · Decisiones §8 |
+Quedan fuera de esta entrega, ya escritos como corte: app móvil, MercadoPago real, Circuit Breaker y la foto de perfil. El dashboard del gerente está en `/dashboard` (`GET /reportes/resumen`). El tipo socio o externo lo da la membresía vigente, no un alta aparte. El offline de recepción es la cola del navegador más el sync, no un nodo por sede. El alta de sedes del gerente ya está en `/sedes`. La agenda de clases del gerente ya está en `/clases/gestionar`. La administración de canchas ya está en `/canchas/gestionar` y la cancelación de la reserva propia, en `/canchas`. La renovación cobrada de la membresía ya está en el perfil del socio. La salida de la sede ya está en `/acceso`: no pide QR y, sin red, sin servidor o sin base, entra en la misma cola del ingreso.

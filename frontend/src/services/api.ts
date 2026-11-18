@@ -62,6 +62,36 @@ function normalizarMensaje(data: unknown): { message: string; code?: string } {
   return { message: "Error al comunicarse con el servidor" };
 }
 
+let alCerrarSesion: (() => void) | undefined;
+
+/** El AuthProvider registra `logout`. Un 401 con Bearer cierra la sesión una sola vez. */
+export function registrarCierreDeSesion(handler: () => void) {
+  alCerrarSesion = handler;
+}
+
+function llevaBearer(headers: HeadersInit | undefined): boolean {
+  if (!headers) {
+    return false;
+  }
+
+  let valor: string | undefined;
+  if (headers instanceof Headers) {
+    valor = headers.get("Authorization") ?? undefined;
+  } else if (Array.isArray(headers)) {
+    const par = headers.find(
+      ([clave]) => clave.toLowerCase() === "authorization"
+    );
+    valor = par?.[1];
+  } else {
+    const clave = Object.keys(headers).find(
+      (nombre) => nombre.toLowerCase() === "authorization"
+    );
+    valor = clave ? headers[clave] : undefined;
+  }
+
+  return typeof valor === "string" && valor.startsWith("Bearer ");
+}
+
 // Default `any` para no forzar tipado en Login/Signup existentes.
 export async function apiRequest<T = any>(
   endpoint: string,
@@ -94,6 +124,9 @@ export async function apiRequest<T = any>(
   }
 
   if (!response.ok) {
+    if (response.status === 401 && llevaBearer(options.headers)) {
+      alCerrarSesion?.();
+    }
     const { message, code } = normalizarMensaje(data);
     throw new ApiError(message, { code, status: response.status });
   }

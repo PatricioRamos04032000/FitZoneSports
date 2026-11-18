@@ -1,5 +1,5 @@
 import { Module, forwardRef } from '@nestjs/common';
-import { AuthModule } from '../../auth/auth.module';
+import { AuthModule } from '../../usuarios/auth/auth.module';
 import { PagosModule } from '../../pagos/pagos.module';
 import { PreciosModule } from '../precios/precios.module';
 import { ReservasCanchaController } from './reservas-cancha.controller';

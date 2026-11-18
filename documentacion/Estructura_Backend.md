@@ -41,10 +41,7 @@ backend/
 │   │   ├── repository.error.ts        Error de acceso a datos
 │   │   └── repository-error.filter.ts Filtro global: RepositoryError → 500
 │   │
-│   ├── auth/                      Login, registro, verificación de token y roles
-│   │   ├── auth.controller.ts         POST /auth/login, POST /auth/register
-│   │   ├── me.controller.ts           GET /auth/me
-│   │   ├── auth.service.ts            Login/register contra Supabase Auth
+│   ├── common/                    Guards, decoradores y JWT compartidos
 │   │   ├── supabase-jwt.service.ts    Verifica el JWT con el JWKS
 │   │   ├── jwt-auth.guard.ts          Exige token válido
 │   │   ├── roles.guard.ts             Exige uno de los roles de @Roles
@@ -52,19 +49,20 @@ backend/
 │   │   ├── current-user.decorator.ts  @CurrentUser()
 │   │   ├── rol-usuario.ts             Roles de FitZone
 │   │   ├── perfiles-rol.repository.ts Lee perfiles.rol
-│   │   └── *.dto.ts                   DTOs de Swagger
+│   │   └── auth-user.dto.ts           Usuario autenticado
+│   │
+│   ├── usuarios/                  M1: registro, perfil, membresía y sedes
+│   │   ├── auth/                      POST /auth/login, POST /auth/register, GET /auth/me
+│   │   ├── perfiles/                  GET/PATCH /perfiles/me
+│   │   ├── membresias/                Membresías del socio
+│   │   └── sedes/                     GET /sedes
 │   │
 │   ├── health/                    GET /health
-│   ├── sedes/                     GET /sedes
-│   ├── perfiles/                  GET/PATCH /perfiles/me (S6-T01)
-│   ├── notificaciones/            Notificaciones in-app + Observer de lista de espera
-│   │   ├── lista-espera.publisher.ts  Publica LUGAR_LIBERADO
-│   │   ├── lugar-liberado.event.ts    Evento y texto del aviso
-│   │   ├── observers/                 InApp, Log, EmailSimulado (@OnEvent)
-│   │   ├── notificaciones.repository.ts
-│   │   └── preferencias.repository.ts
-│   ├── membresias/                Membresías del socio (S3-T03)
-│   └── clases/                    Clases, cupos e inscripciones (S3-T04)
+│   ├── acceso/                    Check-in, QR y aforo
+│   ├── clases/                    Clases, cupos e inscripciones
+│   │   └── notificaciones/            In-app + Observer de lista de espera
+│   ├── canchas/                   Canchas, precios y reservas
+│   └── pagos/                     Pasarela simulada
 │
 ├── test/                          Tests e2e (levantan la app completa)
 │   ├── setup-env.ts                   Variables de entorno falsas para los tests

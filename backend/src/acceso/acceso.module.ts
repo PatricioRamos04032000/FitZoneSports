@@ -1,6 +1,6 @@
 import { Module, forwardRef } from '@nestjs/common';
-import { AuthModule } from '../auth/auth.module';
-import { MembresiasModule } from '../membresias/membresias.module';
+import { AuthModule } from '../usuarios/auth/auth.module';
+import { MembresiasModule } from '../usuarios/membresias/membresias.module';
 import { AccesoController } from './acceso.controller';
 import { AccesoRepository } from './acceso.repository';
 import { AccesoService } from './acceso.service';

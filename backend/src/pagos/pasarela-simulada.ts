@@ -21,12 +21,30 @@ export class PasarelaSimulada implements PasarelaPago {
   ) {}
 
   async crearPreferencia(request: CobroRequest): Promise<PreferenciaCobro> {
-    const existente = await this.pagos.findPendientePorReserva(request.referenciaId);
-    if (existente) {
-      return {
-        pagoId: existente.id,
-        checkoutUrl: this.checkoutUrl(existente.id),
-      };
+    if (request.concepto === 'membresia') {
+      if (!request.plan) {
+        throw new Error('Un cobro de membresía exige plan');
+      }
+      const pendiente = await this.pagos.findPendienteMembresia(
+        request.perfilId,
+        request.plan,
+      );
+      if (pendiente) {
+        return {
+          pagoId: pendiente.id,
+          checkoutUrl: this.checkoutUrl(pendiente.id),
+        };
+      }
+    } else {
+      const existente = await this.pagos.findPendientePorReserva(
+        request.referenciaId,
+      );
+      if (existente) {
+        return {
+          pagoId: existente.id,
+          checkoutUrl: this.checkoutUrl(existente.id),
+        };
+      }
     }
 
     const pago = await this.pagos.registrarCobro({
@@ -38,6 +56,7 @@ export class PasarelaSimulada implements PasarelaPago {
       reserva_cancha_id:
         request.concepto === 'reserva_cancha' ? request.referenciaId : null,
       membresia_id: null,
+      plan: request.concepto === 'membresia' ? (request.plan ?? null) : null,
     });
 
     return {
@@ -103,6 +122,7 @@ export class PasarelaSimulada implements PasarelaPago {
       reserva_cancha_id:
         request.concepto === 'reserva_cancha' ? request.referenciaId : null,
       membresia_id: null,
+      plan: request.concepto === 'membresia' ? (request.plan ?? null) : null,
     });
 
     if (!aprobado) {

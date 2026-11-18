@@ -140,6 +140,68 @@
       "response": []
     },
     {
+      "name": "2b. Listar canchas de la sede",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"GET /canchas devuelve 200\", function () {\n  pm.expect(pm.response.code).to.eql(200);\n});\n",
+              "const json = pm.response.json();\n",
+              "pm.test(\"Devuelve arreglo de canchas\", function () {\n  pm.expect(Array.isArray(json)).to.eql(true);\n});\n",
+              "if (Array.isArray(json) && json.length > 0) {\n  pm.environment.set(\"canchaId\", json[0].id);\n}\n"
+            ],
+            "type": "text/javascript",
+            "packages": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/canchas?sedeId={{sedeId}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["canchas"],
+          "query": [{ "key": "sedeId", "value": "{{sedeId}}" }]
+        },
+        "description": "GET /canchas?sedeId=... Lista las canchas activas de la sede seleccionada (S4-T06)."
+      },
+      "response": []
+    },
+    {
+      "name": "2c. Consultar grilla de disponibilidad",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"GET /canchas/disponibilidad devuelve 200\", function () {\n  pm.expect(pm.response.code).to.eql(200);\n});\n",
+              "const json = pm.response.json();\n",
+              "pm.test(\"Incluye configuracionPico, descuentoSocioPct y canchas\", function () {\n  pm.expect(json).to.have.property(\"configuracionPico\");\n  pm.expect(json).to.have.property(\"descuentoSocioPct\");\n  pm.expect(Array.isArray(json.canchas)).to.eql(true);\n});\n"
+            ],
+            "type": "text/javascript",
+            "packages": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/canchas/disponibilidad?sedeId={{sedeId}}&fecha=2026-11-15",
+          "host": ["{{baseUrl}}"],
+          "path": ["canchas", "disponibilidad"],
+          "query": [
+            { "key": "sedeId", "value": "{{sedeId}}" },
+            { "key": "fecha", "value": "2026-11-15" }
+          ]
+        },
+        "description": "GET /canchas/disponibilidad. Devuelve los turnos de 60 min en hora Argentina con estados y precios Strategy (S4-T06)."
+      },
+      "response": []
+    },
+    {
       "name": "3. Crear reserva de cancha exitosa",
       "event": [
         {

@@ -1,0 +1,120 @@
+# =============================================================================
+# FitZone Sports — Despliegue único con Docker Compose
+#
+# Levantar todo en una máquina limpia:
+#   docker compose up --build
+#
+# Servicios:
+#   db        → PostgreSQL 15 con las migraciones de supabase/migrations/
+#   backend   → API NestJS (puerto 3000)
+#   frontend  → React + Vite servido con nginx (puerto 80)
+#   seed      → Ejecuta el seed de entrega C-08 (25 sedes, 4 roles)
+#
+# Notas:
+#   • El proyecto depende de Supabase para Auth y datos. Definí las variables
+#     SUPABASE_URL / SUPABASE_SERVICE_ROLE_KEY / SUPABASE_ANON_KEY en un
+#     archivo .env (ver .env.docker.example) antes de ejecutar el seed.
+#   • Las migraciones SQL se aplican automáticamente al iniciar db.
+# =============================================================================
+
+services:
+  # -------------------------------------------------------------------------
+  # Base de datos PostgreSQL (ornamental / referencia)
+  # -------------------------------------------------------------------------
+  # NOTA: El backend de FitZone Sports no usa PostgreSQL local en runtime.
+  # Se conecta a Supabase (nube) a través de SUPABASE_URL y SUPABASE_SERVICE_ROLE_KEY.
+  # Este servicio db se incluye únicamente como referencia ornamental y para
+  # ejecutar las migraciones SQL de supabase/migrations/ si se desea inspeccionar
+  # el esquema localmente. No es necesario para que el backend ni el frontend
+  # funcionen.
+  db:
+    image: postgres:15-alpine
+    container_name: fitzone-db
+    environment:
+      POSTGRES_DB: fitzone
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      # Los .sql se ejecutan automáticamente al crear el volumen por primera vez
+      - ./supabase/migrations:/docker-entrypoint-initdb.d:ro
+      - fitzone-db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d fitzone"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+
+  # -------------------------------------------------------------------------
+  # Backend NestJS
+  # -------------------------------------------------------------------------
+  # IMPORTANTE: Este servicio requiere credenciales reales de Supabase en un
+  # archivo .env (ver .env.docker.example). Sin ellas, el backend no puede
+  # conectar a Supabase y el seed fallará.
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: fitzone-backend
+    # db es ornamental: no condiciona el arranque del backend
+    environment:
+      PORT: 3000
+      APP_PUBLIC_URL: http://localhost:3000
+      # Supabase (requerido por el backend en runtime)
+      SUPABASE_URL: ${SUPABASE_URL:-http://localhost:3000}
+      SUPABASE_SERVICE_ROLE_KEY: ${SUPABASE_SERVICE_ROLE_KEY:-}
+      SUPABASE_ANON_KEY: ${SUPABASE_ANON_KEY:-}
+      # CORS y seed
+      CORS_ORIGIN: ${CORS_ORIGIN:-http://localhost,http://localhost:5173,http://frontend:80}
+      SEED_PASSWORD: ${SEED_PASSWORD:-fitzone-demo}
+      TOTP_SEED_ENCRYPTION_KEY: ${TOTP_SEED_ENCRYPTION_KEY:-}
+    ports:
+      - "3000:3000"
+    restart: unless-stopped
+
+  # -------------------------------------------------------------------------
+  # Frontend React + Vite (servido por nginx)
+  # -------------------------------------------------------------------------
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        # URL que usa el navegador en el host. `backend` solo existe dentro de la red Docker.
+        VITE_API_URL: ${VITE_API_URL:-http://localhost:3000}
+        VITE_SUPABASE_URL: ${VITE_SUPABASE_URL:-}
+        VITE_SUPABASE_PUBLISHABLE_KEY: ${VITE_SUPABASE_PUBLISHABLE_KEY:-}
+    container_name: fitzone-frontend
+    depends_on:
+      - backend
+    ports:
+      - "80:80"
+    restart: unless-stopped
+
+  # -------------------------------------------------------------------------
+  # Seed de entrega (C-08): 25 sedes, canchas, clases y 4 roles.
+  # Ejecutar una sola vez tras levantar los servicios:
+#   docker compose up --build
+#   docker compose --profile seed run --rm seed
+  # -------------------------------------------------------------------------
+  seed:
+    profiles: ["seed"]
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: fitzone-seed
+    depends_on:
+      backend:
+        condition: service_started
+    environment:
+      SUPABASE_URL: ${SUPABASE_URL:-http://localhost:3000}
+      SUPABASE_SERVICE_ROLE_KEY: ${SUPABASE_SERVICE_ROLE_KEY:-}
+      SUPABASE_ANON_KEY: ${SUPABASE_ANON_KEY:-}
+      SEED_PASSWORD: ${SEED_PASSWORD:-fitzone-demo}
+    command: ["npm", "run", "seed:entrega"]
+    restart: "no"
+
+volumes:
+  fitzone-db-data:

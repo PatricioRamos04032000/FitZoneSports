@@ -33,6 +33,13 @@ const config: Config = {
   ],
   coverageDirectory: './coverage',
   testEnvironment: 'node',
+  // Umbral del ADR-008: 60 % de sentencias sobre el conjunto de collectCoverageFrom.
+  // Jest sale con código != 0 si el global cae por debajo, haciendo fallar el CI.
+  coverageThreshold: {
+    global: {
+      statements: 60,
+    },
+  },
 };
 
 export default config;

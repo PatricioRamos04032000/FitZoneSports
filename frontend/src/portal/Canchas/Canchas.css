@@ -1,0 +1,217 @@
+.canchas-container {
+    width: 100%;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 30px 24px;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+    color: #14283f;
+}
+
+.canchas-container h1 {
+    margin-bottom: 28px;
+    font-size: 30px;
+    color: #14283f;
+}
+
+.canchas-container h2 {
+    margin-top: 26px;
+    margin-bottom: 12px;
+    font-size: 19px;
+    color: #14283f;
+}
+
+.canchas-container > .atom-select,
+.canchas-container > input {
+    width: 100%;
+    max-width: 450px;
+    box-sizing: border-box;
+}
+
+.canchas-container > .atom-select {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.canchas-container > input {
+    min-height: 44px;
+    padding: 10px 12px;
+    border: 1px solid #ccd5df;
+    border-radius: 8px;
+    background-color: white;
+    color: #14283f;
+    font-size: 15px;
+}
+
+.canchas-container > p {
+    color: #64748b;
+    line-height: 1.5;
+    overflow-wrap: anywhere;
+}
+
+.cancha-card {
+    margin-top: 16px;
+    padding: 20px;
+    background-color: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+    box-sizing: border-box;
+}
+
+.cancha-card h3 {
+    margin-top: 0;
+    color: #14283f;
+    font-size: 19px;
+}
+
+.cancha-card p {
+    color: #526174;
+    font-size: 15px;
+    line-height: 1.5;
+    overflow-wrap: anywhere;
+}
+
+.cancha-card button,
+.reserva-confirmacion button {
+    width: 100%;
+    max-width: 250px;
+    min-height: 44px;
+    margin-top: 10px;
+    padding: 11px 18px;
+    border: none;
+    border-radius: 8px;
+    background-color: #14283f;
+    color: white;
+    font-size: 15px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.cancha-card button:hover,
+.reserva-confirmacion button:hover {
+    background-color: #21496b;
+}
+
+.cancha-card button:disabled,
+.reserva-confirmacion button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.reserva-confirmacion {
+    margin-top: 28px;
+    padding: 22px;
+    background-color: white;
+    border: 1px solid #58c9e8;
+    border-radius: 12px;
+    box-sizing: border-box;
+}
+
+.reserva-confirmacion h3 {
+    color: #14283f;
+}
+
+.reserva-confirmacion p {
+    color: #526174;
+    line-height: 1.5;
+    overflow-wrap: anywhere;
+}
+
+/* Adaptación para celulares */
+@media (max-width: 600px) {
+    .canchas-container {
+        padding: 22px 16px;
+    }
+
+    .canchas-container h1 {
+        font-size: 26px;
+        margin-bottom: 22px;
+    }
+
+    .canchas-container h2 {
+        margin-top: 22px;
+        font-size: 18px;
+    }
+
+    .canchas-container > .atom-select,
+    .canchas-container > input {
+        max-width: none;
+    }
+
+    .canchas-container > input,
+    .canchas-container .atom-select select {
+        min-height: 46px;
+        font-size: 16px;
+    }
+
+    .cancha-card {
+        padding: 17px;
+    }
+
+    .cancha-card button,
+    .reserva-confirmacion button {
+        max-width: none;
+        width: 100%;
+        min-height: 48px;
+    }
+
+    .reserva-confirmacion {
+        padding: 18px;
+    }
+}
+
+/* Celulares pequeños */
+@media (max-width: 350px) {
+    .canchas-container {
+        padding: 18px 10px;
+    }
+
+    .cancha-card {
+        padding: 14px;
+    }
+}
+
+.mis-reservas {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.mis-reservas li {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    align-items: center;
+    padding: 12px 0;
+    border-top: 1px solid #e6ebf1;
+}
+
+.mis-reservas p {
+    margin: 0;
+}
+
+.mis-reservas button {
+    padding: 8px 14px;
+    border: 1px solid #d5dce5;
+    border-radius: 7px;
+    background: white;
+    color: #14283f;
+    cursor: pointer;
+}
+
+.mis-reservas-acciones {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.reserva-confirmacion button + button {
+    margin-left: 10px;
+}
+
+@media (max-width: 600px) {
+    .reserva-confirmacion button + button {
+        margin-left: 0;
+    }
+}

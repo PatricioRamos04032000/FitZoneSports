@@ -3,10 +3,10 @@ import { INestApplication, Logger } from '@nestjs/common';
 import request from 'supertest';
 import { App } from 'supertest/types';
 import { AppModule } from './../src/app.module';
-import { SUPABASE_JWKS } from './../src/auth/supabase-jwt.service';
-import { ListaEsperaPublisher } from './../src/notificaciones/lista-espera.publisher';
-import { NotificacionesRepository } from './../src/notificaciones/notificaciones.repository';
-import { PreferenciasRepository } from './../src/notificaciones/preferencias.repository';
+import { SUPABASE_JWKS } from './../src/common/supabase-jwt.service';
+import { ListaEsperaPublisher } from './../src/clases/notificaciones/lista-espera.publisher';
+import { NotificacionesRepository } from './../src/clases/notificaciones/notificaciones.repository';
+import { PreferenciasRepository } from './../src/clases/notificaciones/preferencias.repository';
 import { createTestSigner, type TestSigner } from './support/supabase-jwt';
 
 const PERFIL_ID = '3f1c2a9e-8b7d-4c6e-9a1f-2b3c4d5e6f70';

@@ -1,414 +1,162 @@
 # FitZone Sports
 
-Plataforma integral de gestión para una cadena de gimnasios (25+ sedes) que unifica horarios de gimnasio, clases grupales y alquiler de canchas.
+Portal web de una cadena de gimnasios. El socio consulta su membresía, se anota a clases, reserva canchas y muestra un código de ingreso. La recepción registra la entrada y la salida. El gerente administra sedes, la agenda y las canchas. Los pagos de esta entrega pasan por una pasarela simulada.
 
 - **Frontend:** React 19 + TypeScript + Vite
-- **Backend:** NestJS 12 + TypeScript (monolito modular, BFF)
-- **Base de datos:** PostgreSQL en Supabase
-- **Autenticación:** Supabase Auth (JWT ES256)
-- **Despliegue:** Frontend en Vercel, Backend en Render, BD en Supabase
+- **Backend:** NestJS 12 + TypeScript
+- **Datos e identidad:** PostgreSQL y Auth en Supabase
+- **Arranque de la entrega:** Docker Compose
 
 ---
 
-## Tabla de contenidos
+## 1. Qué es el sistema
 
-1. [Requisitos previos](#1-requisitos-previos)
-2. [Clonar el repositorio](#2-clonar-el-repositorio)
-3. [Configuración de variables de entorno (.env)](#3-configuración-de-variables-de-entorno-env)
-4. [Levantar el Backend en local](#4-levantar-el-backend-en-local)
-5. [Levantar el Frontend en local](#5-levantar-el-frontend-en-local)
-6. [Guía de demostración](#6-guía-de-demostración)
-7. [Comandos útiles](#7-comandos-útiles)
-8. [Estructura del proyecto](#8-estructura-del-proyecto)
-9. [Tecnologías y dependencias](#9-tecnologías-y-dependencias)
-10. [Pruebas](#10-pruebas)
-11. [Notas importantes](#11-notas-importantes)
+FitZone Sports reúne, en un solo portal, el acceso a la sede, las clases grupales, el alquiler de canchas y el cobro de esas operaciones. Hay cuatro roles: gerente, administrador de sede, socio y cliente externo. La aplicación que se entrega se levanta con Docker y usa un proyecto Supabase ya creado para la base y el login.
 
----
+## 2. Equipo
 
-## 1. Requisitos previos
+El autor de Git es el nombre que aparece en `git log`. Sirve para cruzar los commits con la bitácora de cada integrante.
 
-Antes de comenzar, asegúrate de tener instalado lo siguiente:
+| Integrante | Rol | Autor en Git | Usuario de GitHub |
+|------------|-----|--------------|-------------------|
+| Patricio Ramos | P1. Arquitectura, documentación y backend | `Patricio Ramos` | `PatricioRamos04032000` |
+| Bruno Nicolás Conti | P2. Backend | `bruno` y `Bruno Nicolás Conti` | `brunoc11` |
+| Lucas Coquet | P3. Frontend | `LucasCoquet` | `LucasCoquet` |
+| Matias Goncevat | P4. Planificación, CI, seed y Docker | `MatiGoncevat` | `MatiGoncevat` |
 
-| Herramienta | Versión mínima | Propósito |
-|-------------|----------------|-----------|
-| Node.js | v20 o superior | Entorno de ejecución para backend y frontend |
-| npm | v10 o superior | Gestor de paquetes (incluido con Node.js) |
-| Git | Cualquier versión reciente | Clonar el repositorio |
-| Acceso a Supabase | Proyecto activo | Base de datos y autenticación |
+## 3. Puesta en marcha
 
-Puedes verificar las versiones instaladas ejecutando:
+Hacen falta Git, Docker y Docker Compose. La base y el login están en Supabase: el archivo `.env` no se versiona y hay que completarlo con las claves de ese proyecto.
 
-```bash
-node --version
-npm --version
-git --version
-```
-
----
-
-## 2. Clonar el repositorio
-
-Abre una terminal y clona el repositorio:
+1. Clonar el repositorio.
 
 ```bash
 git clone https://github.com/PatricioRamos04032000/FitZoneSports.git
 cd FitZoneSports
 ```
 
-El repositorio contiene tres carpetas principales:
-
-```
-FitZoneSports/
-├── backend/       # API NestJS (monolito modular)
-├── frontend/      # SPA React + Vite
-└── documentacion/ # Documentación académica del proyecto
-```
-
----
-
-## 3. Configuración de variables de entorno (.env)
-
-### 3.1 Backend (`backend/.env`)
-
-El archivo `.env` es **local y no se comparte por el repositorio** (está en `.gitignore`). Debes crearlo manualmente en la carpeta `backend/`.
-
-Copia la plantilla de ejemplo y completa con tus credenciales:
+2. Copiar la plantilla y completar las claves de Supabase.
 
 ```bash
-cd backend
-cp .env.example .env
+cp .env.docker.example .env
 ```
 
-Luego edita `backend/.env` con los valores reales:
+En `.env`, reemplazar los marcadores de `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY` y `SUPABASE_ANON_KEY`. `VITE_SUPABASE_URL` lleva la misma URL. `VITE_SUPABASE_PUBLISHABLE_KEY` lleva la clave anónima. `SEED_PASSWORD` ya viene en `fitzone-demo`.
 
-```env
-PORT=3000
-
-# URL del proyecto Supabase (Project Settings > API)
-SUPABASE_URL=https://tu-proyecto.supabase.co/
-
-# Clave secreta de servicio (Project Settings > API Keys > Service Role Key)
-# SECRETA: nunca commitear este archivo
-SUPABASE_SERVICE_ROLE_KEY=tu_service_role_key_aqui
-
-# Orígenes del frontend habilitados por CORS, separados por coma
-CORS_ORIGIN=http://localhost:5173
-
-# Contraseña común de los usuarios del seed de demo (npm run seed)
-SEED_PASSWORD=una_clave_de_demo
-```
-
-| Variable | Obligatoria | Descripción | Ejemplo |
-|----------|-------------|-------------|---------|
-| `PORT` | No | Puerto en el que escucha la API | `3000` |
-| `SUPABASE_URL` | Sí | URL de tu proyecto Supabase | `https://xxxx.supabase.co/` |
-| `SUPABASE_SERVICE_ROLE_KEY` | Sí | Clave secreta de servicio de Supabase | `sb_...` |
-| `CORS_ORIGIN` | No | Orígenes permitidos para CORS | `http://localhost:5173` |
-| `SEED_PASSWORD` | Solo para seed | Contraseña de usuarios demo (`npm run seed`) | (local, no commitear) |
-
-> ⚠️ **Importante:** El archivo `.env` contiene credenciales sensibles. Nunca lo subas al repositorio. Está incluido en `.gitignore`.
-
-### 3.2 Frontend (`frontend/.env.local`)
-
-Crea el archivo `frontend/.env.local` con las variables necesarias para el frontend:
-
-```env
-VITE_SUPABASE_URL=https://tu-proyecto.supabase.co/
-VITE_SUPABASE_PUBLISHABLE_KEY=tu_anon_key_aqui
-```
-
-| Variable | Obligatoria | Descripción | Ejemplo |
-|----------|-------------|-------------|---------|
-| `VITE_SUPABASE_URL` | Sí | URL de tu proyecto Supabase | `https://xxxx.supabase.co/` |
-| `VITE_SUPABASE_PUBLISHABLE_KEY` | Sí | Clave pública (anon) de Supabase | `sb_publishable_...` o `sb_anon_...` |
-
-> ⚠️ El archivo `.env.local` también es local y no se commitea.
-
----
-
-## 4. Levantar el Backend en local
-
-El backend es una API NestJS que sirve como BFF (Backend for Frontend) entre el frontend y Supabase.
-
-### 4.1 Instalar dependencias
+3. Construir y levantar los contenedores.
 
 ```bash
-cd backend
-npm install
+docker compose up --build
 ```
 
-### 4.2 Ejecutar en modo desarrollo (con recarga automática)
+4. Cargar los datos de entrega cuando la API ya responde. El comando corre una sola vez.
 
 ```bash
-npm run start:dev
+docker compose --profile seed run --rm seed
 ```
 
-La API quedará disponible en: **`http://localhost:3000`**
+Ese seed crea 25 sedes, una cancha y una clase por sede, y los cuatro usuarios de la sección 4. Se puede volver a ejecutar.
 
-### 4.3 Compilar para producción
+5. Abrir el portal y la documentación de la API.
 
-```bash
-npm run build
+- Portal: <http://localhost>
+- Swagger: <http://localhost:3000/api/docs>
+- Contrato exportado: [`backend/swagger.json`](backend/swagger.json)
+
+El login usa un email de la sección 4 y la contraseña `fitzone-demo`.
+
+Sin `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY` y `SUPABASE_ANON_KEY` los contenedores pueden llegar a levantarse, y el login no funciona. Esas claves quedan fuera del repositorio. El servicio `db` de Compose es una referencia del esquema: la API habla con Supabase. Si `db` falla al aplicar migraciones, la API y el portal siguen en marcha.
+
+Si Avast inspecciona HTTPS, el armado de las imágenes falla con `UNABLE_TO_VERIFY_LEAF_SIGNATURE`. En Windows, desde la raíz:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts/exportar-ca-avast.ps1
 ```
 
-### 4.4 Ejecutar en producción (desde build)
+Después, otra vez `docker compose up --build`. El detalle está en [README-DOCKER.md](README-DOCKER.md).
 
-```bash
-npm run start:prod
-```
+Para levantar backend y frontend con npm, el procedimiento está en el [manual de instalación y operación](docs/manuales/manual-instalacion-operacion.md). En ese camino la carga de entrega es `npm run seed:entrega` dentro de `backend/`.
 
-### 4.5 Endpoints principales del backend
+## 4. Usuarios de prueba
 
-| Método | Endpoint | Autenticación | Descripción |
-|--------|----------|---------------|-------------|
-| `GET` | `/` | No | Hola Mundo (template) |
-| `GET` | `/health` | No | Estado de la API |
-| `GET` | `/api/docs` | No | Documentación Swagger |
-| `POST` | `/auth/login` | No | Iniciar sesión (Supabase Auth) |
-| `GET` | `/auth/me` | Sí (JWT) | Usuario autenticado + rol |
-| `GET` | `/sedes` | No | Lista de sedes |
-| `GET` | `/perfiles/me` | Sí (JWT) | Perfil del usuario autenticado |
-| `PATCH` | `/perfiles/me` | Sí (JWT) | Actualizar perfil propio |
-| `GET` | `/clases?sedeId=` | No | Clases con cupo por sede |
-| `POST` | `/clases/inscripciones` | No | Inscribirse a una clase |
-| `DELETE` | `/clases/inscripciones/:id` | No | Cancelar inscripción |
-| `GET` | `/membresias` | No | Todas las membresías |
-| `GET` | `/membresias/activas/:perfilId` | No | Membresía activa de un perfil |
-| `POST` | `/membresias` | No | Crear membresía |
-| `GET` | `/notificaciones` | Sí (JWT) | Notificaciones del usuario |
-| `PATCH` | `/notificaciones/preferencias` | Sí (JWT) | Preferencias de notificación |
-| `PATCH` | `/notificaciones/:id/leida` | Sí (JWT) | Marcar notificación como leída |
-
-La lista completa y actualizada está en Swagger: **`http://localhost:3000/api/docs`**.
-
----
-
-## 5. Levantar el Frontend en local
-
-El frontend es una aplicación React (SPA) construida con Vite.
-
-### 5.1 Instalar dependencias
-
-```bash
-cd frontend
-npm install
-```
-
-### 5.2 Ejecutar en modo desarrollo
-
-```bash
-npm run dev
-```
-
-La aplicación quedará disponible en: **`http://localhost:5173`**
-
-### 5.3 Compilar para producción
-
-```bash
-npm run build
-```
-
-### 5.4 Previsualizar build de producción
-
-```bash
-npm run preview
-```
-
-### 5.5 Rutas disponibles en el frontend
-
-| Ruta | Componente | Descripción |
-|------|------------|-------------|
-| `/` | Home | Página de inicio |
-| `/login` | Login | Formulario de inicio de sesión |
-| `/perfil` | Perfil | Perfil del socio |
-| `/canchas` | Canchas | Selección de sede, horario y canchas |
-
-> ⚠️ **Nota:** El frontend actual contiene páginas placeholder (estáticas). Algunas páginas aún no están integradas con la API del backend.
-
-
----
-
-## 6. Guía de demostración
-
-Guía corta para mostrar el sistema en local (equipo, docente o Demo Day interno). Detalle del seed: [`documentacion/Seed_Demo_S5.md`](documentacion/Seed_Demo_S5.md).
-
-### 6.1 Preparación (una vez)
-
-1. Configurar `backend/.env` y `frontend/.env` con `VITE_API_URL=http://localhost:3000` (§3).
-2. Tener aplicadas en Supabase las migraciones del repo (`supabase/migrations/`), al menos hasta canchas M4 y Acceso M2 (`20261101210000_acceso_m2.sql`) para el seed TOTP.
-3. Cargar datos de demo:
-
-```bash
-cd backend
-npm run seed
-```
-
-Usuarios demo (contraseña = valor de `SEED_PASSWORD`):
+La contraseña de los cuatro es el valor de `SEED_PASSWORD`. Con la plantilla de Docker es `fitzone-demo`.
 
 | Email | Rol |
 |-------|-----|
 | `gerente@fitzone.com` | `gerente` |
 | `admin.central@fitzone.com` | `admin_sede` |
-| `socio@fitzone.com` | `socio` (con membresía activa) |
+| `socio@fitzone.com` | `socio` (membresía activa) |
 | `externo@fitzone.com` | `externo` |
 
-El seed también crea 2 sedes (Central, Norte) y 2 canchas de ejemplo. Es idempotente: se puede correr más de una vez.
+El recorrido de cinco minutos está en [documentacion/Guion_Ensayo_C-06.md](documentacion/Guion_Ensayo_C-06.md). El uso de cada pantalla está en el [manual de usuario](docs/manuales/manual-usuario.md).
 
-4. Levantar API y SPA en dos terminales:
+## 5. Documentación
 
-```bash
-# Terminal 1
-cd backend && npm run start:dev
+| Qué | Dónde |
+|-----|--------|
+| Decisiones de arquitectura (ADR-001 a ADR-011) | [docs/adr/README.md](docs/adr/README.md) |
+| Manuales | [docs/manuales/README.md](docs/manuales/README.md) |
+| Manual de usuario | [docs/manuales/manual-usuario.md](docs/manuales/manual-usuario.md) |
+| Manual de instalación y operación | [docs/manuales/manual-instalacion-operacion.md](docs/manuales/manual-instalacion-operacion.md) |
+| Manual técnico | [docs/manuales/manual-tecnico.md](docs/manuales/manual-tecnico.md) |
+| Bitácoras | [docs/bitacoras/README.md](docs/bitacoras/README.md) |
+| Bitácora de Patricio Ramos | [docs/bitacoras/LOG-ramos.md](docs/bitacoras/LOG-ramos.md) |
+| Bitácora de Bruno Conti | [docs/bitacoras/LOG-conti.md](docs/bitacoras/LOG-conti.md) |
+| Bitácora de Lucas Coquet | [docs/bitacoras/LOG-coquet.md](docs/bitacoras/LOG-coquet.md) |
+| Bitácora de Matias Goncevat | [docs/bitacoras/LOG-goncevat.md](docs/bitacoras/LOG-goncevat.md) |
+| Contrato OpenAPI | [backend/swagger.json](backend/swagger.json) |
+| Compose | [README-DOCKER.md](README-DOCKER.md) |
 
-# Terminal 2
-cd frontend && npm run dev
-```
+Diagramas (fuente editable en `docs/diagramas/fuentes/`, exportación en `docs/diagramas/img/`):
 
-### 6.2 Smoke check (que el entorno vive)
+| Diagrama | Exportación |
+|----------|-------------|
+| C4 — contexto | [c4-1-contexto.svg](docs/diagramas/img/c4-1-contexto.svg) |
+| C4 — contenedores | [c4-2-contenedores.svg](docs/diagramas/img/c4-2-contenedores.svg) |
+| C4 — acceso | [c4-3-acceso.svg](docs/diagramas/img/c4-3-acceso.svg) |
+| C4 — canchas | [c4-3-canchas.svg](docs/diagramas/img/c4-3-canchas.svg) |
+| UML de clases de dominio | [uml-clases-dominio.svg](docs/diagramas/img/uml-clases-dominio.svg) |
+| DER físico | [er-fisico.svg](docs/diagramas/img/er-fisico.svg) |
+| Secuencia — reserva y pago | [sec-reserva-pago.svg](docs/diagramas/img/sec-reserva-pago.svg) |
+| Secuencia — reserva concurrente | [sec-reserva-concurrente.svg](docs/diagramas/img/sec-reserva-concurrente.svg) |
+| Secuencia — acceso offline | [sec-acceso-offline.svg](docs/diagramas/img/sec-acceso-offline.svg) |
+| Estados de la reserva | [est-reserva.svg](docs/diagramas/img/est-reserva.svg) |
+| Estados de la membresía | [est-membresia.svg](docs/diagramas/img/est-membresia.svg) |
+| Actividad — lista de espera | [act-lista-espera.svg](docs/diagramas/img/act-lista-espera.svg) |
+| Despliegue | [dep-despliegue.svg](docs/diagramas/img/dep-despliegue.svg) |
+| Pipeline de CI | [pipe-ci.svg](docs/diagramas/img/pipe-ci.svg) |
 
-| Paso | Qué hacer | Resultado esperado |
-|------|-----------|--------------------|
-| Health | `curl http://localhost:3000/health` | JSON con `"status": "ok"` |
-| Swagger | Abrir `http://localhost:3000/api/docs` | UI de la API |
-| Frontend | Abrir `http://localhost:5173` | Home de FitZone |
-| Sedes | `GET /sedes` (browser, Swagger o curl) | Central y Norte del seed |
+## 6. Pruebas
 
-Ejemplo de health:
+Umbral de esta entrega, declarado en [ADR-008](docs/adr/ADR-008-pruebas-cobertura.md): **60 % de sentencias** del backend, medido con `npm run test:cov`.
 
-```bash
-curl http://localhost:3000/health
-```
+Corrida del 2026-11-17, en `backend/`, con `npm run test:cov`:
 
-```json
-{
-  "status": "ok",
-  "timestamp": "2026-10-15T19:16:00.985Z",
-  "uptime": 7.07
-}
-```
+| Dato | Resultado |
+|------|-----------|
+| Suites | 29, todas en verde |
+| Tests | 179, todos en verde |
+| Sentencias (`Statements`) | 65,15 % |
 
-### 6.3 Demo por API (recomendado hoy)
-
-La mayor parte de la lógica de negocio se demuestra por **Swagger** (`http://localhost:3000/api/docs`) o `curl`. Flujo sugerido (~5–10 min):
-
-1. **Login socio** — `POST /auth/login` con `socio@fitzone.com` + `SEED_PASSWORD`. Copiar el `access_token`.
-2. **Identidad** — `GET /auth/me` con header `Authorization: Bearer <token>`. Debe devolver el usuario y rol `socio`.
-3. **Perfil** — `GET /perfiles/me` con el mismo token.
-4. **Sedes** — `GET /sedes` (público).
-5. **Membresía** — `GET /membresias/activas/:perfilId` usando el id del perfil del socio.
-6. **Clases** — `GET /clases?sedeId=<uuid-sede>` (el seed no crea clases; si hay clases en la BD de desarrollo, se listan acá).
-7. **Notificaciones** — `GET /notificaciones` con el token del socio.
-8. **Cambio de rol** — repetir login con `gerente@fitzone.com` y `GET /auth/me` para mostrar el rol `gerente`.
-
-Authorize en Swagger: botón **Authorize**, pegar el JWT (sin la palabra `Bearer` si el esquema ya la agrega; si pide el valor completo, usar `Bearer <token>` según indique la UI).
-
-### 6.4 Demo por UI (estado actual del frontend)
-
-Rutas: `/`, `/login`, `/signup`, `/perfil`, `/canchas`, `/dashboard`, **`/mi-qr`** (socio), **`/acceso`** (admin_sede / gerente).
-
-Configurar `frontend/.env` con al menos `VITE_API_URL=http://localhost:3000` (reiniciar Vite si se cambia).
-
-#### Acceso M2 (QR + recepción) — ~5 min
-
-Requiere migración Acceso M2 aplicada y `npm run seed` (socio con TOTP). Detalle: [Plan M2](documentacion/Plan_M2_Acceso_QR_Patricio.md) · Postman [`postman/FitZoneSports_Acceso.postman_collection.json`](postman/FitZoneSports_Acceso.postman_collection.json).
-
-1. **Socio** — login `socio@fitzone.com` → menú **Mi QR**: código de 6 dígitos + QR (`{ v:1, perfilId, code }`), se renueva ~cada 60 s.
-2. **Recepción** — otra ventana/perfil: login `admin.central@fitzone.com` → **Acceso**.
-3. Pegá el JSON del QR (o perfilId + código actual) → **Registrar check-in** → el socio aparece en **Presencias**.
-4. **Offline (RNF-01 acotado):** DevTools → Network → Offline → registrar de nuevo → ítem en **Cola offline** → Online → **Sincronizar** (o el evento `online`) → `ok` o error tipado (`YA_DENTRO`, etc.).
-5. Check-out: por ahora vía API/Swagger `POST /acceso/check-outs` (la UI de recepción aún no tiene botón de salida).
-
-Recorrido general: Home → Login → Perfil / Canchas según rol.
-
-### 6.5 Qué no esperar aún en la demo
-
-- Flujos completos de reserva de cancha / pago en la UI (módulos en evolución; precios Strategy están en backend bajo `canchas/precios`).
-- Cámara para escanear QR; check-out amigable en la pantalla Acceso; app móvil nativa (Unidad VI).
-- Nodo/servidor por sede ni validación TOTP 100 % offline en recepción (MVP = cola local + sync; [ADR-007](documentacion/adr/ADR-007-acceso-totp-cola-offline.md)).
-- Que el seed cree clases o reservas (solo usuarios, sedes, membresía/TOTP del socio y canchas).
-
----
-
-## 7. Comandos útiles
-
-### Backend (`backend/`)
+Esa medición cubre los tests unitarios del conjunto `collectCoverageFrom` de `backend/jest.config.ts`. Los comandos, siempre desde `backend/`:
 
 ```bash
-npm install              # Instalar dependencias
-npm run start:dev        # Modo desarrollo (watch)
-npm run start:prod       # Modo producción (desde dist/)
-npm run build            # Compilar TypeScript a JavaScript
-npm run seed             # Cargar usuarios/sedes/canchas de demo
-npm test                 # Ejecutar tests unitarios
-npm run test:e2e         # Ejecutar tests end-to-end (Supertest)
-npm run test:cov         # Tests con cobertura
-npm run lint             # Linting con oxlint
-npm run format           # Formatear con Prettier
+npm test
+npm run test:cov
+npm run test:e2e
 ```
 
-### Frontend (`frontend/`)
+`npm run test:e2e` en `backend/` ejecuta los tests HTTP y no entra en el 65,15 %. En `frontend/`, `npm run test:e2e` corre el E2E de Playwright (login, reserva, pago, consulta y comprobante). Usa `E2E_PASSWORD` o, si no está, `SEED_PASSWORD`. Tampoco mueve ese porcentaje.
 
-```bash
-npm install              # Instalar dependencias
-npm run dev              # Servidor de desarrollo (Vite)
-npm run build            # Compilar para producción
-npm run preview          # Previsualizar build de producción
-npm run lint             # Linting con ESLint
-```
+## 7. Asistentes de IA y bibliotecas
 
-
----
-
-## 8. Estructura del proyecto
-
-```
-FitZoneSports/
-├── backend/                      # API NestJS (monolito modular, BFF)
-│   ├── src/
-│   │   ├── main.ts               # Arranque: CORS, Swagger, puerto
-│   │   ├── app.module.ts         # Módulo raíz
-│   │   ├── cors.ts / swagger.ts  # CORS y docs OpenAPI
-│   │   ├── supabase/             # Cliente Supabase + Repository + filtro de errores
-│   │   ├── auth/                 # Login, JWT, guards, roles
-│   │   ├── health/               # GET /health
-│   │   ├── sedes/                # GET /sedes
-│   │   ├── perfiles/             # GET/PATCH /perfiles/me
-│   │   ├── notificaciones/       # In-app + Observer (lista de espera)
-│   │   ├── membresias/           # Membresías del socio
-│   │   ├── clases/               # Clases, cupos, inscripciones
-│   │   └── canchas/
-│   │       └── precios/          # Strategy de precios (M4)
-│   ├── test/                     # Tests HTTP (Jest + Supertest)
-│   ├── scripts/                  # seed-demo.ts (npm run seed)
-│   ├── .env.example              # Plantilla de variables (sin secretos)
-│   ├── jest.config.ts            # Coverage / unitarios
-│   └── package.json
-├── frontend/                     # SPA React + Vite
-│   ├── src/
-│   │   ├── main.tsx              # Entrada React
-│   │   ├── App.tsx               # React Router
-│   │   ├── pages/                # Home, Login, Canchas, Perfil
-│   │   └── components/           # Layout y UI compartida
-│   ├── package.json
-│   └── vite.config.ts
-├── supabase/
-│   └── migrations/               # SQL versionado (núcleo, M3–M5, etc.)
-├── documentacion/                # C4, ADR, actas, guías, seed demo, etc.
-└── README.md                     # Este archivo
-```
-
-Más detalle del backend: [`documentacion/Estructura_Backend.md`](documentacion/Estructura_Backend.md).
-
----
-
-## 9. Tecnologías y dependencias principales
+El equipo usó Cursor, un asistente de IA, para proponer código, pruebas y redacción. Las decisiones de arquitectura están en los ADR. En la defensa, cada integrante explica y modifica el código que entregó.
 
 | Capa | Tecnología | Versión |
-|------|-----------|---------|
+|------|------------|---------|
 | Backend | NestJS | ^12.0.1 |
 | Backend | TypeScript | ^6.0.2 |
-| Backend | @supabase/supabase-js | ^2.117.0 |
+| Backend | @supabase/supabase-js | ^2.118.0 |
 | Backend | jose | ^6.2.12 |
 | Backend | @nestjs/event-emitter | ^12.0.1 |
 | Backend | @nestjs/swagger | ^12.0.2 |
@@ -417,73 +165,13 @@ Más detalle del backend: [`documentacion/Estructura_Backend.md`](documentacion/
 | Frontend | React Router | ^7.18.4 |
 | Frontend | TypeScript | ~6.0.2 |
 | Base de datos | Supabase (PostgreSQL + Auth) | — |
-| Despliegue Frontend | Vercel | — |
-| Despliegue Backend | Render | — |
+| Despliegue del portal | Vercel | — |
+| Despliegue de la API | Render | — |
+
+## 8. Licencia
+
+Este repositorio se publica bajo la licencia MIT, año 2026, a nombre de los cuatro integrantes. El texto está en [LICENSE](LICENSE).
 
 ---
 
-## 10. Pruebas
-
-### Tests unitarios (backend)
-
-```bash
-cd backend
-npm test
-```
-
-### Tests end-to-end (backend)
-
-```bash
-cd backend
-npm run test:e2e
-```
-
-Los tests e2e no tocan Supabase real: usan mocks de repositorios y un JWKS de prueba para firmar JWT.
-
-### Frontend
-
-El frontend no tiene tests configurados actualmente.
-
----
-
-## 11. Notas importantes
-
-### Seguridad
-
-- El archivo `backend/.env` contiene la `SUPABASE_SERVICE_ROLE_KEY`, que es **secreta**. Nunca la commitees ni la compartas.
-- El archivo `frontend/.env.local` es local y no se sube al repositorio.
-- Ambos archivos están incluidos en `.gitignore`.
-
-### CORS
-
-El backend acepta peticiones desde los orígenes definidos en `CORS_ORIGIN`. Por defecto permite `http://localhost:5173` (Vite en desarrollo).
-
-### Red con inspección SSL
-
-Si estás en una red con inspección SSL (como algunas redes corporativas), es posible que necesites arrancar el backend con:
-
-```bash
-NODE_OPTIONS=--use-system-ca npm run start:dev
-```
-
-### Estado del frontend
-
-El frontend tiene el esqueleto de rutas (Home, Login, Perfil, Canchas). Parte de la UI sigue siendo placeholder o no está totalmente cableada al BFF; para demos de negocio usar Swagger (§6.3).
-
-### Documentación extra
-
-| Tema | Documento |
-|------|-----------|
-| Seed de demo | [`documentacion/Seed_Demo_S5.md`](documentacion/Seed_Demo_S5.md) |
-| Estructura Nest | [`documentacion/Estructura_Backend.md`](documentacion/Estructura_Backend.md) |
-| Plan de tests | [`documentacion/Guia_Implementacion_Tests.md`](documentacion/Guia_Implementacion_Tests.md) |
-| Decisiones / mejoras | [`documentacion/Decisiones_Pendientes_y_Cosas_a_Definir.md`](documentacion/Decisiones_Pendientes_y_Cosas_a_Definir.md) |
-
-### Soporte
-
-Para credenciales de Supabase (Service Role Key), contacta al administrador del proyecto por Discord. No compartas credenciales por canales públicos.
-
----
-
-*Última actualización: 29/10/2026*
-
+*Última actualización: 17/11/2026*

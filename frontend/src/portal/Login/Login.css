@@ -1,0 +1,119 @@
+.login-container {
+    min-height: 100vh;
+    min-height: 100dvh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #f5f7fa;
+    font-family: Arial, sans-serif;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.login-card {
+    width: 100%;
+    max-width: 420px;
+    padding: 35px;
+    background-color: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    box-sizing: border-box;
+}
+
+.login-card h1 {
+    text-align: center;
+    color: #14283f;
+    font-size: 25px;
+}
+
+.login-card h1 span {
+    color: #58c9e8;
+}
+
+.login-card h2 {
+    color: #14283f;
+    text-align: center;
+    margin-bottom: 8px;
+}
+
+.login-card p {
+    color: #718096;
+    text-align: center;
+    font-size: 14px;
+}
+
+.login-card form {
+    display: flex;
+    flex-direction: column;
+    margin-top: 25px;
+    gap: 12px;
+}
+
+.login-signup {
+    margin-top: 22px;
+}
+
+.login-signup a,
+.login-back {
+    color: #168eaf;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.login-back {
+    display: block;
+    text-align: center;
+    margin-top: 20px;
+    font-size: 14px;
+}
+
+/* Adaptación para celulares */
+@media (max-width: 480px) {
+    .login-container {
+        padding: 16px;
+        align-items: center;
+    }
+
+    .login-card {
+        padding: 26px 20px;
+        border-radius: 10px;
+    }
+
+    .login-card h1 {
+        font-size: 23px;
+    }
+
+    .login-card h2 {
+        font-size: 21px;
+    }
+
+    .login-card form {
+        margin-top: 22px;
+        gap: 14px;
+    }
+
+    .login-signup {
+        line-height: 1.5;
+        margin-top: 20px;
+    }
+
+    .login-back {
+        margin-top: 18px;
+        padding: 8px;
+    }
+}
+
+/* Pantallas muy pequeñas */
+@media (max-width: 350px) {
+    .login-container {
+        padding: 10px;
+    }
+
+    .login-card {
+        padding: 22px 15px;
+    }
+
+    .login-card h1 {
+        font-size: 21px;
+    }
+}
