@@ -773,3 +773,23 @@ Al principio la API respondía 500: PostgREST no encontraba la vista (PGRST205) 
 
 - `92fbc4e` C-39: el gerente lee el resumen de la cadena desde una vista.
 
+---
+
+### 2026-11-18  ·  C-41
+
+**Actividad**
+
+Dejé el SQL de RN-02 en el CI, en la rama `C-41`. `supabase/tests/run-canchas-m4.sh` aplica el stub `00_fase_a_simulada.sql`, las migraciones en orden de nombre y el GRANT del stub, y corre `canchas_m4.test.sql`. El job `sql-rn02` de `ci-backend.yml` lo hace contra PostgreSQL 15 en el pull request a `desarrollo` y corta si no aparece `OK 3`. El unitario que simula el 409 queda. La fila C-41 del plan de cierre quedó en finalizado. ADR-004, ADR-008 y el manual técnico dejan de decir que ese script se corre a mano.
+
+**Decisión**
+
+No se usa `supabase start`. El test inserta en un `auth.users` de una columna y el encabezado prohíbe Supabase real. La función que se prueba es la del esquema completo, incluida la del hold: el choque sigue siendo `TURNO_OCUPADO`.
+
+**Problema o bloqueo**
+
+Docker Desktop no estaba en marcha. Lo levanté y corrí el script en un contenedor `postgres:15`. La salida trajo `OK 1` a `OK 9`, con `OK 3  sobreventa rechazada (TURNO_OCUPADO)`. `pg_cron` avisó que no está en esa imagen; la limpieza lazy del hold sigue. El check de GitHub se ve cuando exista el pull request.
+
+**Commits**
+
+El trabajo está en la rama `C-41`. El hash se anota cuando se cree el commit.
+

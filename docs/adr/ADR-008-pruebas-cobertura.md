@@ -10,7 +10,7 @@
 
 La Unidad V pide una estrategia de pruebas, una pirámide y un umbral mínimo de cobertura. El reporte tiene que superar ese umbral. Hasta este registro el backend ya corría Jest y Supertest, había un script SQL de la no sobreventa, y el documento de cobertura de octubre de 2026 decía de forma explícita que no había umbral: el entregable de esa unidad era el reporte, no un porcentaje.
 
-El CI (`.github/workflows/ci-backend.yml`) ejecuta lint, tests unitarios y build del backend en pull requests hacia `desarrollo`. No publica cobertura y no corre los tests HTTP ni el script SQL. El frontend no tiene script de tests. Una parte de los controladores y repositorios sigue sin spec propio; los servicios de canchas, acceso, precios, clases, auth y la pasarela simulada sí tienen.
+El CI (`.github/workflows/ci-backend.yml`) ejecuta lint, tests unitarios y build del backend en pull requests hacia `desarrollo`. Al escribir este ADR no publicaba cobertura y no corría los tests HTTP ni el script SQL. El frontend no tiene script de tests. Una parte de los controladores y repositorios sigue sin spec propio; los servicios de canchas, acceso, precios, clases, auth y la pasarela simulada sí tienen.
 
 C-10 queda a cargo de dejar la suite en verde, publicar el reporte y hacer fallar el CI si no se llega al número de este ADR.
 
@@ -28,7 +28,7 @@ C-10 queda a cargo de dejar la suite en verde, publicar el reporte y hacer falla
 La pirámide de esta entrega es:
 
 1. **Base.** Tests unitarios Jest + `ts-jest` sobre `backend/src/**/*.spec.ts` (servicios, guards, decoradores de precio, TOTP, pasarela simulada).
-2. **Medio.** Tests HTTP con Supertest (`backend/test/**/*.e2e-spec.ts`) y el script SQL `supabase/tests/canchas_m4.test.sql`, que rechaza una segunda reserva del mismo turno. El script es secuencial, manual, contra un PostgreSQL local, y no se corre en CI.
+2. **Medio.** Tests HTTP con Supertest (`backend/test/**/*.e2e-spec.ts`) y el script SQL `supabase/tests/canchas_m4.test.sql`, que rechaza una segunda reserva del mismo turno. El script es secuencial y corre contra un PostgreSQL local. Desde C-41 el job `sql-rn02` lo ejecuta en CI y exige el aviso `OK 3`.
 3. **Cima.** E2E de navegador, fuera de esta entrega.
 
 El umbral mínimo es **60 % de sentencias** en el conjunto de `collectCoverageFrom` de `backend/jest.config.ts` (código de `src/`, sin módulos, DTO, modelos, decoradores, `main.ts` ni `swagger.ts`), medido con `npm run test:cov`. Por debajo de 60 % la entrega no cumple este ADR.
@@ -38,8 +38,9 @@ El criterio determinante fue fijar un número que obligue a cubrir lógica de ne
 ## Consecuencias
 
 - **Positivas:** el porcentaje deja de ser opcional; la no sobreventa tiene una prueba en la base, aparte de los unitarios del servicio; el CI ya frena un pull request si los unitarios fallan.
-- **Negativas:** el 60 % no mira el frontend ni los tests HTTP; un módulo nuevo sin tests diluye el número; el script SQL queda fuera del pipeline y alguien tiene que acordarse de correrlo.
+- **Negativas:** el 60 % no mira el frontend ni los tests HTTP; un módulo nuevo sin tests diluye el número.
 - **Deuda asumida (cerrada en C-10):** `coverageThreshold` está declarado en `backend/jest.config.ts` (60 % de sentencias global) y el workflow `.github/workflows/ci-backend.yml` corre `npm run test:cov`, sube el reporte de cobertura como artifact y hace fallar el pull request si la medición cae bajo 60 %. No hay Vitest, Testing Library ni Playwright. El reporte HTML de cobertura no se versiona (`backend/coverage/` está ignorado por `.gitignore`).
+- **Deuda asumida (cerrada en C-41):** el job `sql-rn02` del mismo workflow corre `supabase/tests/run-canchas-m4.sh` y falla si la salida no contiene `OK 3`. Sigue sin haber dos sesiones en paralelo. El unitario del 409 no se reemplaza.
 
 ## Requisitos relacionados
 

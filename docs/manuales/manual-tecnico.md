@@ -440,28 +440,32 @@ La pirámide y el umbral están en [ADR-008](../adr/ADR-008-pruebas-cobertura.md
 | Unitarios | `backend/src/**/*.spec.ts` | Desde `backend/`: `npm test` |
 | Cobertura | El mismo conjunto, con `collectCoverageFrom` de [jest.config.ts](../../backend/jest.config.ts) | `npm run test:cov` |
 | HTTP | `backend/test/**/*.e2e-spec.ts` | `npm run test:e2e` |
-| SQL de no sobreventa | [supabase/tests/canchas_m4.test.sql](../../supabase/tests/canchas_m4.test.sql) | `psql` contra un PostgreSQL local, en el orden de migraciones que el propio archivo declara. El encabezado prohíbe ejecutarlo en Supabase |
+| SQL de no sobreventa | [supabase/tests/canchas_m4.test.sql](../../supabase/tests/canchas_m4.test.sql) | El job `sql-rn02` corre [run-canchas-m4.sh](../../supabase/tests/run-canchas-m4.sh) contra PostgreSQL 15. En local, el mismo script sobre una base vacía. El encabezado prohíbe ejecutarlo en Supabase |
 
 El umbral de esta entrega es **60 % de sentencias** sobre el código de `src/` que Jest recolecta. Quedan fuera del porcentaje los módulos, DTO, modelos, decoradores, specs, `main.ts` y `swagger.ts`. El reporte sale en `backend/coverage/` (HTML en `coverage/lcov-report/index.html`). Esa carpeta no se versiona.
 
 `npm test` es el comando de los unitarios. `npm run test:cov` es el que se compara con el 60 %. Una línea del resumen de Jest, `Statements`, es el número del ADR. Por debajo de 60 % no se baja el umbral en el ADR: se agregan tests o se supera el ADR con uno nuevo.
 
-El CI de la sección 9 corre lint, `npm test -- --runInBand` y el build. No publica cobertura, no corre `test:e2e` y no corre el script SQL. `coverageThreshold` todavía no está en `jest.config.ts`. Ese cierre es la tarea C-10, no este manual. El frontend no tiene script de tests.
+El CI de la sección 9 tiene dos jobs: `ci-backend` (lint, `npm run test:cov` y build) y `sql-rn02` (el script SQL de no sobreventa). El frontend no tiene script de tests.
 
 ## 9. Pipeline de integración y entrega continuas
 
 El workflow es [.github/workflows/ci-backend.yml](../../.github/workflows/ci-backend.yml). El dibujo es [pipe-ci.drawio](../diagramas/fuentes/pipe-ci.drawio).
 
-Se dispara en un pull request hacia `desarrollo`. Los pasos, en el directorio `backend/`:
+Se dispara en un pull request hacia `desarrollo`. Hay dos jobs.
+
+`ci-backend`, en el directorio `backend/`:
 
 1. Checkout.
 2. Node.js 24, con caché de `backend/package-lock.json`.
 3. `npm ci`.
 4. `npm run lint` (oxlint).
-5. `npm test -- --runInBand`.
+5. `npm run test:cov -- --runInBand`, con el reporte de cobertura como artifact.
 6. `npm run build` (`nest build`).
 
-El job define `NODE_OPTIONS=--experimental-vm-modules` y claves de Supabase de mentira, para que los módulos que leen `process.env` al arrancar no fallen el build. No hay secretos reales en el workflow.
+Ese job define `NODE_OPTIONS=--experimental-vm-modules` y claves de Supabase de mentira, para que los módulos que leen `process.env` al arrancar no fallen el build. No hay secretos reales en el workflow.
+
+`sql-rn02` (C-41) levanta PostgreSQL 15 con la base `fz_test` y corre `bash supabase/tests/run-canchas-m4.sh`. El paso falla si `psql` corta o si la salida no contiene `OK 3` (`TURNO_OCUPADO`). El script aplica el stub de `auth.users`, las migraciones en orden de nombre y el GRANT del stub. No se ejecuta contra Supabase.
 
 Ese pipeline no despliega a Vercel ni a Render. El mapa de la demo y la reversión (revertir el commit, promover el deployment anterior en Vercel, volver al deploy anterior en Render) están en [ADR-009](../adr/ADR-009-despliegue-contenedores-reversion.md). El Compose de la entrega está en `docker-compose.yml` (API en el puerto 3000, frontend en el puerto 80 y un seed aparte). Este workflow no lo ejecuta.
 

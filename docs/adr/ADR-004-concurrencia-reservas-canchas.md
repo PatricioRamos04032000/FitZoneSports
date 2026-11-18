@@ -37,7 +37,7 @@ El criterio determinante fue que el perdedor reciba un rechazo de la base, no un
 
 - **Positivas:** dos reservas simultáneas del mismo turno terminan en una sola fila vigente; el perdedor obtiene `TURNO_OCUPADO`; el hold evita vender el turno mientras el pago sigue abierto; el mismo esquema (restricción en la base, la API traduce el error) se reutiliza en RN-01.
 - **Negativas:** quien llega segundo espera el commit del primero sobre esa cancha; la lógica del cupo está en SQL y hay que leerla junto con el servicio Nest; el hold depende de que la función de limpieza corra antes del insert (y de `pg_cron` si se quiere limpiar sin tráfico).
-- **Deuda asumida:** no hay prueba de dos sesiones en paralelo dentro del CI. `supabase/tests/canchas_m4.test.sql` rechaza una segunda reserva secuencial con `TURNO_OCUPADO`; se corre a mano contra un PostgreSQL local y no se ejecuta en GitHub Actions.
+- **Deuda asumida:** no hay prueba de dos sesiones en paralelo dentro del CI. La segunda reserva secuencial sí corre: el job `sql-rn02` de `.github/workflows/ci-backend.yml` ejecuta `supabase/tests/run-canchas-m4.sh` contra PostgreSQL 15 y exige el aviso `OK 3` (`TURNO_OCUPADO`). El unitario de Nest que simula el 409 se queda.
 
 ## Requisitos relacionados
 
