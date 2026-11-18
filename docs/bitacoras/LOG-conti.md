@@ -245,6 +245,7 @@ Al cruzar mis commits contra los planes del 11/11 noté que `C-09` seguía figur
 **Commits**
 
 - `5546109` C-09
+- `a280bc5` C-19b: agrega bitacora individual de Bruno Conti
 
 ---
 

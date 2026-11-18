@@ -279,6 +279,27 @@ No se pudo ejecutar el seed contra Supabase real por falta de credenciales de en
 **Commits**
 
 - `11c9e2c` C-08: seed de entrega final con >= 25 sedes, canchas/clases mínimas y 4 roles
+- `4107355` C-08: seed de entrega final con >= 25 sedes, canchas/clases mínimas y 4 roles
+
+---
+
+### 2026-11-17  ·  C-07
+
+**Actividad**
+
+Dejé el Docker Compose de la API y el frontend, con los Dockerfiles y la base documentada.
+
+**Decisión**
+
+El Compose es el arranque de la entrega. La API sigue hablando con Supabase.
+
+**Problema o bloqueo**
+
+Ninguno de esta cita. El commit ya estaba en `desarrollo` y no figuraba en esta bitácora.
+
+**Commits**
+
+- `431b225` C-07: Docker Compose (API + front). docker-compose.yml, Dockerfiles y la base documentada.
 
 ---
 
