@@ -119,7 +119,7 @@ Después del tag: solo ensayo Demo Day.
 | C-23 | README raíz según §4.1 (equipo, 5 pasos, seed users, links, cobertura). **Cerrada 2026-11-17** por **Patricio** (`README.md`: cinco pasos con Docker, usuarios del seed, enlaces y cobertura 65,15 % de sentencias) | Patricio | 2 | **Finalizado** | Máquina limpia sin preguntar | README |
 | C-24 | Ensayo demo **5 min cronometrado** + plan B sin red | Patricio | 1–2 | **Por hacer** | Guion escrito + cronómetro OK | Defensa |
 | C-25 | Dossier PDF (Anexo A) + hash `git rev-parse` | Patricio | 2 | **Por hacer** | `PROGV-2026-TIF-EquipoNN-Dossier.pdf` | Moodle |
-| C-26 | Tag anotado y push **antes de las 18:00** | Patricio | 0,5 | **Por hacer** | `v1.0-entrega` en remoto | Tag |
+| C-26 | Tag anotado y push **antes de las 18:00**. `master` queda en `v0.50.0`; el 1.0 se publica al terminar. | Patricio | 0,5 | **Por hacer** | `v1.0-entrega` en remoto | Tag |
 | C-27 | Subida Moodle (dossier + URL + tag + hash + plan/xlsx) | Patricio | 0,5 | **Por hacer** | Constancia de fecha | Canal entrega |
 
 #### Lote 17/11 · C-35 a C-41

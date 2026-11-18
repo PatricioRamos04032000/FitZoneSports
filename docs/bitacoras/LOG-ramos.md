@@ -793,3 +793,23 @@ Docker Desktop no estaba en marcha. Lo levanté y corrí el script en un contene
 
 - `2118e94` C-41: corre el SQL de RN-02 en CI y exige OK 3.
 
+---
+
+### 2026-11-18  ·  Versiones 0.23.1 a 0.50.0
+
+**Actividad**
+
+Etiqueté lo que ya estaba en `desarrollo`, de `v0.23.1` a `v0.50.0`. Cada tag apunta a un commit que ya existía. El changelog deja esas secciones y `[Unreleased]` queda vacío. Los `package.json` del backend y del frontend pasan a `0.50.0`.
+
+**Decisión**
+
+Una versión por cada paso de la línea de integración que trajo código. La documentación que entró entre dos números queda en la versión vigente. `C-40` no está en `desarrollo` y no entra. `v1.0.0` y `v1.0-entrega` no se publican: C-26 sigue por hacer y el 1.0 queda para el cierre.
+
+**Problema o bloqueo**
+
+Ninguno.
+
+**Commits**
+
+- Este registro es el del changelog. Los tags no son commits nuevos.
+

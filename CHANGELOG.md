@@ -8,13 +8,221 @@ Cada versión corresponde a un paso de la línea de integración (`desarrollo`) 
 
 ## [Unreleased]
 
+## [0.50.0] - 2026-11-18
+
+### Added
+
+- El job `sql-rn02` corre el SQL de RN-02 en CI y exige `OK 3` (C-41).
+
+## [0.49.0] - 2026-11-18
+
+### Added
+
+- Dashboard del gerente: `GET /reportes/resumen` y la pantalla `/dashboard` (C-39).
+
+## [0.48.1] - 2026-11-17
+
+### Changed
+
+- El Compose deja el frontend hablando con la API del host (C-07-2).
+
+### Documentación
+
+- README de cinco pasos (C-23), dossier en Markdown (C-25), licencia MIT (C-36) y el ajuste que deja de decir que Compose no existe (C-07-3). El lote C-35 a C-41 queda en el plan de cierre.
+
+## [0.48.0] - 2026-11-17
+
+### Added
+
+- Docker Compose de la API y el frontend, con la base documentada en Supabase (C-07).
+
+## [0.47.0] - 2026-11-17
+
+### Added
+
+- Comprobante PDF post-pago de la cancha (C-04, RF-14).
+
+### Documentación
+
+- Bitácoras de Bruno y de Lucas, y el manual de usuario (C-16).
+
+## [0.46.0] - 2026-11-17
+
+### Added
+
+- Seed de entrega: al menos 25 sedes, canchas y clases mínimas, y los cuatro roles (C-08).
+
+## [0.45.0] - 2026-11-17
+
+### Added
+
+- Umbral de cobertura del 60 % de sentencias en el CI (C-10).
+
+## [0.44.0] - 2026-11-17
+
+### Added
+
+- Catálogo de componentes propios (S7-T09).
+
+## [0.43.1] - 2026-11-16
+
+### Fixed
+
+- El título del aviso de lugar liberado se lee sobre la tarjeta (C-34).
+
+### Documentación
+
+- Bitácora de Matias, planificación de cierre (C-20) y manual de instalación y operación (C-17).
+
+## [0.43.0] - 2026-11-15
+
+### Added
+
+- Check-out desde `/acceso`, con la misma cola del ingreso si no hay red (C-33).
+
+## [0.42.0] - 2026-11-15
+
+### Added
+
+- Alta, precio, cancelación, pico, descuento y mantenimiento de canchas en pantalla (C-32).
+
+## [0.41.0] - 2026-11-14
+
+### Added
+
+- El gerente crea y edita la agenda de clases (C-31).
+
+## [0.40.0] - 2026-11-14
+
+### Added
+
+- El socio elige un plan, paga y la membresía anterior se cierra en la misma operación (C-30).
+
+## [0.39.0] - 2026-11-14
+
+### Added
+
+- Alta y edición de sedes para el gerente (C-29).
+
+## [0.38.0] - 2026-11-13
+
+### Changed
+
+- Los precios de cancha pasan de Strategy a Decorator (C-28.2).
+
+### Documentación
+
+- Diagramas de clases, secuencia y C4-3 del Decorator, y la bitácora del cierre C-28.
+
+## [0.37.0] - 2026-11-13
+
 ### Changed
 
 - S7-T08: pulido del flujo demo — menú por sesión/rol (`/dashboard` solo staff), Acceso con mensajes de recepción, Presencias con nombre/apellido, Home sin nav duplicada; confirmación de cancha por nombre.
 
 ### Documentación
 
-- Guion C-06, README §6, bitácoras y planes de cierre alineados al pase solo UI.
+- README §6 y planes de cierre alineados al pase solo UI.
+
+## [0.36.0] - 2026-11-13
+
+### Added
+
+- Notificaciones in-app.
+
+## [0.35.0] - 2026-11-13
+
+### Added
+
+- Pantalla de clases: listar e inscribir (S7-T06 / C-11).
+
+## [0.34.0] - 2026-11-13
+
+### Added
+
+- `backend/swagger.json` exportado y enlazado (C-09).
+
+## [0.33.0] - 2026-11-10
+
+### Added
+
+- Membresía visible en el perfil y lectura responsive de login, canchas y QR.
+
+### Documentación
+
+- Diagramas de la entrega (C-15), manual técnico (C-18), bitácora de Patricio (C-19a) y la reunión del 11/11.
+
+## [0.32.0] - 2026-11-10
+
+### Added
+
+- Pantalla de canchas: sede, disponibilidad, reserva y pago.
+
+## [0.31.0] - 2026-11-09
+
+### Changed
+
+- El repositorio pasa a la estructura `docs/` del punto 4 (C-13).
+
+### Documentación
+
+- Los diez ADR obligatorios (C-14).
+
+## [0.30.0] - 2026-11-07
+
+### Added
+
+- Átomos Button, Input y Spinner (S5-T09).
+
+### Documentación
+
+- Guion del ensayo de demo (C-06).
+
+## [0.29.0] - 2026-11-07
+
+### Added
+
+- Pantallas de Clases y Notificaciones protegidas por rol (S5-T08).
+
+## [0.28.0] - 2026-11-07
+
+### Added
+
+- El cliente cierra la sesión cuando una llamada autenticada responde 401 y tipa el rol (S4-T04).
+
+## [0.27.0] - 2026-11-07
+
+### Changed
+
+- El precio de la cancha redondea hacia arriba (S4-T15).
+
+## [0.26.0] - 2026-11-04
+
+### Added
+
+- Ajustes de la API de clases (S4-T14).
+
+### Documentación
+
+- Plan de tres semanas y plan de cierre de la entrega.
+
+## [0.25.0] - 2026-11-04
+
+### Added
+
+- API de clases (S4-T10).
+
+## [0.24.0] - 2026-11-04
+
+### Added
+
+- API de canchas (S4-T06).
+
+## [0.23.1] - 2026-11-03
+
+### Fixed
+
+- Avisos de Sonar en el registro, el perfil y la sesión.
 
 ## [0.23.0] - 2026-11-03
 
@@ -243,6 +451,36 @@ Cada versión corresponde a un paso de la línea de integración (`desarrollo`) 
 
 - Plan de trabajo de las semanas 1 a 4, alineado al tablero.
 
+[0.50.0]: https://github.com/PatricioRamos04032000/FitZoneSports/releases/tag/v0.50.0
+[0.49.0]: https://github.com/PatricioRamos04032000/FitZoneSports/releases/tag/v0.49.0
+[0.48.1]: https://github.com/PatricioRamos04032000/FitZoneSports/releases/tag/v0.48.1
+[0.48.0]: https://github.com/PatricioRamos04032000/FitZoneSports/releases/tag/v0.48.0
+[0.47.0]: https://github.com/PatricioRamos04032000/FitZoneSports/releases/tag/v0.47.0
+[0.46.0]: https://github.com/PatricioRamos04032000/FitZoneSports/releases/tag/v0.46.0
+[0.45.0]: https://github.com/PatricioRamos04032000/FitZoneSports/releases/tag/v0.45.0
+[0.44.0]: https://github.com/PatricioRamos04032000/FitZoneSports/releases/tag/v0.44.0
+[0.43.1]: https://github.com/PatricioRamos04032000/FitZoneSports/releases/tag/v0.43.1
+[0.43.0]: https://github.com/PatricioRamos04032000/FitZoneSports/releases/tag/v0.43.0
+[0.42.0]: https://github.com/PatricioRamos04032000/FitZoneSports/releases/tag/v0.42.0
+[0.41.0]: https://github.com/PatricioRamos04032000/FitZoneSports/releases/tag/v0.41.0
+[0.40.0]: https://github.com/PatricioRamos04032000/FitZoneSports/releases/tag/v0.40.0
+[0.39.0]: https://github.com/PatricioRamos04032000/FitZoneSports/releases/tag/v0.39.0
+[0.38.0]: https://github.com/PatricioRamos04032000/FitZoneSports/releases/tag/v0.38.0
+[0.37.0]: https://github.com/PatricioRamos04032000/FitZoneSports/releases/tag/v0.37.0
+[0.36.0]: https://github.com/PatricioRamos04032000/FitZoneSports/releases/tag/v0.36.0
+[0.35.0]: https://github.com/PatricioRamos04032000/FitZoneSports/releases/tag/v0.35.0
+[0.34.0]: https://github.com/PatricioRamos04032000/FitZoneSports/releases/tag/v0.34.0
+[0.33.0]: https://github.com/PatricioRamos04032000/FitZoneSports/releases/tag/v0.33.0
+[0.32.0]: https://github.com/PatricioRamos04032000/FitZoneSports/releases/tag/v0.32.0
+[0.31.0]: https://github.com/PatricioRamos04032000/FitZoneSports/releases/tag/v0.31.0
+[0.30.0]: https://github.com/PatricioRamos04032000/FitZoneSports/releases/tag/v0.30.0
+[0.29.0]: https://github.com/PatricioRamos04032000/FitZoneSports/releases/tag/v0.29.0
+[0.28.0]: https://github.com/PatricioRamos04032000/FitZoneSports/releases/tag/v0.28.0
+[0.27.0]: https://github.com/PatricioRamos04032000/FitZoneSports/releases/tag/v0.27.0
+[0.26.0]: https://github.com/PatricioRamos04032000/FitZoneSports/releases/tag/v0.26.0
+[0.25.0]: https://github.com/PatricioRamos04032000/FitZoneSports/releases/tag/v0.25.0
+[0.24.0]: https://github.com/PatricioRamos04032000/FitZoneSports/releases/tag/v0.24.0
+[0.23.1]: https://github.com/PatricioRamos04032000/FitZoneSports/releases/tag/v0.23.1
 [0.23.0]: https://github.com/PatricioRamos04032000/FitZoneSports/releases/tag/v0.23.0
 [0.22.0]: https://github.com/PatricioRamos04032000/FitZoneSports/releases/tag/v0.22.0
 [0.21.0]: https://github.com/PatricioRamos04032000/FitZoneSports/releases/tag/v0.21.0
