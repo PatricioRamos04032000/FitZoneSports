@@ -8,6 +8,16 @@ Cada versión corresponde a un paso de la línea de integración (`desarrollo`) 
 
 ## [Unreleased]
 
+## [0.51.0] - 2026-11-18
+
+### Added
+
+- E2E de Playwright: login del socio, reserva, pago simulado, consulta en Mis reservas y comprobante (C-40). No entra en el 60 % de sentencias.
+
+### Documentación
+
+- ADR-008 describe esa cima. La fila C-40 del plan de cierre queda en finalizado.
+
 ## [0.50.0] - 2026-11-18
 
 ### Added
@@ -451,6 +461,7 @@ Cada versión corresponde a un paso de la línea de integración (`desarrollo`) 
 
 - Plan de trabajo de las semanas 1 a 4, alineado al tablero.
 
+[0.51.0]: https://github.com/PatricioRamos04032000/FitZoneSports/releases/tag/v0.51.0
 [0.50.0]: https://github.com/PatricioRamos04032000/FitZoneSports/releases/tag/v0.50.0
 [0.49.0]: https://github.com/PatricioRamos04032000/FitZoneSports/releases/tag/v0.49.0
 [0.48.1]: https://github.com/PatricioRamos04032000/FitZoneSports/releases/tag/v0.48.1

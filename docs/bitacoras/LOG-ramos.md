@@ -833,3 +833,23 @@ Ninguno.
 
 - Este registro es el del changelog. Los tags no son commits nuevos.
 
+---
+
+### 2026-11-18  ·  v0.51.0
+
+**Actividad**
+
+C-40 ya estaba en `origin/desarrollo` (PR #81) cuando se publicaron `v0.23.1` a `v0.50.0`. Lo etiqueté como `v0.51.0` sobre el merge de ese pull request. Los `package.json` pasan a `0.51.0`.
+
+**Decisión**
+
+Sigue la misma regla: el paso que trajo el E2E es una versión, y no es el 1.0. C-26 sigue por hacer.
+
+**Problema o bloqueo**
+
+Ninguno.
+
+**Commits**
+
+- `fe86f88` Merge pull request #81 from PatricioRamos04032000/C-40. El tag `v0.51.0` apunta a ese merge.
+
