@@ -469,6 +469,7 @@ Bitácora de equipo, C4 y notas de unidad citan ADR-005 como BFF y ADR-006 como 
 - `601b986` Merge pull request #57 from PatricioRamos04032000/c-15
 - `6c0b540` C-18: escribe el manual técnico con los casos de tenis y de una estrategia de precio.
 - `e84e226` Merge pull request #58 from PatricioRamos04032000/c-18
+- `6e1e620` Reunión 2026-11-11: alinea los planes al tablero y anota el trabajo en curso.
 
 ---
 
@@ -491,6 +492,7 @@ Las clases del seed tenían fechas viejas y fallaban la ventana D5 de 48 h al in
 **Commits**
 
 - `2610431` S7-T06/C-11: pantalla Clases real; Patricio toma y cierra la tarjeta de Lucas.
+- `21fee4a` fix(clases): marca promesas de useEffect con void para Sonar S9383.
 
 ---
 
@@ -557,7 +559,8 @@ La API no arrancó en local por un error de TypeScript ya existente en `precios.
 
 **Commits**
 
-- Pendiente: el trabajo está en la rama `C-29`, sin commit.
+- `c067402` C-29: permite al gerente crear y editar sedes sin un deploy.
+- `9594dc3` C-29: importa PricingComponent solo como tipo para que el build compile.
 
 ### 2026-11-14  ·  C-30 (~5 h)
 
@@ -575,7 +578,7 @@ No hay `supabase db push` en este entorno (sin `config.toml` ni URL de base en `
 
 **Commits**
 
-- C-30 en esta rama: catálogo en el perfil, alta que cierra la anterior y renovación cobrada por la pasarela simulada.
+- `6a0fdec` C-30: el socio elige un plan, paga y la membresía anterior se cierra en la misma operación.
 
 ### 2026-11-14  ·  C-31 (~5 h)
 
@@ -593,7 +596,7 @@ La migración `20261114230000_clases_checks.sql` queda en el repo. Este entorno 
 
 **Commits**
 
-- Pendiente: el trabajo está en la rama `C-31`, sin commit.
+- `f358916` C-31: el gerente crea y edita la agenda de clases sin cargarla por SQL.
 
 ### 2026-11-15  ·  C-32 (~6 h)
 
@@ -611,7 +614,8 @@ Ninguno de contrato. La grilla, la reserva y el pago de `/canchas` no se reescri
 
 **Commits**
 
-- C-32 en esta rama: alta, precio, pico, descuento y mantenimiento en pantalla, y cancelación de la reserva propia.
+- `fb22c93` C-32: el staff administra las canchas en pantalla y el dueño cancela su reserva.
+- `b17b59e` C-32: unifica el formato de horario de Argentina en un solo módulo.
 
 ### 2026-11-15  ·  C-33 (~5 h)
 
@@ -629,7 +633,8 @@ Ninguno de contrato. `registrar_check_out` y el endpoint ya existían; faltaba l
 
 **Commits**
 
-- Pendiente: el trabajo está en la rama `C-33`, sin commit.
+- `c82a327` C-33: la recepción registra la salida desde /acceso y la encola con el ingreso.
+- `59fcd4e` C-33: el contrato de sync declara la salida y deja el código TOTP como opcional.
 
 ---
 
@@ -651,7 +656,7 @@ Ninguno. La tarjeta de Trello queda para moverla a mano.
 
 **Commits**
 
-- El cierre queda en la rama `S7-T09`.
+- `f4edf65` S7-T09: acredita la Unidad IV con un catálogo de componentes propios.
 
 ---
 
@@ -831,6 +836,7 @@ Ninguno.
 
 **Commits**
 
+- `74a0bb2` chore: publica el changelog de v0.23.1 a v0.50.0.
 - Este registro es el del changelog. Los tags no son commits nuevos.
 
 ---
@@ -851,7 +857,31 @@ Ninguno.
 
 **Commits**
 
+- `3593219` chore: publica v0.51.0 para el E2E de C-40.
 - `fe86f88` Merge pull request #81 from PatricioRamos04032000/C-40. El tag `v0.51.0` apunta a ese merge.
+
+---
+
+### 2026-11-17  ·  Citas que faltaban
+
+**Actividad**
+
+Estos commits ya estaban en `desarrollo` y no tenían línea en esta bitácora.
+
+**Decisión**
+
+Se citan acá, sin reescribir la actividad de las entradas anteriores.
+
+**Problema o bloqueo**
+
+Ninguno.
+
+**Commits**
+
+- `1694ad9` C-25: arma el dossier en Markdown, con las figuras, antes del tag.
+- `dcd7778` C-07-2: el compose deja el frontend hablando con la API del host.
+- `36d27cc` C-07-3: la documentación deja de decir que Compose no existe.
+- `d0124a7` C-35 a C-41: suma el lote al plan de cierre y el Excel para Trello.
 
 ---
 
@@ -872,4 +902,24 @@ Ninguno.
 **Commits**
 
 - Este registro es el de `v0.51.1`.
+
+---
+
+### 2026-11-18  ·  C-22
+
+**Actividad**
+
+Recorrí el Anexo G. Medí RNF-03 en el navegador, en `/canchas`, como el tiempo hasta la respuesta visual. Con el socio del seed, la sede FitZone Central y la fecha 2026-11-19, `GET /canchas/disponibilidad` respondió 200 y «Consultando disponibilidad...» dejó lugar a «Cancha 1» y 15 horarios en 786 ms. Lo anoté en el manual técnico. El residual quedó en `documentacion/C-22_Anexo_G_Pendiente.md`.
+
+**Decisión**
+
+La medición es la espera que se ve en la pantalla, no un benchmark del servidor. C-22 sigue en desarrollo hasta aceptar ese residual. No se crea el tag ni se reescribe la planificación.
+
+**Problema o bloqueo**
+
+La sede que el portal elige sola no tenía canchas para esa fecha. La medición es de la sede FitZone Central del seed, la que muestra «Cancha 1».
+
+**Commits**
+
+- Este registro es el del pase. No hay commit de código.
 
