@@ -116,7 +116,7 @@ Después del tag: solo ensayo Demo Day.
 | ID | Tarea | Quién | h | Estado | Cierra cuando | Anexo G |
 |----|-------|-------|---|--------|---------------|---------|
 | C-22 | Recorrer Anexo G casilla por casilla; bugs solo críticos del guion | Patricio | 3–4 | **En desarrollo** | Lista residual aceptada | Checklist |
-| C-23 | README raíz según §4.1 (equipo, 5 pasos, seed users, links, cobertura) | Patricio | 2 | **Por hacer** | Máquina limpia sin preguntar | README |
+| C-23 | README raíz según §4.1 (equipo, 5 pasos, seed users, links, cobertura). **Cerrada 2026-11-17** por **Patricio** (`README.md`: cinco pasos con Docker, usuarios del seed, enlaces y cobertura 65,15 % de sentencias) | Patricio | 2 | **Finalizado** | Máquina limpia sin preguntar | README |
 | C-24 | Ensayo demo **5 min cronometrado** + plan B sin red | Patricio | 1–2 | **Por hacer** | Guion escrito + cronómetro OK | Defensa |
 | C-25 | Dossier PDF (Anexo A) + hash `git rev-parse` | Patricio | 2 | **Por hacer** | `PROGV-2026-TIF-EquipoNN-Dossier.pdf` | Moodle |
 | C-26 | Tag anotado y push **antes de las 18:00** | Patricio | 0,5 | **Por hacer** | `v1.0-entrega` en remoto | Tag |
@@ -216,7 +216,7 @@ Cada integrante dedica **sesión fija a C-19** (bitácora propia) en T2: no se d
 - [ ] Moodle con dossier + plan/xlsx + URL + hash.  
 - [ ] Anexo G sin casillas críticas vacías (admisibilidad §6.1 en verde).  
 - [ ] Guion de 5 min corrido al menos **dos veces** en local.  
-- [ ] README permite clonar → app sin preguntar al equipo.
+- [x] README permite clonar → app sin preguntar al equipo. C-23, 2026-11-17.
 
 ---
 
