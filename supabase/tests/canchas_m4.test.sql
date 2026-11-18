@@ -1,7 +1,9 @@
 -- SOLO para un PostgreSQL local de prueba. NO ejecutar en Supabase.
--- Cadena: 00_fase_a_simulada.sql → 20260915000000 → 20261005220000
---          → 20261006190000 → 20261027200000_canchas_m4.sql → este archivo.
+-- Cadena (supabase/tests/run-canchas-m4.sh, job sql-rn02 de ci-backend.yml):
+--   00_fase_a_simulada.sql → supabase/migrations/*.sql en orden de nombre
+--   → GRANT del stub → este archivo.
 -- Cada caso imprime "OK n"; si alguno falla, psql corta con el error.
+-- El job exige que la salida contenga "OK 3" (TURNO_OCUPADO).
 \set ON_ERROR_STOP 1
 set client_min_messages = notice;
 set timezone = 'America/Argentina/Buenos_Aires';
