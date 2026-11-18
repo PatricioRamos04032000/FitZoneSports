@@ -168,6 +168,10 @@ El equipo usó Cursor, un asistente de IA, para proponer código, pruebas y reda
 | Despliegue del portal | Vercel | — |
 | Despliegue de la API | Render | — |
 
+## 8. Licencia
+
+Este repositorio se publica bajo la licencia MIT, año 2026, a nombre de los cuatro integrantes. El texto está en [LICENSE](LICENSE).
+
 ---
 
 *Última actualización: 17/11/2026*

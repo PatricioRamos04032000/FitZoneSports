@@ -735,3 +735,23 @@ Ninguno de la redacción. Sin las tres claves de Supabase el login no funciona: 
 
 - `b8d14af` C-23: reescribe el README de la raíz según el punto 4.1.
 
+---
+
+### 2026-11-17  ·  C-36
+
+**Actividad**
+
+Escribí `LICENSE` en la raíz con la licencia MIT, año 2026, a nombre de Patricio Ramos, Bruno Nicolás Conti, Lucas Coquet y Matias Goncevat. En el README agregué la sección 8, que apunta a ese archivo. Dejé la fila C-36 del plan de cierre en finalizado.
+
+**Decisión**
+
+El texto de la MIT queda en inglés. Los cuatro nombres van en el mismo orden que la sección 2 del README. `backend/package.json` sigue en `UNLICENSED`: es el metadato del paquete privado de Nest, no el archivo de la raíz.
+
+**Problema o bloqueo**
+
+Ninguno.
+
+**Commits**
+
+- `ba3f111` C-36: agrega la licencia MIT en la raíz y la enlaza desde el README.
+
