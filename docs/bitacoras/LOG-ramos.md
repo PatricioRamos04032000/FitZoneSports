@@ -795,6 +795,26 @@ Docker Desktop no estaba en marcha. Lo levanté y corrí el script en un contene
 
 ---
 
+### 2026-11-18  ·  C-40
+
+**Actividad**
+
+Dejé un E2E de navegador en el frontend, con Playwright. El único caso entra como socio del seed, elige una cancha con turno libre, reserva, paga con la tarjeta de prueba que aprueba, vuelve a Mis reservas y descarga el comprobante PDF. `npm run test:e2e` en `frontend/` terminó con 1 passed. Vite y Nest se reutilizan si ya están arriba. El 60 % del ADR-008 no se mide con este script. La fila C-40 del plan de cierre quedó en finalizado.
+
+**Decisión**
+
+El script vive en `frontend` para no pisar el `test:e2e` de Jest del backend. No se agrega job de CI. No entran el dashboard del gerente ni el rechazo de acceso. Si no hay `E2E_PASSWORD`, el test lee `SEED_PASSWORD` de `backend/.env` y, si no está, usa `fitzone-demo`.
+
+**Problema o bloqueo**
+
+La primera sede del listado no tiene canchas, y la grilla sigue ofreciendo horarios ya pasados como disponibles. El caso salta esa sede y no reserva un turno cuyo inicio ya ocurrió. La instalación de npm falló por el certificado de la red; se repitió con `--use-system-ca`.
+
+**Commits**
+
+- `a67831c` C-40: agrega el E2E de reserva con Playwright.
+
+---
+
 ### 2026-11-18  ·  Versiones 0.23.1 a 0.50.0
 
 **Actividad**
@@ -803,7 +823,7 @@ Etiqueté lo que ya estaba en `desarrollo`, de `v0.23.1` a `v0.50.0`. Cada tag a
 
 **Decisión**
 
-Una versión por cada paso de la línea de integración que trajo código. La documentación que entró entre dos números queda en la versión vigente. `C-40` no está en `desarrollo` y no entra. `v1.0.0` y `v1.0-entrega` no se publican: C-26 sigue por hacer y el 1.0 queda para el cierre.
+Una versión por cada paso de la línea de integración que trajo código. La documentación que entró entre dos números queda en la versión vigente. `v1.0.0` y `v1.0-entrega` no se publican: C-26 sigue por hacer y el 1.0 queda para el cierre. C-40 entró en `desarrollo` por el PR #81 mientras se armaba este registro; pasa a ser la versión siguiente.
 
 **Problema o bloqueo**
 
