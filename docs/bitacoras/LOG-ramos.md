@@ -753,5 +753,5 @@ Ninguno.
 
 **Commits**
 
-Sin commit en esta sesión.
+- `ba3f111` C-36: agrega la licencia MIT en la raíz y la enlaza desde el README.
 
