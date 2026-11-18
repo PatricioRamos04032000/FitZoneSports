@@ -791,5 +791,5 @@ Docker Desktop no estaba en marcha. Lo levanté y corrí el script en un contene
 
 **Commits**
 
-El trabajo está en la rama `C-41`. El hash se anota cuando se cree el commit.
+- `2118e94` C-41: corre el SQL de RN-02 en CI y exige OK 3.
 
