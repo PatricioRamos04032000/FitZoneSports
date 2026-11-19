@@ -923,3 +923,23 @@ La sede que el portal elige sola no tenía canchas para esa fecha. La medición 
 
 - Este registro es el del pase. No hay commit de código.
 
+---
+
+### 2026-11-18  ·  C-24
+
+**Actividad**
+
+Escribí la hoja del ensayo de cinco minutos en `documentacion/Guion_Ensayo_C-24.md`: croquis de copiar y pegar, pasos con reloj y plan B de la cola sin red al lado del check-in. Después la completé con la base de Supabase de esta máquina: sede Av. Demo 100, Cancha 1, id del socio, membresía trimestral activa hasta el 14/02/2027 y los turnos libres del 19/11. El README, el guion C-06, el plan de cierre y el residual de C-22 apuntan a esa hoja. Una reserva pendiente conserva **Pagar reserva** en **Mis reservas** después de recargar; eso quedó en el manual de usuario, que sigue escrito para el portal local. El checkout público y el `APP_PUBLIC_URL` de Render quedaron en el manual de instalación.
+
+**Decisión**
+
+La contraseña queda como hueco: en esta base `SEED_PASSWORD` no es la de la plantilla Docker, y no se copia al guion. C-24 se cierra con el guion escrito. En Render, `APP_PUBLIC_URL` es la URL pública de la API.
+
+**Problema o bloqueo**
+
+Ninguno.
+
+**Commits**
+
+- El commit de esta rama.
+

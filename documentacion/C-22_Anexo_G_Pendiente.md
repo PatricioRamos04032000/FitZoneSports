@@ -27,5 +27,4 @@ Está en `docs/planificacion/Planificacion_Completa_C20.md` y en las tarjetas C-
 
 ## Falta poco, y no es de este commit
 
-- C-24: el guion de cinco minutos no tiene ensayo cronometrado ni el plan B escrito al lado. La cola del terminal ya está implementada.
 - El portal en el teléfono se cerró en C-03. No se volvió a mirar sobre la URL de Vercel.

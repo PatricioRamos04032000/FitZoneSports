@@ -296,6 +296,8 @@ El proyecto está pensado para una operación simple con:
 
 Las mismas variables de `.env` deben estar en el entorno de despliegue, con valores reales. No se debe versiónar `.env` ni secretos en el repositorio.
 
+En Render, `APP_PUBLIC_URL` es `https://fitzonesports-gnoi.onrender.com`. El ejemplo local `http://localhost:3000` de la sección 4.1 no sirve ahí: Vercel abriría la pasarela en la PC y **Volver a Canchas** caería en el login de `http://localhost`. Si el pedido entra por un host público, la API usa ese host aunque `APP_PUBLIC_URL` siga en localhost. El valor de Render igual tiene que ser la URL pública. `CORS_ORIGIN` del servicio incluye `https://fit-zone-sports-ten.vercel.app`.
+
 ### 9.3 Recomendaciones de operación
 
 - mantener la API y la base en el mismo proyecto de desarrollo/producción de la demo;
