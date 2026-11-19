@@ -5,7 +5,7 @@
 **Participantes:** Patricio Ramos, Bruno Conti, Lucas Coquet, Matias Goncevat  
 **Alcance de la agenda:** puntos 1 (cerrado/ratificar) hasta **2.E** (esquema mínimo Semana 2)  
 **Fuentes:** notas Gemini + transcripción (`Reunión iniciada a las 2026_09_02 22_15 GMT-03_00 - Notas de Gemini*.md`)  
-**Referencias:** [Plan 2 semanas](./Plan_Trabajo_2_Semanas.md) · Decisiones pendientes · [Propuesta RN-01](../rnf/Propuesta_RN01_Presencia_Una_Sede.md)
+**Referencias:** [Plan S1–S2](./S1-S2_Plan_Trabajo_Semanas_1_y_2.md) · Decisiones pendientes · [Propuesta RN-01](../rnf/Propuesta_RN01_Presencia_Una_Sede.md)
 
 ---
 
@@ -135,7 +135,7 @@
 - [x] Acta de la reunión (este documento)
 - [x] Actualizar [LOG.md](../bitacoras/LOG.md)
 - [x] Marcar ítems cerrados en Decisiones_Pendientes
-- [x] Completar nombres P1–P4 en [Plan_Trabajo_2_Semanas.md](./Plan_Trabajo_2_Semanas.md)
+- [x] Completar nombres P1–P4 en [Plan S1–S2](./S1-S2_Plan_Trabajo_Semanas_1_y_2.md)
 - [x] Estados de tareas: Por hacer / En desarrollo / Finalizado + sección *Trabajo en curso*
 - [ ] Lista de preguntas al docente (sección 3.1) para la próxima exposición
 - [x] Actualizar C4 (BFF, API Supabase, nota offline sede vs móvil — 2026-09-04)

@@ -11,7 +11,7 @@ import {
   type DisponibilidadSede,
   type Reserva,
 } from "../../services/canchas";
-import { descargarComprobanteReserva } from "../../services/pagos";
+import { descargarComprobanteReserva, urlDeCheckout } from "../../services/pagos";
 
 import { Select } from "../../components/atoms";
 import { Alerta } from "../../components/molecules";
@@ -90,7 +90,7 @@ function Canchas() {
       }
     }
 
-    cargarSedes();
+    void cargarSedes();
   }, []);
 
   // Cargar disponibilidad cuando cambia la sede o la fecha
@@ -130,7 +130,7 @@ function Canchas() {
       }
     }
 
-    cargarDisponibilidad();
+    void cargarDisponibilidad();
   }, [sedeSeleccionada, fecha]);
 
   // Cargar las reservas del usuario autenticado
@@ -160,7 +160,7 @@ function Canchas() {
       }
     }
 
-    cargarMisReservas();
+    void cargarMisReservas();
 
     window.addEventListener("focus", cargarMisReservas);
     window.addEventListener("pageshow", cargarMisReservas);
@@ -179,7 +179,7 @@ function Canchas() {
         cancha.turnos.map((turno) => turno.hora)
       ) ?? []
     ),
-  ].sort();
+  ].sort((a, b) => a.localeCompare(b));
 
   // Obtener sede seleccionada
   const sedeActual = sedes.find(
@@ -334,7 +334,7 @@ function Canchas() {
       );
 
       // Redirigir al checkout simulado
-      window.location.href = pago.checkoutUrl;
+      window.location.assign(urlDeCheckout(pago.checkoutUrl));
     } catch (err) {
       setErrorReserva(
         err instanceof Error
@@ -570,6 +570,16 @@ function Canchas() {
                   {formatearHorario(reserva.inicio)} · {reserva.estado}
                 </p>
                 <div className="mis-reservas-acciones">
+                  {reserva.estado === "pendiente" && (
+                    <button
+                      onClick={() => handlePagar(reserva.id)}
+                      disabled={procesandoPago || cancelandoId !== ""}
+                    >
+                      {procesandoPago
+                        ? "Conectando..."
+                        : "Pagar reserva"}
+                    </button>
+                  )}
                   {reserva.estado === "confirmada" && (
                     <button
                       onClick={() => handleDescargarComprobante(reserva.id)}

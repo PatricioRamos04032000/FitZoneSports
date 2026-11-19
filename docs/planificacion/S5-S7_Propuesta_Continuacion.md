@@ -1,7 +1,7 @@
 # Propuesta: plan de 3 semanas para llegar (rúbrica + Demo)
 
 **Fecha:** 2026-10-26  
-**Estado:** adoptada en el plan de 3 semanas. Estados de cada tarea alineados al tablero el 2026-11-11.  
+**Estado:** adoptada en el plan S5–S7. Estados de cada tarea alineados al tablero el 2026-11-11. Véase [Plan S5–S7](./S5-S7_Plan_Trabajo_3_Semanas.md).
 **De dónde sale:** panorama, rúbrica del integrador, reunión del 2026-10-21 y atraso actual del equipo
 
 Con 3 semanas de desarrollo restantes, el objetivo es un **demo demostrable** (login → socio con membresía → reservar cancha con precio) más los entregables pesados de la rúbrica. Pagos mock mínimos si alcanza. QR/móvil es stretch de la última semana, no bloqueante.

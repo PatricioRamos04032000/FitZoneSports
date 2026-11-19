@@ -14,7 +14,7 @@
 | **Bruno (P2)** | **S4-T01** Strategy de precios. Lo subió el mismo día de la reunión | **S4-T06** API REST del módulo Canchas. Sigue pendiente. Tiene que mirar la guía de reglas de negocio antes de seguir | La API de canchas no está hecha. Las reglas de esta reunión son la guía |
 | **Lucas (P3)** | Pantallas de login, Mi Perfil y Canchas, con datos fijos | **S3-T05** conectar el login con `POST /auth/login`. Calcula probarlo contra el endpoint el viernes. **S3-T07** Mi Perfil muestra datos de prueba y falta conectarla. **S4-T03** Canchas espera la API | Canchas no se puede conectar hasta que exista la API. No hay una API de perfil en el plan: la pantalla sigue en desarrollo hasta que alguien haga ese backend. Lucas va a buscar si esa tarea existe |
 | **Matias (P4)** | Nombres y roles de los integrantes (están en el README). El resto de pendientes viejos se dan por hechos, salvo lo que sigue | Checklist de cuentas (GitHub, Supabase, Vercel): es documentación. Va a pedir los correos de quién administra cada cuenta. Después le toca el plan de la próxima semana o quincena, y este log | Frenado en el checklist, por esas dudas de las cuentas |
-| **Patricio (P1)** | **S4-T05** justificación de patrones (recorrió unos 13: algunos ya están, otros quedan para cuando se hagan las APIs que faltan). Recorrió con el equipo las reglas de canchas (**S4-T09**) | Mañana actualiza `Plan_Trabajo_2_Semanas.md` con lo que se subió hoy, para el docente. Le pasa este resumen a Matias | Ninguno |
+| **Patricio (P1)** | **S4-T05** justificación de patrones (recorrió unos 13: algunos ya están, otros quedan para cuando se hagan las APIs que faltan). Recorrió con el equipo las reglas de canchas (**S4-T09**) | Mañana actualiza [Plan S5–S7](./S5-S7_Plan_Trabajo_3_Semanas.md) con lo que se subió hoy, para el docente. Le pasa este resumen a Matias | Ninguno |
 
 ---
 
@@ -45,7 +45,7 @@ Las otras preguntas del documento (plazo de la lista de espera, penalidad de cla
 
 ### 2.2 Otros temas
 
-- **Mañana, para el docente.** Lucas le manda por mail el plan de trabajo de dos semanas (`Plan_Trabajo_2_Semanas.md`). No pidió Trello ni una recorrida de código: quiere ver cómo va el grupo. El plan viejo no se usa. Patricio lo actualizó y mañana le suma lo que se subió hoy.
+- **Mañana, para el docente.** Lucas le manda por mail el plan de trabajo de dos semanas ([Plan S5–S7](./S5-S7_Plan_Trabajo_3_Semanas.md)). No pidió Trello ni una recorrida de código: quiere ver cómo va el grupo. El plan viejo no se usa. Patricio lo actualizó y mañana le suma lo que se subió hoy.
 - **Patrones en la exposición.** El docente les va a pedir justificar qué patrón se usó, por qué, cómo, y cuál se podría haber usado en un lugar donde no se usó. Hay que tenerlos estudiados entre todos, no solo quien escribió el documento.
 - **Front con datos fijos.** Mientras falte una API, la pantalla puede mostrar datos de prueba y después cambiar esa fuente por el endpoint real. Así el front no espera al backend para verse.
 - **Responsive y móvil.** Bruno pidió tenerlo en cuenta: el plazo del parcial se extendió y después viene la unidad mobile. Lucas por ahora prioriza que las pantallas funcionen. Figma y una librería de componentes quedaron como idea para definir entre todos, sin decisión.
@@ -54,7 +54,7 @@ Las otras preguntas del documento (plazo de la lista de espera, penalidad de cla
 
 ### 2.3 El plan no coincide con lo que se dijo
 
-Cuando Matias actualice `Plan_Trabajo_2_Semanas.md`, estos estados del archivo no coinciden con la reunión:
+Cuando Matias actualice [Plan S5–S7](./S5-S7_Plan_Trabajo_3_Semanas.md), estos estados del archivo no coinciden con la reunión:
 
 | Tarea | Dice el plan | Dijo la reunión |
 |-------|----------------|-----------------|

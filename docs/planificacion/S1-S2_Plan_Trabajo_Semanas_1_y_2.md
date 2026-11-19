@@ -1,6 +1,6 @@
 # Plan de trabajo — Semanas 1 y 2 (histórico)
 
-> **Plan cerrado.** Registro de las semanas 1 y 2. Los estados se alinearon al tablero Trello el 2026-11-11. El seguimiento vigente está en [`Plan_Cierre_Entrega_6_19_Nov.md`](./Plan_Cierre_Entrega_6_19_Nov.md) y [`Plan_Trabajo_2_Semanas.md`](./Plan_Trabajo_2_Semanas.md).
+> **Plan cerrado.** Registro de las semanas 1 y 2. Los estados se alinearon al tablero Trello el 2026-11-11. El seguimiento vigente está en [`S8_Plan_Cierre_Entrega_6_19_Nov.md`](./S8_Plan_Cierre_Entrega_6_19_Nov.md) y [`S5-S7_Plan_Trabajo_3_Semanas.md`](./S5-S7_Plan_Trabajo_3_Semanas.md).
 
 **Proyecto:** FitZone Sports · Programación V · UNER  
 **Equipo:** 4 integrantes  
@@ -9,7 +9,7 @@
 **Última actualización de estados:** 2026-11-11 (tablero Trello, reunión de equipo)  
 **Unidad en curso:** I (Arquitectura) → transición a II (Frameworks)
 
-**Referencias:** Trabajo Integrador · Decisiones pendientes · [LOG](../bitacoras/LOG.md) · [Acta 2026-09-02](./Acta_Reunion_2026-09-02_Semana1.md)
+**Referencias:** Trabajo Integrador · Decisiones pendientes · [LOG](../bitacoras/LOG.md) · [Acta 2026-09-02](./S1_Acta_Reunion_2026-09-02.md)
 
 **Cómo leer este documento**
 

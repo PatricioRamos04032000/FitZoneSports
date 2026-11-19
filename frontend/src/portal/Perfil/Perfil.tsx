@@ -4,6 +4,7 @@ import { apiRequest } from "../../services/api";
 import {
   descargarComprobantePago,
   obtenerMisPagos,
+  urlDeCheckout,
   type ResumenPago,
 } from "../../services/pagos";
 import "./Perfil.css";
@@ -185,7 +186,7 @@ function Perfil() {
         body: JSON.stringify({ plan }),
       })) as { checkoutUrl: string };
 
-      window.location.assign(data.checkoutUrl);
+      window.location.assign(urlDeCheckout(data.checkoutUrl));
     } catch (err) {
       setError(
         err instanceof Error ? err.message : "No se pudo iniciar el pago."
