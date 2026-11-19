@@ -1,6 +1,6 @@
 # C-22 — Lo que el Anexo G todavía no marca
 
-Pase del 18/11/2026. C-22 sigue en desarrollo. Esta lista es el residual aceptable hasta el tag. No reabre lo que ya está cerrado.
+Residual aceptado el 18/11/2026. C-22 cierra con esta lista. No se crea el tag, no se reescribe la planificación y no se vuelve a mirar el portal sobre Vercel. Lo que sigue abierto queda en las tarjetas que esta lista nombra. No reabre lo que ya está cerrado.
 
 ## Ya cubierto en este pase
 
@@ -15,7 +15,7 @@ Pase del 18/11/2026. C-22 sigue en desarrollo. Esta lista es el residual aceptab
 
 ## Falta, y es planificación
 
-C-37 organizó la carpeta y C-38 cerró C-20 el 2026-11-18 en `docs/planificacion/S8_Planificacion_Completa_C20.md`. El residual vigente queda en C-21 y C-22.
+C-37 organizó la carpeta y C-38 cerró C-20 el 2026-11-18 en `docs/planificacion/S8_Planificacion_Completa_C20.md`. Lo que sigue abierto de planificación es C-21.
 
 - La matriz reescrita recorre RF-01 a RF-14, RN-01 a RN-03 y RNF-01 a RNF-04.
 - RN-03 queda definido como mora con tarifa externa, no como rutas y roles.

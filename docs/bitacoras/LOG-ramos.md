@@ -943,3 +943,23 @@ Ninguno.
 
 - El commit de esta rama.
 
+---
+
+### 2026-11-18  ·  C-22
+
+**Actividad**
+
+Acepté el residual de `documentacion/C-22_Anexo_G_Pendiente.md`. La fila de C-22 en el plan de cierre pasa a finalizado.
+
+**Decisión**
+
+La lista queda cerrada. No se crea el tag, no se reescribe la planificación y no se vuelve a mirar el portal sobre Vercel. Siguen abiertos el Excel de C-21, el tag de C-26, el dossier de C-25, la subida de C-27 y la lectura de la cátedra.
+
+**Problema o bloqueo**
+
+Ninguno.
+
+**Commits**
+
+- Este registro es el de la aceptación. No hay commit de código.
+

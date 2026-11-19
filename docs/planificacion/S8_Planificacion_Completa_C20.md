@@ -135,6 +135,7 @@ C-20 queda cerrado porque:
 ## 11. Referencias
 
 - [Plan de cierre](./S8_Plan_Cierre_Entrega_6_19_Nov.md)
+- [Plan de proyecto y seguimiento, Anexo H](./PROGV-2026-TIF-Equipo03-Planificacion.md)
 - [Índice por sprints](./README.md)
 - [ADR-008](../adr/ADR-008-pruebas-cobertura.md)
 - [Anexo G residual](../../documentacion/C-22_Anexo_G_Pendiente.md)
