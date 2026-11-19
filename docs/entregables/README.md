@@ -14,10 +14,11 @@ El equipo es el 03. En Moodle el archivo lleva el nombre `PROGV-2026-TIF-Equipo0
 
 En `dossier.md` la portada deja `{{TAG}}`, `{{HASH}}` y `{{HASH_LEYENDA}}`. Esas marcas se reemplazan al imprimir. El Markdown no se modifica.
 
-- Si existe el tag `v1.0-entrega`, el PDF usa `git rev-parse v1.0-entrega`.
-- Si el tag no existe, el PDF usa `git rev-parse HEAD` y dice que ese commit es el del armado. El tag anotado se crea en C-26.
+La impresión y la sustitución del hash son de C-26, después del commit y del tag `v1.0-entrega`. Si el tag existe, el PDF usa `git rev-parse v1.0-entrega`. Esta pasada de C-25 no imprime.
 
-El código todavía no está congelado. C-25 en el plan de cierre sigue en por hacer hasta volver a imprimir con el tag.
+El código todavía no está congelado. C-25 en el plan de cierre sigue en por hacer hasta esa reimpresión.
+
+Las claves de la portada se completan a mano antes de Moodle y no se versionan. Pegarlas en `dossier.md` y volver a correr `construir_dossier.py` borra lo escrito.
 
 ## Comandos
 

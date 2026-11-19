@@ -132,13 +132,13 @@ Diagramas (fuente editable en `docs/diagramas/fuentes/`, exportación en `docs/d
 
 Umbral de esta entrega, declarado en [ADR-008](docs/adr/ADR-008-pruebas-cobertura.md): **60 % de sentencias** del backend, medido con `npm run test:cov`.
 
-Corrida del 2026-11-17, en `backend/`, con `npm run test:cov`:
+Corrida del 2026-11-18, en `backend/`, con `npm run test:cov` (C-35):
 
 | Dato | Resultado |
 |------|-----------|
-| Suites | 29, todas en verde |
-| Tests | 179, todos en verde |
-| Sentencias (`Statements`) | 65,15 % |
+| Suites | 32, todas en verde |
+| Tests | 184, todos en verde |
+| Sentencias (`Statements`) | 65,77 % |
 
 Esa medición cubre los tests unitarios del conjunto `collectCoverageFrom` de `backend/jest.config.ts`. Los comandos, siempre desde `backend/`:
 
@@ -148,7 +148,7 @@ npm run test:cov
 npm run test:e2e
 ```
 
-`npm run test:e2e` en `backend/` ejecuta los tests HTTP y no entra en el 65,15 %. En `frontend/`, `npm run test:e2e` corre el E2E de Playwright (login, reserva, pago, consulta y comprobante). Usa `E2E_PASSWORD` o, si no está, `SEED_PASSWORD`. Tampoco mueve ese porcentaje.
+`npm run test:e2e` en `backend/` ejecuta los tests HTTP y no entra en el 65,77 %. En `frontend/`, `npm run test:e2e` corre el E2E de Playwright (login, reserva, pago, consulta y comprobante). Usa `E2E_PASSWORD` o, si no está, `SEED_PASSWORD`. Tampoco mueve ese porcentaje.
 
 ## 7. Asistentes de IA y bibliotecas
 

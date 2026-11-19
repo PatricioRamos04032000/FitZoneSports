@@ -7,7 +7,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 OUT = ROOT / "docs" / "entregables" / "dossier.md"
-CIERRE = ROOT / "docs" / "planificacion" / "Plan_Cierre_Entrega_6_19_Nov.md"
+CIERRE = ROOT / "docs" / "planificacion" / "S8_Plan_Cierre_Entrega_6_19_Nov.md"
 
 NOMBRES = {
     "C-01": "Canchas en la UI",
@@ -103,7 +103,7 @@ def estados_cierre() -> str:
     if faltan:
         raise SystemExit(f"faltan estados en el plan de cierre: {faltan}")
     filas = [
-        "| ID | Tarea | Quién | Estado al 17/11/2026 |",
+        "| ID | Tarea | Quién | Estado al 19/11/2026 |",
         "|----|-------|-------|----------------------|",
     ]
     for ident in sorted(NOMBRES, key=lambda s: int(s.split("-")[1])):
@@ -130,15 +130,27 @@ Trabajo Integrador Final — Caso «FitZone Sports»
 | Lucas Coquet | legajo a completar | P3. Frontend | LucasCoquet | LucasCoquet |
 | Matias Goncevat | legajo a completar | P4. Planificación, CI, seed y Docker | MatiGoncevat | MatiGoncevat |
 
-- **Fecha de armado:** 17 de noviembre de 2026.
+- **Fecha de armado:** 19 de noviembre de 2026.
 - **Fecha de entrega prevista:** 19 de noviembre de 2026, 18:00 (hora de Argentina).
 - **Repositorio:** https://github.com/PatricioRamos04032000/FitZoneSports
+- **Tablero:** [Programacion5](https://trello.com/b/eBn68vRC/programacion5)
 - **Tag:** {{TAG}}
 - **Hash:** {{HASH}}
 
 {{HASH_LEYENDA}}
 
+C-26 sustituye el tag y el hash al imprimir el PDF, cuando exista `v1.0-entrega`. Esas tres marcas quedan literales en este Markdown.
+
 El legajo de cada integrante no está en el repositorio. El campo queda escrito para completarlo antes de la subida a Moodle.
+
+### Claves del proyecto para la cátedra
+
+Estas líneas se completan a mano antes de Moodle. No van al repositorio: pegarlas acá y volver a correr `construir_dossier.py` borra lo escrito. `SEED_PASSWORD` de la plantilla Docker es `fitzone-demo` y está en el README.
+
+- `SUPABASE_URL`:
+- `SUPABASE_ANON_KEY`:
+- `SUPABASE_SERVICE_ROLE_KEY`:
+- `VITE_SUPABASE_PUBLISHABLE_KEY`:
 
 ### Índice
 
@@ -165,7 +177,7 @@ La entrega es una sola aplicación. El navegador corre React. La API es NestJS. 
 
 El precio de una reserva sale de una cadena de decoradores. Adentro está la tarifa de la cancha. Encima, el recargo si el turno cae en la franja pico de la sede. Afuera, el descuento si el cliente es socio activo. Un socio con la cuota vencida no entra en ese descuento y paga como externo. Dos pedidos del mismo turno dejan una sola reserva: la base bloquea la cancha y un índice único impide la segunda fila. Si la recepción pierde la red, el ingreso y la salida quedan en el navegador y se confirman cuando la conexión vuelve.
 
-Este dossier junta la arquitectura, las decisiones, los diagramas, los patrones, las pruebas, los requisitos no funcionales, la planificación leída al 17 de noviembre de 2026, las cuatro bitácoras y el índice de los manuales. El código todavía no está congelado.
+Este dossier junta la arquitectura, las decisiones, los diagramas, los patrones, las pruebas, los requisitos no funcionales, la planificación leída al 19 de noviembre de 2026, las cuatro bitácoras y el índice de los manuales. El código todavía no está congelado. El tag y el hash de la portada los completa C-26.
 """
 
 
@@ -286,7 +298,7 @@ def modelado() -> str:
             "pipe-ci",
             "Pipeline de integración",
             "pipe-ci.drawio",
-            "El workflow de GitHub Actions corre sobre el backend en el pull request hacia `desarrollo`: checkout, Node 24, npm ci, oxlint, Jest y el build de Nest.",
+            "El workflow de GitHub Actions corre sobre el pull request hacia `desarrollo`: checkout, Node 24, npm ci, oxlint, Jest con el umbral de cobertura y el build de Nest. El job `sql-rn02` corre el SQL de la no sobreventa.",
         ),
     ]
     texto = [
@@ -335,15 +347,14 @@ def pruebas() -> str:
     return (
         "## 6. Estrategia de pruebas y reporte de cobertura\n\n"
         "La decisión está en ADR-008, copiado en la sección 3. El umbral de esta entrega es el 60 % de sentencias del backend, medido con `npm run test:cov` sobre el conjunto que declara `backend/jest.config.ts`.\n\n"
-        "La pirámide que ese ADR fija tiene tres pisos. La base son los tests unitarios de servicios, guards, decoradores de precio, TOTP y la pasarela simulada. El medio son los tests HTTP con Supertest y el script SQL `supabase/tests/canchas_m4.test.sql`, que rechaza una segunda reserva del mismo turno. La cima, el E2E de navegador, queda fuera de este umbral. La tarjeta C-40 la retoma y todavía está por hacer.\n\n"
-        "Cifra citada en el README, corrida del 17 de noviembre de 2026 en `backend/`:\n\n"
+        "La pirámide que ese ADR fija tiene tres pisos. La base son los tests unitarios de servicios, guards, decoradores de precio, TOTP y la pasarela simulada. El medio son los tests HTTP con Supertest y el script SQL `supabase/tests/canchas_m4.test.sql`, que rechaza una segunda reserva del mismo turno. Desde C-41 el job `sql-rn02` lo ejecuta en CI y exige el aviso `OK 3`. La cima es el E2E de navegador de C-40: login, reserva, pago, consulta y comprobante. No entra en el 60 %.\n\n"
+        "Medición de cierre, C-35, corrida del 18 de noviembre de 2026 en `backend/` con `npm run test:cov`. Es la cifra del README:\n\n"
         "| Dato | Resultado |\n"
         "|------|-----------|\n"
-        "| Suites | 29, todas en verde |\n"
-        "| Tests | 179, todos en verde |\n"
-        "| Sentencias | 65,15 % |\n\n"
-        "Esa corrida cubre los unitarios. `npm run test:e2e` ejecuta los tests HTTP y no entra en el 65,15 %. El frontend no tiene script de tests.\n\n"
-        "C-35 vuelve a medir build y cobertura, y C-10 hace que el CI falle por debajo del umbral. Esas dos tarjetas siguen por hacer. Si el README cambia antes de volver a imprimir este dossier, esta tabla se actualiza con la cifra nueva. Esta tarea no volvió a correr la suite.\n"
+        "| Suites | 32, todas en verde |\n"
+        "| Tests | 184, todos en verde |\n"
+        "| Sentencias | 65,77 % |\n\n"
+        "Esa corrida cubre los unitarios del conjunto `collectCoverageFrom`. `npm run test:e2e` del backend ejecuta los tests HTTP y no entra en el 65,77 %. En el frontend, `npm run test:e2e` corre el caso de C-40 y tampoco mueve ese porcentaje. ADR-008 deja el umbral en `coverageThreshold` de `backend/jest.config.ts` y el workflow corre `npm run test:cov`. La fila C-10 del plan de cierre sigue en por hacer.\n"
     )
 
 
@@ -362,7 +373,7 @@ ADR-010 deja un token opaco de la pasarela simulada. La fila de pago guarda ese 
 
 ### RNF-03 — La grilla de canchas se apoya en índices
 
-`GET /canchas/disponibilidad` usa los índices de la migración de canchas: `canchas_sede`, `mantenimientos_cancha_rango`, `reservas_cancha_cancha_inicio` y `reservas_cancha_perfil`. La no sobreventa es otro índice, `reservas_cancha_sin_sobreventa`, y corresponde a RN-02. Esta entrega no publica una medición en milisegundos.
+`GET /canchas/disponibilidad` usa los índices de la migración de canchas: `canchas_sede`, `mantenimientos_cancha_rango`, `reservas_cancha_cancha_inicio` y `reservas_cancha_perfil`. La no sobreventa es otro índice, `reservas_cancha_sin_sobreventa`, y corresponde a RN-02. El 18/11, con el socio del seed y la sede FitZone Central, la grilla apareció en 786 ms. No hay umbral nuevo.
 
 ### RNF-04 — Una sede nueva es un dato
 
@@ -373,7 +384,7 @@ El gerente crea y edita sedes con `POST /sedes` y `PATCH /sedes/:id` sin detener
 def planificacion() -> str:
     return """## 8. Planificación
 
-Este capítulo está leído al 17 de noviembre de 2026, para el dossier. No reemplaza a `docs/planificacion/Planificacion_Completa_C20.md`. Ese archivo sigue siendo el borrador de C-20: su diagrama de Gantt deja en pendiente el manual de usuario y el README, los dos ya cerrados, y su matriz no recorre RF-01 a RF-14. La reescritura de ese archivo, con la matriz única y los ocho sprints en el formato de C-38, sigue en por hacer y la tiene Matias. El PDF de planificación que se sube a Moodle es otro archivo.
+Este capítulo está leído al 19 de noviembre de 2026, para el dossier. C-38 cerró C-20 el 18/11 reescribiendo `docs/planificacion/S8_Planificacion_Completa_C20.md` con ocho sprints y la matriz única RF-01 a RF-14, RN-01 a RN-03 y RNF-01 a RNF-04. El paquete de seguimiento que se sube aparte es `docs/planificacion/PROGV-2026-TIF-Equipo03-Planificacion.md`.
 
 Las fuentes de lo que sigue son el plan de cierre del 6 al 19 de noviembre, el plan de las semanas 1 y 2 (28 de agosto, estados alineados al tablero el 11 de noviembre), el plan de S5 a S7 y las actas del 2 de septiembre, del 13 de octubre y del 21 de octubre. Las horas de cada sesión están en las bitácoras de la sección 9.
 
@@ -381,13 +392,13 @@ Las fuentes de lo que sigue son el plan de cierre del 6 al 19 de noviembre, el p
 
 Entra el portal web con cuatro roles: gerente, administrador de sede, socio y cliente externo. Entran el registro y el perfil, la membresía con catálogo y renovación cobrada, el acceso multi-sede con QR rotativo, el aforo de la sede, la agenda de clases, la inscripción, la lista de espera, la grilla de canchas, el precio compuesto, el mantenimiento, la pasarela simulada y el PDF de comprobante. Entran también los ADR, los catorce diagramas, los tres manuales, las cuatro bitácoras y este dossier.
 
-Queda afuera la app móvil, la cámara y el DNI en el acceso, MercadoPago real, el alta de administradores de sede, Storybook, los reportes consolidados de toda la cadena y la reescritura de la historia del repositorio. El dashboard del gerente es la tarjeta C-39 y sigue por hacer. La foto de perfil está en el enunciado de RF-01 y quedó fuera de este corte: el alta pide los datos de la persona y no la imagen.
+Queda afuera la app móvil, la cámara y el DNI en el acceso, MercadoPago real, el alta de administradores de sede, Storybook y la reescritura de la historia del repositorio. El dashboard del gerente entró en C-39: `GET /reportes/resumen` y la pantalla `/dashboard`, solo lectura. La foto de perfil está en el enunciado de RF-01 y quedó fuera de este corte: el alta pide los datos de la persona y no la imagen.
 
 ### 8.2 Supuestos y restricciones
 
 Se da por existente un proyecto de Supabase con las claves fuera del repositorio. La pasarela de RF-13 es un simulacro. El comprobante de RF-14 es un PDF de la cadena, no un comprobante fiscal.
 
-La entrega cierra el 19 de noviembre de 2026 a las 18:00. El equipo es de cuatro personas. El tag anotado de esa entrega se llama `v1.0-entrega` y se crea en C-26. Hasta esa hora el hash de la portada es el del commit sobre el que se imprime este PDF.
+La entrega cierra el 19 de noviembre de 2026 a las 18:00. El equipo es de cuatro personas. El tag anotado de esa entrega se llama `v1.0-entrega` y lo crea C-26. El hash de la portada lo sustituye esa misma tarjeta, al imprimir.
 
 ### 8.3 Equipo y horas comprometidas
 
@@ -426,7 +437,7 @@ Las bitácoras a veces rotulan la misma semana con dos números de sprint, porqu
 | 5 | 19/10 al 05/11 | Reglas de canchas y API de reservas | Acta del 21/10. Período S5–S7: 27/10 al 16/11 |
 | 6 | 26/10 al 17/11 | Login, perfil, canchas, clases, QR y acceso en la UI | Plan S5–S7, actualizado el 11/11 y el 13/11 |
 | 7 | 02/11 al 09/11 | Cola de la sede y demo de canchas | C-01 cerrado el 13/11 |
-| 8 | 09/11 al 16/11 | ADR alineados, diagramas, manuales, Decorator y gestión en pantalla | C-14 el 09/11, C-28 a C-34, README el 17/11 |
+| 8 | 09/11 al 19/11 | ADR alineados, diagramas, manuales, Decorator, gestión en pantalla y medición | C-14 el 09/11, C-28 a C-34, README el 17/11, C-35 a C-41 el 18/11. El tag queda en C-26 |
 
 Dentro de los sprints 7 y 8, el plan de cierre parte el tramo final así:
 
@@ -440,7 +451,7 @@ La capacidad comprometida del tramo final es la de la tabla 8.3. Antes de eso, e
 
 ### 8.6 Trazabilidad
 
-La descripción de cada requisito es la del enunciado del trabajo integrador. El estado es el del repositorio al 17 de noviembre de 2026.
+La descripción de cada requisito es la del enunciado del trabajo integrador. El estado es el del repositorio al 19 de noviembre de 2026.
 
 | Requisito | Qué pide | Dónde está | Prueba o evidencia | Estado |
 |-----------|----------|------------|--------------------|--------|
@@ -459,43 +470,49 @@ La descripción de cada requisito es la del enunciado del trabajo integrador. El
 | RF-13 | Pasarela simulada | Puerto `PasarelaPago` y el simulacro | ADR-010 | Cerrado como simulacro |
 | RF-14 | Comprobante en PDF | PDF con cancha, horario y monto. Tarjeta C-04 | C-04 finalizada el 17/11 | Cerrado. No es factura fiscal |
 | RN-01 | Una sola sede a la vez | Clave de `presencias` y check-out. Tarjeta C-33 | Manual de usuario y ADR-007 | Cerrado con conexión. Sin red, la cola se valida al sincronizar |
-| RN-02 | Una sola reserva del turno | `FOR UPDATE` e índice único. ADR-004 | Unitario que traduce el choque a HTTP 409 | La garantía está en la base. Correr el SQL en el CI es C-41 y sigue por hacer |
+| RN-02 | Una sola reserva del turno | `FOR UPDATE` e índice único. ADR-004 | Job `sql-rn02`. La corrida local imprimió `OK 3` | C-41 cerrado. El unitario que traduce el choque a HTTP 409 se queda |
 | RN-03 | El socio en mora paga como externo | El decorador de descuento exige socio activo | Manual técnico, sección 4.1 | Cerrado en el cálculo del precio |
 | RNF-01 | Acceso con la conexión caída | Cola de la sede. ADR-003 y ADR-007. Tarjeta C-05 | Manual de usuario, pantalla Acceso | Cerrado para la sede. La app móvil queda fuera |
 | RNF-02 | Token y nada de tarjeta | ADR-010 | El ADR y el comprobante sin datos de tarjeta | Cerrado |
-| RNF-03 | Grilla apoyada en índices | Cuatro índices de la migración de canchas | Manual técnico | Índices presentes. No hay una cifra de milisegundos |
+| RNF-03 | Grilla apoyada en índices | Cuatro índices de la migración de canchas | El 18/11 la grilla de FitZone Central apareció en 786 ms | Índices presentes. No hay umbral nuevo |
 | RNF-04 | Sede nueva sin detener el sistema | `POST /sedes` y `PATCH /sedes/:id`. Tarjeta C-29 | Tests de rol citados en el cierre de C-29 | Cerrado |
 
 ### 8.7 Seguimiento
 
-No hay, en un solo cuadro, la velocidad de los ocho sprints con horas trabajadas sumadas. Esa consolidación es C-38 y sigue por hacer. Lo que sí está escrito, y ya ocurrió, es esto:
+El cuadro de horas es el de `docs/planificacion/PROGV-2026-TIF-Equipo03-Planificacion.md`. Trabajado es la suma de las marcas `· N h` de las cuatro bitácoras cuya fecha cae en el sprint. Las sesiones del 27/08 entran en el sprint 1. Las entradas del 18/11 que no traen horas no suman una cifra.
 
-| Tramo | Qué se había estimado | Qué ocurrió |
-|-------|----------------------|-------------|
-| Semanas 1 y 2 | 4 h por persona, con un estimado puntual en la semana 2 | Las tareas S1 y S2 del plan figuran finalizadas, salvo S1-T16, que el plan deja en por hacer y con la tarjeta archivada |
-| Octubre | Pantallas y API de canchas en el mismo tramo | El 13/10 las pantallas seguían con datos fijos y la API de canchas estaba en curso. El 21/10 se cerraron las reglas de precio y de reserva |
-| 6 al 13/11 | Demo de canchas en la UI | C-01 cerró el 13/11. C-02 sigue en desarrollo |
-| 9 al 17/11 | ADR, diagramas y tres manuales en T2 | ADR, diagramas, manual de usuario y manual técnico están cerrados. El manual de instalación sigue por hacer |
-| 16 al 17/11 | Congelamiento | El README de cinco pasos cerró el 17/11. El tag no existe. Docker, seed, cobertura en CI, registro del tablero y C-35 a C-41 siguen abiertos |
+| Sprint | Comprometido | Completado | Trabajado (h) | Qué ocurrió |
+|--------|--------------|------------|---------------|-------------|
+| 1 | Arquitectura inicial, roles, monorepo, C4, ADR y reuniones | Acta del 02/09 y plan de las semanas 1 y 2 | 24 | S1-T16 sigue en por hacer. Incluye 8 h del 27/08 |
+| 2 | Scaffolding Nest y React, Supabase, autenticación y esquema mínimo | Tareas S2 del plan, en finalizado | 0 | Ninguna bitácora marca horas entre el 7 y el 13/09 |
+| 3 | Membresías y clases: SQL, Repository, guards y ventanas | Migraciones y LOG | 20 | No hay plan propio de S3 |
+| 4 | Canchas, Strategy, Observer y correcciones de clases | Acta del 13/10 | 36 | El 13/10 las pantallas seguían con datos fijos y la API de canchas estaba en curso |
+| 5 | Migración M4, login real, sesión, layout e infraestructura | Acta del 21/10 y plan S5–S7 | 18,5 | El 21/10 se cerraron las reglas de precio y de reserva |
+| 6 | Perfil, pagos, APIs de canchas, cliente HTTP, CI y notificaciones | Plan S5–S7 y LOG | 60 | El plan no escribe un desvío solo de este sprint |
+| 7 | Decorator, State, Facade, demo y cierres funcionales | C-01 cerró el 13/11. Plan de cierre C-01 a C-34 | 37,5 | C-01 cerró el 13/11. C-02 sigue en desarrollo |
+| 8 | Congelamiento, Anexo G, tag, dossier y medición | C-24 y C-35 a C-41 cerrados. C-21 entregó el registro | 23 | El tag no existe y lo crea C-26. 16 h de Matias, 4 h de Bruno y 3 h de Lucas. Las entradas de Patricio del 18/11 no traen horas |
+
+El compose, el seed de 25 sedes, el manual de instalación y el umbral de Jest están en el repositorio. Las filas C-07, C-10 y C-17 del plan de cierre siguen en por hacer.
 
 ### 8.8 Desvíos
 
 La documentación de cierre y el cambio de Strategy a Decorator ocuparon el tramo del 9 al 17 de noviembre, encima de las pantallas de gestión. Varias tarjetas que el plan asignaba a Lucas las cerró Patricio: la pantalla de clases, el manual de usuario y la bitácora de Lucas. El estimado de 4 h semanales de agosto no alcanza para describir esa concentración de noviembre.
 
-El riesgo de leer RNF-01 como una app del socio sin señal se materializó como discusión de alcance. Se absorbió el 6 de noviembre, con C-05: la demo muestra la cola de la sede, y la app móvil queda fuera. El mismo corte sacó MercadoPago real, la cámara del acceso y los reportes de toda la cadena.
+El riesgo de leer RNF-01 como una app del socio sin señal se materializó como discusión de alcance. Se absorbió el 6 de noviembre, con C-05: la demo muestra la cola de la sede, y la app móvil queda fuera. El mismo corte sacó MercadoPago real, la cámara del acceso y los reportes de toda la cadena. El 18/11 la matriz quedó en una fila por requisito. RN-03 es mora con tarifa externa. RNF-03 se midió en 786 ms.
 
-Si el cuatrimestre empezara de nuevo, Docker, el seed de 25 sedes y el manual de operación entrarían junto con el primer arranque reproducible, y la matriz de requisitos se escribiría sobre el enunciado completo en lugar de esperar a C-38. El archivo `Planificacion_Completa_C20.md` no es esa matriz.
+Si el cuatrimestre empezara de nuevo, Docker, el seed de 25 sedes y el manual de operación entrarían junto con el primer arranque reproducible, y la matriz de requisitos se escribiría sobre el enunciado completo en lugar de esperar a C-38. Esa matriz es `docs/planificacion/S8_Planificacion_Completa_C20.md`.
 
 ### 8.9 Riesgos
 
-| Riesgo | Qué ocurrió al 17/11/2026 |
+| Riesgo | Qué ocurrió al 19/11/2026 |
 |--------|---------------------------|
 | La UI de canchas se queda en datos fijos | C-01 cerró el 13/11 con reserva y pago desde la pantalla |
-| RNF-01 se interpreta como app móvil | La app quedó fuera. La sede encola el ingreso y la salida |
-| La documentación llega tarde | ADR, diagramas, manual de usuario y manual técnico están cerrados. Siguen el manual de instalación y la reescritura de la planificación |
-| Una sola persona concentra Docker, seed y pruebas de cierre | C-07, C-08, C-10, C-17, C-20, C-21, C-35 y C-37 siguen por hacer, a cargo de Matias |
-| La no sobreventa se prueba tarde | ADR-004 y el índice único están. Falta correr el script SQL en el CI, que es C-41 |
-| El tag sale después de las 18:00 del 19/11 | El tag todavía no se creó. El límite sigue siendo esa hora |
+| RNF-01 se interpreta como app móvil | La app quedó fuera. La sede encola el ingreso y la salida. C-05 |
+| La documentación llega tarde | ADR, diagramas y los tres manuales están en el repo. C-38 reescribió la matriz el 18/11. La fila C-17 del plan sigue en por hacer |
+| Una sola persona concentra Docker, seed y pruebas de cierre | El compose, el seed de 25 sedes, la medición de C-35 y el manual de instalación están en el repo. C-07, C-10 y C-17 siguen en por hacer en el plan |
+| La no sobreventa se prueba tarde | C-41 corrió el SQL. La salida local fue `OK 3` |
+| El tablero no se exporta | C-21 lo armó el 19/11: `docs/planificacion/PROGV-2026-TIF-Equipo03-Registro.xlsx` |
+| El tag sale después de las 18:00 del 19/11 | El tag no existe. Lo crea C-26 |
 """
 
 
@@ -503,8 +520,8 @@ def bitacoras() -> str:
     partes = [
         "## 9. Bitácoras individuales\n\n",
         "Cada integrante tiene su archivo. `docs/bitacoras/LOG.md` es la bitácora de equipo y no entra en esta sección. "
-        "Al 17 de noviembre el plan de cierre marca C-19a, C-19b y C-19c finalizadas, y C-19d en desarrollo. "
-        "Los cuatro archivos están en el repositorio y se copian acá enteros.\n\n",
+        "Al 19 de noviembre el plan de cierre marca C-19 como parcial: C-19a, C-19b y C-19c finalizadas, y C-19d en desarrollo. "
+        "Los cuatro archivos están en el repositorio y se copian acá enteros, una vez.\n\n",
     ]
     for rel in [
         "docs/bitacoras/LOG-ramos.md",
@@ -524,7 +541,7 @@ Los tres manuales están en el repositorio. Este dossier no los reimprime.
 | Manual | Ruta | Qué cubre |
 |--------|------|-----------|
 | Usuario | `docs/manuales/manual-usuario.md` | Socio, recepción y gerente, con las capturas del sistema. Tarjeta C-16, cerrada el 17/11 |
-| Instalación y operación | `docs/manuales/manual-instalacion-operacion.md` | Requisitos, entorno, seed, arranque y contingencias. Tarjeta C-17, todavía por hacer en el plan de cierre |
+| Instalación y operación | `docs/manuales/manual-instalacion-operacion.md` | Requisitos, entorno, seed, arranque y contingencias. El archivo es del 17/11, de Matias. La tarjeta C-17 sigue en por hacer en el plan de cierre |
 | Técnico | `docs/manuales/manual-tecnico.md` | Módulos, patrones y los dos casos de extensión: canchas de tenis y un decorador de recargo de fin de semana. Tarjeta C-18, cerrada |
 
 El índice corto de la carpeta es `docs/manuales/README.md`.
@@ -534,14 +551,17 @@ El índice corto de la carpeta es `docs/manuales/README.md`.
 def tablero(tabla: str) -> str:
     return (
         "## 11. Anexo: tablero del proyecto\n\n"
-        "El archivo `docs/planificacion/PROGV-2026-TIF-Equipo03-Registro.xlsx` es la tarjeta C-21, armada el 19/11 desde el export del tablero. "
-        "La tabla de abajo es el estado escrito en `docs/planificacion/Plan_Cierre_Entrega_6_19_Nov.md` "
-        "al 17 de noviembre de 2026. El nombre de la tarea es el de este dossier. Quién y el estado salen de ese plan.\n\n"
+        "El tablero vivo es [Programacion5](https://trello.com/b/eBn68vRC/programacion5).\n\n"
+        "El registro con fechas de alta y de cierre es `docs/planificacion/PROGV-2026-TIF-Equipo03-Registro.xlsx`, "
+        "tarjeta C-21, armado el 19/11. Tiene las hojas Portada, Resumen y Altas y cierres. "
+        "El link no reemplaza ese archivo.\n\n"
+        "La tabla de abajo es el estado escrito en `docs/planificacion/S8_Plan_Cierre_Entrega_6_19_Nov.md` "
+        "al 19 de noviembre de 2026. El nombre de la tarea es el de este dossier. Quién y el estado salen de ese plan.\n\n"
         + tabla
         + "\nC-19 está partida en el tablero: C-19a Patricio, C-19b Bruno y C-19c Lucas figuran finalizadas. "
         "C-19d, la de Matias, figura en desarrollo. Los cuatro textos están en la sección 9.\n\n"
         "C-25 figura en por hacer en ese plan porque el tag de la entrega todavía no existe. "
-        "Este Markdown es la base del PDF. Se vuelve a imprimir cuando C-26 cree `v1.0-entrega`.\n"
+        "Este Markdown es la base del PDF. C-26 crea `v1.0-entrega`, completa el tag y el hash, e imprime.\n"
     )
 
 
