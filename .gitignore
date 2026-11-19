@@ -2,3 +2,4 @@
 .env
 backend/certs/extra-ca.crt
 frontend/certs/extra-ca.crt
+docs/entregables/local/

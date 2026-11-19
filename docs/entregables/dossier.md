@@ -30,12 +30,24 @@ El legajo de cada integrante no está en el repositorio. El campo queda escrito 
 
 ### Claves del proyecto para la cátedra
 
-Estas líneas se completan a mano antes de Moodle. No van al repositorio: pegarlas acá y volver a correr `construir_dossier.py` borra lo escrito. `SEED_PASSWORD` de la plantilla Docker es `fitzone-demo` y está en el README.
+Estas líneas se completan al imprimir la copia local. En el repositorio quedan vacías. `SEED_PASSWORD` de la plantilla Docker es `fitzone-demo` y está en el README.
 
 - `SUPABASE_URL`:
-- `SUPABASE_ANON_KEY`:
 - `SUPABASE_SERVICE_ROLE_KEY`:
+- `SUPABASE_ANON_KEY`:
+- `VITE_SUPABASE_URL`:
 - `VITE_SUPABASE_PUBLISHABLE_KEY`:
+- `POSTGRES_PASSWORD`:
+- `SEED_PASSWORD`:
+- `TOTP_SEED_ENCRYPTION_KEY`:
+- `PORT`:
+- `APP_PUBLIC_URL`:
+- `CORS_ORIGIN`:
+- `VITE_API_URL`:
+- `E2E_EMAIL`:
+- `E2E_PASSWORD`:
+- `E2E_BASE_URL`:
+- `CI`:
 
 ### Índice
 
