@@ -119,7 +119,7 @@ No se usa una estimación futura para justificar el cierre: los porcentajes y ho
 - **Planificación:** C-20 quedó incompleta y desordenada; C-37 ordenó la carpeta y C-38 reemplazó la matriz.
 - **Offline fuerte:** quedó acotado a cola local y sync; no se simuló un nodo físico por sede.
 - **Tablero:** C-21 aún no produjo el registro XLSX nombrado por el Anexo G; no se marca como cerrado en este documento.
-- **Entrega:** C-24, C-25, C-26 y C-27 dependen del paso final de congelamiento y deben cerrar contra evidencia de Moodle/tag.
+- **Entrega:** C-24 quedó cerrado el 2026-11-18 con el guion. C-25, C-26 y C-27 siguen en el paso final y cierran contra evidencia de Moodle y tag.
 
 ## 10. Criterio de cierre de C-20 y C-38
 
