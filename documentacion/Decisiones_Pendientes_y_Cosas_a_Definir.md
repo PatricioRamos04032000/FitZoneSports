@@ -41,7 +41,7 @@ Documento de trabajo para el equipo: qué **ya está cerrado**, qué **falta dec
 
 - [x] **¿Un solo repo (monorepo) o dos/tres repos?** — **Cerrado 2026-09-02:** monorepo con `frontend/`, `backend/`, `documentacion/`.
   - **Multirepo:** descartado por simplicidad para 4 personas y Demo Day.
-  - Ver [Acta reunión 2026-09-02](./Acta_Reunion_2026-09-02_Semana1.md).
+  - Ver [Acta reunión 2026-09-02](../docs/planificacion/S1_Acta_Reunion_2026-09-02.md).
 
 ### 2.2 Nombres y convenciones
 
@@ -505,7 +505,7 @@ Patrón de **nodo de borde por sede**:
 2. Con internet caída, la sede **sigue validando** ingresos y **guarda check-ins en cola local**.
 3. Al volver la conectividad, **sincroniza** esos check-ins hacia la BD en la nube (API / PostgreSQL).
 
-**Estado 2026-09-02:** el equipo ve el enfoque como **plausible**, pero **no lo cierra formalmente** hasta validarlo con el docente (ver [Acta](./Acta_Reunion_2026-09-02_Semana1.md) Q2).
+**Estado 2026-09-02:** el equipo ve el enfoque como plausible, pero no lo cierra formalmente hasta validarlo con el docente (ver [Acta S1](../docs/planificacion/S1_Acta_Reunion_2026-09-02.md)).
 
 **Actualización 2026-11-01 (Patricio) — plan de implementación M2:** ver [Plan_M2_Acceso_QR_Patricio.md](./Plan_M2_Acceso_QR_Patricio.md). Para el MVP de sede el offline se **acota**: la recepción **acumula** check-ins en cola local; al volver la red **intenta registrarlos** vía Nest y **anota errores** por ítem (sin resolución automática de conflictos). Validación definitiva (membresía, TOTP, RN-01) en el sync online. Formato de cola y endpoints quedan en ese plan.
 

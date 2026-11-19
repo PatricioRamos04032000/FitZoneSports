@@ -234,7 +234,7 @@ Hay **dos offlines distintos** (acordado en documentación; enfoque técnico a v
 | App Móvil (Unidad VI) | Cache del **seed / QR** del socio (no sustituye el offline de sede) |
 | BD (Supabase) | Centralizada en la nube; la sede no escribe ahí mientras está offline |
 
-**MVP adoptado (ADR-007 Propuesto):** QR **TOTP** + check-in online en Nest + **cola + sync** en sede. El enfoque “fuerte” (nodo por sede + paquete de seeds para validar TOTP sin API) queda **diferido**. Detalle: Decisiones §8 · Plan M2 · [Acta 2026-09-02](../../docs/planificacion/Acta_Reunion_2026-09-02_Semana1.md).  
+**MVP adoptado (ADR-007 Propuesto):** QR **TOTP** + check-in online en Nest + **cola + sync** en sede. El enfoque “fuerte” (nodo por sede + paquete de seeds para validar TOTP sin API) queda **diferido**. Detalle: Decisiones §8 · Plan M2 · [Acta 2026-09-02](../../docs/planificacion/S1_Acta_Reunion_2026-09-02.md).  
 **RN-01:** como RN-02 — unique en `presencias`; Nest solo mapea el error de BD. Offline = consistencia eventual al sync (conflicto → error anotado, sin auto-resolver).
 
 Reservas, clases, pagos y reportes **no** se piden offline.

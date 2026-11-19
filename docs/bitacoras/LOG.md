@@ -4,7 +4,7 @@ Registro de actividades, decisiones y estado del proyecto.
 Cada entrada puede vincular commits del repositorio cuando corresponda.
 
 **Estados de tarea (alineados al plan):** `Por hacer` · `En desarrollo` · `Finalizado`  
-**Plan vivo:** [Plan_Trabajo_2_Semanas.md](../planificacion/Plan_Trabajo_2_Semanas.md) → sección *Trabajo en curso (ahora)*
+**Plan vivo:** [Plan S5–S7](./S5-S7_Plan_Trabajo_3_Semanas.md) → sección *Trabajo en curso (ahora)*
 
 
 ---
@@ -150,9 +150,9 @@ Reunión grupal siguiendo la agenda de cierre de decisiones (ratificación §1 y
 
 ### Documentos relacionados
 
-- [`Acta_Reunion_2026-09-02_Semana1.md`](../planificacion/Acta_Reunion_2026-09-02_Semana1.md)
+- [`S1_Acta_Reunion_2026-09-02.md`](../planificacion/S1_Acta_Reunion_2026-09-02.md)
 - `Decisiones_Pendientes_y_Cosas_a_Definir.md`
-- [`Plan_Trabajo_2_Semanas.md`](../planificacion/Plan_Trabajo_2_Semanas.md)
+- [`Plan S5–S7`](../planificacion/S5-S7_Plan_Trabajo_3_Semanas.md)
 
 ### Commits vinculados
 
@@ -187,7 +187,7 @@ A medida que el equipo desarrolla, debe **seguir actualizando el modelo**, incor
 ### Relacionado
 
 - Pregunta abierta en reunión 2026-09-02 (¿PDF Unidad I incluye ER/clases?) → queda respondida en el sentido de que **van entrando al paquete de arquitectura a lo largo del curso**, con entrega formal al final.
-- [Acta_Reunion_2026-09-02_Semana1.md](../planificacion/Acta_Reunion_2026-09-02_Semana1.md) · [Propuesta_Inventario_Diagramas.md](../../documentacion/diagramas%20desarrollo/Propuesta_Inventario_Diagramas.md) · [Propuesta_ER_FitZone.md](../../documentacion/diagramas%20desarrollo/Propuesta_ER_FitZone.md) (borrador ER Fase A + visión completa, 2026-09-04)
+- [`S1_Acta_Reunion_2026-09-02.md`](../planificacion/S1_Acta_Reunion_2026-09-02.md) · [Propuesta_Inventario_Diagramas.md](../../documentacion/diagramas%20desarrollo/Propuesta_Inventario_Diagramas.md) · [Propuesta_ER_FitZone.md](../../documentacion/diagramas%20desarrollo/Propuesta_ER_FitZone.md) (borrador ER Fase A + visión completa, 2026-09-04)
 
 ---
 
@@ -320,8 +320,8 @@ No se decidió crear una tabla de tipos de cancha con tarifas estándar. Tampoco
 
 ### Documentos relacionados
 
-- [Plan_Trabajo_2_Semanas.md](../planificacion/Plan_Trabajo_2_Semanas.md)
-- [Propuesta_Reglas_Negocio_S4-T09.md](../rnf/Propuesta_Reglas_Negocio_S4-T09.md)
+- [Plan S5–S7](../planificacion/S5-S7_Plan_Trabajo_3_Semanas.md)
+- [Propuesta S5–S7](../planificacion/S5-S7_Propuesta_Continuacion.md)
 - Decisiones_Pendientes_y_Cosas_a_Definir.md
 
 ---
@@ -941,7 +941,7 @@ S5 está cerrada (S5-T01 a S5-T11). De S6 queda abierta solo S6-T09. De S7, al 1
 
 Queda suelta, en por hacer y sin responsable, la tarjeta «Preparar API REST del módulo perfil». S6-T01 (`GET`/`PATCH /perfiles/me`) ya está finalizada.
 
-Estados copiados a [Plan_Cierre_Entrega_6_19_Nov.md](../planificacion/Plan_Cierre_Entrega_6_19_Nov.md), [Plan_Trabajo_2_Semanas.md](../planificacion/Plan_Trabajo_2_Semanas.md) y [Propuesta_Continuacion_Semanas.md](../planificacion/Propuesta_Continuacion_Semanas.md).
+Estados copiados a [Plan_Cierre_Entrega_6_19_Nov.md](../planificacion/Plan_Cierre_Entrega_6_19_Nov.md), [Plan S5–S7](../planificacion/S5-S7_Plan_Trabajo_3_Semanas.md) y [Propuesta S5–S7](../planificacion/S5-S7_Propuesta_Continuacion.md).
 
 ### Commits vinculados
 

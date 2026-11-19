@@ -326,3 +326,43 @@ Ninguno bloqueante. `npm ci` informó 30 vulnerabilidades en el árbol de depend
 **Commits**
 
 - Pendiente de commit en esta sesión. No se modificó código de backend ni la configuración de Jest.
+
+---
+
+### 2026-11-18  ·  C-37 ·  2 h
+
+**Actividad**
+
+Ordené `docs/planificacion/` por sprint: agregué `README.md` como índice S1–S8, renombré las actas y planes con prefijos de sprint, dejé un registro combinado S1–S2 y el plan S5–S7, y moví los archivos XLSX y el export JSON a `exportaciones/`. S3 no tiene plan propio, por lo que el índice lo remite a `docs/bitacoras/LOG.md`. Actualicé los enlaces internos que apuntaban a los nombres anteriores y marqué C-37 como Finalizado en el plan de cierre.
+
+**Decisión**
+
+Conservé los nombres históricos como contenido, pero normalicé las rutas para que la carpeta se lea en secuencia: S1, S1–S2, S3 sin plan propio, S4, S5, S5–S7 y S8. Los exports quedaron separados del texto operativo para preparar la reescritura de C-38 sin perder los originales.
+
+**Problema o bloqueo**
+
+No hubo bloqueo técnico. Algunos documentos históricos todavía citan nombres antiguos dentro de texto narrativo o secciones de cierre; donde no afectan enlaces, se conservaron como referencias históricas. Los enlaces activos principales ya apuntan a las rutas nuevas.
+
+**Commits**
+
+- Pendiente de commit en esta sesión. Esta tarea modificó nombres de archivos, estructura de carpetas y enlaces Markdown.
+
+---
+
+### 2026-11-18  ·  C-38 ·  5 h
+
+**Actividad**
+
+Reescribí `docs/planificacion/S8_Planificacion_Completa_C20.md`, archivo que ahora satisface C-20 y deja constancia de C-38. Normalicé los ocho sprints: S1 desde el 31/08/2026, S2 07–13/09, S3 14–27/09, S4 28/09–11/10, S5 12–25/10, S6 26/10–08/11, S7 09–15/11 y S8 16–19/11. Construí una matriz única con RF-01 a RF-14, RN-01 a RN-03 y RNF-01 a RNF-04. Incorporé la medición de C-35 de 32/32 suites, 184/184 tests y 65.77 % de sentencias, sin mover el piso ADR-008 del 60 %. Reemplazé riesgos futuros por desvíos ocurridos con estimación incorrecta, materialización y replanteo aplicado.
+
+**Decisión**
+
+C-20 pasa a Finalizado. La trazabilidad describe el estado real de implementación, no el objetivo deseado. El 786 ms medido en `/canchas/disponibilidad` se registra como evidencia de RNF-03, sin inventar un nuevo umbral. C-21, C-24, C-25, C-26 y C-27 siguen como tareas distintas y no se declaran cerradas por esta reescritura.
+
+**Problema o bloqueo**
+
+No hubo bloqueo técnico. El borrador anterior agrupaba RF-09–RF-12, omitía varios RF y confundía RN-03 con rutas/roles y RNF-03 con Docker. Se resolvió consultando el enunciado y las evidencias reales del repositorio, sin convertir las restricciones de cierre en riesgos hipotéticos.
+
+**Commits**
+
+- Pendiente de commit en esta sesión. Esta tarea modifica la planificación C-20 y los estados C-20/C-38.

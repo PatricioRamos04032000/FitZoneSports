@@ -15,15 +15,13 @@ Pase del 18/11/2026. C-22 sigue en desarrollo. Esta lista es el residual aceptab
 
 ## Falta, y es planificación
 
-Está en `docs/planificacion/Planificacion_Completa_C20.md` y en las tarjetas C-20, C-21, C-37 y C-38, a cargo de Matias.
+C-37 organizó la carpeta y C-38 cerró C-20 el 2026-11-18 en `docs/planificacion/S8_Planificacion_Completa_C20.md`. El residual vigente queda en C-21 y C-22.
 
-- La matriz no recorre RF-01 a RF-14. Agrupa RF-09 a RF-12 y no nombra RF-01, RF-03, RF-04, RF-05, RF-10, RF-11 ni RF-13.
-- RN-03 figura como rutas y roles. En el Anexo G es la cuota vencida que paga tarifa de externo.
-- RNF-03 figura ahí como Docker. En el Anexo G es la consulta de disponibilidad. La medición de pantalla ya está en el manual técnico.
-- El cronograma y el seguimiento siguen escritos hacia el 19/11, no como estimado contra trabajado.
-- Los riesgos no dicen qué ocurrió con cada uno.
-- Los desvíos no responden las tres preguntas del punto 5.6.3: dónde se estimó mal, qué riesgo se materializó y qué se replanificaría.
-- No está `PROGV-2026-TIF-Equipo03-Registro.xlsx`.
+- La matriz reescrita recorre RF-01 a RF-14, RN-01 a RN-03 y RNF-01 a RNF-04.
+- RN-03 queda definido como mora con tarifa externa, no como rutas y roles.
+- RNF-03 queda definido por la consulta de disponibilidad y sus índices; la medición fue de 786 ms el 18/11.
+- Los ocho sprints y los desvíos ya ocurridos están registrados contra evidencia real.
+- C-21 todavía debe entregar `PROGV-2026-TIF-Equipo03-Registro.xlsx`; no se declara cerrado por C-38.
 
 ## Falta poco, y no es de este commit
 
