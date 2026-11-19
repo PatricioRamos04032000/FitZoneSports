@@ -11,7 +11,7 @@ import {
   type DisponibilidadSede,
   type Reserva,
 } from "../../services/canchas";
-import { descargarComprobanteReserva } from "../../services/pagos";
+import { descargarComprobanteReserva, urlDeCheckout } from "../../services/pagos";
 
 import { Select } from "../../components/atoms";
 import { Alerta } from "../../components/molecules";
@@ -334,7 +334,7 @@ function Canchas() {
       );
 
       // Redirigir al checkout simulado
-      window.location.href = pago.checkoutUrl;
+      window.location.assign(urlDeCheckout(pago.checkoutUrl));
     } catch (err) {
       setErrorReserva(
         err instanceof Error
@@ -570,6 +570,16 @@ function Canchas() {
                   {formatearHorario(reserva.inicio)} · {reserva.estado}
                 </p>
                 <div className="mis-reservas-acciones">
+                  {reserva.estado === "pendiente" && (
+                    <button
+                      onClick={() => handlePagar(reserva.id)}
+                      disabled={procesandoPago || cancelandoId !== ""}
+                    >
+                      {procesandoPago
+                        ? "Conectando..."
+                        : "Pagar reserva"}
+                    </button>
+                  )}
                   {reserva.estado === "confirmada" && (
                     <button
                       onClick={() => handleDescargarComprobante(reserva.id)}

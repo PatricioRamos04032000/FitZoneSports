@@ -26,7 +26,27 @@ test('el socio reserva, paga, consulta y descarga el comprobante', async ({
   const confirmacion = page.locator('.reserva-confirmacion');
   await expect(confirmacion).toContainText('¡Reserva creada correctamente!');
   await expect(confirmacion).toContainText('pendiente');
-  await confirmacion.getByRole('button', { name: 'Pagar reserva' }).click();
+
+  await page.reload();
+  await expect(page.getByRole('heading', { name: 'Canchas', level: 1 })).toBeVisible();
+  const sedeTrasRecarga = page.getByLabel('Sede');
+  await expect(
+    sedeTrasRecarga.locator(`option[value="${sedeId}"]`).first(),
+  ).toBeAttached();
+  if ((await sedeTrasRecarga.inputValue()) !== sedeId) {
+    await esperarDisponibilidad(
+      page,
+      () => sedeTrasRecarga.selectOption(sedeId),
+      { sedeId },
+    );
+  }
+  const pendiente = page
+    .locator('ul.mis-reservas > li')
+    .filter({ hasText: cancha })
+    .filter({ hasText: textoFlexible(cuando) })
+    .filter({ hasText: 'pendiente' });
+  await expect(pendiente).toHaveCount(1);
+  await pendiente.getByRole('button', { name: 'Pagar reserva' }).click();
 
   await expect(page.getByRole('heading', { name: 'Checkout de pago' })).toBeVisible();
   await page.getByLabel('Número de tarjeta').fill(tarjetaAprobada);

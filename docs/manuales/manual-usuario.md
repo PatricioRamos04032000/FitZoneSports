@@ -131,7 +131,7 @@ Abrí **Canchas**. Elegí la sede, la fecha y el horario. La tarjeta de la canch
 
 El precio externo es la tarifa de la hora. El precio socio le aplica el descuento de la cadena (en la captura, 15 %). En horario pico se suma el recargo de la sede (en la captura, 20 % entre las 19:00 y las 21:00). Con membresía activa se cobra el precio socio. Sin membresía activa, o con la cuota vencida, se cobra el precio externo. El cliente externo usa esta misma pantalla y paga ese precio externo.
 
-**Reservar** deja la reserva pendiente de pago. **Pagar reserva** abre la pasarela simulada. La tarjeta de prueba que empieza con 4111 aprueba. La que empieza con 4000 rechaza. El número no se guarda. Si otra persona confirma el mismo turno en el mismo instante, solo una reserva queda confirmada.
+**Reservar** deja la reserva pendiente de pago. **Pagar reserva** abre la pasarela simulada. Si recargás la página, la fila pendiente en **Mis reservas** sigue teniendo **Pagar reserva** junto a **Cancelar**. La tarjeta de prueba que empieza con 4111 aprueba. La que empieza con 4000 rechaza. El número no se guarda. Si otra persona confirma el mismo turno en el mismo instante, solo una reserva queda confirmada.
 
 ![Cancha 1 en Av. Demo 100, el 22/11/2026 a las 19:00, con precio socio, precio externo y horario pico](./capturas/socio-canchas-precio.png)
 
@@ -150,7 +150,7 @@ El comprobante es un PDF de FitZone. No es una factura fiscal. Trae el número, 
 - En **Mi Perfil**, con una membresía que tenga pago, **Descargar comprobante PDF**.
 - En **Canchas**, cada reserva confirmada tiene **Comprobante PDF**.
 
-En la pasarela, el checkout pide número, nombre, vencimiento y CVV, muestra el monto y aclara que los datos de la tarjeta no se guardan. Al aprobar, volvés al portal y el comprobante queda en el botón correspondiente.
+En la pasarela, el checkout pide número, nombre, vencimiento y CVV, muestra el monto y aclara que los datos de la tarjeta no se guardan. Al aprobar, **Volver a Canchas** vuelve a **Canchas** en el mismo portal local. El comprobante queda en el botón correspondiente.
 
 Este es el PDF de la reserva de Cancha 1 en FitZone Central, el 9/11/2026 de 19:00 a 20:00. El total es $ 20.400, con tarifa base, horario pico y descuento de socio.
 

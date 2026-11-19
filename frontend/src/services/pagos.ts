@@ -2,6 +2,23 @@ import { ApiError, apiRequest } from "./api";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
+function hostLocal(hostname: string): boolean {
+  return hostname === "localhost" || hostname === "127.0.0.1" || hostname === "::1";
+}
+
+/** La API a veces arma el checkout con APP_PUBLIC_URL=http://localhost:3000. En Vercel hay que abrirlo en la API real. */
+export function urlDeCheckout(checkoutUrl: string): string {
+  const apiBase = (API_URL || "http://localhost:3000").replace(/\/$/, "");
+  const destino = new URL(checkoutUrl, `${apiBase}/`);
+  const api = new URL(apiBase);
+  if (hostLocal(destino.hostname) && !hostLocal(api.hostname)) {
+    destino.protocol = api.protocol;
+    destino.hostname = api.hostname;
+    destino.port = api.port;
+  }
+  return destino.toString();
+}
+
 export interface ResumenPago {
   id: string;
   concepto: "membresia" | "reserva_cancha";

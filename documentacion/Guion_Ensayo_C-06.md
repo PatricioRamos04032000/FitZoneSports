@@ -3,7 +3,7 @@
 **Tarea:** C-06 · ensayo corto API + UI  
 **Fecha del guion:** 2026-11-08  
 **Estado:** cerrado el 2026-11-08. El recorrido se hizo sin errores de flujo. El pulido de UI del §6 quedó **resuelto por S7-T08** (2026-11-13); no reabre C-06. El ensayo cronometrado sigue en **C-24**.  
-**Para qué sirve:** dejar el recorrido y la hoja del ensayo. No es la muestra final cronometrada (eso es **C-24**, tramo T3).  
+**Para qué sirve:** dejar el recorrido y la hoja del ensayo. No es la muestra final cronometrada (eso es **C-24**, tramo T3). La hoja con reloj, croquis y plan B está en [Guion_Ensayo_C-24.md](Guion_Ensayo_C-24.md).  
 **Objetivo de producto** (plan de cierre, §6): en 5 minutos, login → membresía → reservar paddle y pagar → QR → check-in en sede.
 
 **Actualización 2026-11-13 (S7-T08):** el pase del guion de producto se hace **solo con la UI** (sin Swagger para cancha ni membresía). C-01 (canchas UI) y membresía en Perfil ya están. Check-out sigue por API/Swagger.
