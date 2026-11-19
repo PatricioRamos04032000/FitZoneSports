@@ -1003,3 +1003,23 @@ Ninguno.
 
 - El commit de esta rama.
 
+---
+
+### 2026-11-19  ·  C-21
+
+**Actividad**
+
+Armé `docs/planificacion/PROGV-2026-TIF-Equipo03-Registro.xlsx` desde el export del tablero del 19/11. La hoja Altas y cierres lista cada tarjeta con el día en que se creó y el día en que entró a finalizado. La creación sale de la acción de alta, o del id de Trello cuando esa acción ya no está entre las mil que exporta el tablero. El cierre queda vacío si la tarjeta no estaba en finalizado.
+
+**Decisión**
+
+La tarjeta es de Matias. El archivo no completa cierres que el tablero no tiene. C-25, C-26 y C-27 siguen abiertas.
+
+**Problema o bloqueo**
+
+`[P1.1] Matriz de Funcionalidades por Rol` está en finalizado y su movimiento ya no está en el export. Esa fila no lleva fecha de cierre.
+
+**Commits**
+
+- El commit de esta rama.
+

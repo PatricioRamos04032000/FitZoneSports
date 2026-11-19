@@ -111,7 +111,7 @@ Las horas son las del plan de cierre. C-07, C-08, C-10 y C-17 siguen en por hace
 | C-18 | Manual técnico y dos casos de extensión | Patricio | 3–4 h | Finalizado |
 | C-19 | Cuatro bitácoras | Cada integrante | 3–4 h c/u | C-19a, C-19b y C-19c finalizadas. El plan deja C-19d en desarrollo. Los cuatro archivos están en el repo |
 | C-20 | Planificación con matriz, sprints y desvíos | Matias | 6–8 h | Finalizado el 18/11 por C-38 |
-| C-21 | Excel del tablero | Matias | 1–2 h | Por hacer |
+| C-21 | Excel del tablero | Matias | 1–2 h | Finalizado el 19/11. El archivo es `PROGV-2026-TIF-Equipo03-Registro.xlsx` |
 | C-22 | Recorrido del Anexo G | Patricio | 3–4 h | Finalizado. Residual aceptado el 18/11 |
 | C-23 | README de cinco pasos | Patricio | 2 h | Finalizado |
 | C-24 | Guion de cinco minutos y plan B | Patricio | 1–2 h | Finalizado |
@@ -189,7 +189,7 @@ Trabajado es la suma de las marcas `· N h` de `LOG-ramos.md`, `LOG-conti.md`, `
 | 5 | Migración M4, login real, sesión, layout e infraestructura | Acta del 21/10 y plan S5–S7 | 18,5 | El 21/10 se cerraron las reglas de precio y de reserva | |
 | 6 | Perfil, pagos, APIs de canchas, cliente HTTP, CI y notificaciones | Plan S5–S7 y LOG | 60 | C-20 no escribe un desvío solo de este sprint | |
 | 7 | Decorator, State, Facade, demo y cierres funcionales | C-01 cerró el 13/11. Plan de cierre C-01 a C-34 | 37,5 | C-01 cerró el 13/11 | |
-| 8 | Congelamiento, Anexo G, tag, dossier y medición | C-24 y C-35 a C-41 cerrados. C-21, C-25, C-26 y C-27 abiertos. El tag no existe | 23 | El tag no existe. Las entradas de Patricio del 18/11 no traen horas | 16 h de Matias, 4 h de Bruno y 3 h de Lucas |
+| 8 | Congelamiento, Anexo G, tag, dossier y medición | C-24 y C-35 a C-41 cerrados. C-21 entregó el registro del tablero. C-25, C-26 y C-27 abiertos. El tag no existe | 23 | El tag no existe. Las entradas de Patricio del 18/11 no traen horas | 16 h de Matias, 4 h de Bruno y 3 h de Lucas |
 
 ## 8. Análisis de desvíos
 
@@ -209,9 +209,9 @@ Probabilidad, impacto y mitigación prevista no constan en los planes del cuatri
 | RNF-01 se interpreta como app móvil | — | — | — | La app quedó fuera. La sede encola el ingreso y la salida. C-05 |
 | El offline fuerte pide un nodo por sede | — | — | — | Quedó la cola local y el sync. No se simuló un nodo físico |
 | La documentación llega tarde | — | — | — | ADR, diagramas y los tres manuales están en el repo. C-38 reescribió la matriz el 18/11 |
-| Una sola persona concentra Docker, seed y pruebas | — | — | — | El compose, el seed de 25 sedes, la medición de C-35 y el manual de instalación están en el repo. C-21 sigue abierto |
+| Una sola persona concentra Docker, seed y pruebas | — | — | — | El compose, el seed de 25 sedes, la medición de C-35 y el manual de instalación están en el repo. C-21 entregó el registro el 19/11 |
 | La no sobreventa se prueba tarde | — | — | — | C-41 corrió el SQL. La salida local fue OK 3 |
 | La cobertura queda bajo el umbral | — | — | — | C-35 midió 65,77 % de sentencias. El piso de ADR-008 sigue en 60 % |
 | La planificación queda incompleta | — | — | — | C-37 ordenó la carpeta y C-38 reemplazó la matriz |
-| El tablero no se exporta | — | — | — | C-21 todavía no produjo `PROGV-2026-TIF-Equipo03-Registro.xlsx` |
+| El tablero no se exporta | — | — | — | C-21 lo armó el 19/11: `docs/planificacion/PROGV-2026-TIF-Equipo03-Registro.xlsx`. La fecha de alta y la de entrada a finalizado salen del export de ese día |
 | El tag sale después de las 18:00 del 19/11 | — | — | — | El tag no existe. C-24 está cerrado. C-25, C-26 y C-27 siguen abiertos |
