@@ -270,7 +270,7 @@ Cerré la tarea C-08 de carga de prueba por Anexo G. Creé `backend/scripts/seed
 
 **Decisión**
 
-Preferí un script aparte (`seed:entrega`) en lugar de extender el `seed` de demo (S5, 2 sedes) para no mezclar la carga de prueba de 25 sedes con el mínimo de demo, manteniendo ambos independientes y ejecutibles por separado.
+Preferí un script aparte (`seed:entrega`) en lugar de extender el `seed` de demo (S5, 2 sedes) para no mezclar la carga de prueba de 25 sedes con el mínimo de demo, manteniendo ambos independientes y ejecutables por separado.
 
 **Problema o bloqueo**
 
@@ -306,3 +306,63 @@ Ninguno de esta cita. El commit ya estaba en `desarrollo` y no figuraba en esta 
 ## Resumen de contribución
 
 Mi aporte principal fue sostener la calidad operativa del proyecto y la trazabilidad del trabajo: validación de flujo, pruebas E2E y Postman, configuración de CI, documentación de setup, planificación y cierre de entregables. Esa combinación de tareas me dejó centrado en QA / DevOps / Mobile, con foco en que el proyecto pudiera ejecutarse, probarse y documentarse sin depender de la memoria del equipo.
+
+---
+
+### 2026-11-18  ·  C-35 ·  1 h
+
+**Actividad**
+
+Ejecuté desde `backend/` la medición completa solicitada por C-35: `npm ci`, `npm run build` y `npm run test:cov -- --runInBand`. La instalación limpia completó correctamente el alta de 637 paquetes. El build de Nest terminó sin errores y no fue necesario reparar el código. La suite terminó con 32 suites aprobadas y 184 tests aprobados; no hubo suites ni tests fallidos. El reporte global de cobertura registró **65.77 % de sentencias**, por encima del piso de **60 %** declarado en ADR-008.
+
+**Decisión**
+
+Conservo la medición como evidencia concreta de C-35 y uso el 65.77 % como porcentaje que citará C-38. No elevé el umbral del ADR-008: el resultado se contrasta con el piso vigente del 60 %, no con un nuevo objetivo del 70 %.
+
+**Problema o bloqueo**
+
+Ninguno bloqueante. `npm ci` informó 30 vulnerabilidades en el árbol de dependencias (2 bajas, 22 moderadas, 5 altas y 1 crítica) y las advertencias de scripts de instalación, pero no impidieron la instalación ni fallaron los comandos de build o pruebas. El reporte HTML queda en `backend/coverage/`; esa carpeta está ignorada por Git y el dato estable a citar es el resumen global de sentencias.
+
+**Commits**
+
+- Pendiente de commit en esta sesión. No se modificó código de backend ni la configuración de Jest.
+
+---
+
+### 2026-11-18  ·  C-37 ·  2 h
+
+**Actividad**
+
+Ordené `docs/planificacion/` por sprint: agregué `README.md` como índice S1–S8, renombré las actas y planes con prefijos de sprint, dejé un registro combinado S1–S2 y el plan S5–S7, y moví los archivos XLSX y el export JSON a `exportaciones/`. S3 no tiene plan propio, por lo que el índice lo remite a `docs/bitacoras/LOG.md`. Actualicé los enlaces internos que apuntaban a los nombres anteriores y marqué C-37 como Finalizado en el plan de cierre.
+
+**Decisión**
+
+Conservé los nombres históricos como contenido, pero normalicé las rutas para que la carpeta se lea en secuencia: S1, S1–S2, S3 sin plan propio, S4, S5, S5–S7 y S8. Los exports quedaron separados del texto operativo para preparar la reescritura de C-38 sin perder los originales.
+
+**Problema o bloqueo**
+
+No hubo bloqueo técnico. Algunos documentos históricos todavía citan nombres antiguos dentro de texto narrativo o secciones de cierre; donde no afectan enlaces, se conservaron como referencias históricas. Los enlaces activos principales ya apuntan a las rutas nuevas.
+
+**Commits**
+
+- Pendiente de commit en esta sesión. Esta tarea modificó nombres de archivos, estructura de carpetas y enlaces Markdown.
+
+---
+
+### 2026-11-18  ·  C-38 ·  5 h
+
+**Actividad**
+
+Reescribí `docs/planificacion/S8_Planificacion_Completa_C20.md`, archivo que ahora satisface C-20 y deja constancia de C-38. Normalicé los ocho sprints: S1 desde el 31/08/2026, S2 07–13/09, S3 14–27/09, S4 28/09–11/10, S5 12–25/10, S6 26/10–08/11, S7 09–15/11 y S8 16–19/11. Construí una matriz única con RF-01 a RF-14, RN-01 a RN-03 y RNF-01 a RNF-04. Incorporé la medición de C-35 de 32/32 suites, 184/184 tests y 65.77 % de sentencias, sin mover el piso ADR-008 del 60 %. Reemplazé riesgos futuros por desvíos ocurridos con estimación incorrecta, materialización y replanteo aplicado.
+
+**Decisión**
+
+C-20 pasa a Finalizado. La trazabilidad describe el estado real de implementación, no el objetivo deseado. El 786 ms medido en `/canchas/disponibilidad` se registra como evidencia de RNF-03, sin inventar un nuevo umbral. C-21, C-24, C-25, C-26 y C-27 siguen como tareas distintas y no se declaran cerradas por esta reescritura.
+
+**Problema o bloqueo**
+
+No hubo bloqueo técnico. El borrador anterior agrupaba RF-09–RF-12, omitía varios RF y confundía RN-03 con rutas/roles y RNF-03 con Docker. Se resolvió consultando el enunciado y las evidencias reales del repositorio, sin convertir las restricciones de cierre en riesgos hipotéticos.
+
+**Commits**
+
+- Pendiente de commit en esta sesión. Esta tarea modifica la planificación C-20 y los estados C-20/C-38.

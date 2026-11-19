@@ -18,7 +18,7 @@ Observación: relacionada con <ID> — <texto corto>.
 ```
 
 Excel hermano (mismas filas + columna Observación):  
-[`Plan_Cierre_y_Solapes_Trello_Observaciones.xlsx`](./Plan_Cierre_y_Solapes_Trello_Observaciones.xlsx)
+[`Plan_Cierre_y_Solapes_Trello_Observaciones.xlsx`](./exportaciones/Plan_Cierre_y_Solapes_Trello_Observaciones.xlsx)
 
 ---
 

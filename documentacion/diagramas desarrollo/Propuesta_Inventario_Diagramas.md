@@ -3,7 +3,7 @@
 **Para:** reunión de equipo / armado del PDF Unidad I  
 **Estado:** propuesta  
 **Fecha:** 2026-09-01  
-**Referencias:** Trabajo Integrador · [C4](./C4_Arquitectura_FitZone.md) · [Plan 2 semanas](../../docs/planificacion/Plan_Trabajo_2_Semanas.md) · ADR índice
+**Referencias:** Trabajo Integrador · [C4](./C4_Arquitectura_FitZone.md) · [Plan S5–S7](../../docs/planificacion/S5-S7_Plan_Trabajo_3_Semanas.md) · ADR índice
 
 ---
 
