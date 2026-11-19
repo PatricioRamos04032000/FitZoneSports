@@ -8,6 +8,17 @@ Cada versión corresponde a un paso de la línea de integración (`desarrollo`) 
 
 ## [Unreleased]
 
+## [0.52.0] - 2026-11-19
+
+### Added
+
+- Una reserva pendiente se paga desde Mis reservas. El checkout en un host público no sale de localhost (C-24).
+
+### Documentación
+
+- Plan del Anexo H, registro del tablero (C-21) y dossier en Markdown (C-25). El PDF, el tag `v1.0-entrega` y las claves no se versionan.
+- `documentacion/` no forma parte de la entrega. Los enlaces históricos quedan.
+
 ## [0.51.1] - 2026-11-18
 
 ### Fixed
@@ -468,6 +479,7 @@ Cada versión corresponde a un paso de la línea de integración (`desarrollo`) 
 
 - Plan de trabajo de las semanas 1 a 4, alineado al tablero.
 
+[0.52.0]: https://github.com/PatricioRamos04032000/FitZoneSports/releases/tag/v0.52.0
 [0.51.1]: https://github.com/PatricioRamos04032000/FitZoneSports/releases/tag/v0.51.1
 [0.51.0]: https://github.com/PatricioRamos04032000/FitZoneSports/releases/tag/v0.51.0
 [0.50.0]: https://github.com/PatricioRamos04032000/FitZoneSports/releases/tag/v0.50.0

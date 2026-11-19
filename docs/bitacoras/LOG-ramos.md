@@ -1043,3 +1043,23 @@ Ninguno.
 
 - El commit de esta rama. El tag y el hash de la portada quedan en C-26.
 
+---
+
+### 2026-11-19  ·  v0.52.0
+
+**Actividad**
+
+El paso de C-24 que trajo el pago desde Mis reservas queda en `v0.52.0`. La documentación posterior, el registro del tablero y el Markdown del dossier quedan en esa versión. Los `package.json` pasan a `0.52.0`.
+
+**Decisión**
+
+No se publican `v1.0.0` ni `v1.0-entrega`. El PDF del dossier y las claves no se versionan. `documentacion/` no entra en `master`.
+
+**Problema o bloqueo**
+
+Ninguno.
+
+**Commits**
+
+- El commit de esta versión. El tag `v0.52.0` apunta a ese commit.
+
