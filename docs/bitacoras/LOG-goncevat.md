@@ -270,7 +270,7 @@ Cerré la tarea C-08 de carga de prueba por Anexo G. Creé `backend/scripts/seed
 
 **Decisión**
 
-Preferí un script aparte (`seed:entrega`) en lugar de extender el `seed` de demo (S5, 2 sedes) para no mezclar la carga de prueba de 25 sedes con el mínimo de demo, manteniendo ambos independientes y ejecutibles por separado.
+Preferí un script aparte (`seed:entrega`) en lugar de extender el `seed` de demo (S5, 2 sedes) para no mezclar la carga de prueba de 25 sedes con el mínimo de demo, manteniendo ambos independientes y ejecutables por separado.
 
 **Problema o bloqueo**
 
@@ -306,3 +306,23 @@ Ninguno de esta cita. El commit ya estaba en `desarrollo` y no figuraba en esta 
 ## Resumen de contribución
 
 Mi aporte principal fue sostener la calidad operativa del proyecto y la trazabilidad del trabajo: validación de flujo, pruebas E2E y Postman, configuración de CI, documentación de setup, planificación y cierre de entregables. Esa combinación de tareas me dejó centrado en QA / DevOps / Mobile, con foco en que el proyecto pudiera ejecutarse, probarse y documentarse sin depender de la memoria del equipo.
+
+---
+
+### 2026-11-18  ·  C-35 ·  1 h
+
+**Actividad**
+
+Ejecuté desde `backend/` la medición completa solicitada por C-35: `npm ci`, `npm run build` y `npm run test:cov -- --runInBand`. La instalación limpia completó correctamente el alta de 637 paquetes. El build de Nest terminó sin errores y no fue necesario reparar el código. La suite terminó con 32 suites aprobadas y 184 tests aprobados; no hubo suites ni tests fallidos. El reporte global de cobertura registró **65.77 % de sentencias**, por encima del piso de **60 %** declarado en ADR-008.
+
+**Decisión**
+
+Conservo la medición como evidencia concreta de C-35 y uso el 65.77 % como porcentaje que citará C-38. No elevé el umbral del ADR-008: el resultado se contrasta con el piso vigente del 60 %, no con un nuevo objetivo del 70 %.
+
+**Problema o bloqueo**
+
+Ninguno bloqueante. `npm ci` informó 30 vulnerabilidades en el árbol de dependencias (2 bajas, 22 moderadas, 5 altas y 1 crítica) y las advertencias de scripts de instalación, pero no impidieron la instalación ni fallaron los comandos de build o pruebas. El reporte HTML queda en `backend/coverage/`; esa carpeta está ignorada por Git y el dato estable a citar es el resumen global de sentencias.
+
+**Commits**
+
+- Pendiente de commit en esta sesión. No se modificó código de backend ni la configuración de Jest.
