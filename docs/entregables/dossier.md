@@ -15,15 +15,27 @@ Trabajo Integrador Final — Caso «FitZone Sports»
 | Lucas Coquet | legajo a completar | P3. Frontend | LucasCoquet | LucasCoquet |
 | Matias Goncevat | legajo a completar | P4. Planificación, CI, seed y Docker | MatiGoncevat | MatiGoncevat |
 
-- **Fecha de armado:** 17 de noviembre de 2026.
+- **Fecha de armado:** 19 de noviembre de 2026.
 - **Fecha de entrega prevista:** 19 de noviembre de 2026, 18:00 (hora de Argentina).
 - **Repositorio:** https://github.com/PatricioRamos04032000/FitZoneSports
+- **Tablero:** [Programacion5](https://trello.com/b/eBn68vRC/programacion5)
 - **Tag:** {{TAG}}
 - **Hash:** {{HASH}}
 
 {{HASH_LEYENDA}}
 
+C-26 sustituye el tag y el hash al imprimir el PDF, cuando exista `v1.0-entrega`. Esas tres marcas quedan literales en este Markdown.
+
 El legajo de cada integrante no está en el repositorio. El campo queda escrito para completarlo antes de la subida a Moodle.
+
+### Claves del proyecto para la cátedra
+
+Estas líneas se completan a mano antes de Moodle. No van al repositorio: pegarlas acá y volver a correr `construir_dossier.py` borra lo escrito. `SEED_PASSWORD` de la plantilla Docker es `fitzone-demo` y está en el README.
+
+- `SUPABASE_URL`:
+- `SUPABASE_ANON_KEY`:
+- `SUPABASE_SERVICE_ROLE_KEY`:
+- `VITE_SUPABASE_PUBLISHABLE_KEY`:
 
 ### Índice
 
@@ -47,7 +59,7 @@ La entrega es una sola aplicación. El navegador corre React. La API es NestJS. 
 
 El precio de una reserva sale de una cadena de decoradores. Adentro está la tarifa de la cancha. Encima, el recargo si el turno cae en la franja pico de la sede. Afuera, el descuento si el cliente es socio activo. Un socio con la cuota vencida no entra en ese descuento y paga como externo. Dos pedidos del mismo turno dejan una sola reserva: la base bloquea la cancha y un índice único impide la segunda fila. Si la recepción pierde la red, el ingreso y la salida quedan en el navegador y se confirman cuando la conexión vuelve.
 
-Este dossier junta la arquitectura, las decisiones, los diagramas, los patrones, las pruebas, los requisitos no funcionales, la planificación leída al 17 de noviembre de 2026, las cuatro bitácoras y el índice de los manuales. El código todavía no está congelado.
+Este dossier junta la arquitectura, las decisiones, los diagramas, los patrones, las pruebas, los requisitos no funcionales, la planificación leída al 19 de noviembre de 2026, las cuatro bitácoras y el índice de los manuales. El código todavía no está congelado. El tag y el hash de la portada los completa C-26.
 
 ## 2. Arquitectura: diagramas C4 de los niveles 1, 2 y 3
 
@@ -104,7 +116,7 @@ El equipo eran cuatro personas, con un cuatrimestre y entregables acumulativos d
 | Microservicios (reservas, pagos y usuarios por separado) | Escalar y desplegar un módulo sin tocar el resto | RN-02 pasa a ser una saga o un 2PC; hacen falta varios deploys, red y observabilidad | El costo de operación no cierra con cuatro personas y el plazo del cuatrimestre |
 | SOA, con servicios de dominio detrás de un bus | Reutiliza capacidades si ya hay sistemas para integrar | La transacción del turno sigue distribuida, y aparece un bus que nadie más va a consumir | No había legados que integrar. El problema de la sobreventa no se simplifica |
 | Serverless y BaaS (funciones sueltas, lógica en el proveedor de la base) | Menos servidores propios y escala a cero | El límite transaccional de RN-02 queda partido entre funciones; el arranque en frío molesta en la demo; los patrones del curso no tienen un proceso donde vivir | Se descartó como estilo del sistema. Supabase queda como base e identidad, no como reemplazo del backend |
-| Monolito sin módulos | Un solo deploy y menos carpetas | No hay límite para Repository, Strategy and Observer, ni una forma clara de repartir el trabajo | Se descartó por el riesgo de acoplar todo el dominio en un solo paquete |
+| Monolito sin módulos | Un solo deploy y menos carpetas | No hay límite para Repository, Strategy y Observer, ni una forma clara de repartir el trabajo | Se descartó por el riesgo de acoplar todo el dominio en un solo paquete |
 
 #### Decisión
 
@@ -254,7 +266,7 @@ El criterio determinante fue que el perdedor reciba un rechazo de la base, no un
 
 - **Positivas:** dos reservas simultáneas del mismo turno terminan en una sola fila vigente; el perdedor obtiene `TURNO_OCUPADO`; el hold evita vender el turno mientras el pago sigue abierto; el mismo esquema (restricción en la base, la API traduce el error) se reutiliza en RN-01.
 - **Negativas:** quien llega segundo espera el commit del primero sobre esa cancha; la lógica del cupo está en SQL y hay que leerla junto con el servicio Nest; el hold depende de que la función de limpieza corra antes del insert (y de `pg_cron` si se quiere limpiar sin tráfico).
-- **Deuda asumida:** no hay prueba de dos sesiones en paralelo dentro del CI. `supabase/tests/canchas_m4.test.sql` rechaza una segunda reserva secuencial con `TURNO_OCUPADO`; se corre a mano contra un PostgreSQL local y no se ejecuta en GitHub Actions.
+- **Deuda asumida:** no hay prueba de dos sesiones en paralelo dentro del CI. La segunda reserva secuencial sí corre: el job `sql-rn02` de `.github/workflows/ci-backend.yml` ejecuta `supabase/tests/run-canchas-m4.sh` contra PostgreSQL 15 y exige el aviso `OK 3` (`TURNO_OCUPADO`). El unitario de Nest que simula el 409 se queda.
 
 #### Requisitos relacionados
 
@@ -348,7 +360,7 @@ El criterio determinante fue cubrir los cuatro roles con el código que ya estab
 
 - **Positivas:** una sola SPA para el portal y la consola; la sesión llega a las rutas protegidas sin prop drilling; no hay un segundo modelo de datos en el cliente; el bundle no arrastra un kit de UI.
 - **Negativas:** cada pantalla repite el ciclo de carga y error; no hay caché de servidor ni reintentos automáticos de lecturas; el CSS propio pide disciplina para no divergir entre pantallas.
-- **Deuda asumida:** no hay tests de componentes ni E2E de navegador (ADR-008). Si el estado de cliente deja de ser solo la sesión (por ejemplo un carrito o una cola distinta de la de acceso), se evalúa Zustand en un ADR nuevo. La dependencia `@supabase/supabase-js` figura en `frontend/package.json` y el código de `src/` no la importa.
+- **Deuda asumida:** no hay tests de componentes. El E2E de navegador es C-40 y no entra en el 60 % de ADR-008. Si el estado de cliente deja de ser solo la sesión (por ejemplo un carrito o una cola distinta de la de acceso), se evalúa Zustand en un ADR nuevo. La dependencia `@supabase/supabase-js` figura en `frontend/package.json` y el código de `src/` no la importa.
 
 #### Requisitos relacionados
 
@@ -422,7 +434,7 @@ Archivo de origen: `docs/adr/ADR-008-pruebas-cobertura.md`.
 
 La Unidad V pide una estrategia de pruebas, una pirámide y un umbral mínimo de cobertura. El reporte tiene que superar ese umbral. Hasta este registro el backend ya corría Jest y Supertest, había un script SQL de la no sobreventa, y el documento de cobertura de octubre de 2026 decía de forma explícita que no había umbral: el entregable de esa unidad era el reporte, no un porcentaje.
 
-El CI (`.github/workflows/ci-backend.yml`) ejecuta lint, tests unitarios y build del backend en pull requests hacia `desarrollo`. No publica cobertura y no corre los tests HTTP ni el script SQL. El frontend no tiene script de tests. Una parte de los controladores y repositorios sigue sin spec propio; los servicios de canchas, acceso, precios, clases, auth y la pasarela simulada sí tienen.
+El CI (`.github/workflows/ci-backend.yml`) ejecuta lint, tests unitarios y build del backend en pull requests hacia `desarrollo`. Al escribir este ADR no publicaba cobertura y no corría los tests HTTP ni el script SQL. El frontend no tiene script de tests. Una parte de los controladores y repositorios sigue sin spec propio; los servicios de canchas, acceso, precios, clases, auth y la pasarela simulada sí tienen.
 
 C-10 queda a cargo de dejar la suite en verde, publicar el reporte y hacer fallar el CI si no se llega al número de este ADR.
 
@@ -440,8 +452,8 @@ C-10 queda a cargo de dejar la suite en verde, publicar el reporte y hacer falla
 La pirámide de esta entrega es:
 
 1. **Base.** Tests unitarios Jest + `ts-jest` sobre `backend/src/**/*.spec.ts` (servicios, guards, decoradores de precio, TOTP, pasarela simulada).
-2. **Medio.** Tests HTTP con Supertest (`backend/test/**/*.e2e-spec.ts`) y el script SQL `supabase/tests/canchas_m4.test.sql`, que rechaza una segunda reserva del mismo turno. El script es secuencial, manual, contra un PostgreSQL local, y no se corre en CI.
-3. **Cima.** E2E de navegador, fuera de esta entrega.
+2. **Medio.** Tests HTTP con Supertest (`backend/test/**/*.e2e-spec.ts`) y el script SQL `supabase/tests/canchas_m4.test.sql`, que rechaza una segunda reserva del mismo turno. El script es secuencial y corre contra un PostgreSQL local. Desde C-41 el job `sql-rn02` lo ejecuta en CI y exige el aviso `OK 3`.
+3. **Cima.** Un E2E de navegador con Playwright (C-40): login del socio, reserva, pago simulado, consulta y comprobante. No entra en el 60 %.
 
 El umbral mínimo es **60 % de sentencias** en el conjunto de `collectCoverageFrom` de `backend/jest.config.ts` (código de `src/`, sin módulos, DTO, modelos, decoradores, `main.ts` ni `swagger.ts`), medido con `npm run test:cov`. Por debajo de 60 % la entrega no cumple este ADR.
 
@@ -450,8 +462,10 @@ El criterio determinante fue fijar un número que obligue a cubrir lógica de ne
 #### Consecuencias
 
 - **Positivas:** el porcentaje deja de ser opcional; la no sobreventa tiene una prueba en la base, aparte de los unitarios del servicio; el CI ya frena un pull request si los unitarios fallan.
-- **Negativas:** el 60 % no mira el frontend ni los tests HTTP; un módulo nuevo sin tests diluye el número; el script SQL queda fuera del pipeline y alguien tiene que acordarse de correrlo.
-- **Deuda asumida (cerrada en C-10):** `coverageThreshold` está declarado en `backend/jest.config.ts` (60 % de sentencias global) y el workflow `.github/workflows/ci-backend.yml` corre `npm run test:cov`, sube el reporte de cobertura como artifact y hace fallar el pull request si la medición cae bajo 60 %. No hay Vitest, Testing Library ni Playwright. El reporte HTML de cobertura no se versiona (`backend/coverage/` está ignorado por `.gitignore`).
+- **Negativas:** el 60 % no mira el frontend ni los tests HTTP; un módulo nuevo sin tests diluye el número.
+- **Deuda asumida (cerrada en C-10):** `coverageThreshold` está declarado en `backend/jest.config.ts` (60 % de sentencias global) y el workflow `.github/workflows/ci-backend.yml` corre `npm run test:cov`, sube el reporte de cobertura como artifact y hace fallar el pull request si la medición cae bajo 60 %. No hay Vitest ni Testing Library. El reporte HTML de cobertura no se versiona (`backend/coverage/` está ignorado por `.gitignore`).
+- **Deuda asumida (cerrada en C-41):** el job `sql-rn02` del mismo workflow corre `supabase/tests/run-canchas-m4.sh` y falla si la salida no contiene `OK 3`. Sigue sin haber dos sesiones en paralelo. El unitario del 409 no se reemplaza.
+- **Cima (C-40):** `cd frontend && npm run test:e2e` recorre ese caso contra Vite y Nest. El umbral sigue en 60 % de sentencias del backend.
 
 #### Requisitos relacionados
 
@@ -576,7 +590,7 @@ Decisión adicional. No reemplaza a ninguno de los diez obligatorios. Hasta el 2
 
 Había que autenticar a cuatro roles y restringir cada módulo. Supabase, ya elegido como hosting de la base, también emite la identidad (registro, login, tokens). Implementar hashing, refresh y emisión de JWT en Nest duplica ese servicio y suma riesgo.
 
-En la exposición del 28/08/2026 se discutió si el navegador habla con Supabase o si toda llamada pasa por Nest. La lógica de negocio tenía que seguir en el monolito. Un registro de hosting anterior prohibía usar Supabase Auth; ese límite quedó archivado en `historial/ADR-004-hosting-vercel-supabase.md`.
+En la exposición del 28/08/2026 se discutió si el navegador habla con Supabase o si toda llamada pasa por Nest. La lógica de negocio tenía que seguir en el monolito. Un registro de hosting anterior prohibía usar Supabase Auth; ese límite quedó archivado en `historial/ADR-004-hosting-vercel-render-supabase.md`.
 
 #### Alternativas consideradas
 
@@ -664,7 +678,7 @@ El navegador de la sede sigue encolando ingresos cuando no llega a la API. La ba
 
 *Despliegue.* Fuente editable: `docs/diagramas/fuentes/dep-despliegue.drawio`. Exportación: `docs/diagramas/img/dep-despliegue.svg`.
 
-El workflow de GitHub Actions corre sobre el backend en el pull request hacia `desarrollo`: checkout, Node 24, npm ci, oxlint, Jest y el build de Nest.
+El workflow de GitHub Actions corre sobre el pull request hacia `desarrollo`: checkout, Node 24, npm ci, oxlint, Jest con el umbral de cobertura y el build de Nest. El job `sql-rn02` corre el SQL de la no sobreventa.
 
 ![Pipeline de integración](figuras/pipe-ci.png)
 
@@ -702,19 +716,17 @@ El cobro entra por el puerto `PasarelaPago`. En esta entrega la implementación 
 
 La decisión está en ADR-008, copiado en la sección 3. El umbral de esta entrega es el 60 % de sentencias del backend, medido con `npm run test:cov` sobre el conjunto que declara `backend/jest.config.ts`.
 
-La pirámide que ese ADR fija tiene tres pisos. La base son los tests unitarios de servicios, guards, decoradores de precio, TOTP y la pasarela simulada. El medio son los tests HTTP con Supertest y el script SQL `supabase/tests/canchas_m4.test.sql`, que rechaza una segunda reserva del mismo turno. La cima, el E2E de navegador, queda fuera de este umbral. La tarjeta C-40 la retoma y todavía está por hacer.
+La pirámide que ese ADR fija tiene tres pisos. La base son los tests unitarios de servicios, guards, decoradores de precio, TOTP y la pasarela simulada. El medio son los tests HTTP con Supertest y el script SQL `supabase/tests/canchas_m4.test.sql`, que rechaza una segunda reserva del mismo turno. Desde C-41 el job `sql-rn02` lo ejecuta en CI y exige el aviso `OK 3`. La cima es el E2E de navegador de C-40: login, reserva, pago, consulta y comprobante. No entra en el 60 %.
 
-Cifra citada en el README, corrida del 17 de noviembre de 2026 en `backend/`:
+Medición de cierre, C-35, corrida del 18 de noviembre de 2026 en `backend/` con `npm run test:cov`. Es la cifra del README:
 
 | Dato | Resultado |
 |------|-----------|
-| Suites | 29, todas en verde |
-| Tests | 179, todos en verde |
-| Sentencias | 65,15 % |
+| Suites | 32, todas en verde |
+| Tests | 184, todos en verde |
+| Sentencias | 65,77 % |
 
-Esa corrida cubre los unitarios. `npm run test:e2e` ejecuta los tests HTTP y no entra en el 65,15 %. El frontend no tiene script de tests.
-
-C-35 vuelve a medir build y cobertura, y C-10 hace que el CI falle por debajo del umbral. Esas dos tarjetas siguen por hacer. Si el README cambia antes de volver a imprimir este dossier, esta tabla se actualiza con la cifra nueva. Esta tarea no volvió a correr la suite.
+Esa corrida cubre los unitarios del conjunto `collectCoverageFrom`. `npm run test:e2e` del backend ejecuta los tests HTTP y no entra en el 65,77 %. En el frontend, `npm run test:e2e` corre el caso de C-40 y tampoco mueve ese porcentaje. ADR-008 deja el umbral en `coverageThreshold` de `backend/jest.config.ts` y el workflow corre `npm run test:cov`. La fila C-10 del plan de cierre sigue en por hacer.
 
 ## 7. Cumplimiento de los requisitos no funcionales
 
@@ -730,7 +742,7 @@ ADR-010 deja un token opaco de la pasarela simulada. La fila de pago guarda ese 
 
 ### RNF-03 — La grilla de canchas se apoya en índices
 
-`GET /canchas/disponibilidad` usa los índices de la migración de canchas: `canchas_sede`, `mantenimientos_cancha_rango`, `reservas_cancha_cancha_inicio` y `reservas_cancha_perfil`. La no sobreventa es otro índice, `reservas_cancha_sin_sobreventa`, y corresponde a RN-02. Esta entrega no publica una medición en milisegundos.
+`GET /canchas/disponibilidad` usa los índices de la migración de canchas: `canchas_sede`, `mantenimientos_cancha_rango`, `reservas_cancha_cancha_inicio` y `reservas_cancha_perfil`. La no sobreventa es otro índice, `reservas_cancha_sin_sobreventa`, y corresponde a RN-02. El 18/11, con el socio del seed y la sede FitZone Central, la grilla apareció en 786 ms. No hay umbral nuevo.
 
 ### RNF-04 — Una sede nueva es un dato
 
@@ -738,7 +750,7 @@ El gerente crea y edita sedes con `POST /sedes` y `PATCH /sedes/:id` sin detener
 
 ## 8. Planificación
 
-Este capítulo está leído al 18 de noviembre de 2026, para el dossier. C-38 cerró C-20 el 18/11 reescribiendo `docs/planificacion/S8_Planificacion_Completa_C20.md` con ocho sprints y matriz única RF-01…14, RN-01…03 y RNF-01…04. El paquete anterior no era esa matriz final.
+Este capítulo está leído al 19 de noviembre de 2026, para el dossier. C-38 cerró C-20 el 18/11 reescribiendo `docs/planificacion/S8_Planificacion_Completa_C20.md` con ocho sprints y la matriz única RF-01 a RF-14, RN-01 a RN-03 y RNF-01 a RNF-04. El paquete de seguimiento que se sube aparte es `docs/planificacion/PROGV-2026-TIF-Equipo03-Planificacion.md`.
 
 Las fuentes de lo que sigue son el plan de cierre del 6 al 19 de noviembre, el plan de las semanas 1 y 2 (28 de agosto, estados alineados al tablero el 11 de noviembre), el plan de S5 a S7 y las actas del 2 de septiembre, del 13 de octubre y del 21 de octubre. Las horas de cada sesión están en las bitácoras de la sección 9.
 
@@ -752,7 +764,7 @@ Queda afuera la app móvil, la cámara y el DNI en el acceso, MercadoPago real, 
 
 Se da por existente un proyecto de Supabase con las claves fuera del repositorio. La pasarela de RF-13 es un simulacro. El comprobante de RF-14 es un PDF de la cadena, no un comprobante fiscal.
 
-La entrega cierra el 19 de noviembre de 2026 a las 18:00. El equipo es de cuatro personas. El tag anotado de esa entrega se llama `v1.0-entrega` y se crea en C-26. Hasta esa hora el hash de la portada es el del commit sobre el que se imprime este PDF.
+La entrega cierra el 19 de noviembre de 2026 a las 18:00. El equipo es de cuatro personas. El tag anotado de esa entrega se llama `v1.0-entrega` y lo crea C-26. El hash de la portada lo sustituye esa misma tarjeta, al imprimir.
 
 ### 8.3 Equipo y horas comprometidas
 
@@ -791,7 +803,7 @@ Las bitácoras a veces rotulan la misma semana con dos números de sprint, porqu
 | 5 | 19/10 al 05/11 | Reglas de canchas y API de reservas | Acta del 21/10. Período S5–S7: 27/10 al 16/11 |
 | 6 | 26/10 al 17/11 | Login, perfil, canchas, clases, QR y acceso en la UI | Plan S5–S7, actualizado el 11/11 y el 13/11 |
 | 7 | 02/11 al 09/11 | Cola de la sede y demo de canchas | C-01 cerrado el 13/11 |
-| 8 | 09/11 al 16/11 | ADR alineados, diagramas, manuales, Decorator y gestión en pantalla | C-14 el 09/11, C-28 a C-34, README el 17/11 |
+| 8 | 09/11 al 19/11 | ADR alineados, diagramas, manuales, Decorator, gestión en pantalla y medición | C-14 el 09/11, C-28 a C-34, README el 17/11, C-35 a C-41 el 18/11. El tag queda en C-26 |
 
 Dentro de los sprints 7 y 8, el plan de cierre parte el tramo final así:
 
@@ -805,7 +817,7 @@ La capacidad comprometida del tramo final es la de la tabla 8.3. Antes de eso, e
 
 ### 8.6 Trazabilidad
 
-La descripción de cada requisito es la del enunciado del trabajo integrador. El estado es el del repositorio al 17 de noviembre de 2026.
+La descripción de cada requisito es la del enunciado del trabajo integrador. El estado es el del repositorio al 19 de noviembre de 2026.
 
 | Requisito | Qué pide | Dónde está | Prueba o evidencia | Estado |
 |-----------|----------|------------|--------------------|--------|
@@ -824,47 +836,53 @@ La descripción de cada requisito es la del enunciado del trabajo integrador. El
 | RF-13 | Pasarela simulada | Puerto `PasarelaPago` y el simulacro | ADR-010 | Cerrado como simulacro |
 | RF-14 | Comprobante en PDF | PDF con cancha, horario y monto. Tarjeta C-04 | C-04 finalizada el 17/11 | Cerrado. No es factura fiscal |
 | RN-01 | Una sola sede a la vez | Clave de `presencias` y check-out. Tarjeta C-33 | Manual de usuario y ADR-007 | Cerrado con conexión. Sin red, la cola se valida al sincronizar |
-| RN-02 | Una sola reserva del turno | `FOR UPDATE` e índice único. ADR-004 | Unitario que traduce el choque a HTTP 409 | La garantía está en la base. Correr el SQL en el CI es C-41 y sigue por hacer |
+| RN-02 | Una sola reserva del turno | `FOR UPDATE` e índice único. ADR-004 | Job `sql-rn02`. La corrida local imprimió `OK 3` | C-41 cerrado. El unitario que traduce el choque a HTTP 409 se queda |
 | RN-03 | El socio en mora paga como externo | El decorador de descuento exige socio activo | Manual técnico, sección 4.1 | Cerrado en el cálculo del precio |
 | RNF-01 | Acceso con la conexión caída | Cola de la sede. ADR-003 y ADR-007. Tarjeta C-05 | Manual de usuario, pantalla Acceso | Cerrado para la sede. La app móvil queda fuera |
 | RNF-02 | Token y nada de tarjeta | ADR-010 | El ADR y el comprobante sin datos de tarjeta | Cerrado |
-| RNF-03 | Grilla apoyada en índices | Cuatro índices de la migración de canchas | Manual técnico | Índices presentes. No hay una cifra de milisegundos |
+| RNF-03 | Grilla apoyada en índices | Cuatro índices de la migración de canchas | El 18/11 la grilla de FitZone Central apareció en 786 ms | Índices presentes. No hay umbral nuevo |
 | RNF-04 | Sede nueva sin detener el sistema | `POST /sedes` y `PATCH /sedes/:id`. Tarjeta C-29 | Tests de rol citados en el cierre de C-29 | Cerrado |
 
 ### 8.7 Seguimiento
 
-No hay, en un solo cuadro, la velocidad de los ocho sprints con horas trabajadas sumadas. Esa consolidación es C-38 y sigue por hacer. Lo que sí está escrito, y ya ocurrió, es esto:
+El cuadro de horas es el de `docs/planificacion/PROGV-2026-TIF-Equipo03-Planificacion.md`. Trabajado es la suma de las marcas `· N h` de las cuatro bitácoras cuya fecha cae en el sprint. Las sesiones del 27/08 entran en el sprint 1. Las entradas del 18/11 que no traen horas no suman una cifra.
 
-| Tramo | Qué se había estimado | Qué ocurrió |
-|-------|----------------------|-------------|
-| Semanas 1 y 2 | 4 h por persona, con un estimado puntual en la semana 2 | Las tareas S1 y S2 del plan figuran finalizadas, salvo S1-T16, que el plan deja en por hacer y con la tarjeta archivada |
-| Octubre | Pantallas y API de canchas en el mismo tramo | El 13/10 las pantallas seguían con datos fijos y la API de canchas estaba en curso. El 21/10 se cerraron las reglas de precio y de reserva |
-| 6 al 13/11 | Demo de canchas en la UI | C-01 cerró el 13/11. C-02 sigue en desarrollo |
-| 9 al 17/11 | ADR, diagramas y tres manuales en T2 | ADR, diagramas, manual de usuario y manual técnico están cerrados. El manual de instalación sigue por hacer |
-| 16 al 17/11 | Congelamiento | El README de cinco pasos cerró el 17/11. El tag no existe. Docker, seed, cobertura en CI, registro del tablero y C-35 a C-41 siguen abiertos |
+| Sprint | Comprometido | Completado | Trabajado (h) | Qué ocurrió |
+|--------|--------------|------------|---------------|-------------|
+| 1 | Arquitectura inicial, roles, monorepo, C4, ADR y reuniones | Acta del 02/09 y plan de las semanas 1 y 2 | 24 | S1-T16 sigue en por hacer. Incluye 8 h del 27/08 |
+| 2 | Scaffolding Nest y React, Supabase, autenticación y esquema mínimo | Tareas S2 del plan, en finalizado | 0 | Ninguna bitácora marca horas entre el 7 y el 13/09 |
+| 3 | Membresías y clases: SQL, Repository, guards y ventanas | Migraciones y LOG | 20 | No hay plan propio de S3 |
+| 4 | Canchas, Strategy, Observer y correcciones de clases | Acta del 13/10 | 36 | El 13/10 las pantallas seguían con datos fijos y la API de canchas estaba en curso |
+| 5 | Migración M4, login real, sesión, layout e infraestructura | Acta del 21/10 y plan S5–S7 | 18,5 | El 21/10 se cerraron las reglas de precio y de reserva |
+| 6 | Perfil, pagos, APIs de canchas, cliente HTTP, CI y notificaciones | Plan S5–S7 y LOG | 60 | El plan no escribe un desvío solo de este sprint |
+| 7 | Decorator, State, Facade, demo y cierres funcionales | C-01 cerró el 13/11. Plan de cierre C-01 a C-34 | 37,5 | C-01 cerró el 13/11. C-02 sigue en desarrollo |
+| 8 | Congelamiento, Anexo G, tag, dossier y medición | C-24 y C-35 a C-41 cerrados. C-21 entregó el registro | 23 | El tag no existe y lo crea C-26. 16 h de Matias, 4 h de Bruno y 3 h de Lucas. Las entradas de Patricio del 18/11 no traen horas |
+
+El compose, el seed de 25 sedes, el manual de instalación y el umbral de Jest están en el repositorio. Las filas C-07, C-10 y C-17 del plan de cierre siguen en por hacer.
 
 ### 8.8 Desvíos
 
 La documentación de cierre y el cambio de Strategy a Decorator ocuparon el tramo del 9 al 17 de noviembre, encima de las pantallas de gestión. Varias tarjetas que el plan asignaba a Lucas las cerró Patricio: la pantalla de clases, el manual de usuario y la bitácora de Lucas. El estimado de 4 h semanales de agosto no alcanza para describir esa concentración de noviembre.
 
-El riesgo de leer RNF-01 como una app del socio sin señal se materializó como discusión de alcance. Se absorbió el 6 de noviembre, con C-05: la demo muestra la cola de la sede, y la app móvil queda fuera. El mismo corte sacó MercadoPago real, la cámara del acceso y los reportes de toda la cadena.
+El riesgo de leer RNF-01 como una app del socio sin señal se materializó como discusión de alcance. Se absorbió el 6 de noviembre, con C-05: la demo muestra la cola de la sede, y la app móvil queda fuera. El mismo corte sacó MercadoPago real, la cámara del acceso y los reportes de toda la cadena. El 18/11 la matriz quedó en una fila por requisito. RN-03 es mora con tarifa externa. RNF-03 se midió en 786 ms.
 
-Si el cuatrimestre empezara de nuevo, Docker, el seed de 25 sedes y el manual de operación entrarían junto con el primer arranque reproducible, y la matriz de requisitos se escribiría sobre el enunciado completo en lugar de esperar a C-38. El archivo `Planificacion_Completa_C20.md` no es esa matriz.
+Si el cuatrimestre empezara de nuevo, Docker, el seed de 25 sedes y el manual de operación entrarían junto con el primer arranque reproducible, y la matriz de requisitos se escribiría sobre el enunciado completo en lugar de esperar a C-38. Esa matriz es `docs/planificacion/S8_Planificacion_Completa_C20.md`.
 
 ### 8.9 Riesgos
 
-| Riesgo | Qué ocurrió al 17/11/2026 |
+| Riesgo | Qué ocurrió al 19/11/2026 |
 |--------|---------------------------|
 | La UI de canchas se queda en datos fijos | C-01 cerró el 13/11 con reserva y pago desde la pantalla |
-| RNF-01 se interpreta como app móvil | La app quedó fuera. La sede encola el ingreso y la salida |
-| La documentación llega tarde | ADR, diagramas, manual de usuario y manual técnico están cerrados. Siguen el manual de instalación y la reescritura de la planificación |
-| Una sola persona concentra Docker, seed y pruebas de cierre | C-07, C-08, C-10, C-17, C-20, C-21, C-35 y C-37 siguen por hacer, a cargo de Matias |
-| La no sobreventa se prueba tarde | ADR-004 y el índice único están. Falta correr el script SQL en el CI, que es C-41 |
-| El tag sale después de las 18:00 del 19/11 | El tag todavía no se creó. El límite sigue siendo esa hora |
+| RNF-01 se interpreta como app móvil | La app quedó fuera. La sede encola el ingreso y la salida. C-05 |
+| La documentación llega tarde | ADR, diagramas y los tres manuales están en el repo. C-38 reescribió la matriz el 18/11. La fila C-17 del plan sigue en por hacer |
+| Una sola persona concentra Docker, seed y pruebas de cierre | El compose, el seed de 25 sedes, la medición de C-35 y el manual de instalación están en el repo. C-07, C-10 y C-17 siguen en por hacer en el plan |
+| La no sobreventa se prueba tarde | C-41 corrió el SQL. La salida local fue `OK 3` |
+| El tablero no se exporta | C-21 lo armó el 19/11: `docs/planificacion/PROGV-2026-TIF-Equipo03-Registro.xlsx` |
+| El tag sale después de las 18:00 del 19/11 | El tag no existe. Lo crea C-26 |
 
 ## 9. Bitácoras individuales
 
-Cada integrante tiene su archivo. `docs/bitacoras/LOG.md` es la bitácora de equipo y no entra en esta sección. Al 17 de noviembre el plan de cierre marca C-19a, C-19b y C-19c finalizadas, y C-19d en desarrollo. Los cuatro archivos están en el repositorio y se copian acá enteros.
+Cada integrante tiene su archivo. `docs/bitacoras/LOG.md` es la bitácora de equipo y no entra en esta sección. Al 19 de noviembre el plan de cierre marca C-19 como parcial: C-19a, C-19b y C-19c finalizadas, y C-19d en desarrollo. Los cuatro archivos están en el repositorio y se copian acá enteros, una vez.
 
 Archivo de origen: `docs/bitacoras/LOG-ramos.md`.
 
@@ -926,25 +944,1298 @@ En una lectura previa anoté que el docente pedía la autenticación armada por 
 
 ---
 
-#### Sprint 2 — Unidad I — Semana del 2026-09-07
+#### Sprint 2 — Unidad I — Semana del 2026-08-31
 
-##### 2026-09-09  ·  2 h
+##### 2026-09-04  ·  3 h
 
 **Actividad**
 
-Revisé el plan de trabajo y el LOG de equipo. Actualicé el estado de las tareas y dejé asentados los avances y bloqueos en la planificación. También registré la reunión de seguimiento del 07/09 (`Acta_Reunion_2026-09-07_Semana2.md`).
+Registré el cierre de la reunión de la semana 1 y la aclaración del docente sobre la entrega de C4 y ADR (`eb8150d`). Actualicé el C4 (`da9e335`) y separé el alcance offline: el RNF-01 de esta entrega es el check-in de sede, y el QR offline del teléfono queda para la app móvil (`92c3705`).
 
 **Decisión**
 
-El plan de trabajo y el LOG deben reflejar el estado real del proyecto, con tareas en curso, finalizadas y bloqueadas. Así, se evita perder contexto y se facilita la coordinación del equipo.
+C4 y ADR se entregan con el Demo Day y se actualizan mientras se desarrolla. No bloquean el código de Unidad II. El diagrama relacional y el de clases entran al paquete cuando el código los justifica.
 
 **Problema o bloqueo**
 
-Algunas tareas no tenían un estado claro o estaban duplicadas en el tablero. Era necesario unificar la información y asegurar que todos los integrantes tuvieran visibilidad del estado del proyecto.
+El diagrama de contexto todavía describía el offline del teléfono del socio como parte del alcance inmediato. Lo alineé al check-in de sede en `92c3705`.
 
 **Commits**
 
-- _Sin commits propios en el repositorio durante esta semana: el estado quedó en [LOG.md](./LOG.md) y en [Acta_Reunion_2026-09-07_Semana2.md](../planificacion/Acta_Reunion_2026-09-07_Semana2.md)._
+- `eb8150d` Record Semana 1 meeting outcomes and teacher guidance on C4/ADR delivery.
+- `da9e335` Update C4_Arquitectura_FitZone.md
+- `92c3705` Align C4 offline scope with sede check-in (RNF-01) vs mobile QR.
+
+---
+
+#### Sprint 2 — Unidad I — Semana del 2026-09-14
+
+##### 2026-09-19  ·  4 h
+
+**Actividad**
+
+Escribí la propuesta de modelo entidad-relación (`documentacion/Propuesta_ER_FitZone.md`, 341 líneas en el diff) y ajusté el inventario de diagramas. El relacional queda como documento vivo, en la misma línea que la aclaración del 4/09: entra al paquete de arquitectura a medida que el código lo sostiene, y la entrega formal es al final del curso.
+
+**Decisión**
+
+El DER de esta fecha es una propuesta para seguir trabajando, no el PDF cerrado de Unidad I.
+
+**Problema o bloqueo**
+
+El commit quedó con mensaje `a`. El contenido está en el diff: la propuesta de ER y el retoque del inventario. El mensaje no describe ese trabajo.
+
+**Commits**
+
+- `8bb8586` a
+
+---
+
+#### Sprint 2 — Unidad II — Semana del 2026-09-21
+
+##### 2026-09-26  ·  5 h
+
+**Actividad**
+
+Dejé el backend con un primer contrato verificable. `GET /health` y Swagger en `/api/docs` (`ae98766`, integrado en el PR #2). El guard JWT valida el access token de Supabase Auth y protege las rutas que lo declaran (`1e69752`, PR #3). El guard no emite sesión propia: acepta o rechaza el token que ya emitió Supabase.
+
+**Decisión**
+
+La sesión de identidad sale de Supabase Auth. Nest solo verifica el JWT y, más adelante, el rol de negocio. Quedó registrado en [ADR-011](../adr/ADR-011-bff-supabase-auth.md).
+
+**Problema o bloqueo**
+
+Entre el C4 del 4/09 y este primer endpoint pasaron tres semanas. La documentación de arquitectura avanzó sola y el monolito todavía no levantaba un módulo. A partir de esta sesión el criterio fue tener un endpoint mergeado por cada bloque de docs.
+
+**Commits**
+
+- `ae98766` S2-T08: endpoint GET /health y Swagger en /api/docs
+- `b8507eb` Merge pull request #2 from PatricioRamos04032000/S2-T08
+- `1e69752` S2-T07: Guard JWT que valida tokens de Supabase Auth
+- `fdf5df6` Merge pull request #3 from PatricioRamos04032000/S2-T07
+
+---
+
+#### Sprint 3 — Unidad II — Semana del 2026-10-05
+
+##### 2026-10-05  ·  8 h
+
+**Actividad**
+
+El 1/10 actualicé el plan de dos semanas contra el tablero (`c544f93`, PR #7), archivé el plan de las semanas 1 y 2 con los estados de Trello (`fef3dbf`, PR #8) y mergeé `master` en `desarrollo` para adoptar el plan de las semanas 3 y 4 (`2c2a542`).
+
+El 5/10 documenté login, health y sedes en Swagger (`6138a83`, PR #9). Diseñé el SQL de membresías y clases (`975e367`) y registré la ejecución de esa migración y el seed en Supabase (`7344be3`, PR #10). Pasé `GET /sedes` por una plantilla de Repository (`a431a94`, PR #11), marqué S3-T06, S3-T11, S3-T01 y S2-T13 como finalizadas (`f97e484`, PR #12) y configuré CORS con `CORS_ORIGIN` (`f0b847b`, PR #13).
+
+**Decisión**
+
+`GET /sedes` deja de armar la consulta en el controlador y pasa por Repository. Esa plantilla es la que después usaron los otros módulos. El acceso sigue siendo la API de Supabase, como en [ADR-005](../adr/ADR-005-backend-nestjs-ioc-datos.md).
+
+**Problema o bloqueo**
+
+El SQL de membresías y clases no alcanzaba con commitear el archivo. La cuenta de Supabase estaba a cargo de Lucas, y la migración seguía sin ejecutarse en el proyecto remoto. La cerré el mismo día, cuando registré la corrida y el seed en `7344be3`.
+
+**Commits**
+
+- `c544f93` Actualiza estado del plan de 2 semanas segun tablero Trello (2026-10-01)
+- `059c2ea` Merge pull request #7 from PatricioRamos04032000/actualiza-estado-plan
+- `fef3dbf` Agrega plan historico de semanas 1 y 2 con estados de Trello (2026-10-01)
+- `2bf612d` Merge pull request #8 from PatricioRamos04032000/plan-estado-a-master
+- `2c2a542` Merge master en desarrollo: adopta plan de semanas 3 y 4
+- `6138a83` S2-T13: documenta login, health y sedes en Swagger
+- `741cb1a` Merge pull request #9 from PatricioRamos04032000/S2-T13
+- `975e367` S3-T06: diseno de BD para membresias y clases con migracion SQL
+- `7344be3` S3-T06: registra ejecucion de la migracion y seed en Supabase
+- `bab924c` Merge pull request #10 from PatricioRamos04032000/S3-T06
+- `a431a94` S3-T11: plantilla del patron Repository y refactor de GET /sedes
+- `aea840f` Merge pull request #11 from PatricioRamos04032000/S3-T11
+- `f97e484` Actualiza estados del plan: S3-T06, S3-T11, S3-T01 y S2-T13 finalizadas (2026-10-05)
+- `7236b8c` Merge pull request #12 from PatricioRamos04032000/actualiza-plan-s3
+- `f0b847b` S3-T01: configura CORS con CORS_ORIGIN
+- `0bbeb6f` Merge pull request #13 from PatricioRamos04032000/S3-T01
+
+---
+
+#### Sprint 4 — Unidad III — Semana del 2026-10-05
+
+##### 2026-10-06  ·  8 h
+
+**Actividad**
+
+Día de patrones y de reglas de precio. Implementé el Observer de la lista de espera para avisar lugares liberados (`7510143`, PR #14) y, en un commit aparte, lo pasé a `@nestjs/event-emitter` (`762a14c`, PR #19). Justifiqué esa elección contra la diapositiva 37 (`eb6e82c`, PR #21) y dejé la justificación general de patrones de la unidad (`71b869c`) más las notas de la clase 1 (`34ae6d1`, PR #20).
+
+En precios dejé la propuesta de reglas (`e6bd7ae`), el horario pico por sede (`0cfa7c7`), el descuento de socio para toda la cadena (`3334fa0`), el límite de que el gerente edita el pico solo de sus sedes (`2f543d3`) y el alta del descuento por el administrador (`2e4085a`, PR #16). Alineé los roles con la consigna: A3 `admin_sede` y A4 gerente (`f471790`, PR #17). El guard `@RequiereRol` valida `perfiles.rol` y `/auth/me` devuelve ese rol (`3cab665`, PR #18).
+
+El login dejó de usar el cliente Supabase compartido (`50de31c`, PR #15).
+
+**Decisión**
+
+La lista de espera publica el evento con `@nestjs/event-emitter` y los suscriptores viven en el módulo de notificaciones. Descarté un `Subject` propio: el emisor de Nest ya da el desacople y se testea con el módulo de testing del framework.
+
+**Problema o bloqueo**
+
+El login escribía la sesión sobre el mismo cliente Supabase que usaban el resto de las consultas. Una sesión de socio contaminaba la llamada siguiente. Lo separé con un cliente dedicado al login en `50de31c`.
+
+**Commits**
+
+- `7510143` S4-T02: patron Observer para notificar lugares liberados de la lista de espera
+- `70e8c4b` Merge pull request #14 from PatricioRamos04032000/S4-T02
+- `50de31c` Fix: el login usa un cliente Supabase propio y no contamina el cliente compartido
+- `7bd0918` Merge pull request #15 from PatricioRamos04032000/fix-login-cliente-compartido
+- `e6bd7ae` S4-T09: propuesta de reglas de precio de canchas y decisiones pendientes
+- `0cfa7c7` S4-T09: horario pico configurable por sede (recargo, horario y dias)
+- `3334fa0` S4-T09: descuento de socio configurable para toda la cadena
+- `2f543d3` S4-T09: el gerente edita la configuracion pico solo de sus sedes
+- `2e4085a` S4-T09: rol administrador edita el descuento de socio de la cadena
+- `07a480a` Merge pull request #16 from PatricioRamos04032000/S4-T09
+- `f471790` S4-T09: alinea roles con la consigna (A3 admin_sede, A4 gerente)
+- `4956de5` Merge pull request #17 from PatricioRamos04032000/S4-T09
+- `3cab665` Guard de roles: @RequiereRol valida perfiles.rol y /auth/me devuelve el rol
+- `b45297f` Merge pull request #18 from PatricioRamos04032000/guard-roles
+- `71b869c` S4-T05: justificacion de patrones de la Unidad III
+- `762a14c` Observer de lista de espera con @nestjs/event-emitter en lugar del Subject propio
+- `63984cd` Merge pull request #19 from PatricioRamos04032000/S4-T02-event-emitter
+- `34ae6d1` Agrega la clase 1 de patrones (Unidad III) y notas frente a FitZone
+- `cf361fb` Merge pull request #20 from PatricioRamos04032000/S4-T05
+- `eb6e82c` S4-T05: justificacion del Observer con @nestjs/event-emitter y decisiones de la diapositiva 37
+- `379fd62` Merge pull request #21 from PatricioRamos04032000/S4-T05-observer-event-emitter
+
+---
+
+#### Sprint 4 — Unidad III — Semana del 2026-10-12
+
+##### 2026-10-15  ·  4 h
+
+**Actividad**
+
+El 13/10 escribí el panorama del desarrollo, la estructura del backend y las correcciones de Membresías y Clases (`7745601`, PR #23), y el acta de la reunión de seguimiento (`8eef901`, PR #24). El 15 cerré la confección final de la justificación de patrones (`7cf3115`, PR #25), con el Observer ya apoyado en la diapositiva 37 desde el 6/10.
+
+**Decisión**
+
+La justificación de Unidad III queda cerrada en el documento de patrones, con el Observer sobre `@nestjs/event-emitter` y la referencia a la diapositiva 37. No reabro el Subject propio.
+
+**Problema o bloqueo**
+
+El backend ya tenía Repository, Observer y las reglas de precio, y el frontend seguía en scaffolding. El panorama del 13/10 lo deja asentado: la demo de patrones se podía mostrar por API, y la pantalla todavía no.
+
+**Commits**
+
+- `7745601` Docs: panorama del desarrollo, estructura del backend y correcciones de Membresias y Clases
+- `53a912b` Merge pull request #23 from PatricioRamos04032000/docs-panorama-y-correcciones
+- `8eef901` Acta de la reunion de seguimiento del 2026-10-13
+- `67ab971` Merge pull request #24 from PatricioRamos04032000/acta-reunion-2026-10-13
+- `7cf3115` S4-T05: confeccion final de la justificacion de patrones
+- `1f25a41` Merge pull request #25 from PatricioRamos04032000/S4-T05-confeccion-final
+
+---
+
+#### Sprint 5 — Unidad III — Semana del 2026-10-19
+
+##### 2026-10-21  ·  4 h
+
+**Actividad**
+
+Extendí la edición de precios: gerente y recepcionista editan la configuración, y una reserva de cancha se puede tomar hasta un mes hacia adelante (`9fb6aa7`, PR #26). Dejé el acta de la reunión de seguimiento de ese día (`3cf3658`, PR #27).
+
+**Decisión**
+
+El pico se configura por sede y lo edita el gerente de esas sedes. El descuento de socio es uno solo para la cadena. La ventana de reserva de cancha queda en un mes.
+
+**Problema o bloqueo**
+
+La ventana de reserva que había quedado implementada era corta para el ensayo del guion: no alcanzaba para mostrar una reserva hacia adelante sin chocar con el cierre del día. La llevé a un mes en `9fb6aa7`.
+
+**Commits**
+
+- `9fb6aa7` S4-T09: gerente y recepcionista editan precios, y las reservas de cancha llegan hasta un mes.
+- `0256a64` Merge pull request #26 from PatricioRamos04032000/S4-T09
+- `3cf3658` Acta de la reunion de seguimiento del 2026-10-21.
+- `6a026e8` Merge pull request #27 from PatricioRamos04032000/acta-reunion-2026-10-21
+
+---
+
+#### Sprint 5 — Unidad III — Semana del 2026-10-26
+
+##### 2026-10-27  ·  7 h
+
+**Actividad**
+
+El 26 dejé la propuesta de plan de tres semanas para llegar al demo y a la rúbrica (`ca0c3d6`, PR #28). El 27 versioné en el repo la migración Fase A de sedes, perfiles y membresías (`bac116f`, PR #29) y la de canchas, reservas y config de precios (`482d5ae`, PR #30), y agregué el seed mínimo de demo con `npm run seed` (`2d8b4f8`, PR #31).
+
+El mismo día cerré el laboratorio de Unidad III: caracterización de precios, planilla de olores y la nota de que la consigna de refactor en seis commits no aplica (`a1b5223`, PR #32). Los tests de caracterización quedaron en `backend/src/canchas/precios/precios.service.spec.ts`.
+
+**Decisión**
+
+El SQL de sedes, perfiles, membresías, canchas y precios vive en migraciones del repositorio, no solo en el historial de Supabase. El laboratorio de olores no reescribe el cálculo de precio: Strategy ya era el diseño.
+
+**Problema o bloqueo**
+
+La consigna 3 pedía un replay de seis commits para reemplazar un condicional por polimorfismo. En el repo no había un `if`/`switch` de precios del cual partir. Bruno ya había dejado el patrón en `71c993d` (S4-T01). Reconstruir un «antes» falso para cumplir la consigna hubiera inventado historia. Lo documenté en `a1b5223` y la evidencia del cálculo quedó en los tests de caracterización.
+
+**Commits**
+
+- `ca0c3d6` Propuesta de plan de 3 semanas para llegar al demo y a la rubrica.
+- `97e4056` Merge pull request #28 from PatricioRamos04032000/propuesta-3-semanas
+- `bac116f` S5-T01: versiona la migracion Fase A (sedes, perfiles, membresias).
+- `10fa5a2` Merge pull request #29 from PatricioRamos04032000/S5-T01
+- `482d5ae` S5-T02: migracion M4 de canchas, reservas y config de precios.
+- `6a4050b` Merge pull request #30 from PatricioRamos04032000/S5-T02
+- `2d8b4f8` S5: seed mínimo de demo con npm run seed.
+- `c92eb30` Merge pull request #31 from PatricioRamos04032000/S3-T03
+- `a1b5223` Lab Unidad III: olores, caracterizacion de precios y docs pendientes.
+- `482e8c8` Merge pull request #32 from PatricioRamos04032000/lab-iii-olores-caracterizacion-docs
+
+---
+
+#### Sprint 6 — Unidad IV — Semana del 2026-10-26
+
+##### 2026-10-29  ·  6 h
+
+**Actividad**
+
+El 28 expuse `GET /perfiles/me` y `PATCH /perfiles/me` leyendo la identidad del JWT (`599e207`, PR #33) y versioné la migración del módulo de pagos, con la nota del Adapter (`0622c52`, PR #34). El 29 escribí la guía de tests, la sección de demo del README y las exclusiones de Jest para el reporte de cobertura (`49cacd8`, PR #35).
+
+**Decisión**
+
+El perfil del socio no recibe el id por query ni por body. Sale del token que ya validó el guard. El pago simulado entra como módulo propio (M5), con la migración en el repo.
+
+**Problema o bloqueo**
+
+El estado global de sesión del frontend seguía sin un dueño cerrado: el perfil ya se podía leer desde el JWT en la API, y el cliente todavía no tenía un lugar único para guardarlo ni para reaccionar a un 401. Ese hueco lo tomé el 7/11 (`06c0287`).
+
+**Commits**
+
+- `599e207` S6-T01: GET/PATCH /perfiles/me desde el JWT.
+- `843c668` Merge pull request #33 from PatricioRamos04032000/S6-T01
+- `0622c52` S6-T03: migracion M5 de pagos y nota Adapter.
+- `bcc20f1` Merge pull request #34 from PatricioRamos04032000/S6-T03
+- `49cacd8` Docs y coverage: guía de tests, demo en README y exclusiones de Jest.
+- `bef300b` Merge pull request #35 from PatricioRamos04032000/docs-guia-tests-readme
+
+---
+
+#### Sprint 6 — Unidad V — Semana del 2026-10-26
+
+##### 2026-11-01  ·  8 h
+
+**Actividad**
+
+El 31/10 cerré el alta de socio con `POST /auth/register` y confirmación de email (`1c76b98`, PR #36). Saqué el probe de signup duplicado que Sonar marcaba (`87329f6`, PR #37). La reserva de cancha pasó a Facade y State, con Strategy ya en uso para el precio (`7d1a4c0`); después bajé la duplicación de los tests de State y alineé el HTTP y el Swagger de cancelar (`9c8df29`, PR #38).
+
+El 1/11 dejé la pasarela simulada: checkout con forma de Mercado Pago y la reserva en hold mientras el pago está pendiente (`d3f1985`). La CI pasó a Node 24 (`5ee4c9d`). Los dos entran en el PR #40. El token de la pasarela no guarda la tarjeta; el criterio vigente está en [ADR-010](../adr/ADR-010-tokenizacion-medios-de-pago.md).
+
+**Decisión**
+
+Reservar cancha entra por un Facade y el estado de la reserva lo maneja State. El precio lo sigue calculando Strategy. La CI corre en Node 24 porque Jest con los módulos ESM de Nest no levantaba la suite en la versión anterior.
+
+**Problema o bloqueo**
+
+Sonar marcaba un probe de signup duplicado en los tests de registro. Lo eliminé en `87329f6` para que el análisis dejara de señalar el mismo alta dos veces. El otro freno fue la CI: la suite fallaba por la combinación Jest y ESM, y se resolvió fijando Node 24 en `5ee4c9d`.
+
+**Commits**
+
+- `1c76b98` S6-T02: POST /auth/register con confirmación de email.
+- `3ecfb06` Merge pull request #36 from PatricioRamos04032000/S6-T02
+- `87329f6` Remove probe de signup duplicado marcado por Sonar.
+- `b8366ea` Merge pull request #37 from PatricioRamos04032000/s6t2-sonarfix
+- `7d1a4c0` S7-T01: Facade y State para reservar cancha; Strategy en uso.
+- `9c8df29` S7-T01: baja duplicacion en tests de State y alinea HTTP/Swagger de cancelar.
+- `5bfad14` Merge pull request #38 from PatricioRamos04032000/S7-T01
+- `d3f1985` S7-T02: pasarela simulada con checkout estilo MercadoPago y hold de pendiente.
+- `5ee4c9d` fix(ci): usar Node 24 para tests Jest con Nest ESM.
+- `132ee73` Merge pull request #40 from PatricioRamos04032000/S7-T02
+
+---
+
+#### Sprint 7 — Unidad V y VI — Semana del 2026-11-02
+
+##### 2026-11-03  ·  5 h
+
+**Actividad**
+
+El 2/11 restauré los ADR 002 a 004 como reemplazados y sumé 008 a 010 en la numeración que el equipo usaba hasta entonces (`e8ff826`, PR #41). El 3 documenté la Fase 0 de acceso M2: TOTP, cola offline y RN-01 (`0446367`, PR #42), publiqué el changelog en la versión 0.23.0 (`9d4b977`) y cerré los avisos de Sonar de registro, perfil y sesión (`8d51afa`).
+
+**Decisión**
+
+La app nativa no entra en el tag del 19/11. El offline que esta entrega demuestra es la cola del terminal de sede, documentada en [ADR-003](../adr/ADR-003-estrategia-offline-acceso.md) y [ADR-007](../adr/ADR-007-acceso-totp-cola-offline.md). El QR del teléfono queda en la web responsive.
+
+**Problema o bloqueo**
+
+RNF-01, leído como «el socio muestra un QR válido sin señal», pide la app de Unidad VI. Esa app no está construida y no entra en los días que quedan hasta el tag. Lo que sí se puede mostrar es la sede validando con la cola local. Lo dejé escrito en la Fase 0 (`0446367`) para no prometer el teléfono offline en la defensa.
+
+**Commits**
+
+- `e8ff826` docs(adr): restaurar 002-004 como reemplazados y agregar 008-010
+- `9048208` Merge pull request #41 from PatricioRamos04032000/fix-adrs
+- `0446367` S8-T1: documenta Fase 0 de acceso M2 (TOTP, cola offline y RN-01).
+- `f4d2012` Merge pull request #42 from PatricioRamos04032000/s8t1
+- `9d4b977` chore: publica el changelog y fija la version 0.23.0
+- `8d51afa` fix: cierra los avisos de Sonar del registro, el perfil y la sesion
+
+---
+
+#### Sprint 7 — Cierre — Semana del 2026-11-02
+
+##### 2026-11-06  ·  4 h
+
+**Actividad**
+
+Escribí el plan de cierre del Equipo 03, del 6 al 19/11, con los tres tramos, el backlog C-01 a C-27 y el corte explícito de lo que no entra (`4ffb99b`, PR #48). El criterio de orden quedó en el propio plan: primero la admisibilidad del §6.1 y la demo de canchas en la UI.
+
+**Decisión**
+
+Si el tiempo no alcanza, se corta lo de la sección 7 del plan (app nativa, Mercado Pago real, reportes de gerente) y se sostiene lo que bloquea la devolución: bitácoras, ADR, diagramas, manuales, planificación y el tag.
+
+**Problema o bloqueo**
+
+El tablero ya tenía tarjetas S5–S7 que nombraban el mismo trabajo que las tarjetas C del cierre. Borrarlas perdía la historia del cuatrimestre. Las dejé y las crucé en el documento de observaciones, que commiteé al día siguiente (`ecb45cd`).
+
+**Commits**
+
+- `4ffb99b` docs: plan de cierre Equipo 03 para la entrega del 19/11.
+- `4a6247b` Merge pull request #48 from PatricioRamos04032000/docs/plan-cierre-entrega-6-19-nov
+
+---
+
+#### Sprint 8 — Unidad IV y Cierre — Semana del 2026-11-02
+
+##### 2026-11-08  ·  6 h
+
+**Actividad**
+
+El 7/11 crucé las tarjetas de Trello que se solapan con el plan de cierre (`ecb45cd`, PR #50). Tomé el estado global de sesión que estaba a cargo de Lucas (`06c0287`) y, en el commit siguiente, tipé el rol de FitZone y cerré la sesión cuando una llamada autenticada responde 401 (`d0b9cd4`, PR #51). Protegí las pantallas básicas de Clases y Notificaciones (`a843b33`, PR #52) y extraje Botón, Input y Spinner para reutilizarlos en el login (`618d48e`, PR #53).
+
+El 8/11 cerré el ensayo corto del guion de demo (`073be5a`, PR #54). El flujo API más UI recorrió login, membresía, reserva y acceso sin un error que cortara el relato.
+
+**Decisión**
+
+El estado global de sesión pasa a mi cargo. El rol viaja tipado desde `/auth/me`, y un 401 limpia la sesión en el cliente. El criterio de estado del frontend queda en [ADR-006](../adr/ADR-006-frontend-react-estado.md).
+
+**Problema o bloqueo**
+
+El ensayo del 8/11 no encontró un corte de flujo, y sí dejó pulido visual pendiente (espaciados, estados vacíos, lectura en teléfono). Lo anoté fuera de C-06 para no reabrir el guion por css. El responsive de Login, Canchas y Mi QR sigue en C-03. **Actualización 2026-11-13:** el pulido del flujo demo (menú, Acceso, Presencias) quedó cerrado en S7-T08; ver entrada de ese día.
+
+**Commits**
+
+- `ecb45cd` docs: relaciona tarjetas Trello solapadas con el plan de cierre.
+- `88a9a89` Merge pull request #50 from PatricioRamos04032000/docs/actualizar-estado-planes
+- `06c0287` S4-T04: deja constancia de que Patricio toma el estado global, antes a cargo de Lucas.
+- `d0b9cd4` S4-T04: tipa el rol de FitZone y cierra la sesión cuando una llamada autenticada responde 401.
+- `0002fe3` Merge pull request #51 from PatricioRamos04032000/S4-T04
+- `a843b33` S5-T08: protege las pantallas básicas de Clases y Notificaciones.
+- `a897b09` Merge pull request #52 from PatricioRamos04032000/S5-T08
+- `618d48e` S5-T09: extrae Botón, Input y Spinner para reutilizarlos en el login.
+- `f7c9ca1` Merge pull request #53 from PatricioRamos04032000/S5-T09
+- `073be5a` C-06: cierra el ensayo del guion de demo y deja el pulido visual anotado.
+- `118b591` Merge pull request #54 from PatricioRamos04032000/c-06
+
+---
+
+#### Sprint 8 — Cierre — Semana del 2026-11-09
+
+##### 2026-11-11  ·  19 h
+
+**Actividad**
+
+El 9/11 reorganicé el repositorio a la estructura del punto 4 de los lineamientos (`6f5d1c1`, PR #55, C-13, 3 h) y reescribí los diez ADR obligatorios con la numeración de la cátedra (`d6f2945`, PR #56, C-14, 6 h). El texto anterior no se reescribió: quedó en `docs/adr/historial/`, y el mapa de números viejos a números nuevos está en [docs/adr/README.md](../adr/README.md).
+
+El 11/11 agregué los diagramas de la entrega, con fuente editable y exportación (`886c66a`, PR #57, C-15, 6 h de mi parte) y el manual técnico, con los dos casos de extensión: canchas de tenis y una estrategia de precio nueva (`6c0b540`, PR #58, C-18, 4 h).
+
+**Decisión**
+
+Los ADR pasan a la lista obligatoria del §5.2.1. Un número viejo no se recicla encima del texto anterior: el histórico queda congelado y la decisión vigente es la del índice nuevo. El puente para las citas de las bitácoras y las notas de unidad es [documentacion/ADR_Indice.md](../../documentacion/ADR_Indice.md).
+
+**Problema o bloqueo**
+
+Bitácora de equipo, C4 y notas de unidad citan ADR-005 como BFF y ADR-006 como API sin ORM. Desde el 9/11 esos temas son ADR-011 y ADR-005. Borrar las citas viejas hubiera falsificado lo que el equipo escribió en agosto. Las dejé y publiqué la tabla de equivalencias en el índice de ADR.
+
+**Commits**
+
+- `6f5d1c1` C-13: alinea docs, backend y frontend con la estructura del punto 4.
+- `1436c8a` Merge pull request #55 from PatricioRamos04032000/c-13
+- `d6f2945` C-14: registra los diez ADR obligatorios con la numeración de la cátedra.
+- `7789c40` Merge pull request #56 from PatricioRamos04032000/c-14
+- `886c66a` C-15: agrega los diagramas de la entrega.
+- `601b986` Merge pull request #57 from PatricioRamos04032000/c-15
+- `6c0b540` C-18: escribe el manual técnico con los casos de tenis y de una estrategia de precio.
+- `e84e226` Merge pull request #58 from PatricioRamos04032000/c-18
+- `6e1e620` Reunión 2026-11-11: alinea los planes al tablero y anota el trabajo en curso.
+
+---
+
+#### Sprint 8 — Cierre — Semana del 2026-11-09
+
+##### 2026-11-13  ·  3 h
+
+**Actividad**
+
+Tomé y cerré la pantalla Clases que estaba a cargo de Lucas (S7-T06 / C-11). Cableé el cliente API y la UI `/clases`: listar con cupo por sede, inscribir, cancelar, y lista de espera (anotarse, confirmar lugar notificado, retirar). Corregí el contraste del desplegable de sedes (letra invisible en modo oscuro del SO). Dejé constancia del cierre en el LOG de equipo, Relacion_Trello, Plan_Cierre, Propuesta_Continuacion y el guion C-06 (Clases disponible, fuera del recorrido de 5 min).
+
+**Decisión**
+
+La tarjeta sigue cruzada con C-11/S7-T06, pero el responsable de cierre pasa a ser Patricio. El alcance no se cortó al mínimo de C-11: se entregó S7-T06 completo (cancelar + lista de espera en UI) porque la API ya estaba lista.
+
+**Problema o bloqueo**
+
+Las clases del seed tenían fechas viejas y fallaban la ventana D5 de 48 h al inscribir. Para el smoke usé clases futuras temporales en Supabase; el listado por sede ya respondía bien con el usuario seed.
+
+**Commits**
+
+- `2610431` S7-T06/C-11: pantalla Clases real; Patricio toma y cierra la tarjeta de Lucas.
+- `21fee4a` fix(clases): marca promesas de useEffect con void para Sonar S9383.
+
+---
+
+#### Sprint 8 — Cierre — Semana del 2026-11-09
+
+##### 2026-11-13  ·  S7-T08 (~2 h)
+
+**Actividad**
+
+Tomé y cerré el pulido del flujo demo que estaba a cargo de Lucas (S7-T08). Alineé el menú a la sesión y al rol (Dashboard solo staff), saqué la nav duplicada del Home, humanicé Acceso (labels y errores de mostrador) y enriquecí Presencias con nombre/apellido desde el backend. En Canchas dejé el nombre de cancha en la confirmación. Subí el contraste de títulos en Inicio, Perfil y Acceso. Sin sesión, `/` redirige a `/login` y el Layout/Login/Signup ya no muestran Inicio, Iniciar sesión ni «Volver al inicio» de más. Actualicé guion C-06, README §6, LOG de equipo y planes de cierre.
+
+**Decisión**
+
+S7-T08 cierra el pase “solo UI” del Demo Day. El rediseño de grilla/calendario de Canchas, Mis reservas y el check-out en Acceso quedan para otra rama.
+
+**Problema o bloqueo**
+
+Ninguno bloqueante para el guion de 5 min. Notificaciones sigue stub (C-12). Check-out sigue por Swagger.
+
+**Commits**
+
+- `0e82978` S7-T08: pulido del flujo demo; Patricio toma y cierra la tarjeta de Lucas.
+
+---
+
+#### Sprint 8 — Cierre — Semana del 2026-11-09
+
+##### 2026-11-13  ·  C-28 (~6 h)
+
+**Actividad**
+
+Cerré la serie C-28 (precios Strategy → Decorator GoF + UML Nest + docs). Código: `PricingComponent` / `PricingDecorator`, lista `PRICING_DECORATORS`, cadena `Member(Peak(Standard))`, specs con los mismos montos. Diagramas: UML Nest multipágina (incl. Repository), secuencia reserva/pago y C4-3 sin etiqueta Strategy. Docs: manual §4.1/7.2, Contexto ADR-004/005 y wording ADR-008 (sin tocar Decisiones), justificación Unidad III con Decorator implementado.
+
+**Decisión**
+
+Para RF-11 se elige **Decorator** y se descarta Strategy como forma del precio acumulado (las reglas se combinan). La selección queda en la justificación de patrones y en el manual técnico, no en un ADR nuevo: ninguno de los diez obligatorios decidía el patrón de precios.
+
+**Problema o bloqueo**
+
+Sin CLI de draw.io/mermaid local fiable: SVG de UML vía script Python; secuencia y C4-3 vía Kroki.
+
+**Commits**
+
+- `b40f866` C-28.1: registra C-28 (Decorator precios + UML Nest) en el plan de cierre.
+- `be86094` C-28.2: reemplaza Strategy de precios por Decorator GoF.
+- `bc5a56e` C-28.3: diagrama de clases Nest completo con Decorator.
+- `214a167` C-28.3: agrega diagrama Repository y regenera el SVG.
+- `4f41dc1` C-28.4: actualiza secuencia y C4-3 de precios a Decorator.
+- `995dccc` C-28.5: alinea docs y bitácora al Decorator de precios.
+
+##### 2026-11-14  ·  C-29 (~3 h)
+
+**Actividad**
+
+Alta y edición de sedes para el gerente (A4, RNF-04), en la rama `C-29`. Checks de nombre y aforo, `POST /sedes` y `PATCH /sedes/:id` solo con rol gerente, pantalla `/sedes`, unitarios y e2e de rol. El insert sigue dejando que el trigger cree `configuracion_pico`.
+
+**Decisión**
+
+No hay ADR nuevo. RNF-04 ya está aceptado en ADR-001, ADR-002 y ADR-009: una sede es una fila, no un deploy. La baja es `activa = false` porque borrar la sede cascada las canchas. C4-1 y C4-2 nombran al gerente como quien configura sedes; el DER no cambia.
+
+**Problema o bloqueo**
+
+La API no arrancó en local por un error de TypeScript ya existente en `precios.service.ts` (`PricingComponent`). `/sedes` sin sesión redirige al login. Falta el pase con `gerente@fitzone.com`.
+
+**Commits**
+
+- `c067402` C-29: permite al gerente crear y editar sedes sin un deploy.
+- `9594dc3` C-29: importa PricingComponent solo como tipo para que el build compile.
+
+##### 2026-11-14  ·  C-30 (~5 h)
+
+**Actividad**
+
+Cerré tres huecos de RF-02 en la rama `C-30`: el socio ve el catálogo en el perfil, elige un plan y paga con la pasarela simulada; al aprobar, la membresía activa anterior pasa a vencida y se inserta la nueva en la misma operación de base. El alta de staff usa esa misma función y no cobra. Quedó la migración `20261114220000_renovar_membresia.sql`, `POST /membresias/renovar`, el checkout de membresía, unitarios, e2e de rol, Swagger, panorama, manual técnico y el diagrama de clases. En el DER físico sumé `plan enum` a la caja `pagos` (versión 1.1); no hay tabla nueva ni relación nueva, porque la columna es el enum y no una clave foránea.
+
+**Decisión**
+
+No hay ADR nuevo: el cobro sigue siendo la pasarela simulada de RF-13. El pago de membresía queda pendiente con `pagos.plan` y `membresia_id` nulo; recién al aprobar se escribe el estado y la membresía en el mismo update, porque el check no admite un pago aprobado sin membresía. El rechazo no toca la membresía vigente.
+
+**Problema o bloqueo**
+
+No hay `supabase db push` en este entorno (sin `config.toml` ni URL de base en `.env`). La base que usa la API local ya aceptó la columna y la función: el pago de prueba del socio demo pasó y el perfil quedó en plan trimestral hasta el 14/02/2027. El PNG de respaldo dentro de `er-fisico.svg` no se regeneró; no hay exportador de draw.io. El HTML del SVG sí muestra `plan enum`.
+
+**Commits**
+
+- `6a0fdec` C-30: el socio elige un plan, paga y la membresía anterior se cierra en la misma operación.
+
+##### 2026-11-14  ·  C-31 (~5 h)
+
+**Actividad**
+
+Alta y edición de la agenda de clases para el gerente (RF-06, A4), en la rama `C-31`. Checks de tipo e instructor, `POST /clases` y `PATCH /clases/:id` solo con rol gerente, pantalla `/clases/gestionar`, unitarios y e2e de rol. El listado y la inscripción del socio en `/clases` quedaron como estaban.
+
+**Decisión**
+
+No hay ADR nuevo ni cambio de DER. La baja es `estado = cancelada` porque borrar la clase cascada inscripciones y lista de espera. Cancelar no emite el Observer. El `PATCH` no cambia la sede: para pasarla de sede se cancela y se crea otra. La capacidad nueva no puede quedar bajo los lugares ya ocupados.
+
+**Problema o bloqueo**
+
+La migración `20261114230000_clases_checks.sql` queda en el repo. Este entorno no aplica `supabase db push`. El servicio ya rechaza el texto vacío, así que el alta desde la pantalla no depende de que el check esté cargado en la base.
+
+**Commits**
+
+- `f358916` C-31: el gerente crea y edita la agenda de clases sin cargarla por SQL.
+
+##### 2026-11-15  ·  C-32 (~6 h)
+
+**Actividad**
+
+Dejé en pantalla lo que la API de canchas ya resolvía (RF-09, RF-10, RF-11, RF-12 y RNF-03), en la rama `C-32`. `/canchas/gestionar` da de alta y edita la cancha, el horario pico y el mantenimiento; el descuento de socio lo guarda el gerente. En `/canchas` el dueño cancela su reserva. El e2e afirma el alta y un mantenimiento por rol. No hay migración ni diagrama nuevo.
+
+**Decisión**
+
+No hay ADR nuevo. Los roles quedan como estaban: el gerente administra cualquier sede y el admin de sede solo la suya. Cancelar no cambia el State ni devuelve el pago. RNF-03 se cierra nombrando los cuatro índices que ya usa la grilla; no se mide latencia.
+
+**Problema o bloqueo**
+
+Ninguno de contrato. La grilla, la reserva y el pago de `/canchas` no se reescribieron.
+
+**Commits**
+
+- `fb22c93` C-32: el staff administra las canchas en pantalla y el dueño cancela su reserva.
+- `b17b59e` C-32: unifica el formato de horario de Argentina en un solo módulo.
+
+##### 2026-11-15  ·  C-33 (~5 h)
+
+**Actividad**
+
+Salida desde `/acceso` (RN-01), en la rama `C-33`. Cada fila de «En la sede» tiene Salir y llama a `POST /acceso/check-outs`. Si no hay red, el servidor no responde o la base contesta 500 «Error al acceder a los datos», la salida entra en la misma cola del ingreso, con `tipo: 'salida'` y sin código. El sync aplica el lote en orden y una salida no pasa por TOTP: llama a `registrar_check_out` con origen `offline_sync`. Un 400 o un 404 muestran el mensaje del servicio y no se encolan.
+
+**Decisión**
+
+No hay ADR nuevo ni cambio de DER. RN-01 sigue en ADR-007. El diagrama de clases ya nombraba `POST check-outs` y `checkOut()`. En las páginas 2 y 4, `AccesoRepository` suma `registrarCheckOut()`. La secuencia offline y el C4-3 distinguen la salida: no pasa por TOTP y llama a `registrar_check_out`. Un ítem de cola sin `tipo` se lee como entrada, para no romper una cola ya guardada. El ingreso no cambia su regla de encolado: sigue siendo sin red o fetch fallido.
+
+**Problema o bloqueo**
+
+Ninguno de contrato. `registrar_check_out` y el endpoint ya existían; faltaba la pantalla y que el sync aceptara la salida.
+
+**Commits**
+
+- `c82a327` C-33: la recepción registra la salida desde /acceso y la encola con el ingreso.
+- `59fcd4e` C-33: el contrato de sync declara la salida y deja el código TOTP como opcional.
+
+---
+
+#### Sprint 8 — Cierre — Semana del 2026-11-16
+
+##### 2026-11-16  ·  S7-T09 (~2 h)
+
+**Actividad**
+
+Tomé y cerré los componentes documentados que estaban a cargo de Lucas (S7-T09). Sumé el átomo `Select` y la molécula `Alerta` a `Button`, `Input`, `Spinner` y `Layout`. `Select` reemplaza los dos desplegables de Canchas; `Alerta` reemplaza el error de Login y los tres de Canchas. Dejé el catálogo en `frontend/src/components/README.md`, saqué la plantilla de Vite del README del frontend y cité las seis piezas en el manual técnico (§1.3), el ADR-006 y el panorama. El responsive de Login y Canchas ya estaba cerrado en C-03; lo revisé al cablear los componentes. No instalé Storybook.
+
+**Decisión**
+
+La evidencia de la Unidad IV es el catálogo en el repo, no un Storybook. Los botones de Canchas siguen con su CSS: `atom-button` es de ancho completo y chocaría con el máximo de 250 px de la tarjeta. El resto de las pantallas no migran sus `<select>` ni sus párrafos de error en esta tarjeta.
+
+**Problema o bloqueo**
+
+Ninguno. La tarjeta de Trello queda para moverla a mano.
+
+**Commits**
+
+- `f4edf65` S7-T09: acredita la Unidad IV con un catálogo de componentes propios.
+
+---
+
+##### 2026-11-16  ·  Revisión C-11
+
+**Actividad**
+
+Revisé el cierre de C-11 / S7-T06 sobre `desarrollo`, sin reabrir la tarjeta. En `/clases`, con el socio del seed y la sede FitZone Central, el listado muestra cupo. Cancelar la inscripción de Smoke UI (16/11, 17:00) actualiza el cupo de 1/2 a 2/2 y saca la fila de Mis inscripciones. Retirar la lista de espera de Smoke Espera (18/11) y volver a anotarse deja de nuevo «Quedaste en la lista de espera.» y el contador en 2. No había una fila `notificado`.
+
+**Decisión**
+
+El cierre sigue en pie. No toqué código. Inscribir en Spinning muestra en la pantalla «Solo se puede reservar una clase con al menos 48 horas de anticipación»: ninguna clase programada del seed está a 48 h o más, así que no hubo un alta nueva. Ese aviso ya estaba anotado el 2026-11-13 y se ve.
+
+**Problema o bloqueo**
+
+Ninguno de la pantalla. La inscripción de Smoke UI que cancelé en el recorrido no se puede rehacer desde la UI.
+
+**Commits**
+
+- Sin commit de código. Esta entrada es la revisión.
+
+##### 2026-11-16  ·  C-34 (~0,5 h)
+
+**Actividad**
+
+Probé el aviso de lugar liberado: el externo ocupó el único cupo de la clase Aviso prueba (20/11, 18:00), el socio quedó en espera y, al cancelar el externo, el socio pasó a `notificado`. El aviso llegó a `/notificaciones` y al log del servidor. El título «Se liberó un lugar en Aviso prueba» no se leía: en modo oscuro el navegador lo pintaba de blanco sobre la tarjeta blanca. Lo dejé en azul oscuro y en negrita. La tarjeta quedó anotada en el plan de cierre.
+
+**Decisión**
+
+El arreglo va solo en la rama `C-34`, aparte de la revisión de C-11. No hay ADR: es contraste del título, no un cambio de la regla de la lista de espera. El mail sigue siendo un log.
+
+**Problema o bloqueo**
+
+Ninguno del aviso. Para la prueba el externo fue socio un momento y tuvo una membresía de staff; después volvió a externo y esa membresía quedó vencida.
+
+**Commits**
+
+- `ca6e6ed` el título del aviso se lee sobre la tarjeta.
+- `e443fa1` C-34 queda anotada en el plan de cierre.
+- Pull request: https://github.com/PatricioRamos04032000/FitZoneSports/pull/69
+
+---
+
+#### Cierre — Entrega TIF
+
+##### 2026-11-17  ·  C-16
+
+**Actividad**
+
+Tomé la tarjeta de Lucas y escribí el manual de usuario del Anexo D en `docs/manuales/manual-usuario.md`, rama `C-16`. Recorrí el portal local con el socio, la recepción y el gerente del seed, y dejé cada captura dentro de la sección que explica. El índice de manuales y la fila C-16 del plan de cierre quedaron alineados a ese archivo.
+
+**Decisión**
+
+El manual describe la pantalla que está en `desarrollo`. La agenda de clases queda en la sección 4.2 del Anexo D, con la aclaración de que el enlace **Agenda** lo abre el gerente. Los reportes consolidados se declaran fuera de esta entrega: **Dashboard** no es un panel. La contraseña del seed no se copia: se remite a `SEED_PASSWORD` del README.
+
+**Problema o bloqueo**
+
+La API no arrancó al primer intento porque `pdfkit` no estaba en `node_modules`, aunque ya figuraba en `package.json`. Lo instalé en local para poder sacar las capturas. No cambié dependencias del repositorio.
+
+**Commits**
+
+- `ba82d03` C-16: agrega el manual de usuario con las capturas del sistema.
+
+---
+
+##### 2026-11-17  ·  C-23
+
+**Actividad**
+
+Reescribí el `README.md` de la raíz en el orden del punto 4.1 de los lineamientos: qué es el sistema, el equipo con el autor de Git, cinco pasos con Docker, los cuatro usuarios del seed de entrega, la tabla de ADR, diagramas, manuales y bitácoras, y el estado de la suite. Corrí `npm run test:cov` en `backend/`: 29 suites, 179 tests, 65,15 % de sentencias. El umbral del ADR-008 es 60 %. Dejé la fila C-23 del plan de cierre en finalizado.
+
+**Decisión**
+
+Los cinco pasos son los de Docker (`docker compose up --build` y el perfil `seed`). La contraseña que publica el README es `fitzone-demo`, el valor de `SEED_PASSWORD` en `.env.docker.example`, porque el punto 4.1 pide las credenciales de prueba. El porcentaje es el de esta corrida, no el 63,93 % de C-10.
+
+**Problema o bloqueo**
+
+Ninguno de la redacción. Sin las tres claves de Supabase el login no funciona: el README nombra las variables y deja las claves fuera del repositorio.
+
+**Commits**
+
+- `b8d14af` C-23: reescribe el README de la raíz según el punto 4.1.
+
+---
+
+##### 2026-11-17  ·  C-36
+
+**Actividad**
+
+Escribí `LICENSE` en la raíz con la licencia MIT, año 2026, a nombre de Patricio Ramos, Bruno Nicolás Conti, Lucas Coquet y Matias Goncevat. En el README agregué la sección 8, que apunta a ese archivo. Dejé la fila C-36 del plan de cierre en finalizado.
+
+**Decisión**
+
+El texto de la MIT queda en inglés. Los cuatro nombres van en el mismo orden que la sección 2 del README. `backend/package.json` sigue en `UNLICENSED`: es el metadato del paquete privado de Nest, no el archivo de la raíz.
+
+**Problema o bloqueo**
+
+Ninguno.
+
+**Commits**
+
+- `ba3f111` C-36: agrega la licencia MIT en la raíz y la enlaza desde el README.
+
+##### 2026-11-18  ·  C-39
+
+**Actividad**
+
+Armé el dashboard del gerente en la rama `C-39`. La vista `reporte_resumen_sede` deja, por sede, la ocupación de ahora, las reservas del día y las clases del día. `GET /reportes/resumen` lo lee solo el rol `gerente` y suma el total de la cadena. `/dashboard` muestra esas cifras. La recepción ya no tiene el enlace. Quedaron el Swagger, los tests de rol, el manual de usuario, el manual técnico, C4-1, C4-2 y el diagrama de clases.
+
+**Decisión**
+
+El reporte es CQRS nivel 2: misma base, modelo de lectura aparte. No se abre un ADR. No se usa `ReservasCanchaRepository`. El día es el de `America/Argentina/Buenos_Aires`. No hay diagrama nuevo: siguen siendo 14.
+
+**Problema o bloqueo**
+
+Al principio la API respondía 500: PostgREST no encontraba la vista (PGRST205) porque este entorno no aplica `supabase db push`. La migración se corrió en el SQL editor de Supabase. Después el gerente ve el resumen (el 18/11: ocupación 0 / 1430, 26 clases, 27 sedes) y la captura quedó en el manual de usuario. La recepción no ve **Dashboard** y un `GET` directo responde 403.
+
+**Commits**
+
+- `92fbc4e` C-39: el gerente lee el resumen de la cadena desde una vista.
+
+---
+
+##### 2026-11-18  ·  C-41
+
+**Actividad**
+
+Dejé el SQL de RN-02 en el CI, en la rama `C-41`. `supabase/tests/run-canchas-m4.sh` aplica el stub `00_fase_a_simulada.sql`, las migraciones en orden de nombre y el GRANT del stub, y corre `canchas_m4.test.sql`. El job `sql-rn02` de `ci-backend.yml` lo hace contra PostgreSQL 15 en el pull request a `desarrollo` y corta si no aparece `OK 3`. El unitario que simula el 409 queda. La fila C-41 del plan de cierre quedó en finalizado. ADR-004, ADR-008 y el manual técnico dejan de decir que ese script se corre a mano.
+
+**Decisión**
+
+No se usa `supabase start`. El test inserta en un `auth.users` de una columna y el encabezado prohíbe Supabase real. La función que se prueba es la del esquema completo, incluida la del hold: el choque sigue siendo `TURNO_OCUPADO`.
+
+**Problema o bloqueo**
+
+Docker Desktop no estaba en marcha. Lo levanté y corrí el script en un contenedor `postgres:15`. La salida trajo `OK 1` a `OK 9`, con `OK 3  sobreventa rechazada (TURNO_OCUPADO)`. `pg_cron` avisó que no está en esa imagen; la limpieza lazy del hold sigue. El check de GitHub se ve cuando exista el pull request.
+
+**Commits**
+
+- `2118e94` C-41: corre el SQL de RN-02 en CI y exige OK 3.
+
+---
+
+##### 2026-11-18  ·  C-40
+
+**Actividad**
+
+Dejé un E2E de navegador en el frontend, con Playwright. El único caso entra como socio del seed, elige una cancha con turno libre, reserva, paga con la tarjeta de prueba que aprueba, vuelve a Mis reservas y descarga el comprobante PDF. `npm run test:e2e` en `frontend/` terminó con 1 passed. Vite y Nest se reutilizan si ya están arriba. El 60 % del ADR-008 no se mide con este script. La fila C-40 del plan de cierre quedó en finalizado.
+
+**Decisión**
+
+El script vive en `frontend` para no pisar el `test:e2e` de Jest del backend. No se agrega job de CI. No entran el dashboard del gerente ni el rechazo de acceso. Si no hay `E2E_PASSWORD`, el test lee `SEED_PASSWORD` de `backend/.env` y, si no está, usa `fitzone-demo`.
+
+**Problema o bloqueo**
+
+La primera sede del listado no tiene canchas, y la grilla sigue ofreciendo horarios ya pasados como disponibles. El caso salta esa sede y no reserva un turno cuyo inicio ya ocurrió. La instalación de npm falló por el certificado de la red; se repitió con `--use-system-ca`.
+
+**Commits**
+
+- `a67831c` C-40: agrega el E2E de reserva con Playwright.
+
+---
+
+##### 2026-11-18  ·  Versiones 0.23.1 a 0.50.0
+
+**Actividad**
+
+Etiqueté lo que ya estaba en `desarrollo`, de `v0.23.1` a `v0.50.0`. Cada tag apunta a un commit que ya existía. El changelog deja esas secciones y `[Unreleased]` queda vacío. Los `package.json` del backend y del frontend pasan a `0.50.0`.
+
+**Decisión**
+
+Una versión por cada paso de la línea de integración que trajo código. La documentación que entró entre dos números queda en la versión vigente. `v1.0.0` y `v1.0-entrega` no se publican: C-26 sigue por hacer y el 1.0 queda para el cierre. C-40 entró en `desarrollo` por el PR #81 mientras se armaba este registro; pasa a ser la versión siguiente.
+
+**Problema o bloqueo**
+
+Ninguno.
+
+**Commits**
+
+- `74a0bb2` chore: publica el changelog de v0.23.1 a v0.50.0.
+- Este registro es el del changelog. Los tags no son commits nuevos.
+
+---
+
+##### 2026-11-18  ·  v0.51.0
+
+**Actividad**
+
+C-40 ya estaba en `origin/desarrollo` (PR #81) cuando se publicaron `v0.23.1` a `v0.50.0`. Lo etiqueté como `v0.51.0` sobre el merge de ese pull request. Los `package.json` pasan a `0.51.0`.
+
+**Decisión**
+
+Sigue la misma regla: el paso que trajo el E2E es una versión, y no es el 1.0. C-26 sigue por hacer.
+
+**Problema o bloqueo**
+
+Ninguno.
+
+**Commits**
+
+- `3593219` chore: publica v0.51.0 para el E2E de C-40.
+- `fe86f88` Merge pull request #81 from PatricioRamos04032000/C-40. El tag `v0.51.0` apunta a ese merge.
+
+---
+
+##### 2026-11-17  ·  Citas que faltaban
+
+**Actividad**
+
+Estos commits ya estaban en `desarrollo` y no tenían línea en esta bitácora.
+
+**Decisión**
+
+Se citan acá, sin reescribir la actividad de las entradas anteriores.
+
+**Problema o bloqueo**
+
+Ninguno.
+
+**Commits**
+
+- `1694ad9` C-25: arma el dossier en Markdown, con las figuras, antes del tag.
+- `dcd7778` C-07-2: el compose deja el frontend hablando con la API del host.
+- `36d27cc` C-07-3: la documentación deja de decir que Compose no existe.
+- `d0124a7` C-35 a C-41: suma el lote al plan de cierre y el Excel para Trello.
+
+---
+
+##### 2026-11-18  ·  v0.51.1
+
+**Actividad**
+
+Corregí las diez observaciones de Sonar del PR #82. En `/canchas` las tres cargas quedan con `void` y los horarios se ordenan con `localeCompare`. El Postgres local toma `POSTGRES_PASSWORD` del entorno. Las imágenes de ejecución dejan de ser root y el `npm ci` de la imagen no corre scripts. El dossier baja los títulos sin la expresión regular que hacía backtracking.
+
+**Decisión**
+
+El `npm ci` del CI sigue ejecutando los scripts, porque oxlint los necesita. `SEED_PASSWORD` no cambia: el README sigue publicando `fitzone-demo`. El puerto del host sigue siendo 80; nginx escucha 8080 adentro. No se publican `v1.0.0` ni `v1.0-entrega`.
+
+**Problema o bloqueo**
+
+Ninguno.
+
+**Commits**
+
+- Este registro es el de `v0.51.1`.
+
+---
+
+##### 2026-11-18  ·  C-22
+
+**Actividad**
+
+Recorrí el Anexo G. Medí RNF-03 en el navegador, en `/canchas`, como el tiempo hasta la respuesta visual. Con el socio del seed, la sede FitZone Central y la fecha 2026-11-19, `GET /canchas/disponibilidad` respondió 200 y «Consultando disponibilidad...» dejó lugar a «Cancha 1» y 15 horarios en 786 ms. Lo anoté en el manual técnico. El residual quedó en `documentacion/C-22_Anexo_G_Pendiente.md`.
+
+**Decisión**
+
+La medición es la espera que se ve en la pantalla, no un benchmark del servidor. C-22 sigue en desarrollo hasta aceptar ese residual. No se crea el tag ni se reescribe la planificación.
+
+**Problema o bloqueo**
+
+La sede que el portal elige sola no tenía canchas para esa fecha. La medición es de la sede FitZone Central del seed, la que muestra «Cancha 1».
+
+**Commits**
+
+- Este registro es el del pase. No hay commit de código.
+
+---
+
+##### 2026-11-18  ·  C-24
+
+**Actividad**
+
+Escribí la hoja del ensayo de cinco minutos en `documentacion/Guion_Ensayo_C-24.md`: croquis de copiar y pegar, pasos con reloj y plan B de la cola sin red al lado del check-in. Después la completé con la base de Supabase de esta máquina: sede Av. Demo 100, Cancha 1, id del socio, membresía trimestral activa hasta el 14/02/2027 y los turnos libres del 19/11. El README, el guion C-06, el plan de cierre y el residual de C-22 apuntan a esa hoja. Una reserva pendiente conserva **Pagar reserva** en **Mis reservas** después de recargar; eso quedó en el manual de usuario, que sigue escrito para el portal local. El checkout público y el `APP_PUBLIC_URL` de Render quedaron en el manual de instalación.
+
+**Decisión**
+
+La contraseña queda como hueco: en esta base `SEED_PASSWORD` no es la de la plantilla Docker, y no se copia al guion. C-24 se cierra con el guion escrito. En Render, `APP_PUBLIC_URL` es la URL pública de la API.
+
+**Problema o bloqueo**
+
+Ninguno.
+
+**Commits**
+
+- El commit de esta rama.
+
+---
+
+##### 2026-11-18  ·  C-22
+
+**Actividad**
+
+Acepté el residual de `documentacion/C-22_Anexo_G_Pendiente.md`. La fila de C-22 en el plan de cierre pasa a finalizado.
+
+**Decisión**
+
+La lista queda cerrada. No se crea el tag, no se reescribe la planificación y no se vuelve a mirar el portal sobre Vercel. Siguen abiertos el Excel de C-21, el tag de C-26, el dossier de C-25, la subida de C-27 y la lectura de la cátedra.
+
+**Problema o bloqueo**
+
+Ninguno.
+
+**Commits**
+
+- Este registro es el de la aceptación. No hay commit de código.
+
+---
+
+##### 2026-11-19  ·  Carpeta de notas
+
+**Actividad**
+
+Dejé asentado que `documentacion/` no forma parte de la entrega. Los documentos de la entrega están en `docs/`.
+
+**Decisión**
+
+Los registros anteriores no se modifican.
+
+**Problema o bloqueo**
+
+Ninguno.
+
+**Commits**
+
+- El commit de esta rama.
+
+---
+
+##### 2026-11-19  ·  Enlaces que no hacen falta
+
+**Actividad**
+
+El guion de cinco minutos no entra en la entrega. Saqué la referencia del seed en el manual de instalación: los usuarios quedan en ese párrafo y en el README.
+
+**Decisión**
+
+Los registros históricos no se modifican. Los enlaces que quedan hacia la carpeta de notas no hacen falta para entender la entrega.
+
+**Problema o bloqueo**
+
+Ninguno.
+
+**Commits**
+
+- El commit de esta rama.
+
+---
+
+##### 2026-11-19  ·  C-21
+
+**Actividad**
+
+Armé `docs/planificacion/PROGV-2026-TIF-Equipo03-Registro.xlsx` desde el export del tablero del 19/11. La hoja Altas y cierres lista cada tarjeta con el día en que se creó y el día en que entró a finalizado. La creación sale de la acción de alta, o del id de Trello cuando esa acción ya no está entre las mil que exporta el tablero. El cierre queda vacío si la tarjeta no estaba en finalizado.
+
+**Decisión**
+
+La tarjeta es de Matias. El archivo no completa cierres que el tablero no tiene. C-25, C-26 y C-27 siguen abiertas.
+
+**Problema o bloqueo**
+
+`[P1.1] Matriz de Funcionalidades por Rol` está en finalizado y su movimiento ya no está en el export. Esa fila no lleva fecha de cierre.
+
+**Commits**
+
+- El commit de esta rama.
+
+---
+
+##### 2026-11-19  ·  C-25
+
+**Actividad**
+
+Rearmé el Markdown del dossier en `docs/entregables/dossier.md`: portada del 19/11, claves del proyecto en blanco para la cátedra, link al tablero Programacion5 y el registro `docs/planificacion/PROGV-2026-TIF-Equipo03-Registro.xlsx`. Las cuatro bitácoras entran una vez. Las marcas de tag y de hash de la portada quedan sin sustituir.
+
+**Decisión**
+
+El tag y el hash de la portada los completa C-26, al imprimir el PDF. Esta entrada no inventa ni el tag ni el hash. Las claves no se escriben en el repositorio.
+
+**Problema o bloqueo**
+
+Ninguno.
+
+**Commits**
+
+- El commit de esta rama. El tag y el hash de la portada quedan en C-26.
+
+Archivo de origen: `docs/bitacoras/LOG-conti.md`.
+
+### Bitácora — Conti Bruno — Rol P2
+
+Registro individual de Bruno Conti (P2, backend, reglas de negocio y patrones). Cada entrada es una sesión de trabajo. En **Commits** van los commits de esa sesión y el merge o pull request que los integró a la rama.
+
+Las horas de las primeras semanas salen de los planes ([S1–S2](../planificacion/S1-S2_Plan_Trabajo_Semanas_1_y_2.md) y [S5–S7](../planificacion/S5-S7_Plan_Trabajo_3_Semanas.md)). Las de noviembre (`S4-T06`, `S4-T10`, `S4-T14`, `S4-T15`, `C-09` y `C-19b`) son una estimación basada en el alcance de cada entrega y las pruebas agregadas.
+
+---
+
+#### Sprint 1 — Unidad I — Semana del 2026-08-31
+
+##### 2026-09-02  ·  4 h
+
+**Actividad**
+
+Participé de la puesta en común del 26/08 y de la reunión de Semana 1 del 02/09 (`S1-T05`, [Acta S1](../planificacion/S1_Acta_Reunion_2026-09-02.md)). Revisé los primeros ADR (`ADR-001` a `ADR-006` en la numeración de agosto) para corregir inconsistencias y alinearlos al formato de la cátedra (`S1-T02`), preparé el borrador del esquema SQL inicial con `sedes`, `perfiles` y `membresias` (`S1-T12`) y quedé a cargo de la revisión cruzada del PDF de Unidad I (`S1-T17`, cerrada en Trello el 11/11).
+
+**Decisión**
+
+Acordamos con el grupo usar NestJS como monolito modular y pasarela BFF hacia Supabase Auth (hoy [ADR-011](../adr/ADR-011-bff-supabase-auth.md)), y leer datos con la API de Supabase sin ORM (hoy [ADR-005](../adr/ADR-005-backend-nestjs-ioc-datos.md)). Para roles dejamos la tabla `perfiles` con un campo simple A1–A4 en lugar de armar permisos muchos-a-muchos desde el inicio.
+
+**Problema o bloqueo**
+
+Al comienzo no estaba claro si el PDF de Unidad I debía incluir DER y diagrama de clases cerrados, ni cómo quería el docente la autenticación con Supabase. Con la devolución del 28/08 y la aclaración del 04/09 quedó definido que C4 y ADR quedan como documentación viva hasta el Demo Day y no frenan el arranque de código en Unidad II.
+
+**Commits**
+
+- _Sin commits propios en el repositorio durante esta semana: los acuerdos y tareas quedaron en [LOG.md](./LOG.md), [Acta S1](../planificacion/S1_Acta_Reunion_2026-09-02.md) y [plan S1–S2](../planificacion/S1-S2_Plan_Trabajo_Semanas_1_y_2.md)._
+
+---
+
+#### Sprint 2 — Unidad II — Semana del 2026-09-21
+
+##### 2026-09-22  ·  4 h
+
+**Actividad**
+
+Dejé armada la base del backend en `backend/` y las tablas iniciales en Supabase. Ejecuté el SQL inicial de `sedes` y `perfiles` (`S2-T02`) y cargué un seed mínimo de prueba (`S2-T03`). En el repositorio creé el proyecto base de NestJS (`S2-T04`, `24698da`) e implementé `SupabaseModule` (`S2-T05`, `691d23e`) para exponer el cliente conectado con `SUPABASE_URL` y `SUPABASE_SERVICE_ROLE_KEY`. Todo entró con el PR #1 (`c785a94`, el 25/09).
+
+**Decisión**
+
+Centralizar el cliente de Supabase en `SupabaseModule` para inyectarlo en los demás módulos, usando la `service_role` key solo desde NestJS y sin subir credenciales al repositorio.
+
+**Problema o bloqueo**
+
+Como el proyecto de Supabase estaba en la cuenta administrada por Lucas, para probar en local hubo que compartir las variables del `.env` por canal privado y verificar que los nombres de tablas en el SQL Editor coincidieran con los esperados por el backend.
+
+**Commits**
+
+- `24698da` S2-T04: Scaffolding inicial de NestJS
+- `691d23e` Modulo SupabaseModule
+- `c785a94` Merge pull request #1
+
+---
+
+#### Sprint 2 — Unidad II — Semana del 2026-09-28
+
+##### 2026-09-29  ·  5 h
+
+**Actividad**
+
+Implementé los dos primeros módulos del backend y corregí los tests unitarios que habían quedado rotos. El 27/09 resolví conflictos de merge con el trabajo paralelo de Patricio (`7d98b4a`), agregué `SedesModule` con `GET /sedes` (`S2-T09`, `2e0dce8`) e implementé `AuthModule` conectado a Supabase Auth (`S2-T06`, `b9bd66a`, PR #4 `02fee4e`). El 29/09 agregué `POST /login` en `AuthController` (`b2cae85` / `576f589`) y corregí los `.spec.ts` de `Auth`, `Sedes` y `Supabase` (`95bec90`, `835736e`).
+
+**Decisión**
+
+`AuthService` delega directo en `supabase.auth.signInWithPassword` sin generar tokens propios en NestJS; la validación del JWT queda en el `JwtAuthGuard` que implementó Patricio ([ADR-011](../adr/ADR-011-bff-supabase-auth.md)). Para que pasen los tests unitarios agregué mocks de `SupabaseService` en cada `TestingModule`.
+
+**Problema o bloqueo**
+
+Hubo dos problemas concretos: primero, al mergear `JwtAuthGuard` y `HealthModule` de P1 surgieron conflictos en `app.module.ts` y `auth.module.ts` (`7d98b4a`); segundo, al inyectar `SupabaseService` en `AuthService` y `SedesService`, fallaron los specs generados por la CLI de Nest porque les faltaba el provider mockeado (`95bec90`).
+
+**Commits**
+
+- `7d98b4a` Resuelve conflictos de merge con P1
+- `2e0dce8` S2-T09: Implementa endpoint GET /sedes con patrón Repository y Supabase API
+- `b9bd66a` S2-T06: Implementa AuthModule con pasarela BFF hacia Supabase Auth
+- `02fee4e` Merge pull request #4 from PatricioRamos04032000/desarrollo
+- `b2cae85` S2-T06: Agrega el código POST /login al AuthController
+- `576f589` S2-T06: Agrega el código POST /login al AuthController
+- `317a602` Merge remote-tracking branch 'origin/master' into desarrollo
+- `95bec90` Arregla dependencias y mocks de Supabase en los tests unitarios
+- `835736e` Arregla test
+
+---
+
+#### Sprint 3 — Unidad II — Semana del 2026-09-28
+
+##### 2026-10-01  ·  2 h
+
+**Actividad**
+
+Actualicé `documentacion/Plan_Trabajo_2_Semanas.md` para ordenar las semanas 3 y 4 (`b09a27c`, `5a03f67`, `47bc6bb`). Corregí fechas, marqué lo terminado de Semana 2 y dejé anotadas las dependencias de `S3-T10`, `S3-T03` (Membresías) y `S3-T04` (Clases) respecto al diseño SQL de Patricio (`S3-T06`) y la plantilla de Repository (`S3-T11`).
+
+**Decisión**
+
+Esperar a tener cerrado el esquema SQL de membresías/clases y el Repository base antes de implementar `S3-T03` y `S3-T04`, para evitar escribir consultas directas en los servicios que luego hubiera que reescribir.
+
+**Problema o bloqueo**
+
+Las fechas del plan habían quedado desactualizadas y el reparto original asignaba más de 6 h por semana a backend. Ajusté las estimaciones y dependencias para equilibrar la carga con P1 y P3.
+
+**Commits**
+
+- `b09a27c` Nuevo plan de Trabajo
+- `5a03f67` Update dates in Plan_Trabajo_2_Semanas.md
+- `47bc6bb` Update Plan_Trabajo_2_Semanas.md
+
+---
+
+#### Sprint 3 — Unidad II — Semana del 2026-10-05
+
+##### 2026-10-07  ·  4 h
+
+**Actividad**
+
+Implementé la primera versión de Membresías (`S3-T03`) y Clases (`S3-T04`) en `backend/src/membresias/` y `backend/src/clases/` siguiendo [Guia_Patron_Repository.md](../../documentacion/Guia_Patron_Repository.md) (`9ba65f4`, PR #22 `6043fcd`). Quedaron operativos los endpoints iniciales para planes, altas/consultas de membresías, listado de clases, inscripción y cancelación.
+
+**Decisión**
+
+Separar ambos módulos en `controller → service → repository → model`, dejando las consultas a Supabase y los RPC dentro de `MembresiasRepository` y `ClasesRepository`.
+
+**Problema o bloqueo**
+
+Esa primera versión dejó pendientes de seguridad y validación: endpoints sin `JwtAuthGuard` ni roles, `perfilId` e `inicioClase` leídos del body, `(this.repository as any).client` en `MembresiasService.crear` y reglas D1–D6/RN-03 sin cubrir. Patricio registró esos puntos en [Correcciones_S3-T03_S3-T04_Membresias_Clases.md](../../documentacion/Correcciones_S3-T03_S3-T04_Membresias_Clases.md) y quedaron para resolver en `S4-T10`.
+
+**Commits**
+
+- `9ba65f4` implementa modulos de membresias y clases con patron Repository (S3-T03, S3-T04)
+- `6043fcd` Merge pull request #22 from PatricioRamos04032000/S3-T03yT04-membresias-clases
+
+---
+
+#### Sprint 4 — Unidad III — Semana del 2026-10-19
+
+##### 2026-10-21  ·  4 h
+
+**Actividad**
+
+Participé de las reuniones del 13/10 ([Acta S4](../planificacion/S4_Acta_Reunion_2026-10-13.md)) y del 21/10 ([Acta S5](../planificacion/S5_Acta_Reunion_2026-10-21.md)), donde revisamos los pendientes de Membresías/Clases y cerramos las reglas de Canchas (`S4-T09`). El 21/10 implementé `S4-T01`: el patrón **Strategy** para precios de canchas en `backend/src/canchas/precios/` (`PricingStrategy`, `StandardPricing`, `PeakHourPricing`, `MemberDiscountPricing`, `PreciosService`, `PreciosModule`, más `precios.service.spec.ts`) y actualicé [Justificacion_Patrones_Unidad_III.md](../../documentacion/Justificacion_Patrones_Unidad_III.md) y [Plan_Trabajo_2_Semanas.md](../planificacion/Plan_Trabajo_2_Semanas.md) (`71c993d`, merge `d4065a0`).
+
+**Decisión**
+
+En lugar de elegir una sola estrategia por turno, `PreciosService` encadena todas las que aplican (`filter` + `reduce`) para combinar el recargo de horario pico y el descuento de socio (`base × (1 + recargo) × (1 − descuento)`). Las fechas ISO sin zona horaria se normalizan a `America/Argentina/Buenos_Aires`.
+
+**Problema o bloqueo**
+
+La API de Canchas (`S4-T06`) siguió bloqueada hasta la reunión del 21/10 porque faltaban cerrar las reglas de negocio `S4-T09` y la migración M4 en el repositorio. Además, `PreciosService` había quedado con `Math.round` cuando en la reunión se acordó redondear hacia arriba (`Math.ceil`), ajuste que quedó anotado y luego se resolvió en `S4-T15`.
+
+**Commits**
+
+- `71c993d` S4-T01: implementa patron Strategy para calculo de precios de canchas y actualiza documentacion
+- `d4065a0` Merge branch 'S3-T03yT04-membresias-clases' into desarrollo
+
+---
+
+#### Sprint 5 y 6 — Unidades II, III y V — Semana del 2026-11-02
+
+##### 2026-11-04  ·  10 h
+
+**Actividad**
+
+Completé e integré tres tarjetas de backend junto con sus unit tests, e2e (Supertest), Swagger, colección Postman y entradas en [LOG.md](./LOG.md). En `S4-T06` (`593d9cc`, merge `857199d`) implementé la API REST de Canchas (`CanchasModule`, `ConfiguracionPreciosController`, `CanchasService`, `CanchasRepository`): listado por sede, grilla de disponibilidad de 60 minutos (`08:00`–`22:00` hora Argentina) cruzando reservas en hold/confirmadas y mantenimientos con `PreciosService`, alta/edición validando `admins_sede`, mantenimientos y configuración de horario pico y descuento socio.
+
+En `S4-T10` (`10a64e2`, merge `b5e81e0`) protegí Membresías y Clases con `JwtAuthGuard` y `@RequiereRol`, lectura del usuario desde `@CurrentUser()`, `GET /membresias/mia`, ventana de 48 h (`D5`), vigencia en calendario argentino (`D3`), duración desde `planes_membresia` (`D1`/`D2`), control de titularidad (`403`), cancelación tardía desde BD (`D6`) y cerré los olores #1–#5. En `S4-T14` (`7957180`, merge `f384b11`) agregué los endpoints de lista de espera (`anotarse`, `mias`, `confirmar` con `confirmar_lugar_espera`, `retirarse`) conectados a `ListaEsperaPublisher` (Observer), vencimiento *lazy*, verificación de rutas Swagger en e2e y colección Postman.
+
+**Decisión**
+
+En `S4-T10` eliminé `(this.repository as any).client` moviendo el alta a `MembresiasRepository.crear` con `unwrap` (olor #1), unifiqué el mapeo de errores SQL (`P0001`, `23505` → `409`, `22P02` → `400`) en `traducirErrorRepositorio` (olor #3) y reemplacé los literales sueltos por constantes de módulo (olor #5). En `S4-T14`, al no tener un cron activo para expirar lugares notificados, decidí procesar vencidos de forma *lazy* antes de inscribir, al anotarse en espera o cuando `confirmar` devuelve `PLAZO_VENCIDO`.
+
+**Problema o bloqueo**
+
+Al modificar `MembresiasService.crear` hubo que preservar la llamada a `ensureTotpSeed` que Patricio había agregado el 2/11 para emitir el seed TOTP al activar una membresía. También fue necesario pasar todas las comparaciones de fechas a `America/Argentina/Buenos_Aires` porque cerca de la medianoche UTC los tests cambiaban de día respecto a la hora local.
+
+**Commits**
+
+- `593d9cc` S4-T06: implementa API REST de canchas, grilla de disponibilidad y configuracion de precios
+- `857199d` S4-T06
+- `10a64e2` feat(membresias,clases): asegurar endpoints con JWT/roles y aplicar reglas D1-D6 y RN-03 (S4-T10)
+- `b5e81e0` S4-T10
+- `7957180` feat(clases): agregar endpoints de lista de espera, flujo Observer y Swagger (S4-T14)
+- `f384b11` S4-T14
+
+---
+
+#### Sprint 6 — Unidad III — Semana del 2026-11-02
+
+##### 2026-11-06  ·  2 h
+
+**Actividad**
+
+Cerré `S4-T15` (`1e5ce18`, PR #49 `461a096` del 07/11) para alinear el redondeo de precios de canchas (punto P7 de la reunión del 21/10 y olor #6 de la planilla). Cambié `Math.round` por redondeo hacia arriba en `PreciosService`, actualicé `precios.service.spec.ts` y actualicé [Propuesta_Reglas_Negocio_S4-T09.md](../rnf/Propuesta_Reglas_Negocio_S4-T09.md) y [Justificacion_Patrones_Unidad_III.md](../../documentacion/Justificacion_Patrones_Unidad_III.md).
+
+**Decisión**
+
+Pasar el redondeo final a un método privado `redondearAlPesoSuperior(monto)` usando `Math.ceil(Number(monto.toFixed(8)))` en lugar de llamar directo a `Math.ceil(monto)`.
+
+**Problema o bloqueo**
+
+Al pasar los tests a `Math.ceil` apareció un error de punto flotante: multiplicaciones que debían dar enteras, como `20000 * 1.14`, resultaban en `22800.000000000004` y `Math.ceil` terminaba devolviendo `$22.801` en vez de `$22.800`. Redondear a 8 decimales con `toFixed(8)` antes de aplicar `Math.ceil` corrigió el problema.
+
+**Commits**
+
+- `1e5ce18` feat(canchas): alinear regla de redondeo hacia arriba en precios (S4-T15)
+- `461a096` Merge pull request #49 S4-T15
+
+---
+
+#### Sprint 8 — Cierre — Semana del 2026-11-09
+
+##### 2026-11-11  ·  1,5 h
+
+**Actividad**
+
+Participé de la reunión del 11/11 para actualizar el tablero Trello y los planes de cierre. Ese día también avancé con `C-09` (`07d06a2`): extraje `createSwaggerDocument` en `backend/src/swagger.ts`, agregué `backend/scripts/export-swagger.ts` y el script `npm run swagger:export` en `backend/package.json`, generé `backend/swagger.json` y actualicé el `README.md` con el enlace al archivo y la tabla de endpoints de Clases y Membresías ya con JWT.
+
+**Decisión**
+
+Generar `backend/swagger.json` levantando la app Nest con `NestFactory.create(AppModule, { logger: false })` desde un script propio y reutilizando `createSwaggerDocument`, para que el JSON exportado coincida con el que expone `/api/docs`.
+
+**Problema o bloqueo**
+
+El `README.md` todavía mostraba endpoints de Clases y Membresías sin autenticación (estado anterior a `S4-T10`), así que aproveché para corregir la tabla. La rama quedó abierta hasta integrar los cambios de documentación que el equipo cerraba esa semana (`C-13` a `C-19a`).
+
+**Commits**
+
+- `07d06a2` feat(swagger): exportar especificacion OpenAPI en backend/swagger.json y enlazar en README (C-09)
+
+---
+
+#### Sprint 8 — Cierre — Semana del 2026-11-09
+
+##### 2026-11-13  ·  3 h
+
+**Actividad**
+
+Integré `C-09` en `desarrollo` (`5546109`) y escribí esta bitácora (`C-19b`) en `docs/bitacoras/LOG-conti.md` cruzando el historial de commits, las actas y los planes. También actualicé el índice [`docs/bitacoras/README.md`](./README.md) y los estados de `C-09` y `C-19b` en los documentos de planificación.
+
+**Decisión**
+
+Citar todas las sesiones con los hashes reales (juntando los commits hechos como `bruno` y los merges de PR como `Bruno Nicolás Conti`) sin reescribir citas previas de ADR, que ya cuentan con la tabla de equivalencias en [docs/adr/README.md](../adr/README.md).
+
+**Problema o bloqueo**
+
+Al cruzar mis commits contra los planes del 11/11 noté que `C-09` seguía figurando *En desarrollo* aunque ya estaba mergeada en `5546109`, y que mis commits aparecían bajo dos nombres de autor distintos en Git. Dejé ambos puntos alineados en esta sesión.
+
+**Commits**
+
+- `5546109` C-09
+- `a280bc5` C-19b: agrega bitacora individual de Bruno Conti
+
+---
+
+#### Sprint 8 — Cierre — Semana del 2026-11-16
+
+##### 2026-11-17  ·  4 h
+
+**Actividad**
+
+Implementé y subí la tarea `C-04` (`64e84b1`, rama `c-04`) para cubrir RF-14 (comprobante PDF no fiscal post-pago). Agregué `pdfkit` en el backend, armé las consultas de lectura en `PagosRepository`, generé los PDF con Template Method en `backend/src/pagos/comprobantes/` (`ComprobantePdfTemplate` para `ComprobanteReservaPdf` y `ComprobanteMembresiaPdf`), expuse `GET /pagos/mios`, `GET /pagos/:id/comprobante` y `GET /canchas/reservas/:id/comprobante` con `JwtAuthGuard`, y sumé descarga firmada por HMAC en la pantalla de pago aprobado de la pasarela simulada (`/pasarela-simulada/comprobante/:pagoId`).
+
+En el frontend agregué `frontend/src/services/pagos.ts` y conecté los botones de descarga en `Canchas.tsx` (reserva confirmada y Mis reservas) y en `Perfil.tsx` (Mi membresía). También sumé tests unitarios (`comprobantes.service.spec.ts`), e2e (`test/comprobantes.e2e-spec.ts`), regeneré `backend/swagger.json` y actualicé la nota de Template Method en [Justificacion_Patrones_Unidad_III.md](../../documentacion/Justificacion_Patrones_Unidad_III.md) y [LOG.md](./LOG.md).
+
+**Decisión**
+
+Aplicar **Template Method** (`ComprobantePdfTemplate`) para compartir encabezado, titular, monto y leyenda no fiscal entre el comprobante de reserva de cancha y el de membresía, tal como estaba planteado en la justificación de Unidad III desde que `C-30` incorporó el cobro de membresías en `pagos`. Para la descarga directa desde la pantalla de resultado de la pasarela simulada usé una firma HMAC-SHA256 verificada con `timingSafeEqual`, ya que esa ruta HTML pública no lleva el JWT de la SPA.
+
+**Problema o bloqueo**
+
+Al agregar `cargarPagos` en `Perfil.tsx`, ESLint (`react-hooks/immutability`) falló porque la función había quedado declarada después del `useEffect` que la invocaba; se resolvió moviéndola arriba del efecto. En las pruebas locales dentro del entorno restringido, los e2e con Supertest requerían abrir sockets locales en `127.0.0.1`, por lo que se validaron fuera del aislamiento obteniendo 12/12 suites y 49/49 tests en verde (además de 29/29 suites unitarias y > 65 % de cobertura de sentencias cumpliendo ADR-008).
+
+**Commits**
+
+- `64e84b1` C-04: Comprobante PDF Post-Pago (RF-14)
+- _Cierre de `C-19b` registrado en la rama `c-19b`._
+
+Archivo de origen: `docs/bitacoras/LOG-coquet.md`.
+
+### Bitácora — Coquet Lucas — Rol P3
+
+Registro individual de Lucas Coquet (P3, frontend). Cada entrada es una sesión de trabajo. En **Commits** van los commits de esa sesión. Los de esta bitácora entraron directo a `desarrollo`, sin pull request propio.
+
+Las horas anteriores a noviembre son una estimación reconstruida por el tamaño del diff y las reuniones del LOG de equipo. Las de noviembre salen del plan de cierre cuando la tarjeta tiene estimado (C-01, C-03 y C-19), sin contar dos veces la misma tarjeta. Patricio Ramos armó este archivo el 17/11 cruzando `git log --author=LucasCoquet` y [LOG.md](./LOG.md).
+
+---
+
+#### Sprint 1 — Unidad I — Semana del 2026-08-31
+
+##### 2026-09-02  ·  2 h
+
+**Actividad**
+
+Participé de la reunión de Semana 1 (`S1-T05`, [Acta S1](../planificacion/S1_Acta_Reunion_2026-09-02.md), también en [LOG.md](./LOG.md)). Quedé como P3, frontend. Me llevé la cuenta de Supabase del equipo y la revisión cruzada del PDF de Unidad I, junto con Bruno. Al salir, lo que tenía en curso era S1-T03: revisar funcionalidades por actor, y S2-T01, la cuenta de Supabase.
+
+**Decisión**
+
+La cuenta de Supabase queda en mi usuario. Las claves no entran al repositorio: van por canal del equipo y a un `.env` local. El PDF de Unidad I lo escribe Patricio; Bruno y yo lo revisamos.
+
+**Problema o bloqueo**
+
+El proyecto de Supabase no lo puede levantar el resto si no lo invito yo. Hasta el 23/09 no dejé commit de esa revisión: S1-T03 siguió en desarrollo en el snapshot del 04/09.
+
+**Commits**
+
+- _Sin commits propios en el repositorio durante esta semana: los acuerdos quedaron en [LOG.md](./LOG.md) y en [Acta S1](../planificacion/S1_Acta_Reunion_2026-09-02.md)._
 
 ---
 
@@ -996,82 +2287,75 @@ El login de ese día escribía el usuario y la contraseña en la consola. Mi Per
 
 ---
 
-#### Sprint 4 — Unidad III — Semana del 2026-10-12
+#### Sprint 4 — Unidad III — Semana del 2026-10-05
 
-##### 2026-10-15  ·  4 h
-
-**Actividad**
-
-Participé de las reuniones del 13/10 ([Acta_Reunion_2026-10-13_Seguimiento.md](../planificacion/Acta_Reunion_2026-10-13_Seguimiento.md)) y del 21/10 ([Acta_Reunion_2026-10-21_Seguimiento.md](../planificacion/Acta_Reunion_2026-10-21_Seguimiento.md)), donde revisamos los pendientes de Membresías/Clases y cerramos las reglas de Canchas (`S4-T09`). El 21/10 implementé `S4-T01`: el patrón **Strategy** para precios de canchas en `backend/src/canchas/precios/` (`PricingStrategy`, `StandardPricing`, `PeakHourPricing`, `MemberDiscountPricing`, `PreciosService`, `PreciosModule`, más `precios.service.spec.ts`) y actualicé [Justificacion_Patrones_Unidad_III.md](../../documentacion/Justificacion_Patrones_Unidad_III.md) y [Plan_Trabajo_2_Semanas.md](../planificacion/Plan_Trabajo_2_Semanas.md) (`71c993d`, merge `d4065a0`).
-
-**Decisión**
-
-En lugar de elegir una sola estrategia por turno, `PreciosService` encadena todas las que aplican (`filter` + `reduce`) para combinar el recargo de horario pico y el descuento de socio (`base × (1 + recargo) × (1 − descuento)`). Las fechas ISO sin zona horaria se normalizan a `America/Argentina/Buenos_Aires`.
-
-**Problema o bloqueo**
-
-La API de Canchas (`S4-T06`) siguió bloqueada hasta la reunión del 21/10 porque faltaban cerrar las reglas de negocio `S4-T09` y la migración M4 en el repositorio. Además, `PreciosService` había quedado con `Math.round` cuando en la reunión se acordó redondear hacia arriba (`Math.ceil`), ajuste que quedó anotado y luego se resolvió en `S4-T15`.
-
-**Commits**
-
-- `71c993d` S4-T01: implementa patron Strategy para calculo de precios de canchas y actualiza documentacion
-- `d4065a0` Merge branch 'S3-T03yT04-membresias-clases' into desarrollo
-
----
-
-#### Sprint 5 y 6 — Unidades II, III y V — Semana del 2026-11-02
-
-##### 2026-11-04  ·  10 h
+##### 2026-10-08  ·  1 h
 
 **Actividad**
 
-Completé e integré tres tarjetas de backend junto con sus unit tests, e2e (Supertest), Swagger, colección Postman y entradas en [LOG.md](./LOG.md). En `S4-T06` (`593d9cc`, merge `857199d`) implementé la API REST de Canchas (`CanchasModule`, `ConfiguracionPreciosController`, `CanchasService`, `CanchasRepository`): listado por sede, grilla de disponibilidad de 60 minutos (`08:00`–`22:00` hora Argentina) cruzando reservas en hold/confirmadas y mantenimientos con `PreciosService`, alta/edición validando `admins_sede`, mantenimientos y configuración de horario pico y descuento socio.
-
-En `S4-T10` (`10a64e2`, merge `b5e81e0`) protegí Membresías y Clases con `JwtAuthGuard` y `@RequiereRol`, lectura del usuario desde `@CurrentUser()`, `GET /membresias/mia`, ventana de 48 h (`D5`), vigencia en calendario argentino (`D3`), duración desde `planes_membresia` (`D1`/`D2`), control de titularidad (`403`), cancelación tardía desde BD (`D6`) y cerré los olores #1–#5. En `S4-T14` (`7957180`, merge `f384b11`) agregué los endpoints de lista de espera (`anotarse`, `mias`, `confirmar` con `confirmar_lugar_espera`, `retirarse`) conectados a `ListaEsperaPublisher` (Observer), vencimiento *lazy*, verificación de rutas Swagger en e2e y colección Postman.
+Actualicé el log de equipo con el snapshot del 08/10. En esa fecha el archivo era `documentacion/LOG.md`. Anoté el estado de los cuatro: el frontend ya tenía pantallas y rutas, y el paso siguiente era conectarlas a Nest, en particular el login. El objetivo que dejé escrito era React → Nest → Supabase, y después canchas, estado global y Strategy/Observer.
 
 **Decisión**
 
-En `S4-T10` eliminé `(this.repository as any).client` moviendo el alta a `MembresiasRepository.crear` con `unwrap` (olor #1), unifiqué el mapeo de errores SQL (`P0001`, `23505` → `409`, `22P02` → `400`) en `traducirErrorRepositorio` (olor #3) y reemplacé los literales sueltos por constantes de módulo (olor #5). En `S4-T14`, al no tener un cron activo para expirar lugares notificados, decidí procesar vencidos de forma *lazy* antes de inscribir, al anotarse en espera o cuando `confirmar` devuelve `PLAZO_VENCIDO`.
+Dejar el estado visible aunque el login siguiera con datos fijos. Esperar a la API para escribir el log hubiera escondido que las pantallas ya existían.
 
 **Problema o bloqueo**
 
-Al modificar `MembresiasService.crear` hubo que preservar la llamada a `ensureTotpSeed` que Patricio había agregado el 2/11 para emitir el seed TOTP al activar una membresía. También fue necesario pasar todas las comparaciones de fechas a `America/Argentina/Buenos_Aires` porque cerca de la medianoche UTC los tests cambiaban de día respecto a la hora local.
+El log de equipo vivía en `documentacion/LOG.md`. Más adelante pasó a [LOG.md](./LOG.md), en `docs/bitacoras/`. El snapshot de esta sesión es el bloque «Trabajo en curso — snapshot 2026-10-08» de ese archivo.
 
 **Commits**
 
-- `593d9cc` S4-T06: implementa API REST de canchas, grilla de disponibilidad y configuracion de precios
-- `857199d` S4-T06
-- `10a64e2` feat(membresias,clases): asegurar endpoints con JWT/roles y aplicar reglas D1-D6 y RN-03 (S4-T10)
-- `b5e81e0` S4-T10
-- `7957180` feat(clases): agregar endpoints de lista de espera, flujo Observer y Swagger (S4-T14)
-- `f384b11` S4-T14
+- `09ef4cf` docs: actualizar log de trabajo
 
 ---
 
-#### Sprint 6 — Unidad III — Semana del 2026-11-02
+#### Sprint 5 — Unidad III — Semana del 2026-10-19
+
+##### 2026-10-21  ·  1,5 h
+
+**Actividad**
+
+Participé de la reunión de seguimiento ([Acta S5](../planificacion/S5_Acta_Reunion_2026-10-21.md)). Informé los prototipos de Login, Mi Perfil y Canchas como finalizados, y S3-T05 (conectar el login a `POST /auth/login`) como lo que seguía en curso. Mi Perfil seguía con datos de prueba. Canchas esperaba la API de Bruno (S4-T06).
+
+**Decisión**
+
+Mientras no haya API, el frontend sigue con datos de prueba y después reemplaza esa fuente. Yo priorizo que las pantallas funcionen. El precio, el pico y el descuento de socio se acuerdan en esta reunión, pero los aplica el backend: no son un cambio de esta bitácora.
+
+**Problema o bloqueo**
+
+No había una tarea de backend asignada para el endpoint de perfil, así que Mi Perfil no se podía conectar ese día. Canchas tampoco: la API REST seguía en desarrollo. El login real no tiene commit hasta el 03/11.
+
+**Commits**
+
+- _Sin commit propio en esta reunión. El estado quedó en [LOG.md](./LOG.md) (entrada 2026-10-21) y en el acta._
+
+---
+
+#### Sprint 6 — Unidad IV — Semana del 2026-11-02
 
 ##### 2026-11-03  ·  6 h
 
 **Actividad**
 
-Cerré `S4-T15` (`1e5ce18`, PR #49 `461a096` del 07/11) para alinear el redondeo de precios de canchas (punto P7 de la reunión del 21/10 y olor #6 de la planilla). Cambié `Math.round` por redondeo hacia arriba en `PreciosService`, actualicé `precios.service.spec.ts` y actualicé [Propuesta_Reglas_Negocio_S4-T09.md](../rnf/Propuesta_Reglas_Negocio_S4-T09.md) y [Justificacion_Patrones_Unidad_III.md](../../documentacion/Justificacion_Patrones_Unidad_III.md).
+Conecté el portal al backend. El 03/11 cae en la ventana S6 del plan de tres semanas (3–9 nov). `3604833` saca el `console.log` del usuario y de la contraseña, manda el login a `POST /auth/login` con `VITE_API_URL` (`frontend/src/services/api.ts`) y deja `AuthProvider`. `0279fa0` guarda el access token en `sessionStorage`, lo valida con `GET /auth/me` y, si falla, lo borra. También toca `ProtectedRoute`. `f05a897` conecta el alta a `POST /auth/register` y Mi Perfil a `GET` y `PATCH /perfiles/me` (datos personales, sede habitual y preferencia de mail). En el backend ajusté el texto y la validación de ese PATCH: no cambia el rol.
 
 **Decisión**
 
-Pasar el redondeo final a un método privado `redondearAlPesoSuperior(monto)` usando `Math.ceil(Number(monto.toFixed(8)))` en lugar de llamar directo a `Math.ceil(monto)`.
+La sesión de esta fecha queda en `AuthProvider` y en `sessionStorage`, no en un store aparte. El cliente HTTP es uno solo, `api.ts`, y el token viaja en `Authorization`.
 
 **Problema o bloqueo**
 
-Al pasar los tests a `Math.ceil` apareció un error de punto flotante: multiplicaciones que debían dar enteras, como `20000 * 1.14`, resultaban en `22800.000000000004` y `Math.ceil` terminaba devolviendo `$22.801` en vez de `$22.800`. Redondear a 8 decimales con `toFixed(8)` antes de aplicar `Math.ceil` corrigió el problema.
+`ProtectedRoute` y el layout ya están en estos commits, pero el cierre de la tarjeta S5-T08 lo tomó Patricio el 07/11. Lo mismo S4-T04, el estado global. Esas dos no se cierran en esta entrada: la evidencia del cierre está en [LOG-ramos.md](./LOG-ramos.md). Mi Perfil de este día todavía no muestra la membresía.
 
 **Commits**
 
-- `1e5ce18` feat(canchas): alinear regla de redondeo hacia arriba en precios (S4-T15)
-- `461a096` Merge pull request #49 S4-T15
+- `3604833` feat: conecta login de React con NestJS y Supabase
+- `0279fa0` feat: agrega validacion y persistencia de sesion
+- `f05a897` feat: implementa registro de usuarios y perfil con datos reales
 
 ---
 
-#### Sprint 8 — Cierre — Semana del 2026-11-09
+#### Sprint 7 — Cierre — Semana del 2026-11-09
 
 ##### 2026-11-10  ·  8 h
 
@@ -1115,1474 +2399,441 @@ Entre el 21/10 y el 03/11 no hay commit mío: el login real esperaba el `POST /a
 
 - _Cierre de `C-19c` registrado en la rama `c-19c`._
 
+Archivo de origen: `docs/bitacoras/LOG-goncevat.md`.
+
+### Bitácora — Goncevat Matias — Rol P4
+
+Registro individual de Matias Goncevat (P4, QA / DevOps / Mobile). Cada entrada es una sesión de trabajo. En **Commits** van los cambios relevantes de esa sesión y, cuando aplica, el entregable asociado a la tarea. Las horas son estimadas a partir de la duración real de la sesión o del avance registrado en el plan de trabajo.
+
 ---
 
-##### 2026-11-17  ·  C-16
+#### Sprint 1 — Unidad I — Semana del 2026-08-24
+
+##### 2026-08-27  ·  2 h
 
 **Actividad**
 
-Tomé la tarjeta de Lucas y escribí el manual de usuario del Anexo D en `docs/manuales/manual-usuario.md`, rama `C-16`. Recorrí el portal local con el socio, la recepción y el gerente del seed, y dejé cada captura dentro de la sección que explica. El índice de manuales y la fila C-16 del plan de cierre quedaron alineados a ese archivo.
+Revisé el repositorio y el material base del proyecto para dejar claro mi rol dentro del equipo. Participé en la definición inicial del stack, la organización del monorepo y la preparación de la documentación base que luego guiaría las reuniones y la planificación del equipo.
 
 **Decisión**
 
-El manual describe la pantalla que está en `desarrollo`. La agenda de clases queda en la sección 4.2 del Anexo D, con la aclaración de que el enlace **Agenda** lo abre el gerente. Los reportes consolidados se declaran fuera de esta entrega: **Dashboard** no es un panel. La contraseña del seed no se copia: se remite a `SEED_PASSWORD` del README.
+Mi participación debía orientarse a QA / DevOps / Mobile: no solo validar comportamiento, sino dejar el proyecto reproducible y documentado para que el resto pudiera levantarlo y probarlo sin ambigüedades.
 
 **Problema o bloqueo**
 
-La API no arrancó al primer intento porque `pdfkit` no estaba en `node_modules`, aunque ya figuraba en `package.json`. Lo instalé en local para poder sacar las capturas. No cambié dependencias del repositorio.
+El equipo aún estaba definiendo alcance y estructura. La prioridad fue dejar un punto de partida compartido y distinguir claramente lo que correspondía a documentación, backend y frontend.
 
 **Commits**
 
-- `ba82d03` C-16: agrega el manual de usuario con las capturas del sistema.
+- `815179a` Initial commit: add FitZone Sports integrator work document.
+- `e96a34d` Add actor permissions docs and move docs into documentacion/.
 
 ---
 
-##### 2026-11-17  ·  C-23
+#### Sprint 1 — Unidad I — Semana del 2026-08-31
+
+##### 2026-08-31  ·  2 h
 
 **Actividad**
 
-Reescribí el `README.md` de la raíz en el orden del punto 4.1 de los lineamientos: qué es el sistema, el equipo con el autor de Git, cinco pasos con Docker, los cuatro usuarios del seed de entrega, la tabla de ADR, diagramas, manuales y bitácoras, y el estado de la suite. Corrí `npm run test:cov` en `backend/`: 29 suites, 179 tests, 65,15 % de sentencias. El umbral del ADR-008 es 60 %. Dejé la fila C-23 del plan de cierre en finalizado.
+Revisé las decisiones pendientes del proyecto y ayudé a cerrar la comprensión del alcance de la primera entrega. En ese marco dejé consignados los puntos de decisión y los riesgos de alcance para que el equipo no repitiera discusiones previas.
 
 **Decisión**
 
-Los cinco pasos son los de Docker (`docker compose up --build` y el perfil `seed`). La contraseña que publica el README es `fitzone-demo`, el valor de `SEED_PASSWORD` en `.env.docker.example`, porque el punto 4.1 pide las credenciales de prueba. El porcentaje es el de esta corrida, no el 63,93 % de C-10.
+La revisión de decisiones pendientes debía ser parte de la base del trabajo y no una tarea opcional. De esa manera, cada propuesta se contrastaba con el contexto real del proyecto y con los requisitos del docente.
 
 **Problema o bloqueo**
 
-Ninguno de la redacción. Sin las tres claves de Supabase el login no funciona: el README nombra las variables y deja las claves fuera del repositorio.
+Había varias decisiones de negocio y arquitectura dispersas en documentos. La tarea central era no perder contexto y evitar que cada integrante interpretara distinto la misma decisión.
 
 **Commits**
 
-- `b8d14af` C-23: reescribe el README de la raíz según el punto 4.1.
+- `c8836ba` Add stack, C4, ADRs and pending decisions docs.
+- `789657b` Add 2-week work plan and doc updates from professor feedback.
 
 ---
 
-#### Sprint 8 — Cierre — Semana del 2026-11-09
+#### Sprint 2 — Unidad I — Semana del 2026-09-14
+
+##### 2026-09-19  ·  2 h
+
+**Actividad**
+
+Ajusté el plan de trabajo con las tareas que le correspondían a mi rol. En particular, completé la tabla de integrantes y la organización del monorepo, dejando explícito quién era responsable de infraestructura, QA y documentación.
+
+**Decisión**
+
+El trabajo de infraestructura y control de calidad debía quedar visible dentro del plan, no como soporte tácito. Así, la parte de reproducibilidad y pruebas no quedaba diluida entre backend y frontend.
+
+**Problema o bloqueo**
+
+No había una convención clara para carpetas, roles y responsabilidades. Sin esa base, la coordinación y la trazabilidad de tareas quedaban frágiles.
+
+**Commits**
+
+- `3bbf2e3` Reconstrucción del plan de organización del monorepo y tabla de integrantes.
+
+---
+
+#### Sprint 2 — Unidad II — Semana del 2026-09-21
+
+##### 2026-09-26  ·  1 h
+
+**Actividad**
+
+Validé la experiencia de inicio del proyecto en local y reforcé la documentación de levantamiento. Mi foco estuvo en la parte operativa: qué hacía falta para clonar, configurar variables de entorno y probar el login desde una instalación limpia.
+
+**Decisión**
+
+La documentación de setup debía quedar en un README claro y reproducible, porque el proyecto crecía y cualquier bloqueo operativo podía frenar a todo el equipo.
+
+**Problema o bloqueo**
+
+La base todavía no estaba armonizada entre backend y frontend. La falta de un README operativo era un riesgo real para la prueba manual y para la integración del equipo.
+
+**Commits**
+
+- `c0d7b2b` Reconstrucción del README y checklist de setup local.
+
+---
+
+#### Sprint 3 — Unidad II — Semana del 2026-10-05
+
+##### 2026-10-08  ·  3 h
+
+**Actividad**
+
+Probé el backend y el flujo de login en local para confirmar el funcionamiento real del endpoint y dejar evidencia de la integración mínima. Este trabajo me permitió detectar qué faltaba para que el frontend consumiera la API sin depender de datos mockeados.
+
+**Decisión**
+
+La prueba funcional debía quedar documentada con resultados concretos, no solo con “funciona en mi máquina”. Eso ayudó a ordenar el trabajo de QA y dejaba una base más sólida para la siguiente etapa.
+
+**Problema o bloqueo**
+
+El endpoint de login estaba operativo, pero la base de datos de Supabase asociada al proyecto no tenía sedes cargadas. Eso hacía que la prueba del backend mostrara un resultado correcto en el endpoint auth, pero incompleto para la experiencia real del usuario.
+
+**Commits**
+
+- `e397f8e` Setup inicial de testing E2E y documentación base del proyecto.
+- `2ebc6b3` Validación de login y endpoints con evidencia de prueba.
+
+---
+
+#### Sprint 4 — Unidad III — Semana del 2026-10-12
+
+##### 2026-10-15  ·  3 h
+
+**Actividad**
+
+Preparé el setup inicial de testing E2E y reforcé la documentación del proyecto para que el equipo pudiera validar de forma más consistente el flujo de login y el consumo del backend. La prioridad fue dejar herramientas de integración sin depender de la depuración manual constante.
+
+**Decisión**
+
+La automatización del QA no es un extra: es un criterio de estabilidad. Si no hay pruebas reproducibles, los cambios quedan sujetos a la memoria del equipo y no a evidencia.
+
+**Problema o bloqueo**
+
+El frontend comenzó a crecer y el backend no siempre respondía con datos reales. La ausencia de una base de pruebas E2E hacía que cada cambio fuera más difícil de validar con certeza.
+
+**Commits**
+
+- `e397f8e` Setup inicial de testing E2E y documentación del proyecto.
+
+---
+
+#### Sprint 5 — Unidad III — Semana del 2026-10-19
+
+##### 2026-10-22  ·  2 h
+
+**Actividad**
+
+Actualicé el plan de trabajo y el LOG con el contenido de la semana 5. Mi tarea central fue dejar alineado el seguimiento del equipo con la nueva propuesta de tres semanas, incorporando responsables, estados y tareas pendientes por rol.
+
+**Decisión**
+
+El registro debía reflejar el estado real del proyecto y no solo la agenda ideal. Si el plan se desalineaba, la trazabilidad y la entrega se volvía más difícil.
+
+**Problema o bloqueo**
+
+Había varios planes superpuestos y varias tareas sin estado claro. El trabajo de coordinación era separar lo resuelto de lo que seguía en curso y dejarlo visible para el equipo.
+
+**Commits**
+
+- `97483c2` Actualización del plan de trabajo y del LOG con contenido de la semana 5.
+
+---
+
+#### Sprint 5 — Unidad III — Semana del 2026-10-26
+
+##### 2026-11-01  ·  4 h
+
+**Actividad**
+
+Integré pruebas de Postman y ajusté aspectos de backend y documentación relacionados con canchas. Luego me enfoqué en la parte de CI, corrigiendo la configuración de Jest y el workflow de GitHub Actions para que la suite pudiera ejecutarse en entorno de integración sin errores de ESM ni rutas internas.
+
+**Decisión**
+
+La calidad no se prueba solo con “login manual”, sino también con automatización y observabilidad en CI. El proyecto necesitaba un flujo verificable para que los cambios no se rompieran por detalles del entorno.
+
+**Problema o bloqueo**
+
+El workflow de GitHub Actions no soportaba bien la configuración de Jest con módulos ESM, y eso dejaba la CI frágil. Tuve que corregir la configuración y revisar la ejecución real de tests para no dejar un pipeline falso positivo.
+
+**Commits**
+
+- `2c03798` Incorporación de tests de Postman, ajustes de backend y documentación de canchas.
+- `6582367` Fix(ci): utilizar npm test en el workflow de GitHub Actions.
+- `79d8eb2` Fix(ci): corregir el comando de tests para soportar ESM.
+- `fd89acd` Fix(ci): inyectar NODE_OPTIONS experimental-vm-modules para Jest.
+- `6c5b289` Fix(ci): unificar configuración de Jest y workflow.
+
+---
+
+#### Sprint 5 — Unidad III — Semana del 2026-11-05
+
+##### 2026-11-05  ·  2 h
+
+**Actividad**
+
+Ajusté el plan vigente adoptando la propuesta de 3 semanas y dejé el checklist de cuentas de GitHub, Supabase y Vercel en una forma visible para todo el equipo. Eso me permitió cerrar la parte operativa de la semana y dejar más clara la coordinación de la entrega.
+
+**Decisión**
+
+El plan de trabajo debía reflejar responsabilidades concretas del equipo y no solo tareas generales. El checklist de accesos es parte de la operación del proyecto y evita bloqueos de coordinación durante la entrega.
+
+**Problema o bloqueo**
+
+El equipo aún tenía dudas sobre quién administraba cada cuenta y dónde quedaban los accesos del proyecto. Eso podía generar dependencia puntual y fricción durante la ejecución del trabajo.
+
+**Commits**
+
+- `5d934bc` S5-T10/S5-T11: adoptar plan de 3 semanas y registrar checklist de cuentas.
+
+---
+
+#### Sprint 6 — Cierre y documentación — Semana del 2026-11-13
 
 ##### 2026-11-13  ·  3 h
 
 **Actividad**
 
-Integré `C-09` en `desarrollo` (`5546109`) y escribí esta bitácora (`C-19b`) en `docs/bitacoras/LOG-conti.md` cruzando el historial de commits, las actas y los planes. También actualicé el índice de [`docs/bitacoras/README.md`](./README.md) y los estados de `C-09` y `C-19b` en los documentos de planificación.
+Revisé la documentación del proyecto y dejé cerrada la evidencia de trabajo de QA / DevOps y coordinación para la etapa final. Mi foco fue asegurar que el estado real del proyecto quedara visible y no solo la intención de trabajo.
 
 **Decisión**
 
-Citar todas las sesiones con los hashes reales (juntando los commits hechos como `bruno` y los merges de PR como `Bruno Nicolás Conti`) sin reescribir citas previas de ADR, que ya cuentan con la tabla de equivalencias en [docs/adr/README.md](../adr/README.md).
+La bitácora y la documentación deben quedar como evidencia objetiva: no solo de tareas sin misión, sino de decisiones, bloqueos y entregables que resolvieron problemas reales del proyecto.
 
 **Problema o bloqueo**
 
-Al cruzar mis commits contra los planes del 11/11 noté que `C-09` seguía figurando *En desarrollo* aunque ya estaba mergeada en `5546109`, y que mis commits aparecían bajo dos nombres de autor distintos en Git. Dejé ambos puntos alineados en esta sesión.
+El proyecto tenía varias líneas de trabajo avanzando en paralelo y resultaba clave dejar en un mismo documento la evidencia de pruebas, CI, documentación y coordinación para no perder contexto de entrega.
 
 **Commits**
 
-- `5546109` C-09
+- `66c4562` C-19d: agrega bitácora individual de Matias Goncevat con entradas, actividad, decisiones, bloqueos, commits y horas.
+- `cccc91c` docs: completa planificación (§5.6), EDT, trazabilidad, riesgos y Anexos G/H [C-20].
+- `4d386df` C-17: [manual de instalación y operación](../manuales/manual-instalacion-operacion.md), con requisitos, entorno, seed, arranque local, operación y contingencias.
 
 ---
 
-#### Sprint 8 — Cierre — Semana del 2026-11-16
+#### Sprint 6 — Cierre y documentación — Semana del 2026-11-17
 
-##### 2026-11-17  ·  4 h
+##### 2026-11-17  ·  5 h
 
 **Actividad**
 
-Implementé y subí la tarea `C-04` (`64e84b1`, rama `c-04`) para cubrir RF-14 (comprobante PDF no fiscal post-pago). Agregué `pdfkit` en el backend, armé las consultas de lectura en `PagosRepository`, generé los PDF con Template Method en `backend/src/pagos/comprobantes/` (`ComprobantePdfTemplate` para `ComprobanteReservaPdf` y `ComprobanteMembresiaPdf`), expuse `GET /pagos/mios`, `GET /pagos/:id/comprobante` y `GET /canchas/reservas/:id/comprobante` con `JwtAuthGuard`, y sumé descarga firmada por HMAC en la pantalla de pago aprobado de la pasarela simulada (`/pasarela-simulada/comprobante/:pagoId`).
+Cerré la tarea C-10 de suite verde, cobertura y umbral de ADR-008. Verifiqué que los 173 tests del backend pasaran (28 suites) y que la cobertura global de sentencias quedara en 63.93 %, por encima del 60 % exigido por el ADR-008. Ajusté `backend/jest.config.ts` para imponer `coverageThreshold` y actualicé `.github/workflows/ci-backend.yml` para que la pipeline corra `npm run test:cov -- --runInBand` y falle si cae por debajo del umbral. También dejé la evidencia final del cierre de la bitácora individual y registré la revisión del cierre de la pantalla Clases (C-11) dentro de la documentación del proyecto.
 
-En el frontend agregué `frontend/src/services/pagos.ts` y conecté los botones de descarga en `Canchas.tsx` (reserva confirmada y Mis reservas) y en `Perfil.tsx` (Mi membresía). También sumé tests unitarios (`comprobantes.service.spec.ts`), e2e (`test/comprobantes.e2e-spec.ts`), regeneré `backend/swagger.json` y actualicé la nota de Template Method en [Justificacion_Patrones_Unidad_III.md](../../documentacion/Justificacion_Patrones_Unidad_III.md) y [LOG.md](./LOG.md).
-
-**Decisión**
-
-Aplicar **Template Method** (`ComprobantePdfTemplate`) para compartir encabezado, titular, monto y leyenda no fiscal entre el comprobante de reserva de cancha y el de membresía, tal como estaba planteado en la justificación de Unidad III desde que `C-30` incorporó el cobro de membresías en `pagos`. Para la descarga directa desde la pantalla de resultado de la pasarela simulada usé una firma HMAC-SHA256 verificada con `timingSafeEqual`, ya que esa ruta HTML pública no lleva el JWT de la SPA.
-
-**Problema o bloqueo**
-
-Al agregar `cargarPagos` en `Perfil.tsx`, ESLint (`react-hooks/immutability`) falló porque la función había quedado declarada después del `useEffect` que la invocaba; se resolvió moviéndola arriba del efecto. En las pruebas locales dentro del entorno restringido, los e2e con Supertest requerían abrir sockets locales en `127.0.0.1`, por lo que se validaron fuera del aislamiento obteniendo 12/12 suites y 49/49 tests en verde (además de 29/29 suites unitarias y > 65 % de cobertura cumpliendo ADR-008).
-
-**Commits**
-
-- `64e84b1` C-04: Comprobante PDF Post-Pago (RF-14)
-- _Cierre de `C-19b` registrado en la rama `c-19b`._
-
----
-
-##### 2026-11-17  ·  C-16
-
-**Actividad**
-
-Tomé la tarjeta de Lucas y escribí el manual de usuario del Anexo D en `docs/manuales/manual-usuario.md`, rama `C-16`. Recorrí el portal local con el socio, la recepción y el gerente del seed, y dejé cada captura dentro de la sección que explica. El índice de manuales y la fila C-16 del plan de cierre quedaron alineados a ese archivo.
-
-**Decisión**
-
-El manual describe la pantalla que está en `desarrollo`. La agenda de clases queda en la sección 4.2 del Anexo D, con la aclaración de que el enlace **Agenda** lo abre el gerente. Los reportes consolidados se declaran fuera de esta entrega: **Dashboard** no es un panel. La contraseña del seed no se copia: se remite a `SEED_PASSWORD` del README.
-
-**Problema o bloqueo**
-
-La API no arrancó al primer intento porque `pdfkit` no estaba en `node_modules`, aunque ya figuraba en `package.json`. Lo instalé en local para poder sacar las capturas. No cambié dependencias del repositorio.
-
-**Commits**
-
-- `ba82d03` C-16: agrega el manual de usuario con las capturas del sistema.
-
----
-
-##### 2026-11-17  ·  C-23
-
-**Actividad**
-
-Reescribí el `README.md` de la raíz en el orden del punto 4.1 de los lineamientos: qué es el sistema, el equipo con el autor de Git, cinco pasos con Docker, los cuatro usuarios del seed de entrega, la tabla de ADR, diagramas, manuales y bitácoras, y el estado de la suite. Corrí `npm run test:cov` en `backend/`: 29 suites, 179 tests, 65,15 % de sentencias. El umbral del ADR-008 es 60 %. Dejé la fila C-23 del plan de cierre en finalizado.
-
-**Decisión**
-
-Los cinco pasos son los de Docker (`docker compose up --build` y el perfil `seed`). La contraseña que publica el README es `fitzone-demo`, el valor de `SEED_PASSWORD` en `.env.docker.example`, porque el punto 4.1 pide las credenciales de prueba. El porcentaje es el de esta corrida, no el 63,93 % de C-10.
-
-**Problema o bloqueo**
-
-Ninguno de la redacción. Sin las tres claves de Supabase el login no funciona: el README nombra las variables y deja las claves fuera del repositorio.
-
-**Commits**
-
-- `b8d14af` C-23: reescribe el README de la raíz según el punto 4.1.
-
----
-
-#### Sprint 8 — Cierre — Semana del 2026-11-09
-
-##### 2026-11-13  ·  3 h
-
-**Actividad**
-
-Integré `C-09` en `desarrollo` (`5546109`) y escribí esta bitácora (`C-19b`) en `docs/bitacoras/LOG-conti.md` cruzando el historial de commits, las actas y los planes. También actualicé el índice de [`docs/bitacoras/README.md`](./README.md) y los estados de `C-09` y `C-19b` en los documentos de planificación.
-
-**Decisión**
-
-Citar todas las sesiones con los hashes reales (juntando los commits hechos como `bruno` y los merges de PR como `Bruno Nicolás Conti`) sin reescribir citas previas de ADR, que ya cuentan con la tabla de equivalencias en [docs/adr/README.md](../adr/README.md).
-
-**Problema o bloqueo**
-
-Al cruzar mis commits contra los planes del 11/11 noté que `C-09` seguía figurando *En desarrollo* aunque ya estaba mergeada en `5546109`, y que mis commits aparecían bajo dos nombres de autor distintos en Git. Dejé ambos puntos alineados en esta sesión.
-
-**Commits**
-
-- `5546109` C-09
-
----
-
-#### Sprint 8 — Cierre — Semana del 2026-11-16
-
-##### 2026-11-17  ·  4 h
-
-**Actividad**
-
-Implementé y subí la tarea `C-04` (`64e84b1`, rama `c-04`) para cubrir RF-14 (comprobante PDF no fiscal post-pago). Agregué `pdfkit` en el backend, armé las consultas de lectura en `PagosRepository`, generé los PDF con Template Method en `backend/src/pagos/comprobantes/` (`ComprobantePdfTemplate` para `ComprobanteReservaPdf` y `ComprobanteMembresiaPdf`), expuse `GET /pagos/mios`, `GET /pagos/:id/comprobante` y `GET /canchas/reservas/:id/comprobante` con `JwtAuthGuard`, y sumé descarga firmada por HMAC en la pantalla de pago aprobado de la pasarela simulada (`/pasarela-simulada/comprobante/:pagoId`).
-
-En el frontend agregué `frontend/src/services/pagos.ts` y conecté los botones de descarga en `Canchas.tsx` (reserva confirmada y Mis reservas) y en `Perfil.tsx` (Mi membresía). También sumé tests unitarios (`comprobantes.service.spec.ts`), e2e (`test/comprobantes.e2e-spec.ts`), regeneré `backend/swagger.json` y actualicé la nota de Template Method en [Justificacion_Patrones_Unidad_III.md](../../documentacion/Justificacion_Patrones_Unidad_III.md) y [LOG.md](./LOG.md).
-
-**Decisión**
-
-Aplicar **Template Method** (`ComprobantePdfTemplate`) para compartir encabezado, titular, monto y leyenda no fiscal entre el comprobante de reserva de cancha y el de membresía, tal como estaba planteado en la justificación de Unidad III desde que `C-30` incorporó el cobro de membresías en `pagos`. Para la descarga directa desde la pantalla de resultado de la pasarela simulada usé una firma HMAC-SHA256 verificada con `timingSafeEqual`, ya que esa ruta HTML pública no lleva el JWT de la SPA.
-
-**Problema o bloqueo**
-
-Al agregar `cargarPagos` en `Perfil.tsx`, ESLint (`react-hooks/immutability`) falló porque la función había quedado declarada después del `useEffect` que la invocaba; se resolvió moviéndola arriba del efecto. En las pruebas locales dentro del entorno restringido, los e2e con Supertest requerían abrir sockets locales en `127.0.0.1`, por lo que se validaron fuera del aislamiento obteniendo 12/12 suites y 49/49 tests en verde (además de 29/29 suites unitarias y > 65 % de cobertura cumpliendo ADR-008).
-
-**Commits**
-
-- `64e84b1` C-04: Comprobante PDF Post-Pago (RF-14)
-- _Cierre de `C-19b` registrado en la rama `c-19b`._
-
----
-
-##### 2026-11-17  ·  C-16
-
-**Actividad**
-
-Tomé la tarjeta de Lucas y escribí el manual de usuario del Anexo D en `docs/manuales/manual-usuario.md`, rama `C-16`. Recorrí el portal local con el socio, la recepción y el gerente del seed, y dejé cada captura dentro de la sección que explica. El índice de manuales y la fila C-16 del plan de cierre quedaron alineados a ese archivo.
-
-**Decisión**
-
-El manual describe la pantalla que está en `desarrollo`. La agenda de clases queda en la sección 4.2 del Anexo D, con la aclaración de que el enlace **Agenda** lo abre el gerente. Los reportes consolidados se declaran fuera de esta entrega: **Dashboard** no es un panel. La contraseña del seed no se copia: se remite a `SEED_PASSWORD` del README.
-
-**Problema o bloqueo**
-
-La API no arrancó al primer intento porque `pdfkit` no estaba en `node_modules`, aunque ya figuraba en `package.json`. Lo instalé en local para poder sacar las capturas. No cambié dependencias del repositorio.
-
-**Commits**
-
-- `ba82d03` C-16: agrega el manual de usuario con las capturas del sistema.
-
----
-
-##### 2026-11-17  ·  C-23
-
-**Actividad**
-
-Reescribí el `README.md` de la raíz en el orden del punto 4.1 de los lineamientos: qué es el sistema, el equipo con el autor de Git, cinco pasos con Docker, los cuatro usuarios del seed de entrega, la tabla de ADR, diagramas, manuales y bitácoras, y el estado de la suite. Corrí `npm run test:cov` en `backend/`: 29 suites, 179 tests, 65,15 % de sentencias. El umbral del ADR-008 es 60 %. Dejé la fila C-23 del plan de cierre en finalizado.
-
-**Decisión**
-
-Los cinco pasos son los de Docker (`docker compose up --build` y el perfil `seed`). La contraseña que publica el README es `fitzone-demo`, el valor de `SEED_PASSWORD` en `.env.docker.example`, porque el punto 4.1 pide las credenciales de prueba. El porcentaje es el de esta corrida, no el 63,93 % de C-10.
-
-**Problema o bloqueo**
-
-Ninguno de la redacción. Sin las tres claves de Supabase el login no funciona: el README nombra las variables y deja las claves fuera del repositorio.
-
-**Commits**
-
-- `b8d14af` C-23: reescribe el README de la raíz según el punto 4.1.
-
----
-
-#### Sprint 8 — Cierre — Semana del 2026-11-09
-
-##### 2026-11-13  ·  3 h
-
-**Actividad**
-
-Integré `C-09` en `desarrollo` (`5546109`) y escribí esta bitácora (`C-19b`) en `docs/bitacoras/LOG-conti.md` cruzando el historial de commits, las actas y los planes. También actualicé el índice de [`docs/bitacoras/README.md`](./README.md) y los estados de `C-09` y `C-19b` en los documentos de planificación.
-
-**Decisión**
-
-Citar todas las sesiones con los hashes reales (juntando los commits hechos como `bruno` y los merges de PR como `Bruno Nicolás Conti`) sin reescribir citas previas de ADR, que ya cuentan con la tabla de equivalencias en [docs/adr/README.md](../adr/README.md).
-
-**Problema o bloqueo**
-
-Al cruzar mis commits contra los planes del 11/11 noté que `C-09` seguía figurando *En desarrollo* aunque ya estaba mergeada en `5546109`, y que mis commits aparecían bajo dos nombres de autor distintos en Git. Dejé ambos puntos alineados en esta sesión.
-
-**Commits**
-
-- `5546109` C-09
-
----
-
-#### Sprint 8 — Cierre — Semana del 2026-11-16
-
-##### 2026-11-17  ·  4 h
-
-**Actividad**
-
-Implementé y subí la tarea `C-04` (`64e84b1`, rama `c-04`) para cubrir RF-14 (comprobante PDF no fiscal post-pago). Agregué `pdfkit` en el backend, armé las consultas de lectura en `PagosRepository`, generé los PDF con Template Method en `backend/src/pagos/comprobantes/` (`ComprobantePdfTemplate` para `ComprobanteReservaPdf` y `ComprobanteMembresiaPdf`), expuse `GET /pagos/mios`, `GET /pagos/:id/comprobante` y `GET /canchas/reservas/:id/comprobante` con `JwtAuthGuard`, y sumé descarga firmada por HMAC en la pantalla de pago aprobado de la pasarela simulada (`/pasarela-simulada/comprobante/:pagoId`).
-
-En el frontend agregué `frontend/src/services/pagos.ts` y conecté los botones de descarga en `Canchas.tsx` (reserva confirmada y Mis reservas) y en `Perfil.tsx` (Mi membresía). También sumé tests unitarios (`comprobantes.service.spec.ts`), e2e (`test/comprobantes.e2e-spec.ts`), regeneré `backend/swagger.json` y actualicé la nota de Template Method en [Justificacion_Patrones_Unidad_III.md](../../documentacion/Justificacion_Patrones_Unidad_III.md) y [LOG.md](./LOG.md).
-
-**Decisión**
-
-Aplicar **Template Method** (`ComprobantePdfTemplate`) para compartir encabezado, titular, monto y leyenda no fiscal entre el comprobante de reserva de cancha y el de membresía, tal como estaba planteado en la justificación de Unidad III desde que `C-30` incorporó el cobro de membresías en `pagos`. Para la descarga directa desde la pantalla de resultado de la pasarela simulada usé una firma HMAC-SHA256 verificada con `timingSafeEqual`, ya que esa ruta HTML pública no lleva el JWT de la SPA.
-
-**Problema o bloqueo**
-
-Al agregar `cargarPagos` en `Perfil.tsx`, ESLint (`react-hooks/immutability`) falló porque la función había quedado declarada después del `useEffect` que la invocaba; se resolvió moviéndola arriba del efecto. En las pruebas locales dentro del entorno restringido, los e2e con Supertest requerían abrir sockets locales en `127.0.0.1`, por lo que se validaron fuera del aislamiento obteniendo 12/12 suites y 49/49 tests en verde (además de 29/29 suites unitarias y > 65 % de cobertura cumpliendo ADR-008).
-
-**Commits**
-
-- `64e84b1` C-04: Comprobante PDF Post-Pago (RF-14)
-- _Cierre de `C-19b` registrado en la rama `c-19b`._
-
----
-
-##### 2026-11-17  ·  C-16
-
-**Actividad**
-
-Tomé la tarjeta de Lucas y escribí el manual de usuario del Anexo D en `docs/manuales/manual-usuario.md`, rama `C-16`. Recorrí el portal local con el socio, la recepción y el gerente del seed, y dejé cada captura dentro de la sección que explica. El índice de manuales y la fila C-16 del plan de cierre quedaron alineados a ese archivo.
-
-**Decisión**
-
-El manual describe la pantalla que está en `desarrollo`. La agenda de clases queda en la sección 4.2 del Anexo D, con la aclaración de que el enlace **Agenda** lo abre el gerente. Los reportes consolidados se declaran fuera de esta entrega: **Dashboard** no es un panel. La contraseña del seed no se copia: se remite a `SEED_PASSWORD` del README.
-
-**Problema o bloqueo**
-
-La API no arrancó al primer intento porque `pdfkit` no estaba en `node_modules`, aunque ya figuraba en `package.json`. Lo instalé en local para poder sacar las capturas. No cambié dependencias del repositorio.
-
-**Commits**
-
-- `ba82d03` C-16: agrega el manual de usuario con las capturas del sistema.
-
----
-
-##### 2026-11-17  ·  C-23
-
-**Actividad**
-
-Reescribí el `README.md` de la raíz en el orden del punto 4.1 de los lineamientos: qué es el sistema, el equipo con el autor de Git, cinco pasos con Docker, los cuatro usuarios del seed de entrega, la tabla de ADR, diagramas, manuales y bitácoras, y el estado de la suite. Corrí `npm run test:cov` en `backend/`: 29 suites, 179 tests, 65,15 % de sentencias. El umbral del ADR-008 es 60 %. Dejé la fila C-23 del plan de cierre en finalizado.
-
-**Decisión**
-
-Los cinco pasos son los de Docker (`docker compose up --build` y el perfil `seed`). La contraseña que publica el README es `fitzone-demo`, el valor de `SEED_PASSWORD` en `.env.docker.example`, porque el punto 4.1 pide las credenciales de prueba. El porcentaje es el de esta corrida, no el 63,93 % de C-10.
-
-**Problema o bloqueo**
-
-Ninguno de la redacción. Sin las tres claves de Supabase el login no funciona: el README nombra las variables y deja las claves fuera del repositorio.
-
-**Commits**
-
-- `b8d14af` C-23: reescribe el README de la raíz según el punto 4.1.
-
----
-
-#### Sprint 8 — Cierre — Semana del 2026-11-09
-
-##### 2026-11-13  ·  3 h
-
-**Actividad**
-
-Integré `C-09` en `desarrollo` (`5546109`) y escribí esta bitácora (`C-19b`) en `docs/bitacoras/LOG-conti.md` cruzando el historial de commits, las actas y los planes. También actualicé el índice de [`docs/bitacoras/README.md`](./README.md) y los estados de `C-09` y `C-19b` en los documentos de planificación.
-
-**Decisión**
-
-Citar todas las sesiones con los hashes reales (juntando los commits hechos como `bruno` y los merges de PR como `Bruno Nicolás Conti`) sin reescribir citas previas de ADR, que ya cuentan con la tabla de equivalencias en [docs/adr/README.md](../adr/README.md).
-
-**Problema o bloqueo**
-
-Al cruzar mis commits contra los planes del 11/11 noté que `C-09` seguía figurando *En desarrollo* aunque ya estaba mergeada en `5546109`, y que mis commits aparecían bajo dos nombres de autor distintos en Git. Dejé ambos puntos alineados en esta sesión.
-
-**Commits**
-
-- `5546109` C-09
-
----
-
-#### Sprint 8 — Cierre — Semana del 2026-11-16
-
-##### 2026-11-17  ·  4 h
-
-**Actividad**
-
-Implementé y subí la tarea `C-04` (`64e84b1`, rama `c-04`) para cubrir RF-14 (comprobante PDF no fiscal post-pago). Agregué `pdfkit` en el backend, armé las consultas de lectura en `PagosRepository`, generé los PDF con Template Method en `backend/src/pagos/comprobantes/` (`ComprobantePdfTemplate` para `ComprobanteReservaPdf` y `ComprobanteMembresiaPdf`), expuse `GET /pagos/mios`, `GET /pagos/:id/comprobante` y `GET /canchas/reservas/:id/comprobante` con `JwtAuthGuard`, y sumé descarga firmada por HMAC en la pantalla de pago aprobado de la pasarela simulada (`/pasarela-simulada/comprobante/:pagoId`).
-
-En el frontend agregué `frontend/src/services/pagos.ts` y conecté los botones de descarga en `Canchas.tsx` (reserva confirmada y Mis reservas) y en `Perfil.tsx` (Mi membresía). También sumé tests unitarios (`comprobantes.service.spec.ts`), e2e (`test/comprobantes.e2e-spec.ts`), regeneré `backend/swagger.json` y actualicé la nota de Template Method en [Justificacion_Patrones_Unidad_III.md](../../documentacion/Justificacion_Patrones_Unidad_III.md) y [LOG.md](./LOG.md).
-
-**Decisión**
-
-Aplicar **Template Method** (`ComprobantePdfTemplate`) para compartir encabezado, titular, monto y leyenda no fiscal entre el comprobante de reserva de cancha y el de membresía, tal como estaba planteado en la justificación de Unidad III desde que `C-30` incorporó el cobro de membresías en `pagos`. Para la descarga directa desde la pantalla de resultado de la pasarela simulada usé una firma HMAC-SHA256 verificada con `timingSafeEqual`, ya que esa ruta HTML pública no lleva el JWT de la SPA.
-
-**Problema o bloqueo**
-
-Al agregar `cargarPagos` en `Perfil.tsx`, ESLint (`react-hooks/immutability`) falló porque la función había quedado declarada después del `useEffect` que la invocaba; se resolvió moviéndola arriba del efecto. En las pruebas locales dentro del entorno restringido, los e2e con Supertest requerían abrir sockets locales en `127.0.0.1`, por lo que se validaron fuera del aislamiento obteniendo 12/12 suites y 49/49 tests en verde (además de 29/29 suites unitarias y > 65 % de cobertura cumpliendo ADR-008).
-
-**Commits**
-
-- `64e84b1` C-04: Comprobante PDF Post-Pago (RF-14)
-- _Cierre de `C-19b` registrado en la rama `c-19b`._
-
----
-
-##### 2026-11-17  ·  C-16
-
-**Actividad**
-
-Tomé la tarjeta de Lucas y escribí el manual de usuario del Anexo D en `docs/manuales/manual-usuario.md`, rama `C-16`. Recorrí el portal local con el socio, la recepción y el gerente del seed, y dejé cada captura dentro de la sección que explica. El índice de manuales y la fila C-16 del plan de cierre quedaron alineados a ese archivo.
-
-**Decisión**
-
-El manual describe la pantalla que está en `desarrollo`. La agenda de clases queda en la sección 4.2 del Anexo D, con la aclaración de que el enlace **Agenda** lo abre el gerente. Los reportes consolidados se declaran fuera de esta entrega: **Dashboard** no es un panel. La contraseña del seed no se copia: se remite a `SEED_PASSWORD` del README.
-
-**Problema o bloqueo**
-
-La API no arrancó al primer intento porque `pdfkit` no estaba en `node_modules`, aunque ya figuraba en `package.json`. Lo instalé en local para poder sacar las capturas. No cambié dependencias del repositorio.
-
-**Commits**
-
-- `ba82d03` C-16: agrega el manual de usuario con las capturas del sistema.
-
----
-
-##### 2026-11-17  ·  C-23
-
-**Actividad**
-
-Reescribí el `README.md` de la raíz en el orden del punto 4.1 de los lineamientos: qué es el sistema, el equipo con el autor de Git, cinco pasos con Docker, los cuatro usuarios del seed de entrega, la tabla de ADR, diagramas, manuales y bitácoras, y el estado de la suite. Corrí `npm run test:cov` en `backend/`: 29 suites, 179 tests, 65,15 % de sentencias. El umbral del ADR-008 es 60 %. Dejé la fila C-23 del plan de cierre en finalizado.
-
-**Decisión**
-
-Los cinco pasos son los de Docker (`docker compose up --build` y el perfil `seed`). La contraseña que publica el README es `fitzone-demo`, el valor de `SEED_PASSWORD` en `.env.docker.example`, porque el punto 4.1 pide las credenciales de prueba. El porcentaje es el de esta corrida, no el 63,93 % de C-10.
-
-**Problema o bloqueo**
-
-Ninguno de la redacción. Sin las tres claves de Supabase el login no funciona: el README nombra las variables y deja las claves fuera del repositorio.
-
-**Commits**
-
-- `b8d14af` C-23: reescribe el README de la raíz según el punto 4.1.
-
----
-
-#### Sprint 8 — Cierre — Semana del 2026-11-09
-
-##### 2026-11-13  ·  3 h
-
-**Actividad**
-
-Integré `C-09` en `desarrollo` (`5546109`) y escribí esta bitácora (`C-19b`) en `docs/bitacoras/LOG-conti.md` cruzando el historial de commits, las actas y los planes. También actualicé el índice de [`docs/bitacoras/README.md`](./README.md) y los estados de `C-09` y `C-19b` en los documentos de planificación.
-
-**Decisión**
-
-Citar todas las sesiones con los hashes reales (juntando los commits hechos como `bruno` y los merges de PR como `Bruno Nicolás Conti`) sin reescribir citas previas de ADR, que ya cuentan con la tabla de equivalencias en [docs/adr/README.md](../adr/README.md).
-
-**Problema o bloqueo**
-
-Al cruzar mis commits contra los planes del 11/11 noté que `C-09` seguía figurando *En desarrollo* aunque ya estaba mergeada en `5546109`, y que mis commits aparecían bajo dos nombres de autor distintos en Git. Dejé ambos puntos alineados en esta sesión.
-
-**Commits**
-
-- `5546109` C-09
-
----
-
-#### Sprint 8 — Cierre — Semana del 2026-11-16
-
-##### 2026-11-17  ·  4 h
-
-**Actividad**
-
-Implementé y subí la tarea `C-04` (`64e84b1`, rama `c-04`) para cubrir RF-14 (comprobante PDF no fiscal post-pago). Agregué `pdfkit` en el backend, armé las consultas de lectura en `PagosRepository`, generé los PDF con Template Method en `backend/src/pagos/comprobantes/` (`ComprobantePdfTemplate` para `ComprobanteReservaPdf` y `ComprobanteMembresiaPdf`), expuse `GET /pagos/mios`, `GET /pagos/:id/comprobante` y `GET /canchas/reservas/:id/comprobante` con `JwtAuthGuard`, y sumé descarga firmada por HMAC en la pantalla de pago aprobado de la pasarela simulada (`/pasarela-simulada/comprobante/:pagoId`).
-
-En el frontend agregué `frontend/src/services/pagos.ts` y conecté los botones de descarga en `Canchas.tsx` (reserva confirmada y Mis reservas) y en `Perfil.tsx` (Mi membresía). También sumé tests unitarios (`comprobantes.service.spec.ts`), e2e (`test/comprobantes.e2e-spec.ts`), regeneré `backend/swagger.json` y actualicé la nota de Template Method en [Justificacion_Patrones_Unidad_III.md](../../documentacion/Justificacion_Patrones_Unidad_III.md) y [LOG.md](./LOG.md).
-
-**Decisión**
-
-Aplicar **Template Method** (`ComprobantePdfTemplate`) para compartir encabezado, titular, monto y leyenda no fiscal entre el comprobante de reserva de cancha y el de membresía, tal como estaba planteado en la justificación de Unidad III desde que `C-30` incorporó el cobro de membresías en `pagos`. Para la descarga directa desde la pantalla de resultado de la pasarela simulada usé una firma HMAC-SHA256 verificada con `timingSafeEqual`, ya que esa ruta HTML pública no lleva el JWT de la SPA.
-
-**Problema o bloqueo**
-
-Al agregar `cargarPagos` en `Perfil.tsx`, ESLint (`react-hooks/immutability`) falló porque la función había quedado declarada después del `useEffect` que la invocaba; se resolvió moviéndola arriba del efecto. En las pruebas locales dentro del entorno restringido, los e2e con Supertest requerían abrir sockets locales en `127.0.0.1`, por lo que se validaron fuera del aislamiento obteniendo 12/12 suites y 49/49 tests en verde (además de 29/29 suites unitarias y > 65 % de cobertura cumpliendo ADR-008).
-
-**Commits**
-
-- `64e84b1` C-04: Comprobante PDF Post-Pago (RF-14)
-- _Cierre de `C-19b` registrado en la rama `c-19b`._
-
----
-
-##### 2026-11-17  ·  C-16
-
-**Actividad**
-
-Tomé la tarjeta de Lucas y escribí el manual de usuario del Anexo D en `docs/manuales/manual-usuario.md`, rama `C-16`. Recorrí el portal local con el socio, la recepción y el gerente del seed, y dejé cada captura dentro de la sección que explica. El índice de manuales y la fila C-16 del plan de cierre quedaron alineados a ese archivo.
-
-**Decisión**
-
-El manual describe la pantalla que está en `desarrollo`. La agenda de clases queda en la sección 4.2 del Anexo D, con la aclaración de que el enlace **Agenda** lo abre el gerente. Los reportes consolidados se declaran fuera de esta entrega: **Dashboard** no es un panel. La contraseña del seed no se copia: se remite a `SEED_PASSWORD` del README.
-
-**Problema o bloqueo**
-
-La API no arrancó al primer intento porque `pdfkit` no estaba en `node_modules`, aunque ya figuraba en `package.json`. Lo instalé en local para poder sacar las capturas. No cambié dependencias del repositorio.
-
-**Commits**
-
-- `ba82d03` C-16: agrega el manual de usuario con las capturas del sistema.
-
----
-
-##### 2026-11-17  ·  C-23
-
-**Actividad**
-
-Reescribí el `README.md` de la raíz en el orden del punto 4.1 de los lineamientos: qué es el sistema, el equipo con el autor de Git, cinco pasos con Docker, los cuatro usuarios del seed de entrega, la tabla de ADR, diagramas, manuales y bitácoras, y el estado de la suite. Corrí `npm run test:cov` en `backend/`: 29 suites, 179 tests, 65,15 % de sentencias. El umbral del ADR-008 es 60 %. Dejé la fila C-23 del plan de cierre en finalizado.
-
-**Decisión**
-
-Los cinco pasos son los de Docker (`docker compose up --build` y el perfil `seed`). La contraseña que publica el README es `fitzone-demo`, el valor de `SEED_PASSWORD` en `.env.docker.example`, porque el punto 4.1 pide las credenciales de prueba. El porcentaje es el de esta corrida, no el 63,93 % de C-10.
-
-**Problema o bloqueo**
-
-Ninguno de la redacción. Sin las tres claves de Supabase el login no funciona: el README nombra las variables y deja las claves fuera del repositorio.
-
-**Commits**
-
-- `b8d14af` C-23: reescribe el README de la raíz según el punto 4.1.
-
----
-
-#### Sprint 8 — Cierre — Semana del 2026-11-09
-
-##### 2026-11-13  ·  3 h
-
-**Actividad**
-
-Integré `C-09` en `desarrollo` (`5546109`) y escribí esta bitácora (`C-19b`) en `docs/bitacoras/LOG-conti.md` cruzando el historial de commits, las actas y los planes. También actualicé el índice de [`docs/bitacoras/README.md`](./README.md) y los estados de `C-09` y `C-19b` en los documentos de planificación.
-
-**Decisión**
-
-Citar todas las sesiones con los hashes reales (juntando los commits hechos como `bruno` y los merges de PR como `Bruno Nicolás Conti`) sin reescribir citas previas de ADR, que ya cuentan con la tabla de equivalencias en [docs/adr/README.md](../adr/README.md).
-
-**Problema o bloqueo**
-
-Al cruzar mis commits contra los planes del 11/11 noté que `C-09` seguía figurando *En desarrollo* aunque ya estaba mergeada en `5546109`, y que mis commits aparecían bajo dos nombres de autor distintos en Git. Dejé ambos puntos alineados en esta sesión.
-
-**Commits**
-
-- `5546109` C-09
-
----
-
-#### Sprint 8 — Cierre — Semana del 2026-11-16
-
-##### 2026-11-17  ·  4 h
-
-**Actividad**
-
-Implementé y subí la tarea `C-04` (`64e84b1`, rama `c-04`) para cubrir RF-14 (comprobante PDF no fiscal post-pago). Agregué `pdfkit` en el backend, armé las consultas de lectura en `PagosRepository`, generé los PDF con Template Method en `backend/src/pagos/comprobantes/` (`ComprobantePdfTemplate` para `ComprobanteReservaPdf` y `ComprobanteMembresiaPdf`), expuse `GET /pagos/mios`, `GET /pagos/:id/comprobante` y `GET /canchas/reservas/:id/comprobante` con `JwtAuthGuard`, y sumé descarga firmada por HMAC en la pantalla de pago aprobado de la pasarela simulada (`/pasarela-simulada/comprobante/:pagoId`).
-
-En el frontend agregué `frontend/src/services/pagos.ts` y conecté los botones de descarga en `Canchas.tsx` (reserva confirmada y Mis reservas) y en `Perfil.tsx` (Mi membresía). También sumé tests unitarios (`comprobantes.service.spec.ts`), e2e (`test/comprobantes.e2e-spec.ts`), regeneré `backend/swagger.json` y actualicé la nota de Template Method en [Justificacion_Patrones_Unidad_III.md](../../documentacion/Justificacion_Patrones_Unidad_III.md) y [LOG.md](./LOG.md).
-
-**Decisión**
-
-Aplicar **Template Method** (`ComprobantePdfTemplate`) para compartir encabezado, titular, monto y leyenda no fiscal entre el comprobante de reserva de cancha y el de membresía, tal como estaba planteado en la justificación de Unidad III desde que `C-30` incorporó el cobro de membresías en `pagos`. Para la descarga directa desde la pantalla de resultado de la pasarela simulada usé una firma HMAC-SHA256 verificada con `timingSafeEqual`, ya que esa ruta HTML pública no lleva el JWT de la SPA.
-
-**Problema o bloqueo**
-
-Al agregar `cargarPagos` en `Perfil.tsx`, ESLint (`react-hooks/immutability`) falló porque la función había quedado declarada después del `useEffect` que la invocaba; se resolvió moviéndola arriba del efecto. En las pruebas locales dentro del entorno restringido, los e2e con Supertest requerían abrir sockets locales en `127.0.0.1`, por lo que se validaron fuera del aislamiento obteniendo 12/12 suites y 49/49 tests en verde (además de 29/29 suites unitarias y > 65 % de cobertura cumpliendo ADR-008).
-
-**Commits**
-
-- `64e84b1` C-04: Comprobante PDF Post-Pago (RF-14)
-- _Cierre de `C-19b` registrado en la rama `c-19b`._
-
----
-
-##### 2026-11-17  ·  C-16
-
-**Actividad**
-
-Tomé la tarjeta de Lucas y escribí el manual de usuario del Anexo D en `docs/manuales/manual-usuario.md`, rama `C-16`. Recorrí el portal local con el socio, la recepción y el gerente del seed, y dejé cada captura dentro de la sección que explica. El índice de manuales y la fila C-16 del plan de cierre quedaron alineados a ese archivo.
-
-**Decisión**
-
-El manual describe la pantalla que está en `desarrollo`. La agenda de clases queda en la sección 4.2 del Anexo D, con la aclaración de que el enlace **Agenda** lo abre el gerente. Los reportes consolidados se declaran fuera de esta entrega: **Dashboard** no es un panel. La contraseña del seed no se copia: se remite a `SEED_PASSWORD` del README.
-
-**Problema o bloqueo**
-
-La API no arrancó al primer intento porque `pdfkit` no estaba en `node_modules`, aunque ya figuraba en `package.json`. Lo instalé en local para poder sacar las capturas. No cambié dependencias del repositorio.
-
-**Commits**
-
-- `ba82d03` C-16: agrega el manual de usuario con las capturas del sistema.
-
----
-
-##### 2026-11-17  ·  C-23
-
-**Actividad**
-
-Reescribí el `README.md` de la raíz en el orden del punto 4.1 de los lineamientos: qué es el sistema, el equipo con el autor de Git, cinco pasos con Docker, los cuatro usuarios del seed de entrega, la tabla de ADR, diagramas, manuales y bitácoras, y el estado de la suite. Corrí `npm run test:cov` en `backend/`: 29 suites, 179 tests, 65,15 % de sentencias. El umbral del ADR-008 es 60 %. Dejé la fila C-23 del plan de cierre en finalizado.
-
-**Decisión**
-
-Los cinco pasos son los de Docker (`docker compose up --build` y el perfil `seed`). La contraseña que publica el README es `fitzone-demo`, el valor de `SEED_PASSWORD` en `.env.docker.example`, porque el punto 4.1 pide las credenciales de prueba. El porcentaje es el de esta corrida, no el 63,93 % de C-10.
-
-**Problema o bloqueo**
-
-Ninguno de la redacción. Sin las tres claves de Supabase el login no funciona: el README nombra las variables y deja las claves fuera del repositorio.
-
-**Commits**
-
-- `b8d14af` C-23: reescribe el README de la raíz según el punto 4.1.
-
----
-
-#### Sprint 8 — Cierre — Semana del 2026-11-09
-
-##### 2026-11-13  ·  3 h
-
-**Actividad**
-
-Integré `C-09` en `desarrollo` (`5546109`) y escribí esta bitácora (`C-19b`) en `docs/bitacoras/LOG-conti.md` cruzando el historial de commits, las actas y los planes. También actualicé el índice de [`docs/bitacoras/README.md`](./README.md) y los estados de `C-09` y `C-19b` en los documentos de planificación.
-
-**Decisión**
-
-Citar todas las sesiones con los hashes reales (juntando los commits hechos como `bruno` y los merges de PR como `Bruno Nicolás Conti`) sin reescribir citas previas de ADR, que ya cuentan con la tabla de equivalencias en [docs/adr/README.md](../adr/README.md).
-
-**Problema o bloqueo**
-
-Al cruzar mis commits contra los planes del 11/11 noté que `C-09` seguía figurando *En desarrollo* aunque ya estaba mergeada en `5546109`, y que mis commits aparecían bajo dos nombres de autor distintos en Git. Dejé ambos puntos alineados en esta sesión.
-
-**Commits**
-
-- `5546109` C-09
-
----
-
-#### Sprint 8 — Cierre — Semana del 2026-11-16
-
-##### 2026-11-17  ·  4 h
-
-**Actividad**
-
-Implementé y subí la tarea `C-04` (`64e84b1`, rama `c-04`) para cubrir RF-14 (comprobante PDF no fiscal post-pago). Agregué `pdfkit` en el backend, armé las consultas de lectura en `PagosRepository`, generé los PDF con Template Method en `backend/src/pagos/comprobantes/` (`ComprobantePdfTemplate` para `ComprobanteReservaPdf` y `ComprobanteMembresiaPdf`), expuse `GET /pagos/mios`, `GET /pagos/:id/comprobante` y `GET /canchas/reservas/:id/comprobante` con `JwtAuthGuard`, y sumé descarga firmada por HMAC en la pantalla de pago aprobado de la pasarela simulada (`/pasarela-simulada/comprobante/:pagoId`).
-
-En el frontend agregué `frontend/src/services/pagos.ts` y conecté los botones de descarga en `Canchas.tsx` (reserva confirmada y Mis reservas) y en `Perfil.tsx` (Mi membresía). También sumé tests unitarios (`comprobantes.service.spec.ts`), e2e (`test/comprobantes.e2e-spec.ts`), regeneré `backend/swagger.json` y actualicé la nota de Template Method en [Justificacion_Patrones_Unidad_III.md](../../documentacion/Justificacion_Patrones_Unidad_III.md) y [LOG.md](./LOG.md).
-
-**Decisión**
-
-Aplicar **Template Method** (`ComprobantePdfTemplate`) para compartir encabezado, titular, monto y leyenda no fiscal entre el comprobante de reserva de cancha y el de membresía, tal como estaba planteado en la justificación de Unidad III desde que `C-30` incorporó el cobro de membresías en `pagos`. Para la descarga directa desde la pantalla de resultado de la pasarela simulada usé una firma HMAC-SHA256 verificada con `timingSafeEqual`, ya que esa ruta HTML pública no lleva el JWT de la SPA.
-
-**Problema o bloqueo**
-
-Al agregar `cargarPagos` en `Perfil.tsx`, ESLint (`react-hooks/immutability`) falló porque la función había quedado declarada después del `useEffect` que la invocaba; se resolvió moviéndola arriba del efecto. En las pruebas locales dentro del entorno restringido, los e2e con Supertest requerían abrir sockets locales en `127.0.0.1`, por lo que se validaron fuera del aislamiento obteniendo 12/12 suites y 49/49 tests en verde (además de 29/29 suites unitarias y > 65 % de cobertura cumpliendo ADR-008).
-
-**Commits**
-
-- `64e84b1` C-04: Comprobante PDF Post-Pago (RF-14)
-- _Cierre de `C-19b` registrado en la rama `c-19b`._
-
----
-
-##### 2026-11-17  ·  C-16
-
-**Actividad**
-
-Tomé la tarjeta de Lucas y escribí el manual de usuario del Anexo D en `docs/manuales/manual-usuario.md`, rama `C-16`. Recorrí el portal local con el socio, la recepción y el gerente del seed, y dejé cada captura dentro de la sección que explica. El índice de manuales y la fila C-16 del plan de cierre quedaron alineados a ese archivo.
-
-**Decisión**
-
-El manual describe la pantalla que está en `desarrollo`. La agenda de clases queda en la sección 4.2 del Anexo D, con la aclaración de que el enlace **Agenda** lo abre el gerente. Los reportes consolidados se declaran fuera de esta entrega: **Dashboard** no es un panel. La contraseña del seed no se copia: se remite a `SEED_PASSWORD` del README.
-
-**Problema o bloqueo**
-
-La API no arrancó al primer intento porque `pdfkit` no estaba en `node_modules`, aunque ya figuraba en `package.json`. Lo instalé en local para poder sacar las capturas. No cambié dependencias del repositorio.
-
-**Commits**
-
-- `ba82d03` C-16: agrega el manual de usuario con las capturas del sistema.
-
----
-
-##### 2026-11-17  ·  C-23
-
-**Actividad**
-
-Reescribí el `README.md` de la raíz en el orden del punto 4.1 de los lineamientos: qué es el sistema, el equipo con el autor de Git, cinco pasos con Docker, los cuatro usuarios del seed de entrega, la tabla de ADR, diagramas, manuales y bitácoras, y el estado de la suite. Corrí `npm run test:cov` en `backend/`: 29 suites, 179 tests, 65,15 % de sentencias. El umbral del ADR-008 es 60 %. Dejé la fila C-23 del plan de cierre en finalizado.
-
-**Decisión**
-
-Los cinco pasos son los de Docker (`docker compose up --build` y el perfil `seed`). La contraseña que publica el README es `fitzone-demo`, el valor de `SEED_PASSWORD` en `.env.docker.example`, porque el punto 4.1 pide las credenciales de prueba. El porcentaje es el de esta corrida, no el 63,93 % de C-10.
-
-**Problema o bloqueo**
-
-Ninguno de la redacción. Sin las tres claves de Supabase el login no funciona: el README nombra las variables y deja las claves fuera del repositorio.
-
-**Commits**
-
-- `b8d14af` C-23: reescribe el README de la raíz según el punto 4.1.
-
----
-
-#### Sprint 8 — Cierre — Semana del 2026-11-09
-
-##### 2026-11-13  ·  3 h
-
-**Actividad**
-
-Integré `C-09` en `desarrollo` (`5546109`) y escribí esta bitácora (`C-19b`) en `docs/bitacoras/LOG-conti.md` cruzando el historial de commits, las actas y los planes. También actualicé el índice de [`docs/bitacoras/README.md`](./README.md) y los estados de `C-09` y `C-19b` en los documentos de planificación.
-
-**Decisión**
-
-Citar todas las sesiones con los hashes reales (juntando los commits hechos como `bruno` y los merges de PR como `Bruno Nicolás Conti`) sin reescribir citas previas de ADR, que ya cuentan con la tabla de equivalencias en [docs/adr/README.md](../adr/README.md).
-
-**Problema o bloqueo**
-
-Al cruzar mis commits contra los planes del 11/11 noté que `C-09` seguía figurando *En desarrollo* aunque ya estaba mergeada en `5546109`, y que mis commits aparecían bajo dos nombres de autor distintos en Git. Dejé ambos puntos alineados en esta sesión.
-
-**Commits**
-
-- `5546109` C-09
-
----
-
-#### Sprint 8 — Cierre — Semana del 2026-11-16
-
-##### 2026-11-17  ·  4 h
-
-**Actividad**
-
-Implementé y subí la tarea `C-04` (`64e84b1`, rama `c-04`) para cubrir RF-14 (comprobante PDF no fiscal post-pago). Agregué `pdfkit` en el backend, armé las consultas de lectura en `PagosRepository`, generé los PDF con Template Method en `backend/src/pagos/comprobantes/` (`ComprobantePdfTemplate` para `ComprobanteReservaPdf` y `ComprobanteMembresiaPdf`), expuse `GET /pagos/mios`, `GET /pagos/:id/comprobante` y `GET /canchas/reservas/:id/comprobante` con `JwtAuthGuard`, y sumé descarga firmada por HMAC en la pantalla de pago aprobado de la pasarela simulada (`/pasarela-simulada/comprobante/:pagoId`).
-
-En el frontend agregué `frontend/src/services/pagos.ts` y conecté los botones de descarga en `Canchas.tsx` (reserva confirmada y Mis reservas) y en `Perfil.tsx` (Mi membresía). También sumé tests unitarios (`comprobantes.service.spec.ts`), e2e (`test/comprobantes.e2e-spec.ts`), regeneré `backend/swagger.json` y actualicé la nota de Template Method en [Justificacion_Patrones_Unidad_III.md](../../documentacion/Justificacion_Patrones_Unidad_III.md) y [LOG.md](./LOG.md).
-
-**Decisión**
-
-Aplicar **Template Method** (`ComprobantePdfTemplate`) para compartir encabezado, titular, monto y leyenda no fiscal entre el comprobante de reserva de cancha y el de membresía, tal como estaba planteado en la justificación de Unidad III desde que `C-30` incorporó el cobro de membresías en `pagos`. Para la descarga directa desde la pantalla de resultado de la pasarela simulada usé una firma HMAC-SHA256 verificada con `timingSafeEqual`, ya que esa ruta HTML pública no lleva el JWT de la SPA.
-
-**Problema o bloqueo**
-
-Al agregar `cargarPagos` en `Perfil.tsx`, ESLint (`react-hooks/immutability`) falló porque la función había quedado declarada después del `useEffect` que la invocaba; se resolvió moviéndola arriba del efecto. En las pruebas locales dentro del entorno restringido, los e2e con Supertest requerían abrir sockets locales en `127.0.0.1`, por lo que se validaron fuera del aislamiento obteniendo 12/12 suites y 49/49 tests en verde (además de 29/29 suites unitarias y > 65 % de cobertura cumpliendo ADR-008).
-
-**Commits**
-
-- `64e84b1` C-04: Comprobante PDF Post-Pago (RF-14)
-- _Cierre de `C-19b` registrado en la rama `c-19b`._
-
----
-
-##### 2026-11-17  ·  C-16
-
-**Actividad**
-
-Tomé la tarjeta de Lucas y escribí el manual de usuario del Anexo D en `docs/manuales/manual-usuario.md`, rama `C-16`. Recorrí el portal local con el socio, la recepción y el gerente del seed, y dejé cada captura dentro de la sección que explica. El índice de manuales y la fila C-16 del plan de cierre quedaron alineados a ese archivo.
-
-**Decisión**
-
-El manual describe la pantalla que está en `desarrollo`. La agenda de clases queda en la sección 4.2 del Anexo D, con la aclaración de que el enlace **Agenda** lo abre el gerente. Los reportes consolidados se declaran fuera de esta entrega: **Dashboard** no es un panel. La contraseña del seed no se copia: se remite a `SEED_PASSWORD` del README.
-
-**Problema o bloqueo**
-
-La API no arrancó al primer intento porque `pdfkit` no estaba en `node_modules`, aunque ya figuraba en `package.json`. Lo instalé en local para poder sacar las capturas. No cambié dependencias del repositorio.
-
-**Commits**
-
-- `ba82d03` C-16: agrega el manual de usuario con las capturas del sistema.
-
----
-
-##### 2026-11-17  ·  C-23
-
-**Actividad**
-
-Reescribí el `README.md` de la raíz en el orden del punto 4.1 de los lineamientos: qué es el sistema, el equipo con el autor de Git, cinco pasos con Docker, los cuatro usuarios del seed de entrega, la tabla de ADR, diagramas, manuales y bitácoras, y el estado de la suite. Corrí `npm run test:cov` en `backend/`: 29 suites, 179 tests, 65,15 % de sentencias. El umbral del ADR-008 es 60 %. Dejé la fila C-23 del plan de cierre en finalizado.
-
-**Decisión**
-
-Los cinco pasos son los de Docker (`docker compose up --build` y el perfil `seed`). La contraseña que publica el README es `fitzone-demo`, el valor de `SEED_PASSWORD` en `.env.docker.example`, porque el punto 4.1 pide las credenciales de prueba. El porcentaje es el de esta corrida, no el 63,93 % de C-10.
-
-**Problema o bloqueo**
-
-Ninguno de la redacción. Sin las tres claves de Supabase el login no funciona: el README nombra las variables y deja las claves fuera del repositorio.
-
-**Commits**
-
-- `b8d14af` C-23: reescribe el README de la raíz según el punto 4.1.
-
----
-
-#### Sprint 8 — Cierre — Semana del 2026-11-09
-
-##### 2026-11-13  ·  3 h
-
-**Actividad**
-
-Integré `C-09` en `desarrollo` (`5546109`) y escribí esta bitácora (`C-19b`) en `docs/bitacoras/LOG-conti.md` cruzando el historial de commits, las actas y los planes. También actualicé el índice de [`docs/bitacoras/README.md`](./README.md) y los estados de `C-09` y `C-19b` en los documentos de planificación.
-
-**Decisión**
-
-Citar todas las sesiones con los hashes reales (juntando los commits hechos como `bruno` y los merges de PR como `Bruno Nicolás Conti`) sin reescribir citas previas de ADR, que ya cuentan con la tabla de equivalencias en [docs/adr/README.md](../adr/README.md).
-
-**Problema o bloqueo**
-
-Al cruzar mis commits contra los planes del 11/11 noté que `C-09` seguía figurando *En desarrollo* aunque ya estaba mergeada en `5546109`, y que mis commits aparecían bajo dos nombres de autor distintos en Git. Dejé ambos puntos alineados en esta sesión.
-
-**Commits**
-
-- `5546109` C-09
-
----
-
-#### Sprint 8 — Cierre — Semana del 2026-11-16
-
-##### 2026-11-17  ·  4 h
-
-**Actividad**
-
-Implementé y subí la tarea `C-04` (`64e84b1`, rama `c-04`) para cubrir RF-14 (comprobante PDF no fiscal post-pago). Agregué `pdfkit` en el backend, armé las consultas de lectura en `PagosRepository`, generé los PDF con Template Method en `backend/src/pagos/comprobantes/` (`ComprobantePdfTemplate` para `ComprobanteReservaPdf` y `ComprobanteMembresiaPdf`), expuse `GET /pagos/mios`, `GET /pagos/:id/comprobante` y `GET /canchas/reservas/:id/comprobante` con `JwtAuthGuard`, y sumé descarga firmada por HMAC en la pantalla de pago aprobado de la pasarela simulada (`/pasarela-simulada/comprobante/:pagoId`).
-
-En el frontend agregué `frontend/src/services/pagos.ts` y conecté los botones de descarga en `Canchas.tsx` (reserva confirmada y Mis reservas) y en `Perfil.tsx` (Mi membresía). También sumé tests unitarios (`comprobantes.service.spec.ts`), e2e (`test/comprobantes.e2e-spec.ts`), regeneré `backend/swagger.json` y actualicé la nota de Template Method en [Justificacion_Patrones_Unidad_III.md](../../documentacion/Justificacion_Patrones_Unidad_III.md) y [LOG.md](./LOG.md).
-
-**Decisión**
-
-Aplicar **Template Method** (`ComprobantePdfTemplate`) para compartir encabezado, titular, monto y leyenda no fiscal entre el comprobante de reserva de cancha y el de membresía, tal como estaba planteado en la justificación de Unidad III desde que `C-30` incorporó el cobro de membresías en `pagos`. Para la descarga directa desde la pantalla de resultado de la pasarela simulada usé una firma HMAC-SHA256 verificada con `timingSafeEqual`, ya que esa ruta HTML pública no lleva el JWT de la SPA.
-
-**Problema o bloqueo**
-
-Al agregar `cargarPagos` en `Perfil.tsx`, ESLint (`react-hooks/immutability`) falló porque la función había quedado declarada después del `useEffect` que la invocaba; se resolvió moviéndola arriba del efecto. En las pruebas locales dentro del entorno restringido, los e2e con Supertest requerían abrir sockets locales en `127.0.0.1`, por lo que se validaron fuera del aislamiento obteniendo 12/12 suites y 49/49 tests en verde (además de 29/29 suites unitarias y > 65 % de cobertura cumpliendo ADR-008).
-
-**Commits**
-
-- `64e84b1` C-04: Comprobante PDF Post-Pago (RF-14)
-- _Cierre de `C-19b` registrado en la rama `c-19b`._
-
----
-
-##### 2026-11-17  ·  C-16
-
-**Actividad**
-
-Tomé la tarjeta de Lucas y escribí el manual de usuario del Anexo D en `docs/manuales/manual-usuario.md`, rama `C-16`. Recorrí el portal local con el socio, la recepción y el gerente del seed, y dejé cada captura dentro de la sección que explica. El índice de manuales y la fila C-16 del plan de cierre quedaron alineados a ese archivo.
-
-**Decisión**
-
-El manual describe la pantalla que está en `desarrollo`. La agenda de clases queda en la sección 4.2 del Anexo D, con la aclaración de que el enlace **Agenda** lo abre el gerente. Los reportes consolidados se declaran fuera de esta entrega: **Dashboard** no es un panel. La contraseña del seed no se copia: se remite a `SEED_PASSWORD` del README.
-
-**Problema o bloqueo**
-
-La API no arrancó al primer intento porque `pdfkit` no estaba en `node_modules`, aunque ya figuraba en `package.json`. Lo instalé en local para poder sacar las capturas. No cambié dependencias del repositorio.
-
-**Commits**
-
-- `ba82d03` C-16: agrega el manual de usuario con las capturas del sistema.
-
----
-
-##### 2026-11-17  ·  C-23
-
-**Actividad**
-
-Reescribí el `README.md` de la raíz en el orden del punto 4.1 de los lineamientos: qué es el sistema, el equipo con el autor de Git, cinco pasos con Docker, los cuatro usuarios del seed de entrega, la tabla de ADR, diagramas, manuales y bitácoras, y el estado de la suite. Corrí `npm run test:cov` en `backend/`: 29 suites, 179 tests, 65,15 % de sentencias. El umbral del ADR-008 es 60 %. Dejé la fila C-23 del plan de cierre en finalizado.
-
-**Decisión**
-
-Los cinco pasos son los de Docker (`docker compose up --build` y el perfil `seed`). La contraseña que publica el README es `fitzone-demo`, el valor de `SEED_PASSWORD` en `.env.docker.example`, porque el punto 4.1 pide las credenciales de prueba. El porcentaje es el de esta corrida, no el 63,93 % de C-10.
-
-**Problema o bloqueo**
-
-Ninguno de la redacción. Sin las tres claves de Supabase el login no funciona: el README nombra las variables y deja las claves fuera del repositorio.
-
-**Commits**
-
-- `b8d14af` C-23: reescribe el README de la raíz según el punto 4.1.
-
----
-
-#### Sprint 8 — Cierre — Semana del 2026-11-09
-
-##### 2026-11-13  ·  3 h
-
-**Actividad**
-
-Integré `C-09` en `desarrollo` (`5546109`) y escribí esta bitácora (`C-19b`) en `docs/bitacoras/LOG-conti.md` cruzando el historial de commits, las actas y los planes. También actualicé el índice de [`docs/bitacoras/README.md`](./README.md) y los estados de `C-09` y `C-19b` en los documentos de planificación.
-
-**Decisión**
-
-Citar todas las sesiones con los hashes reales (juntando los commits hechos como `bruno` y los merges de PR como `Bruno Nicolás Conti`) sin reescribir citas previas de ADR, que ya cuentan con la tabla de equivalencias en [docs/adr/README.md](../adr/README.md).
-
-**Problema o bloqueo**
-
-Al cruzar mis commits contra los planes del 11/11 noté que `C-09` seguía figurando *En desarrollo* aunque ya estaba mergeada en `5546109`, y que mis commits aparecían bajo dos nombres de autor distintos en Git. Dejé ambos puntos alineados en esta sesión.
-
-**Commits**
-
-- `5546109` C-09
-
----
-
-#### Sprint 8 — Cierre — Semana del 2026-11-16
-
-##### 2026-11-17  ·  4 h
-
-**Actividad**
-
-Implementé y subí la tarea `C-04` (`64e84b1`, rama `c-04`) para cubrir RF-14 (comprobante PDF no fiscal post-pago). Agregué `pdfkit` en el backend, armé las consultas de lectura en `PagosRepository`, generé los PDF con Template Method en `backend/src/pagos/comprobantes/` (`ComprobantePdfTemplate` para `ComprobanteReservaPdf` y `ComprobanteMembresiaPdf`), expuse `GET /pagos/mios`, `GET /pagos/:id/comprobante` y `GET /canchas/reservas/:id/comprobante` con `JwtAuthGuard`, y sumé descarga firmada por HMAC en la pantalla de pago aprobado de la pasarela simulada (`/pasarela-simulada/comprobante/:pagoId`).
-
-En el frontend agregué `frontend/src/services/pagos.ts` y conecté los botones de descarga en `Canchas.tsx` (reserva confirmada y Mis reservas) y en `Perfil.tsx` (Mi membresía). También sumé tests unitarios (`comprobantes.service.spec.ts`), e2e (`test/comprobantes.e2e-spec.ts`), regeneré `backend/swagger.json` y actualicé la nota de Template Method en [Justificacion_Patrones_Unidad_III.md](../../documentacion/Justificacion_Patrones_Unidad_III.md) y [LOG.md](./LOG.md).
-
-**Decisión**
-
-Aplicar **Template Method** (`ComprobantePdfTemplate`) para compartir encabezado, titular, monto y leyenda no fiscal entre el comprobante de reserva de cancha y el de membresía, tal como estaba planteado en la justificación de Unidad III desde que `C-30` incorporó el cobro de membresías en `pagos`. Para la descarga directa desde la pantalla de resultado de la pasarela simulada usé una firma HMAC-SHA256 verificada con `timingSafeEqual`, ya que esa ruta HTML pública no lleva el JWT de la SPA.
-
-**Problema o bloqueo**
-
-Al agregar `cargarPagos` en `Perfil.tsx`, ESLint (`react-hooks/immutability`) falló porque la función había quedado declarada después del `useEffect` que la invocaba; se resolvió moviéndola arriba del efecto. En las pruebas locales dentro del entorno restringido, los e2e con Supertest requerían abrir sockets locales en `127.0.0.1`, por lo que se validaron fuera del aislamiento obteniendo 12/12 suites y 49/49 tests en verde (además de 29/29 suites unitarias y > 65 % de cobertura cumpliendo ADR-008).
-
-**Commits**
-
-- `64e84b1` C-04: Comprobante PDF Post-Pago (RF-14)
-- _Cierre de `C-19b` registrado en la rama `c-19b`._
-
----
-
-##### 2026-11-17  ·  C-16
-
-**Actividad**
-
-Tomé la tarjeta de Lucas y escribí el manual de usuario del Anexo D en `docs/manuales/manual-usuario.md`, rama `C-16`. Recorrí el portal local con el socio, la recepción y el gerente del seed, y dejé cada captura dentro de la sección que explica. El índice de manuales y la fila C-16 del plan de cierre quedaron alineados a ese archivo.
-
-**Decisión**
-
-El manual describe la pantalla que está en `desarrollo`. La agenda de clases queda en la sección 4.2 del Anexo D, con la aclaración de que el enlace **Agenda** lo abre el gerente. Los reportes consolidados se declaran fuera de esta entrega: **Dashboard** no es un panel. La contraseña del seed no se copia: se remite a `SEED_PASSWORD` del README.
-
-**Problema o bloqueo**
-
-La API no arrancó al primer intento porque `pdfkit` no estaba en `node_modules`, aunque ya figuraba en `package.json`. Lo instalé en local para poder sacar las capturas. No cambié dependencias del repositorio.
-
-**Commits**
-
-- `ba82d03` C-16: agrega el manual de usuario con las capturas del sistema.
-
----
-
-##### 2026-11-17  ·  C-23
-
-**Actividad**
-
-Reescribí el `README.md` de la raíz en el orden del punto 4.1 de los lineamientos: qué es el sistema, el equipo con el autor de Git, cinco pasos con Docker, los cuatro usuarios del seed de entrega, la tabla de ADR, diagramas, manuales y bitácoras, y el estado de la suite. Corrí `npm run test:cov` en `backend/`: 29 suites, 179 tests, 65,15 % de sentencias. El umbral del ADR-008 es 60 %. Dejé la fila C-23 del plan de cierre en finalizado.
-
-**Decisión**
-
-Los cinco pasos son los de Docker (`docker compose up --build` y el perfil `seed`). La contraseña que publica el README es `fitzone-demo`, el valor de `SEED_PASSWORD` en `.env.docker.example`, porque el punto 4.1 pide las credenciales de prueba. El porcentaje es el de esta corrida, no el 63,93 % de C-10.
-
-**Problema o bloqueo**
-
-Ninguno de la redacción. Sin las tres claves de Supabase el login no funciona: el README nombra las variables y deja las claves fuera del repositorio.
-
-**Commits**
-
-- `b8d14af` C-23: reescribe el README de la raíz según el punto 4.1.
-
----
-
-#### Sprint 8 — Cierre — Semana del 2026-11-09
-
-##### 2026-11-13  ·  3 h
-
-**Actividad**
-
-Integré `C-09` en `desarrollo` (`5546109`) y escribí esta bitácora (`C-19b`) en `docs/bitacoras/LOG-conti.md` cruzando el historial de commits, las actas y los planes. También actualicé el índice de [`docs/bitacoras/README.md`](./README.md) y los estados de `C-09` y `C-19b` en los documentos de planificación.
-
-**Decisión**
-
-Citar todas las sesiones con los hashes reales (juntando los commits hechos como `bruno` y los merges de PR como `Bruno Nicolás Conti`) sin reescribir citas previas de ADR, que ya cuentan con la tabla de equivalencias en [docs/adr/README.md](../adr/README.md).
-
-**Problema o bloqueo**
-
-Al cruzar mis commits contra los planes del 11/11 noté que `C-09` seguía figurando *En desarrollo* aunque ya estaba mergeada en `5546109`, y que mis commits aparecían bajo dos nombres de autor distintos en Git. Dejé ambos puntos alineados en esta sesión.
-
-**Commits**
-
-- `5546109` C-09
-
----
-
-#### Sprint 8 — Cierre — Semana del 2026-11-16
-
-##### 2026-11-17  ·  4 h
-
-**Actividad**
-
-Implementé y subí la tarea `C-04` (`64e84b1`, rama `c-04`) para cubrir RF-14 (comprobante PDF no fiscal post-pago). Agregué `pdfkit` en el backend, armé las consultas de lectura en `PagosRepository`, generé los PDF con Template Method en `backend/src/pagos/comprobantes/` (`ComprobantePdfTemplate` para `ComprobanteReservaPdf` y `ComprobanteMembresiaPdf`), expuse `GET /pagos/mios`, `GET /pagos/:id/comprobante` y `GET /canchas/reservas/:id/comprobante` con `JwtAuthGuard`, y sumé descarga firmada por HMAC en la pantalla de pago aprobado de la pasarela simulada (`/pasarela-simulada/comprobante/:pagoId`).
-
-En el frontend agregué `frontend/src/services/pagos.ts` y conecté los botones de descarga en `Canchas.tsx` (reserva confirmada y Mis reservas) y en `Perfil.tsx` (Mi membresía). También sumé tests unitarios (`comprobantes.service.spec.ts`), e2e (`test/comprobantes.e2e-spec.ts`), regeneré `backend/swagger.json` y actualicé la nota de Template Method en [Justificacion_Patrones_Unidad_III.md](../../documentacion/Justificacion_Patrones_Unidad_III.md) y [LOG.md](./LOG.md).
-
-**Decisión**
-
-Aplicar **Template Method** (`ComprobantePdfTemplate`) para compartir encabezado, titular, monto y leyenda no fiscal entre el comprobante de reserva de cancha y el de membresía, tal como estaba planteado en la justificación de Unidad III desde que `C-30` incorporó el cobro de membresías en `pagos`. Para la descarga directa desde la pantalla de resultado de la pasarela simulada usé una firma HMAC-SHA256 verificada con `timingSafeEqual`, ya que esa ruta HTML pública no lleva el JWT de la SPA.
-
-**Problema o bloqueo**
-
-Al agregar `cargarPagos` en `Perfil.tsx`, ESLint (`react-hooks/immutability`) falló porque la función había quedado declarada después del `useEffect` que la invocaba; se resolvió moviéndola arriba del efecto. En las pruebas locales dentro del entorno restringido, los e2e con Supertest requerían abrir sockets locales en `127.0.0.1`, por lo que se validaron fuera del aislamiento obteniendo 12/12 suites y 49/49 tests en verde (además de 29/29 suites unitarias y > 65 % de cobertura cumpliendo ADR-008).
-
-**Commits**
-
-- `64e84b1` C-04: Comprobante PDF Post-Pago (RF-14)
-- _Cierre de `C-19b` registrado en la rama `c-19b`._
-
----
-
-##### 2026-11-17  ·  C-16
-
-**Actividad**
-
-Tomé la tarjeta de Lucas y escribí el manual de usuario del Anexo D en `docs/manuales/manual-usuario.md`, rama `C-16`. Recorrí el portal local con el socio, la recepción y el gerente del seed, y dejé cada captura dentro de la sección que explica. El índice de manuales y la fila C-16 del plan de cierre quedaron alineados a ese archivo.
-
-**Decisión**
-
-El manual describe la pantalla que está en `desarrollo`. La agenda de clases queda en la sección 4.2 del Anexo D, con la aclaración de que el enlace **Agenda** lo abre el gerente. Los reportes consolidados se declaran fuera de esta entrega: **Dashboard** no es un panel. La contraseña del seed no se copia: se remite a `SEED_PASSWORD` del README.
-
-**Problema o bloqueo**
-
-La API no arrancó al primer intento porque `pdfkit` no estaba en `node_modules`, aunque ya figuraba en `package.json`. Lo instalé en local para poder sacar las capturas. No cambié dependencias del repositorio.
-
-**Commits**
-
-- `ba82d03` C-16: agrega el manual de usuario con las capturas del sistema.
-
----
-
-##### 2026-11-17  ·  C-23
-
-**Actividad**
-
-Reescribí el `README.md` de la raíz en el orden del punto 4.1 de los lineamientos: qué es el sistema, el equipo con el autor de Git, cinco pasos con Docker, los cuatro usuarios del seed de entrega, la tabla de ADR, diagramas, manuales y bitácoras, y el estado de la suite. Corrí `npm run test:cov` en `backend/`: 29 suites, 179 tests, 65,15 % de sentencias. El umbral del ADR-008 es 60 %. Dejé la fila C-23 del plan de cierre en finalizado.
-
-**Decisión**
-
-Los cinco pasos son los de Docker (`docker compose up --build` y el perfil `seed`). La contraseña que publica el README es `fitzone-demo`, el valor de `SEED_PASSWORD` en `.env.docker.example`, porque el punto 4.1 pide las credenciales de prueba. El porcentaje es el de esta corrida, no el 63,93 % de C-10.
-
-**Problema o bloqueo**
-
-Ninguno de la redacción. Sin las tres claves de Supabase el login no funciona: el README nombra las variables y deja las claves fuera del repositorio.
-
-**Commits**
-
-- `b8d14af` C-23: reescribe el README de la raíz según el punto 4.1.
-
----
-
-#### Sprint 8 — Cierre — Semana del 2026-11-09
-
-##### 2026-11-13  ·  3 h
-
-**Actividad**
-
-Integré `C-09` en `desarrollo` (`5546109`) y escribí esta bitácora (`C-19b`) en `docs/bitacoras/LOG-conti.md` cruzando el historial de commits, las actas y los planes. También actualicé el índice de [`docs/bitacoras/README.md`](./README.md) y los estados de `C-09` y `C-19b` en los documentos de planificación.
-
-**Decisión**
-
-Citar todas las sesiones con los hashes reales (juntando los commits hechos como `bruno` y los merges de PR como `Bruno Nicolás Conti`) sin reescribir citas previas de ADR, que ya cuentan con la tabla de equivalencias en [docs/adr/README.md](../adr/README.md).
-
-**Problema o bloqueo**
-
-Al cruzar mis commits contra los planes del 11/11 noté que `C-09` seguía figurando *En desarrollo* aunque ya estaba mergeada en `5546109`, y que mis commits aparecían bajo dos nombres de autor distintos en Git. Dejé ambos puntos alineados en esta sesión.
-
-**Commits**
-
-- `5546109` C-09
-
----
-
-#### Sprint 8 — Cierre — Semana del 2026-11-16
-
-##### 2026-11-17  ·  4 h
-
-**Actividad**
-
-Implementé y subí la tarea `C-04` (`64e84b1`, rama `c-04`) para cubrir RF-14 (comprobante PDF no fiscal post-pago). Agregué `pdfkit` en el backend, armé las consultas de lectura en `PagosRepository`, generé los PDF con Template Method en `backend/src/pagos/comprobantes/` (`ComprobantePdfTemplate` para `ComprobanteReservaPdf` y `ComprobanteMembresiaPdf`), expuse `GET /pagos/mios`, `GET /pagos/:id/comprobante` y `GET /canchas/reservas/:id/comprobante` con `JwtAuthGuard`, y sumé descarga firmada por HMAC en la pantalla de pago aprobado de la pasarela simulada (`/pasarela-simulada/comprobante/:pagoId`).
-
-En el frontend agregué `frontend/src/services/pagos.ts` y conecté los botones de descarga en `Canchas.tsx` (reserva confirmada y Mis reservas) y en `Perfil.tsx` (Mi membresía). También sumé tests unitarios (`comprobantes.service.spec.ts`), e2e (`test/comprobantes.e2e-spec.ts`), regeneré `backend/swagger.json` y actualicé la nota de Template Method en [Justificacion_Patrones_Unidad_III.md](../../documentacion/Justificacion_Patrones_Unidad_III.md) y [LOG.md](./LOG.md).
-
-**Decisión**
-
-Aplicar **Template Method** (`ComprobantePdfTemplate`) para compartir encabezado, titular, monto y leyenda no fiscal entre el comprobante de reserva de cancha y el de membresía, tal como estaba planteado en la justificación de Unidad III desde que `C-30` incorporó el cobro de membresías en `pagos`. Para la descarga directa desde la pantalla de resultado de la pasarela simulada usé una firma HMAC-SHA256 verificada con `timingSafeEqual`, ya que esa ruta HTML pública no lleva el JWT de la SPA.
-
-**Problema o bloqueo**
-
-Al agregar `cargarPagos` en `Perfil.tsx`, ESLint (`react-hooks/immutability`) falló porque la función había quedado declarada después del `useEffect` que la invocaba; se resolvió moviéndola arriba del efecto. En las pruebas locales dentro del entorno restringido, los e2e con Supertest requerían abrir sockets locales en `127.0.0.1`, por lo que se validaron fuera del aislamiento obteniendo 12/12 suites y 49/49 tests en verde (además de 29/29 suites unitarias y > 65 % de cobertura cumpliendo ADR-008).
-
-**Commits**
-
-- `64e84b1` C-04: Comprobante PDF Post-Pago (RF-14)
-- _Cierre de `C-19b` registrado en la rama `c-19b`._
-
----
-
-##### 2026-11-17  ·  C-16
-
-**Actividad**
-
-Tomé la tarjeta de Lucas y escribí el manual de usuario del Anexo D en `docs/manuales/manual-usuario.md`, rama `C-16`. Recorrí el portal local con el socio, la recepción y el gerente del seed, y dejé cada captura dentro de la sección que explica. El índice de manuales y la fila C-16 del plan de cierre quedaron alineados a ese archivo.
-
-**Decisión**
-
-El manual describe la pantalla que está en `desarrollo`. La agenda de clases queda en la sección 4.2 del Anexo D, con la aclaración de que el enlace **Agenda** lo abre el gerente. Los reportes consolidados se declaran fuera de esta entrega: **Dashboard** no es un panel. La contraseña del seed no se copia: se remite a `SEED_PASSWORD` del README.
-
-**Problema o bloqueo**
-
-La API no arrancó al primer intento porque `pdfkit` no estaba en `node_modules`, aunque ya figuraba en `package.json`. Lo instalé en local para poder sacar las capturas. No cambié dependencias del repositorio.
-
-**Commits**
-
-- `ba82d03` C-16: agrega el manual de usuario con las capturas del sistema.
-
----
-
-##### 2026-11-17  ·  C-23
-
-**Actividad**
-
-Reescribí el `README.md` de la raíz en el orden del punto 4.1 de los lineamientos: qué es el sistema, el equipo con el autor de Git, cinco pasos con Docker, los cuatro usuarios del seed de entrega, la tabla de ADR, diagramas, manuales y bitácoras, y el estado de la suite. Corrí `npm run test:cov` en `backend/`: 29 suites, 179 tests, 65,15 % de sentencias. El umbral del ADR-008 es 60 %. Dejé la fila C-23 del plan de cierre en finalizado.
-
-**Decisión**
-
-Los cinco pasos son los de Docker (`docker compose up --build` y el perfil `seed`). La contraseña que publica el README es `fitzone-demo`, el valor de `SEED_PASSWORD` en `.env.docker.example`, porque el punto 4.1 pide las credenciales de prueba. El porcentaje es el de esta corrida, no el 63,93 % de C-10.
-
-**Problema o bloqueo**
-
-Ninguno de la redacción. Sin las tres claves de Supabase el login no funciona: el README nombra las variables y deja las claves fuera del repositorio.
-
-**Commits**
-
-- `b8d14af` C-23: reescribe el README de la raíz según el punto 4.1.
-
----
-
-#### Sprint 8 — Cierre — Semana del 2026-11-09
-
-##### 2026-11-13  ·  3 h
-
-**Actividad**
-
-Integré `C-09` en `desarrollo` (`5546109`) y escribí esta bitácora (`C-19b`) en `docs/bitacoras/LOG-conti.md` cruzando el historial de commits, las actas y los planes. También actualicé el índice de [`docs/bitacoras/README.md`](./README.md) y los estados de `C-09` y `C-19b` en los documentos de planificación.
-
-**Decisión**
-
-Citar todas las sesiones con los hashes reales (juntando los commits hechos como `bruno` y los merges de PR como `Bruno Nicolás Conti`) sin reescribir citas previas de ADR, que ya cuentan con la tabla de equivalencias en [docs/adr/README.md](../adr/README.md).
-
-**Problema o bloqueo**
-
-Al cruzar mis commits contra los planes del 11/11 noté que `C-09` seguía figurando *En desarrollo* aunque ya estaba mergeada en `5546109`, y que mis commits aparecían bajo dos nombres de autor distintos en Git. Dejé ambos puntos alineados en esta sesión.
-
-**Commits**
-
-- `5546109` C-09
-
----
-
-#### Sprint 8 — Cierre — Semana del 2026-11-16
-
-##### 2026-11-17  ·  4 h
-
-**Actividad**
-
-Implementé y subí la tarea `C-04` (`64e84b1`, rama `c-04`) para cubrir RF-14 (comprobante PDF no fiscal post-pago). Agregué `pdfkit` en el backend, armé las consultas de lectura en `PagosRepository`, generé los PDF con Template Method en `backend/src/pagos/comprobantes/` (`ComprobantePdfTemplate` para `ComprobanteReservaPdf` y `ComprobanteMembresiaPdf`), expuse `GET /pagos/mios`, `GET /pagos/:id/comprobante` y `GET /canchas/reservas/:id/comprobante` con `JwtAuthGuard`, y sumé descarga firmada por HMAC en la pantalla de pago aprobado de la pasarela simulada (`/pasarela-simulada/comprobante/:pagoId`).
-
-En el frontend agregué `frontend/src/services/pagos.ts` y conecté los botones de descarga en `Canchas.tsx` (reserva confirmada y Mis reservas) y en `Perfil.tsx` (Mi membresía). También sumé tests unitarios (`comprobantes.service.spec.ts`), e2e (`test/comprobantes.e2e-spec.ts`), regeneré `backend/swagger.json` y actualicé la nota de Template Method en [Justificacion_Patrones_Unidad_III.md](../../documentacion/Justificacion_Patrones_Unidad_III.md) y [LOG.md](./LOG.md).
-
-**Decisión**
-
-Aplicar **Template Method** (`ComprobantePdfTemplate`) para compartir encabezado, titular, monto y leyenda no fiscal entre el comprobante de reserva de cancha y el de membresía, tal como estaba planteado en la justificación de Unidad III desde que `C-30` incorporó el cobro de membresías en `pagos`. Para la descarga directa desde la pantalla de resultado de la pasarela simulada usé una firma HMAC-SHA256 verificada con `timingSafeEqual`, ya que esa ruta HTML pública no lleva el JWT de la SPA.
-
-**Problema o bloqueo**
-
-Al agregar `cargarPagos` en `Perfil.tsx`, ESLint (`react-hooks/immutability`) falló porque la función había quedado declarada después del `useEffect` que la invocaba; se resolvió moviéndola arriba del efecto. En las pruebas locales dentro del entorno restringido, los e2e con Supertest requerían abrir sockets locales en `127.0.0.1`, por lo que se validaron fuera del aislamiento obteniendo 12/12 suites y 49/49 tests en verde (además de 29/29 suites unitarias y > 65 % de cobertura cumpliendo ADR-008).
-
-**Commits**
-
-- `64e84b1` C-04: Comprobante PDF Post-Pago (RF-14)
-- _Cierre de `C-19b` registrado en la rama `c-19b`._
-
----
-
-##### 2026-11-17  ·  C-16
-
-**Actividad**
-
-Tomé la tarjeta de Lucas y escribí el manual de usuario del Anexo D en `docs/manuales/manual-usuario.md`, rama `C-16`. Recorrí el portal local con el socio, la recepción y el gerente del seed, y dejé cada captura dentro de la sección que explica. El índice de manuales y la fila C-16 del plan de cierre quedaron alineados a ese archivo.
-
-**Decisión**
-
-El manual describe la pantalla que está en `desarrollo`. La agenda de clases queda en la sección 4.2 del Anexo D, con la aclaración de que el enlace **Agenda** lo abre el gerente. Los reportes consolidados se declaran fuera de esta entrega: **Dashboard** no es un panel. La contraseña del seed no se copia: se remite a `SEED_PASSWORD` del README.
-
-**Problema o bloqueo**
-
-La API no arrancó al primer intento porque `pdfkit` no estaba en `node_modules`, aunque ya figuraba en `package.json`. Lo instalé en local para poder sacar las capturas. No cambié dependencias del repositorio.
-
-**Commits**
-
-- `ba82d03` C-16: agrega el manual de usuario con las capturas del sistema.
-
----
-
-##### 2026-11-17  ·  C-23
-
-**Actividad**
-
-Reescribí el `README.md` de la raíz en el orden del punto 4.1 de los lineamientos: qué es el sistema, el equipo con el autor de Git, cinco pasos con Docker, los cuatro usuarios del seed de entrega, la tabla de ADR, diagramas, manuales y bitácoras, y el estado de la suite. Corrí `npm run test:cov` en `backend/`: 29 suites, 179 tests, 65,15 % de sentencias. El umbral del ADR-008 es 60 %. Dejé la fila C-23 del plan de cierre en finalizado.
-
-**Decisión**
-
-Los cinco pasos son los de Docker (`docker compose up --build` y el perfil `seed`). La contraseña que publica el README es `fitzone-demo`, el valor de `SEED_PASSWORD` en `.env.docker.example`, porque el punto 4.1 pide las credenciales de prueba. El porcentaje es el de esta corrida, no el 63,93 % de C-10.
-
-**Problema o bloqueo**
-
-Ninguno de la redacción. Sin las tres claves de Supabase el login no funciona: el README nombra las variables y deja las claves fuera del repositorio.
-
-**Commits**
-
-- `b8d14af` C-23: reescribe el README de la raíz según el punto 4.1.
-
----
-
-#### Sprint 8 — Cierre — Semana del 2026-11-09
-
-##### 2026-11-13  ·  3 h
-
-**Actividad**
-
-Integré `C-09` en `desarrollo` (`5546109`) y escribí esta bitácora (`C-19b`) en `docs/bitacoras/LOG-conti.md` cruzando el historial de commits, las actas y los planes. También actualicé el índice de [`docs/bitacoras/README.md`](./README.md) y los estados de `C-09` y `C-19b` en los documentos de planificación.
-
-**Decisión**
-
-Citar todas las sesiones con los hashes reales (juntando los commits hechos como `bruno` y los merges de PR como `Bruno Nicolás Conti`) sin reescribir citas previas de ADR, que ya cuentan con la tabla de equivalencias en [docs/adr/README.md](../adr/README.md).
-
-**Problema o bloqueo**
-
-Al cruzar mis commits contra los planes del 11/11 noté que `C-09` seguía figurando *En desarrollo* aunque ya estaba mergeada en `5546109`, y que mis commits aparecían bajo dos nombres de autor distintos en Git. Dejé ambos puntos alineados en esta sesión.
-
-**Commits**
-
-- `5546109` C-09
-
----
-
-#### Sprint 8 — Cierre — Semana del 2026-11-16
-
-##### 2026-11-17  ·  4 h
-
-**Actividad**
-
-Implementé y subí la tarea `C-04` (`64e84b1`, rama `c-04`) para cubrir RF-14 (comprobante PDF no fiscal post-pago). Agregué `pdfkit` en el backend, armé las consultas de lectura en `PagosRepository`, generé los PDF con Template Method en `backend/src/pagos/comprobantes/` (`ComprobantePdfTemplate` para `ComprobanteReservaPdf` y `ComprobanteMembresiaPdf`), expuse `GET /pagos/mios`, `GET /pagos/:id/comprobante` y `GET /canchas/reservas/:id/comprobante` con `JwtAuthGuard`, y sumé descarga firmada por HMAC en la pantalla de pago aprobado de la pasarela simulada (`/pasarela-simulada/comprobante/:pagoId`).
-
-En el frontend agregué `frontend/src/services/pagos.ts` y conecté los botones de descarga en `Canchas.tsx` (reserva confirmada y Mis reservas) y en `Perfil.tsx` (Mi membresía). También sumé tests unitarios (`comprobantes.service.spec.ts`), e2e (`test/comprobantes.e2e-spec.ts`), regeneré `backend/swagger.json` y actualicé la nota de Template Method en [Justificacion_Patrones_Unidad_III.md](../../documentacion/Justificacion_Patrones_Unidad_III.md) y [LOG.md](./LOG.md).
-
-**Decisión**
-
-Aplicar **Template Method** (`ComprobantePdfTemplate`) para compartir encabezado, titular, monto y leyenda no fiscal entre el comprobante de reserva de cancha y el de membresía, tal como estaba planteado en la justificación de Unidad III desde que `C-30` incorporó el cobro de membresías en `pagos`. Para la descarga directa desde la pantalla de resultado de la pasarela simulada usé una firma HMAC-SHA256 verificada con `timingSafeEqual`, ya que esa ruta HTML pública no lleva el JWT de la SPA.
-
-**Problema o bloqueo**
-
-Al agregar `cargarPagos` en `Perfil.tsx`, ESLint (`react-hooks/immutability`) falló porque la función había quedado declarada después del `useEffect` que la invocaba; se resolvió moviéndola arriba del efecto. En las pruebas locales dentro del entorno restringido, los e2e con Supertest requerían abrir sockets locales en `127.0.0.1`, por lo que se validaron fuera del aislamiento obteniendo 12/12 suites y 49/49 tests en verde (además de 29/29 suites unitarias y > 65 % de cobertura cumpliendo ADR-008).
-
-**Commits**
-
-- `64e84b1` C-04: Comprobante PDF Post-Pago (RF-14)
-- _Cierre de `C-19b` registrado en la rama `c-19b`._
-
----
-
-##### 2026-11-17  ·  C-16
-
-**Actividad**
-
-Tomé la tarjeta de Lucas y escribí el manual de usuario del Anexo D en `docs/manuales/manual-usuario.md`, rama `C-16`. Recorrí el portal local con el socio, la recepción y el gerente del seed, y dejé cada captura dentro de la sección que explica. El índice de manuales y la fila C-16 del plan de cierre quedaron alineados a ese archivo.
-
-**Decisión**
-
-El manual describe la pantalla que está en `desarrollo`. La agenda de clases queda en la sección 4.2 del Anexo D, con la aclaración de que el enlace **Agenda** lo abre el gerente. Los reportes consolidados se declaran fuera de esta entrega: **Dashboard** no es un panel. La contraseña del seed no se copia: se remite a `SEED_PASSWORD` del README.
-
-**Problema o bloqueo**
-
-La API no arrancó al primer intento porque `pdfkit` no estaba en `node_modules`, aunque ya figuraba en `package.json`. Lo instalé en local para poder sacar las capturas. No cambié dependencias del repositorio.
-
-**Commits**
-
-- `ba82d03` C-16: agrega el manual de usuario con las capturas del sistema.
-
----
-
-##### 2026-11-17  ·  C-23
-
-**Actividad**
-
-Reescribí el `README.md` de la raíz en el orden del punto 4.1 de los lineamientos: qué es el sistema, el equipo con el autor de Git, cinco pasos con Docker, los cuatro usuarios del seed de entrega, la tabla de ADR, diagramas, manuales y bitácoras, y el estado de la suite. Corrí `npm run test:cov` en `backend/`: 29 suites, 179 tests, 65,15 % de sentencias. El umbral del ADR-008 es 60 %. Dejé la fila C-23 del plan de cierre en finalizado.
-
-**Decisión**
-
-Los cinco pasos son los de Docker (`docker compose up --build` y el perfil `seed`). La contraseña que publica el README es `fitzone-demo`, el valor de `SEED_PASSWORD` en `.env.docker.example`, porque el punto 4.1 pide las credenciales de prueba. El porcentaje es el de esta corrida, no el 63,93 % de C-10.
-
-**Problema o bloqueo**
-
-Ninguno de la redacción. Sin las tres claves de Supabase el login no funciona: el README nombra las variables y deja las claves fuera del repositorio.
-
-**Commits**
-
-- `b8d14af` C-23: reescribe el README de la raíz según el punto 4.1.
-
----
-
-#### Sprint 8 — Cierre — Semana del 2026-11-09
-
-##### 2026-11-13  ·  3 h
-
-**Actividad**
-
-Integré `C-09` en `desarrollo` (`5546109`) y escribí esta bitácora (`C-19b`) en `docs/bitacoras/LOG-conti.md` cruzando el historial de commits, las actas y los planes. También actualicé el índice de [`docs/bitacoras/README.md`](./README.md) y los estados de `C-09` y `C-19b` en los documentos de planificación.
-
 **Decisión**
 
-Citar todas las sesiones con los hashes reales (juntando los commits hechos como `bruno` y los merges de PR como `Bruno Nicolás Conti`) sin reescribir citas previas de ADR, que ya cuentan con la tabla de equivalencias en [docs/adr/README.md](../adr/README.md).
+La cobertura no podía quedar como un dato opcional en un reporte. Debía transformarse en una validación automática en CI para evitar entregas con pruebas verdes pero cobertura insuficiente. Asimismo, la documentación del cierre y la revisión funcional debían quedar registradas para que no se perdiera el contexto de la entrega final.
 
 **Problema o bloqueo**
 
-Al cruzar mis commits contra los planes del 11/11 noté que `C-09` seguía figurando *En desarrollo* aunque ya estaba mergeada en `5546109`, y que mis commits aparecían bajo dos nombres de autor distintos en Git. Dejé ambos puntos alineados en esta sesión.
+La suite ya pasaba localmente, pero el pipeline no lo validaba de forma automática ni aplicaba un umbral real. La solución fue dejar la ejecución de cobertura en la CI y declarar el umbral en Jest para que el fallo sucediera de forma reproducible. Además, el cierre funcional y documental de la entrega se realizó en paralelo, por lo que era importante registrar cada entregable con su evidencia concreta.
 
 **Commits**
 
-- `5546109` C-09
+- `7bbc862` docs: registra C-10 en la bitácora individual de Goncevat (P4)
+- `550f579` C-10: cierra suite verde, cobertura y umbral ADR-008
+- `befbe1a` C-11: anota la revisión del cierre de la pantalla Clases.
+- `4d386df` C-17: [manual de instalación y operación](../manuales/manual-instalacion-operacion.md), con requisitos, entorno, seed, arranque local, operación y contingencias.
+- `cccc91c` docs: completa planificación (§5.6), EDT, trazabilidad, riesgos y Anexos G/H [C-20]
+- `66c4562` C-19d: agrega bitácora individual de Matias Goncevat con entradas, actividad, decisiones, bloqueos, commits y horas
 
 ---
-
-#### Sprint 8 — Cierre — Semana del 2026-11-16
-
-##### 2026-11-17  ·  4 h
-
-**Actividad**
-
-Implementé y subí la tarea `C-04` (`64e84b1`, rama `c-04`) para cubrir RF-14 (comprobante PDF no fiscal post-pago). Agregué `pdfkit` en el backend, armé las consultas de lectura en `PagosRepository`, generé los PDF con Template Method en `backend/src/pagos/comprobantes/` (`ComprobantePdfTemplate` para `ComprobanteReservaPdf` y `ComprobanteMembresiaPdf`), expuse `GET /pagos/mios`, `GET /pagos/:id/comprobante` y `GET /canchas/reservas/:id/comprobante` con `JwtAuthGuard`, y sumé descarga firmada por HMAC en la pantalla de pago aprobado de la pasarela simulada (`/pasarela-simulada/comprobante/:pagoId`).
-
-En el frontend agregué `frontend/src/services/pagos.ts` y conecté los botones de descarga en `Canchas.tsx` (reserva confirmada y Mis reservas) y en `Perfil.tsx` (Mi membresía). También sumé tests unitarios (`comprobantes.service.spec.ts`), e2e (`test/comprobantes.e2e-spec.ts`), regeneré `backend/swagger.json` y actualicé la nota de Template Method en [Justificacion_Patrones_Unidad_III.md](../../documentacion/Justificacion_Patrones_Unidad_III.md) y [LOG.md](./LOG.md).
-
-**Decisión**
-
-Aplicar **Template Method** (`ComprobantePdfTemplate`) para compartir encabezado, titular, monto y leyenda no fiscal entre el comprobante de reserva de cancha y el de membresía, tal como estaba planteado en la justificación de Unidad III desde que `C-30` incorporó el cobro de membresías en `pagos`. Para la descarga directa desde la pantalla de resultado de la pasarela simulada usé una firma HMAC-SHA256 verificada con `timingSafeEqual`, ya que esa ruta HTML pública no lleva el JWT de la SPA.
-
-**Problema o bloqueo**
-
-Al agregar `cargarPagos` en `Perfil.tsx`, ESLint (`react-hooks/immutability`) falló porque la función había quedado declarada después del `useEffect` que la invocaba; se resolvió moviéndola arriba del efecto. En las pruebas locales dentro del entorno restringido, los e2e con Supertest requerían abrir sockets locales en `127.0.0.1`, por lo que se validaron fuera del aislamiento obteniendo 12/12 suites y 49/49 tests en verde (además de 29/29 suites unitarias y > 65 % de cobertura cumpliendo ADR-008).
-
-**Commits**
 
-- `64e84b1` C-04: Comprobante PDF Post-Pago (RF-14)
-- _Cierre de `C-19b` registrado en la rama `c-19b`._
+#### Sprint 6 — Cierre y documentación — Semana del 2026-11-17
 
----
-
-##### 2026-11-17  ·  C-16
+##### 2026-11-17  ·  3 h
 
 **Actividad**
 
-Tomé la tarjeta de Lucas y escribí el manual de usuario del Anexo D en `docs/manuales/manual-usuario.md`, rama `C-16`. Recorrí el portal local con el socio, la recepción y el gerente del seed, y dejé cada captura dentro de la sección que explica. El índice de manuales y la fila C-16 del plan de cierre quedaron alineados a ese archivo.
+Cerré la tarea C-08 de carga de prueba por Anexo G. Creé `backend/scripts/seed-entrega.ts` que inserta 25 sedes (>= 25 requeridas por §5.4.1), 1 cancha mínima y 1 clase mínima por sede (25 de cada una), y perfiles con los 4 roles (gerente, admin_sede, socio, externo). El script es idempotente (upsert por `id`), sigue el mismo patrón de `seed-demo.ts` y requiere las mismas variables de entorno (`SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, `SEED_PASSWORD`). Agregé el script `npm run seed:entrega` a `backend/package.json` y registre `seed-entrega.ts` en `scripts/tsconfig.seed.json`.
 
 **Decisión**
 
-El manual describe la pantalla que está en `desarrollo`. La agenda de clases queda en la sección 4.2 del Anexo D, con la aclaración de que el enlace **Agenda** lo abre el gerente. Los reportes consolidados se declaran fuera de esta entrega: **Dashboard** no es un panel. La contraseña del seed no se copia: se remite a `SEED_PASSWORD` del README.
+Preferí un script aparte (`seed:entrega`) en lugar de extender el `seed` de demo (S5, 2 sedes) para no mezclar la carga de prueba de 25 sedes con el mínimo de demo, manteniendo ambos independientes y ejecutables por separado.
 
 **Problema o bloqueo**
 
-La API no arrancó al primer intento porque `pdfkit` no estaba en `node_modules`, aunque ya figuraba en `package.json`. Lo instalé en local para poder sacar las capturas. No cambié dependencias del repositorio.
+No se pudo ejecutar el seed contra Supabase real por falta de credenciales de entorno en esta sesión; el código queda listo para correr con `npm run seed:entrega` una vez se provean las variables. No hubo errores de sintaxis ni de estructura en el script.
 
 **Commits**
 
-- `ba82d03` C-16: agrega el manual de usuario con las capturas del sistema.
+- `11c9e2c` C-08: seed de entrega final con >= 25 sedes, canchas/clases mínimas y 4 roles
+- `4107355` C-08: seed de entrega final con >= 25 sedes, canchas/clases mínimas y 4 roles
 
 ---
 
-##### 2026-11-17  ·  C-23
+##### 2026-11-17  ·  C-07
 
 **Actividad**
 
-Reescribí el `README.md` de la raíz en el orden del punto 4.1 de los lineamientos: qué es el sistema, el equipo con el autor de Git, cinco pasos con Docker, los cuatro usuarios del seed de entrega, la tabla de ADR, diagramas, manuales y bitácoras, y el estado de la suite. Corrí `npm run test:cov` en `backend/`: 29 suites, 179 tests, 65,15 % de sentencias. El umbral del ADR-008 es 60 %. Dejé la fila C-23 del plan de cierre en finalizado.
+Dejé el Docker Compose de la API y el frontend, con los Dockerfiles y la base documentada.
 
 **Decisión**
 
-Los cinco pasos son los de Docker (`docker compose up --build` y el perfil `seed`). La contraseña que publica el README es `fitzone-demo`, el valor de `SEED_PASSWORD` en `.env.docker.example`, porque el punto 4.1 pide las credenciales de prueba. El porcentaje es el de esta corrida, no el 63,93 % de C-10.
+El Compose es el arranque de la entrega. La API sigue hablando con Supabase.
 
 **Problema o bloqueo**
 
-Ninguno de la redacción. Sin las tres claves de Supabase el login no funciona: el README nombra las variables y deja las claves fuera del repositorio.
+Ninguno de esta cita. El commit ya estaba en `desarrollo` y no figuraba en esta bitácora.
 
 **Commits**
 
-- `b8d14af` C-23: reescribe el README de la raíz según el punto 4.1.
+- `431b225` C-07: Docker Compose (API + front). docker-compose.yml, Dockerfiles y la base documentada.
 
 ---
-
-#### Sprint 8 — Cierre — Semana del 2026-11-09
-
-##### 2026-11-13  ·  3 h
-
-**Actividad**
-
-Integré `C-09` en `desarrollo` (`5546109`) y escribí esta bitácora (`C-19b`) en `docs/bitacoras/LOG-conti.md` cruzando el historial de commits, las actas y los planes. También actualicé el índice de [`docs/bitacoras/README.md`](./README.md) y los estados de `C-09` y `C-19b` en los documentos de planificación.
-
-**Decisión**
-
-Citar todas las sesiones con los hashes reales (juntando los commits hechos como `bruno` y los merges de PR como `Bruno Nicolás Conti`) sin reescribir citas previas de ADR, que ya cuentan con la tabla de equivalencias en [docs/adr/README.md](../adr/README.md).
-
-**Problema o bloqueo**
 
-Al cruzar mis commits contra los planes del 11/11 noté que `C-09` seguía figurando *En desarrollo* aunque ya estaba mergeada en `5546109`, y que mis commits aparecían bajo dos nombres de autor distintos en Git. Dejé ambos puntos alineados en esta sesión.
+#### Resumen de contribución
 
-**Commits**
-
-- `5546109` C-09
+Mi aporte principal fue sostener la calidad operativa del proyecto y la trazabilidad del trabajo: validación de flujo, pruebas E2E y Postman, configuración de CI, documentación de setup, planificación y cierre de entregables. Esa combinación de tareas me dejó centrado en QA / DevOps / Mobile, con foco en que el proyecto pudiera ejecutarse, probarse y documentarse sin depender de la memoria del equipo.
 
 ---
 
-#### Sprint 8 — Cierre — Semana del 2026-11-16
+##### 2026-11-18  ·  C-35 ·  1 h
 
-##### 2026-11-17  ·  4 h
-
 **Actividad**
-
-Implementé y subí la tarea `C-04` (`64e84b1`, rama `c-04`) para cubrir RF-14 (comprobante PDF no fiscal post-pago). Agregué `pdfkit` en el backend, armé las consultas de lectura en `PagosRepository`, generé los PDF con Template Method en `backend/src/pagos/comprobantes/` (`ComprobantePdfTemplate` para `ComprobanteReservaPdf` y `ComprobanteMembresiaPdf`), expuse `GET /pagos/mios`, `GET /pagos/:id/comprobante` y `GET /canchas/reservas/:id/comprobante` con `JwtAuthGuard`, y sumé descarga firmada por HMAC en la pantalla de pago aprobado de la pasarela simulada (`/pasarela-simulada/comprobante/:pagoId`).
 
-En el frontend agregué `frontend/src/services/pagos.ts` y conecté los botones de descarga en `Canchas.tsx` (reserva confirmada y Mis reservas) y en `Perfil.tsx` (Mi membresía). También sumé tests unitarios (`comprobantes.service.spec.ts`), e2e (`test/comprobantes.e2e-spec.ts`), regeneré `backend/swagger.json` y actualicé la nota de Template Method en [Justificacion_Patrones_Unidad_III.md](../../documentacion/Justificacion_Patrones_Unidad_III.md) y [LOG.md](./LOG.md).
+Ejecuté desde `backend/` la medición completa solicitada por C-35: `npm ci`, `npm run build` y `npm run test:cov -- --runInBand`. La instalación limpia completó correctamente el alta de 637 paquetes. El build de Nest terminó sin errores y no fue necesario reparar el código. La suite terminó con 32 suites aprobadas y 184 tests aprobados; no hubo suites ni tests fallidos. El reporte global de cobertura registró **65.77 % de sentencias**, por encima del piso de **60 %** declarado en ADR-008.
 
 **Decisión**
 
-Aplicar **Template Method** (`ComprobantePdfTemplate`) para compartir encabezado, titular, monto y leyenda no fiscal entre el comprobante de reserva de cancha y el de membresía, tal como estaba planteado en la justificación de Unidad III desde que `C-30` incorporó el cobro de membresías en `pagos`. Para la descarga directa desde la pantalla de resultado de la pasarela simulada usé una firma HMAC-SHA256 verificada con `timingSafeEqual`, ya que esa ruta HTML pública no lleva el JWT de la SPA.
+Conservo la medición como evidencia concreta de C-35 y uso el 65.77 % como porcentaje que citará C-38. No elevé el umbral del ADR-008: el resultado se contrasta con el piso vigente del 60 %, no con un nuevo objetivo del 70 %.
 
 **Problema o bloqueo**
 
-Al agregar `cargarPagos` en `Perfil.tsx`, ESLint (`react-hooks/immutability`) falló porque la función había quedado declarada después del `useEffect` que la invocaba; se resolvió moviéndola arriba del efecto. En las pruebas locales dentro del entorno restringido, los e2e con Supertest requerían abrir sockets locales en `127.0.0.1`, por lo que se validaron fuera del aislamiento obteniendo 12/12 suites y 49/49 tests en verde (además de 29/29 suites unitarias y > 65 % de cobertura cumpliendo ADR-008).
+Ninguno bloqueante. `npm ci` informó 30 vulnerabilidades en el árbol de dependencias (2 bajas, 22 moderadas, 5 altas y 1 crítica) y las advertencias de scripts de instalación, pero no impidieron la instalación ni fallaron los comandos de build o pruebas. El reporte HTML queda en `backend/coverage/`; esa carpeta está ignorada por Git y el dato estable a citar es el resumen global de sentencias.
 
 **Commits**
 
-- `64e84b1` C-04: Comprobante PDF Post-Pago (RF-14)
-- _Cierre de `C-19b` registrado en la rama `c-19b`._
+- Pendiente de commit en esta sesión. No se modificó código de backend ni la configuración de Jest.
 
 ---
 
-##### 2026-11-17  ·  C-16
+##### 2026-11-18  ·  C-37 ·  2 h
 
 **Actividad**
 
-Tomé la tarjeta de Lucas y escribí el manual de usuario del Anexo D en `docs/manuales/manual-usuario.md`, rama `C-16`. Recorrí el portal local con el socio, la recepción y el gerente del seed, y dejé cada captura dentro de la sección que explica. El índice de manuales y la fila C-16 del plan de cierre quedaron alineados a ese archivo.
+Ordené `docs/planificacion/` por sprint: agregué `README.md` como índice S1–S8, renombré las actas y planes con prefijos de sprint, dejé un registro combinado S1–S2 y el plan S5–S7, y moví los archivos XLSX y el export JSON a `exportaciones/`. S3 no tiene plan propio, por lo que el índice lo remite a `docs/bitacoras/LOG.md`. Actualicé los enlaces internos que apuntaban a los nombres anteriores y marqué C-37 como Finalizado en el plan de cierre.
 
 **Decisión**
 
-El manual describe la pantalla que está en `desarrollo`. La agenda de clases queda en la sección 4.2 del Anexo D, con la aclaración de que el enlace **Agenda** lo abre el gerente. Los reportes consolidados se declaran fuera de esta entrega: **Dashboard** no es un panel. La contraseña del seed no se copia: se remite a `SEED_PASSWORD` del README.
+Conservé los nombres históricos como contenido, pero normalicé las rutas para que la carpeta se lea en secuencia: S1, S1–S2, S3 sin plan propio, S4, S5, S5–S7 y S8. Los exports quedaron separados del texto operativo para preparar la reescritura de C-38 sin perder los originales.
 
 **Problema o bloqueo**
 
-La API no arrancó al primer intento porque `pdfkit` no estaba en `node_modules`, aunque ya figuraba en `package.json`. Lo instalé en local para poder sacar las capturas. No cambié dependencias del repositorio.
+No hubo bloqueo técnico. Algunos documentos históricos todavía citan nombres antiguos dentro de texto narrativo o secciones de cierre; donde no afectan enlaces, se conservaron como referencias históricas. Los enlaces activos principales ya apuntan a las rutas nuevas.
 
 **Commits**
 
-- `ba82d03` C-16: agrega el manual de usuario con las capturas del sistema.
+- Pendiente de commit en esta sesión. Esta tarea modificó nombres de archivos, estructura de carpetas y enlaces Markdown.
 
 ---
 
-##### 2026-11-17  ·  C-23
+##### 2026-11-18  ·  C-38 ·  5 h
 
 **Actividad**
 
-Reescribí el `README.md` de la raíz en el orden del punto 4.1 de los lineamientos: qué es el sistema, el equipo con el autor de Git, cinco pasos con Docker, los cuatro usuarios del seed de entrega, la tabla de ADR, diagramas, manuales y bitácoras, y el estado de la suite. Corrí `npm run test:cov` en `backend/`: 29 suites, 179 tests, 65,15 % de sentencias. El umbral del ADR-008 es 60 %. Dejé la fila C-23 del plan de cierre en finalizado.
+Reescribí `docs/planificacion/S8_Planificacion_Completa_C20.md`, archivo que ahora satisface C-20 y deja constancia de C-38. Normalicé los ocho sprints: S1 desde el 31/08/2026, S2 07–13/09, S3 14–27/09, S4 28/09–11/10, S5 12–25/10, S6 26/10–08/11, S7 09–15/11 y S8 16–19/11. Construí una matriz única con RF-01 a RF-14, RN-01 a RN-03 y RNF-01 a RNF-04. Incorporé la medición de C-35 de 32/32 suites, 184/184 tests y 65.77 % de sentencias, sin mover el piso ADR-008 del 60 %. Reemplazé riesgos futuros por desvíos ocurridos con estimación incorrecta, materialización y replanteo aplicado.
 
 **Decisión**
 
-Los cinco pasos son los de Docker (`docker compose up --build` y el perfil `seed`). La contraseña que publica el README es `fitzone-demo`, el valor de `SEED_PASSWORD` en `.env.docker.example`, porque el punto 4.1 pide las credenciales de prueba. El porcentaje es el de esta corrida, no el 63,93 % de C-10.
+C-20 pasa a Finalizado. La trazabilidad describe el estado real de implementación, no el objetivo deseado. El 786 ms medido en `/canchas/disponibilidad` se registra como evidencia de RNF-03, sin inventar un nuevo umbral. C-21, C-24, C-25, C-26 y C-27 siguen como tareas distintas y no se declaran cerradas por esta reescritura.
 
 **Problema o bloqueo**
 
-Ninguno de la redacción. Sin las tres claves de Supabase el login no funciona: el README nombra las variables y deja las claves fuera del repositorio.
+No hubo bloqueo técnico. El borrador anterior agrupaba RF-09–RF-12, omitía varios RF y confundía RN-03 con rutas/roles y RNF-03 con Docker. Se resolvió consultando el enunciado y las evidencias reales del repositorio, sin convertir las restricciones de cierre en riesgos hipotéticos.
 
 **Commits**
 
-- `b8d14af` C-23: reescribe el README de la raíz según el punto 4.1.
+- Pendiente de commit en esta sesión. Esta tarea modifica la planificación C-20 y los estados C-20/C-38.
 
----
-
-#### Sprint 8 — Cierre — Semana del 2026-11-09
-
-##### 2026-11-13  ·  3 h
-
-**Actividad**
-
-Integré `C-09` en `desarrollo` (`5546109`) y escribí esta bitácora (`C-19b`) en `docs/bitacoras/LOG-conti.md` cruzando el historial de commits, las actas y los planes. También actualicé el índice de [`docs/bitacoras/README.md`](./README.md) y los estados de `C-09` y `C-19b` en los documentos de planificación.
-
-**Decisión**
+## 10. Índice de los manuales entregados
 
-Citar todas las sesiones con los hashes reales (juntando los commits hechos como `bruno` y los merges de PR como `Bruno Nicolás Conti`) sin reescribir citas previas de ADR, que ya cuentan con la tabla de equivalencias en [docs/adr/README.md](../adr/README.md).
+Los tres manuales están en el repositorio. Este dossier no los reimprime.
 
-**Problema o bloqueo**
-
-Al cruzar mis commits contra los planes del 11/11 noté que `C-09` seguía figurando *En desarrollo* aunque ya estaba mergeada en `5546109`, y que mis commits aparecían bajo dos nombres de autor distintos en Git. Dejé ambos puntos alineados en esta sesión.
-
-**Commits**
+| Manual | Ruta | Qué cubre |
+|--------|------|-----------|
+| Usuario | `docs/manuales/manual-usuario.md` | Socio, recepción y gerente, con las capturas del sistema. Tarjeta C-16, cerrada el 17/11 |
+| Instalación y operación | `docs/manuales/manual-instalacion-operacion.md` | Requisitos, entorno, seed, arranque y contingencias. El archivo es del 17/11, de Matias. La tarjeta C-17 sigue en por hacer en el plan de cierre |
+| Técnico | `docs/manuales/manual-tecnico.md` | Módulos, patrones y los dos casos de extensión: canchas de tenis y un decorador de recargo de fin de semana. Tarjeta C-18, cerrada |
 
-- `5546109` C-09
+El índice corto de la carpeta es `docs/manuales/README.md`.
 
----
-
-#### Sprint 8 — Cierre — Semana del 2026-11-16
+## 11. Anexo: tablero del proyecto
 
-##### 2026-11-17  ·  4 h
+El tablero vivo es [Programacion5](https://trello.com/b/eBn68vRC/programacion5).
 
-**Actividad**
+El registro con fechas de alta y de cierre es `docs/planificacion/PROGV-2026-TIF-Equipo03-Registro.xlsx`, tarjeta C-21, armado el 19/11. Tiene las hojas Portada, Resumen y Altas y cierres. El link no reemplaza ese archivo.
 
-Implementé y subí la tarea `C-04` (`64e84b1`, rama `c-04`) para cubrir RF-14 (comprobante PDF no fiscal post-pago). Agregué `pdfkit` en el backend, armé las consultas de lectura en `PagosRepository`, generé los PDF con Template Method en `backend/src/pagos/comprobantes/` (`ComprobantePdfTemplate` para `ComprobanteReservaPdf` y `ComprobanteMembresiaPdf`), expuse `GET /pagos/mios`, `GET /pagos/:id/comprobante` y `GET /canchas/reservas/:id/comprobante` con `JwtAuthGuard`, y sumé descarga firmada por HMAC en la pantalla de pago aprobado de la pasarela simulada (`/pasarela-simulada/comprobante/:pagoId`).
+La tabla de abajo es el estado escrito en `docs/planificacion/S8_Plan_Cierre_Entrega_6_19_Nov.md` al 19 de noviembre de 2026. El nombre de la tarea es el de este dossier. Quién y el estado salen de ese plan.
 
-En el frontend agregué `frontend/src/services/pagos.ts` y conecté los botones de descarga en `Canchas.tsx` (reserva confirmada y Mis reservas) y en `Perfil.tsx` (Mi membresía). También sumé tests unitarios (`comprobantes.service.spec.ts`), e2e (`test/comprobantes.e2e-spec.ts`), regeneré `backend/swagger.json` y actualicé la nota de Template Method en [Justificacion_Patrones_Unidad_III.md](../../documentacion/Justificacion_Patrones_Unidad_III.md) y [LOG.md](./LOG.md).
-
-**Decisión**
+| ID | Tarea | Quién | Estado al 19/11/2026 |
+|----|-------|-------|----------------------|
+| C-01 | Canchas en la UI | Lucas | Finalizado |
+| C-02 | Membresía visible en el perfil | Lucas | En desarrollo |
+| C-03 | Lectura en el teléfono | Lucas | Finalizado |
+| C-04 | PDF comprobante | Bruno | Finalizado |
+| C-05 | Decisión de RNF-01 | Patricio | Finalizado |
+| C-06 | Ensayo corto del guion | Equipo | Finalizado |
+| C-07 | Docker Compose | Matias | Por hacer |
+| C-08 | Seed de 25 sedes | Matias | Por hacer |
+| C-09 | swagger.json | Bruno | Finalizado |
+| C-10 | Suite y cobertura en el CI | Matias | Por hacer |
+| C-11 | Pantalla de clases | Patricio (antes Lucas) | Finalizado |
+| C-12 | Notificaciones in-app | Lucas | Por hacer |
+| C-13 | Estructura de docs/ | Patricio | Finalizado |
+| C-14 | Diez ADR | Patricio | Finalizado |
+| C-15 | Catorce diagramas | Patricio | Finalizado |
+| C-16 | Manual de usuario | Patricio (antes Lucas) | Finalizado |
+| C-17 | Manual de instalación | Matias | Por hacer |
+| C-18 | Manual técnico | Patricio | Finalizado |
+| C-19 | Bitácoras | Cada uno | Parcial |
+| C-20 | Planificación | Matias | Finalizado |
+| C-21 | Registro del tablero | Patricio (tarjeta de Matias) | Finalizado |
+| C-22 | Recorrido del Anexo G | Patricio | Finalizado |
+| C-23 | README de cinco pasos | Patricio | Finalizado |
+| C-24 | Ensayo de cinco minutos | Patricio | Finalizado |
+| C-25 | Dossier | Patricio | Por hacer |
+| C-26 | Tag v1.0-entrega | Patricio | Por hacer |
+| C-27 | Subida a Moodle | Patricio | Por hacer |
+| C-28 | Precio con Decorator | Patricio | Finalizado |
+| C-29 | Alta y edición de sedes | Patricio | Finalizado |
+| C-30 | Renovación de membresía | Patricio | Finalizado |
+| C-31 | Agenda de clases | Patricio | Finalizado |
+| C-32 | Canchas en pantalla | Patricio | Finalizado |
+| C-33 | Check-out desde Acceso | Patricio | Finalizado |
+| C-34 | Contraste del aviso | Patricio | Finalizado |
+| C-35 | Medir la cobertura | Matias | Finalizado |
+| C-36 | Archivo LICENSE | Patricio | Finalizado |
+| C-37 | Ordenar la planificación | Matias | Finalizado |
+| C-38 | Reescribir la planificación | Matias | Finalizado |
+| C-39 | Dashboard del gerente | Patricio | Finalizado |
+| C-40 | E2E con Playwright | Patricio | Finalizado |
+| C-41 | SQL de RN-02 en el CI | Patricio | Finalizado |
 
-Aplicar **Template Method** (`ComprobantePdfTemplate`) para compartir encabezado, titular, monto y leyenda no fiscal entre el comprobante de reserva de cancha y el de membresía, tal como estaba planteado en la justificación de Unidad III desde que `C-30` incorporó el cobro de membresías en `pagos`. Para la descarga directa desde la pantalla de resultado de la pasarela simulada usé una firma HMAC-SHA256 verificada con `timingSafeEqual`, ya que esa ruta HTML pública no lleva el JWT de la SPA.
+C-19 está partida en el tablero: C-19a Patricio, C-19b Bruno y C-19c Lucas figuran finalizadas. C-19d, la de Matias, figura en desarrollo. Los cuatro textos están en la sección 9.
 
-**Problema
+C-25 figura en por hacer en ese plan porque el tag de la entrega todavía no existe. Este Markdown es la base del PDF. C-26 crea `v1.0-entrega`, completa el tag y el hash, e imprime.

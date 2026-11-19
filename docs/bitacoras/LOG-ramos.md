@@ -1023,3 +1023,23 @@ La tarjeta es de Matias. El archivo no completa cierres que el tablero no tiene.
 
 - El commit de esta rama.
 
+---
+
+### 2026-11-19  ·  C-25
+
+**Actividad**
+
+Rearmé el Markdown del dossier en `docs/entregables/dossier.md`: portada del 19/11, claves del proyecto en blanco para la cátedra, link al tablero Programacion5 y el registro `docs/planificacion/PROGV-2026-TIF-Equipo03-Registro.xlsx`. Las cuatro bitácoras entran una vez. Las marcas de tag y de hash de la portada quedan sin sustituir.
+
+**Decisión**
+
+El tag y el hash de la portada los completa C-26, al imprimir el PDF. Esta entrada no inventa ni el tag ni el hash. Las claves no se escriben en el repositorio.
+
+**Problema o bloqueo**
+
+Ninguno.
+
+**Commits**
+
+- El commit de esta rama. El tag y el hash de la portada quedan en C-26.
+
