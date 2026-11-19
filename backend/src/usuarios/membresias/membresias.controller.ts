@@ -1,4 +1,5 @@
-import { Body, Controller, Get, Param, ParseUUIDPipe, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, ParseUUIDPipe, Post, Req } from '@nestjs/common';
+import type { Request } from 'express';
 import {
   ApiBadRequestResponse,
   ApiConflictResponse,
@@ -19,6 +20,7 @@ import {
   RenovacionMembresiaResponseDto,
   RenovarMembresiaDto,
 } from './membresia.dto';
+import { checkoutAlcanzable } from '../../pagos/url-checkout';
 import { MembresiasService } from './membresias.service';
 
 @ApiTags('membresias')
@@ -52,8 +54,20 @@ export class MembresiasController {
   })
   @ApiCreatedResponse({ type: RenovacionMembresiaResponseDto })
   @ApiBadRequestResponse({ description: 'Plan inválido o inactivo' })
-  renovar(@CurrentUser() user: AuthUserDto, @Body() dto: RenovarMembresiaDto) {
-    return this.membresiasService.iniciarRenovacion(user.id, dto?.plan);
+  async renovar(
+    @CurrentUser() user: AuthUserDto,
+    @Body() dto: RenovarMembresiaDto,
+    @Req() req: Request,
+  ) {
+    const renovacion = await this.membresiasService.iniciarRenovacion(user.id, dto?.plan);
+    return {
+      ...renovacion,
+      checkoutUrl: checkoutAlcanzable(
+        renovacion.checkoutUrl,
+        req.headers,
+        req.protocol,
+      ),
+    };
   }
 
   @Get()

@@ -7,6 +7,7 @@ import {
   Inject,
   Param,
   Post,
+  Req,
   Res,
   StreamableFile,
   UseGuards,
@@ -26,11 +27,12 @@ import {
   ApiTags,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
-import type { Response } from 'express';
+import type { Request, Response } from 'express';
 import { AuthUserDto } from '../../common/auth-user.dto';
 import { CurrentUser } from '../../common/current-user.decorator';
 import { JwtAuthGuard } from '../../common/jwt-auth.guard';
 import { ComprobantesService } from '../../pagos/comprobantes/comprobantes.service';
+import { checkoutAlcanzable } from '../../pagos/url-checkout';
 import {
   IniciarPagoResponseDto,
   ReservarCanchaDto,
@@ -95,11 +97,16 @@ export class ReservasCanchaController {
   @ApiConflictResponse({ description: 'Hold vencido; reserva cancelada' })
   @ApiForbiddenResponse({ description: 'La reserva pertenece a otro usuario' })
   @ApiNotFoundResponse({ description: 'Reserva inexistente' })
-  iniciarPago(
+  async iniciarPago(
     @CurrentUser() user: AuthUserDto,
     @Param('id') id: string,
+    @Req() req: Request,
   ): Promise<IniciarPagoResponseDto> {
-    return this.service.iniciarPago(user.id, id);
+    const pago = await this.service.iniciarPago(user.id, id);
+    return {
+      ...pago,
+      checkoutUrl: checkoutAlcanzable(pago.checkoutUrl, req.headers, req.protocol),
+    };
   }
 
   @Get(':id/comprobante')

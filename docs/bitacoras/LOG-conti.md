@@ -2,7 +2,7 @@
 
 Registro individual de Bruno Conti (P2, backend, reglas de negocio y patrones). Cada entrada es una sesión de trabajo. En **Commits** van los commits de esa sesión y el merge o pull request que los integró a la rama.
 
-Las horas de las primeras semanas salen de los planes (`Plan_Trabajo_Semanas_1_y_2.md` y `Plan_Trabajo_2_Semanas.md`). Las de noviembre (`S4-T06`, `S4-T10`, `S4-T14`, `S4-T15`, `C-09` y `C-19b`) son una estimación basada en el alcance de cada entrega y las pruebas agregadas.
+Las horas de las primeras semanas salen de los planes ([S1–S2](../planificacion/S1-S2_Plan_Trabajo_Semanas_1_y_2.md) y [S5–S7](../planificacion/S5-S7_Plan_Trabajo_3_Semanas.md)). Las de noviembre (`S4-T06`, `S4-T10`, `S4-T14`, `S4-T15`, `C-09` y `C-19b`) son una estimación basada en el alcance de cada entrega y las pruebas agregadas.
 
 ---
 
@@ -12,7 +12,7 @@ Las horas de las primeras semanas salen de los planes (`Plan_Trabajo_Semanas_1_y
 
 **Actividad**
 
-Participé de la puesta en común del 26/08 y de la reunión de Semana 1 del 02/09 (`S1-T05`, [Acta_Reunion_2026-09-02_Semana1.md](../planificacion/Acta_Reunion_2026-09-02_Semana1.md)). Revisé los primeros ADR (`ADR-001` a `ADR-006` en la numeración de agosto) para corregir inconsistencias y alinearlos al formato de la cátedra (`S1-T02`), preparé el borrador del esquema SQL inicial con `sedes`, `perfiles` y `membresias` (`S1-T12`) y quedé a cargo de la revisión cruzada del PDF de Unidad I (`S1-T17`, cerrada en Trello el 11/11).
+Participé de la puesta en común del 26/08 y de la reunión de Semana 1 del 02/09 (`S1-T05`, [Acta S1](../planificacion/S1_Acta_Reunion_2026-09-02.md)). Revisé los primeros ADR (`ADR-001` a `ADR-006` en la numeración de agosto) para corregir inconsistencias y alinearlos al formato de la cátedra (`S1-T02`), preparé el borrador del esquema SQL inicial con `sedes`, `perfiles` y `membresias` (`S1-T12`) y quedé a cargo de la revisión cruzada del PDF de Unidad I (`S1-T17`, cerrada en Trello el 11/11).
 
 **Decisión**
 
@@ -24,7 +24,7 @@ Al comienzo no estaba claro si el PDF de Unidad I debía incluir DER y diagrama 
 
 **Commits**
 
-- _Sin commits propios en el repositorio durante esta semana: los acuerdos y tareas quedaron en [LOG.md](./LOG.md), [Acta_Reunion_2026-09-02_Semana1.md](../planificacion/Acta_Reunion_2026-09-02_Semana1.md) y [Plan_Trabajo_Semanas_1_y_2.md](../planificacion/Plan_Trabajo_Semanas_1_y_2.md)._
+- _Sin commits propios en el repositorio durante esta semana: los acuerdos y tareas quedaron en [LOG.md](./LOG.md), [Acta S1](../planificacion/S1_Acta_Reunion_2026-09-02.md) y [plan S1–S2](../planificacion/S1-S2_Plan_Trabajo_Semanas_1_y_2.md)._
 
 ---
 
@@ -135,7 +135,7 @@ Esa primera versión dejó pendientes de seguridad y validación: endpoints sin 
 
 **Actividad**
 
-Participé de las reuniones del 13/10 ([Acta_Reunion_2026-10-13_Seguimiento.md](../planificacion/Acta_Reunion_2026-10-13_Seguimiento.md)) y del 21/10 ([Acta_Reunion_2026-10-21_Seguimiento.md](../planificacion/Acta_Reunion_2026-10-21_Seguimiento.md)), donde revisamos los pendientes de Membresías/Clases y cerramos las reglas de Canchas (`S4-T09`). El 21/10 implementé `S4-T01`: el patrón **Strategy** para precios de canchas en `backend/src/canchas/precios/` (`PricingStrategy`, `StandardPricing`, `PeakHourPricing`, `MemberDiscountPricing`, `PreciosService`, `PreciosModule`, más `precios.service.spec.ts`) y actualicé [Justificacion_Patrones_Unidad_III.md](../../documentacion/Justificacion_Patrones_Unidad_III.md) y [Plan_Trabajo_2_Semanas.md](../planificacion/Plan_Trabajo_2_Semanas.md) (`71c993d`, merge `d4065a0`).
+Participé de las reuniones del 13/10 ([Acta S4](../planificacion/S4_Acta_Reunion_2026-10-13.md)) y del 21/10 ([Acta S5](../planificacion/S5_Acta_Reunion_2026-10-21.md)), donde revisamos los pendientes de Membresías/Clases y cerramos las reglas de Canchas (`S4-T09`). El 21/10 implementé `S4-T01`: el patrón **Strategy** para precios de canchas en `backend/src/canchas/precios/` (`PricingStrategy`, `StandardPricing`, `PeakHourPricing`, `MemberDiscountPricing`, `PreciosService`, `PreciosModule`, más `precios.service.spec.ts`) y actualicé [Justificacion_Patrones_Unidad_III.md](../../documentacion/Justificacion_Patrones_Unidad_III.md) y [Plan_Trabajo_2_Semanas.md](../planificacion/Plan_Trabajo_2_Semanas.md) (`71c993d`, merge `d4065a0`).
 
 **Decisión**
 
@@ -245,6 +245,7 @@ Al cruzar mis commits contra los planes del 11/11 noté que `C-09` seguía figur
 **Commits**
 
 - `5546109` C-09
+- `a280bc5` C-19b: agrega bitacora individual de Bruno Conti
 
 ---
 

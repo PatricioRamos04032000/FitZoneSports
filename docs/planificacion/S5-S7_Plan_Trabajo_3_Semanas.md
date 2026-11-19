@@ -6,7 +6,7 @@
 **Última actualización:** 2026-11-11 (reunión de equipo; tablero Trello)  
 **Unidad en curso:** cierre TIF (6–19/11). S5 está cerrada en el tablero. Sigue abierta S6-T09.
 
-**Referencias:** Trabajo Integrador · [Acta 2026-10-21](./Acta_Reunion_2026-10-21_Seguimiento.md) · Decisiones pendientes · Correcciones de Membresías y Clases · [LOG](../bitacoras/LOG.md)
+**Referencias:** Trabajo Integrador · [Acta S5](./S5_Acta_Reunion_2026-10-21.md) · Decisiones pendientes · Correcciones de Membresías y Clases · [LOG](../bitacoras/LOG.md)
 
 ## Cómo leer este plan
 
@@ -43,7 +43,7 @@
 
 ## Trabajo en curso (ahora — 2026-11-11)
 
-Reunión de equipo. Fuente: tablero Trello, lista «tambien en desarrollo». Las listas «en desarrollo» y «Blocked» no tenían tarjetas. El detalle del cierre C-01…C-27 está en [Plan_Cierre_Entrega_6_19_Nov.md](./Plan_Cierre_Entrega_6_19_Nov.md).
+Reunión de equipo. Fuente: tablero Trello, lista «tambien en desarrollo». Las listas «en desarrollo» y «Blocked» no tenían tarjetas. Detalle del cierre C-01…C-27 está en [Plan de cierre S8](./S8_Plan_Cierre_Entrega_6_19_Nov.md).
 
 | Integrante | ID | Tarea | Estado |
 | --- | --- | --- | --- |
@@ -68,7 +68,7 @@ Reunión de equipo. Fuente: tablero Trello, lista «tambien en desarrollo». Las
 | Matias Goncevat (P4) | S5-T10 | Adoptar el plan de 3 semanas y actualizar el seguimiento | **Finalizado** |
 | Matias Goncevat (P4) | S5-T11 | Checklist de cuentas GitHub / Supabase / Vercel | **Finalizado** |
 
-> La propuesta de continuidad sigue como respaldo de S5–S7, con los mismos estados. El eje de estas dos semanas es el [plan de cierre](./Plan_Cierre_Entrega_6_19_Nov.md).
+> La propuesta de continuidad sigue como respaldo de S5–S7, con los mismos estados. El eje de estas dos semanas es el [plan de cierre](./S8_Plan_Cierre_Entrega_6_19_Nov.md).
 
 ### Checklist de cuentas del equipo
 

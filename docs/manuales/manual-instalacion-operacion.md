@@ -235,7 +235,7 @@ Desde la carpeta `backend`:
 npm run seed
 ```
 
-El seed crea usuarios de demo, sedes y datos mínimos del sistema, con los usuarios de ejemplo como `socio@fitzone.com`, `gerente@fitzone.com`, `admin@fitzone.com` o equivalentes documentados en `documentacion/Seed_Demo_S5.md` y el README raíz.
+El seed crea usuarios de demo, sedes y datos mínimos del sistema, con los usuarios de ejemplo como `socio@fitzone.com`, `gerente@fitzone.com` y `admin@fitzone.com`, que también figuran en el README raíz.
 
 ### 7.3 Verificación del seed
 
@@ -295,6 +295,8 @@ El proyecto está pensado para una operación simple con:
 ### 9.2 Variables de producción
 
 Las mismas variables de `.env` deben estar en el entorno de despliegue, con valores reales. No se debe versiónar `.env` ni secretos en el repositorio.
+
+En Render, `APP_PUBLIC_URL` es `https://fitzonesports-gnoi.onrender.com`. El ejemplo local `http://localhost:3000` de la sección 4.1 no sirve ahí: Vercel abriría la pasarela en la PC y **Volver a Canchas** caería en el login de `http://localhost`. Si el pedido entra por un host público, la API usa ese host aunque `APP_PUBLIC_URL` siga en localhost. El valor de Render igual tiene que ser la URL pública. `CORS_ORIGIN` del servicio incluye `https://fit-zone-sports-ten.vercel.app`.
 
 ### 9.3 Recomendaciones de operación
 

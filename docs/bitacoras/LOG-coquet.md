@@ -12,7 +12,7 @@ Las horas anteriores a noviembre son una estimación reconstruida por el tamaño
 
 **Actividad**
 
-Participé de la reunión de Semana 1 (`S1-T05`, [Acta_Reunion_2026-09-02_Semana1.md](../planificacion/Acta_Reunion_2026-09-02_Semana1.md), también en [LOG.md](./LOG.md)). Quedé como P3, frontend. Me llevé la cuenta de Supabase del equipo y la revisión cruzada del PDF de Unidad I, junto con Bruno. Al salir, lo que tenía en curso era S1-T03: revisar funcionalidades por actor, y S2-T01, la cuenta de Supabase.
+Participé de la reunión de Semana 1 (`S1-T05`, [Acta S1](../planificacion/S1_Acta_Reunion_2026-09-02.md), también en [LOG.md](./LOG.md)). Quedé como P3, frontend. Me llevé la cuenta de Supabase del equipo y la revisión cruzada del PDF de Unidad I, junto con Bruno. Al salir, lo que tenía en curso era S1-T03: revisar funcionalidades por actor, y S2-T01, la cuenta de Supabase.
 
 **Decisión**
 
@@ -24,7 +24,7 @@ El proyecto de Supabase no lo puede levantar el resto si no lo invito yo. Hasta 
 
 **Commits**
 
-- _Sin commits propios en el repositorio durante esta semana: los acuerdos quedaron en [LOG.md](./LOG.md) y en [Acta_Reunion_2026-09-02_Semana1.md](../planificacion/Acta_Reunion_2026-09-02_Semana1.md)._
+- _Sin commits propios en el repositorio durante esta semana: los acuerdos quedaron en [LOG.md](./LOG.md) y en [Acta S1](../planificacion/S1_Acta_Reunion_2026-09-02.md)._
 
 ---
 
@@ -104,7 +104,7 @@ El log de equipo vivía en `documentacion/LOG.md`. Más adelante pasó a [LOG.md
 
 **Actividad**
 
-Participé de la reunión de seguimiento ([Acta_Reunion_2026-10-21_Seguimiento.md](../planificacion/Acta_Reunion_2026-10-21_Seguimiento.md)). Informé los prototipos de Login, Mi Perfil y Canchas como finalizados, y S3-T05 (conectar el login a `POST /auth/login`) como lo que seguía en curso. Mi Perfil seguía con datos de prueba. Canchas esperaba la API de Bruno (S4-T06).
+Participé de la reunión de seguimiento ([Acta S5](../planificacion/S5_Acta_Reunion_2026-10-21.md)). Informé los prototipos de Login, Mi Perfil y Canchas como finalizados, y S3-T05 (conectar el login a `POST /auth/login`) como lo que seguía en curso. Mi Perfil seguía con datos de prueba. Canchas esperaba la API de Bruno (S4-T06).
 
 **Decisión**
 
