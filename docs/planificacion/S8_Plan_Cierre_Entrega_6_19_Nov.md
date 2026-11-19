@@ -103,7 +103,7 @@ Después del tag: solo ensayo Demo Day.
 | C-18 | Manual técnico (Anexo F) + casos extensión tenis y Strategy | Patricio | 3–4 | **Finalizado** | Dos casos resueltos | Manual técnico |
 | C-19 | Bitácoras individuales `docs/bitacoras/LOG-<apellido>.md` ×4 (≥8 entradas c/u, commits, decisión, problema). En el tablero está partida en C-19a…d | **Cada uno** | 3–4 c/u | **Parcial** | Cuatro archivos distintos | Bitácoras |
 | C-20 | Planificación completa (§5.6 + Anexo H): plan, EDT, cronograma visual, trazabilidad RF/RN/RNF, seguimiento, riesgos, desvíos | Matias | 6–8 | **Finalizado** | C-38 cerró C-20 el 2026-11-18 con `S8_Planificacion_Completa_C20.md`: ocho sprints, matriz RF-01…14/RN-01…03/RNF-01…04 y desvíos ocurridos | Planificación |
-| C-21 | Exportar tablero (Trello/GitHub/xlsx) con fechas de creación/cierre reales | Matias | 1–2 | **Por hacer** | Archivo `PROGV-2026-TIF-EquipoNN-Registro.xlsx` | Tablero |
+| C-21 | Exportar tablero con fechas de creación y cierre. **Cerrada 2026-11-19** por **Patricio** (tarjeta de Matias). El archivo es [PROGV-2026-TIF-Equipo03-Registro.xlsx](./PROGV-2026-TIF-Equipo03-Registro.xlsx): la hoja Altas y cierres sale del export del 19/11. | Patricio (tarjeta de Matias) | 1–2 | **Finalizado** | Fechas de alta y de entrada a finalizado | Tablero |
 
 **C-19 en el tablero (2026-11-11, actualizado 2026-11-17):** C-19a Patricio **Finalizado** · C-19b Bruno **Finalizado** (`LOG-conti.md`) · C-19c Patricio **Finalizado** (`LOG-coquet.md`, 2026-11-17) · C-19d Matias **En desarrollo**.
 
@@ -115,12 +115,12 @@ Después del tag: solo ensayo Demo Day.
 
 | ID | Tarea | Quién | h | Estado | Cierra cuando | Anexo G |
 |----|-------|-------|---|--------|---------------|---------|
-| C-22 | Recorrer Anexo G casilla por casilla; bugs solo críticos del guion. **Residual aceptado el 2026-11-18** en `documentacion/C-22_Anexo_G_Pendiente.md`. RNF-03 quedó medido en `/canchas` (786 ms hasta ver la grilla de FitZone Central). Lo que sigue abierto es de otras tarjetas: el Excel de C-21, el tag `v1.0-entrega` (C-26), el dossier (C-25), la subida a Moodle (C-27) y la lectura de la cátedra. C-20, C-37 y C-38 ya están cerrados. El portal en el teléfono quedó en C-03. | Patricio | 3–4 | **Finalizado** | Lista residual aceptada | Checklist |
+| C-22 | Recorrer Anexo G casilla por casilla; bugs solo críticos del guion. **Residual aceptado el 2026-11-18** en `documentacion/C-22_Anexo_G_Pendiente.md`. RNF-03 quedó medido en `/canchas` (786 ms hasta ver la grilla de FitZone Central). Lo que sigue abierto es de otras tarjetas: el tag `v1.0-entrega` (C-26), el dossier (C-25), la subida a Moodle (C-27) y la lectura de la cátedra. C-21 entregó el registro el 19/11. C-20, C-37 y C-38 ya están cerrados. El portal en el teléfono quedó en C-03. | Patricio | 3–4 | **Finalizado** | Lista residual aceptada | Checklist |
 | C-23 | README raíz según §4.1 (equipo, 5 pasos, seed users, links, cobertura). **Cerrada 2026-11-17** por **Patricio** (`README.md`: cinco pasos con Docker, usuarios del seed, enlaces y cobertura 65,15 % de sentencias) | Patricio | 2 | **Finalizado** | Máquina limpia sin preguntar | README |
 | C-24 | Ensayo demo **5 min cronometrado** + plan B sin red. **Cerrada 2026-11-18** por **Patricio** (`documentacion/Guion_Ensayo_C-24.md`: cada paso con lo que se pega, reloj y plan B) | Patricio | 1–2 | **Finalizado** | Guion escrito + cronómetro OK | Defensa |
 | C-25 | Dossier PDF (Anexo A) + hash `git rev-parse` | Patricio | 2 | **Por hacer** | `PROGV-2026-TIF-EquipoNN-Dossier.pdf` | Moodle |
 | C-26 | Tag anotado y push **antes de las 18:00**. `master` queda en `v0.51.0`; el 1.0 se publica al terminar. | Patricio | 0,5 | **Por hacer** | `v1.0-entrega` en remoto | Tag |
-| C-27 | Subida Moodle (dossier + URL + tag + hash + plan/xlsx). El plan es [PROGV-2026-TIF-Equipo03-Planificacion.pdf](./PROGV-2026-TIF-Equipo03-Planificacion.pdf). El Excel sigue siendo C-21. | Patricio | 0,5 | **Por hacer** | Constancia de fecha | Canal entrega |
+| C-27 | Subida Moodle (dossier + URL + tag + hash + plan/xlsx). El plan es [PROGV-2026-TIF-Equipo03-Planificacion.pdf](./PROGV-2026-TIF-Equipo03-Planificacion.pdf). El Excel es [PROGV-2026-TIF-Equipo03-Registro.xlsx](./PROGV-2026-TIF-Equipo03-Registro.xlsx). | Patricio | 0,5 | **Por hacer** | Constancia de fecha | Canal entrega |
 
 #### Lote 17/11 · C-35 a C-41
 

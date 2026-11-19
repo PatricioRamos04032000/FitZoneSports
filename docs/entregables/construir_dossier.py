@@ -534,7 +534,7 @@ El índice corto de la carpeta es `docs/manuales/README.md`.
 def tablero(tabla: str) -> str:
     return (
         "## 11. Anexo: tablero del proyecto\n\n"
-        "El archivo `PROGV-2026-TIF-Equipo03-Registro.xlsx` es la tarjeta C-21 y todavía no está. "
+        "El archivo `docs/planificacion/PROGV-2026-TIF-Equipo03-Registro.xlsx` es la tarjeta C-21, armada el 19/11 desde el export del tablero. "
         "La tabla de abajo es el estado escrito en `docs/planificacion/Plan_Cierre_Entrega_6_19_Nov.md` "
         "al 17 de noviembre de 2026. El nombre de la tarea es el de este dossier. Quién y el estado salen de ese plan.\n\n"
         + tabla
