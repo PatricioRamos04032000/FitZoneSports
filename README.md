@@ -88,11 +88,11 @@ La contraseña de los cuatro es el valor de `SEED_PASSWORD`. Con la plantilla de
 | `socio@fitzone.com` | `socio` (membresía activa) |
 | `externo@fitzone.com` | `externo` |
 
-El recorrido de cinco minutos, con el croquis para copiar y pegar, está en [documentacion/Guion_Ensayo_C-24.md](documentacion/Guion_Ensayo_C-24.md). El ensayo sin cronómetro quedó en [documentacion/Guion_Ensayo_C-06.md](documentacion/Guion_Ensayo_C-06.md). El uso de cada pantalla está en el [manual de usuario](docs/manuales/manual-usuario.md).
+El guion de cinco minutos no entra en la entrega. El uso de cada pantalla está en el [manual de usuario](docs/manuales/manual-usuario.md).
 
 ## 5. Documentación
 
-`documentacion/` no forma parte de la entrega. Los documentos de la entrega están en `docs/`.
+`documentacion/` no forma parte de la entrega. Los documentos de la entrega están en `docs/`. Los enlaces que quedan hacia esa carpeta son registro histórico y no hacen falta para entender la entrega.
 
 | Qué | Dónde |
 |-----|--------|
