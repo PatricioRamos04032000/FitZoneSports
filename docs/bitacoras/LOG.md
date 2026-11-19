@@ -23,8 +23,8 @@ Reunión para alinear avances individuales y revisar el estado de la documentaci
 
 | Tema | Decisión |
 |------|----------|
-| Documentación C4 | El equipo considera que [`C4_Arquitectura_FitZone.md`](../../documentacion/diagramas%20desarrollo/C4_Arquitectura_FitZone.md) está **bien elaborada** como base del entregable de Unidad I. |
-| Documentación ADR | Los ADR en [`adr/`](./adr/) y el `ADR_Indice.md` fueron evaluados de forma **positiva** en conjunto. |
+| Documentación C4 | El equipo considera que el [diagrama de contexto](../diagramas/img/c4-1-contexto.svg) está **bien elaborado** como base del entregable de Unidad I. |
+| Documentación ADR | Los ADR y el [índice de ADR](../adr/README.md) fueron evaluados de forma **positiva** en conjunto. |
 | Revisión anti-alucinaciones | **Cada integrante** debe revisar la documentación C4 y ADR para detectar posibles **alucinaciones o imprecisiones de la IA** (datos inventados, supuestos no acordados, inconsistencias con el enunciado). |
 | Stack móvil | Se define **React Native** como tecnología de la aplicación móvil (Unidad VI). Cierra la alternativa Flutter que figuraba como TBD en la documentación previa. |
 
@@ -36,10 +36,10 @@ Reunión para alinear avances individuales y revisar el estado de la documentaci
 
 ### Documentos relacionados
 
-- [`C4_Arquitectura_FitZone.md`](../../documentacion/diagramas%20desarrollo/C4_Arquitectura_FitZone.md)
-- `ADR_Indice.md`
-- `Stack_Tecnologico_y_Herramientas.md`
-- `Trabajo_Integrador_FitZone_Sports.md`
+- [Diagrama de contexto](../diagramas/img/c4-1-contexto.svg)
+- [Índice de ADR](../adr/README.md)
+- Documento de stack
+- Enunciado del trabajo integrador
 
 ### Commits vinculados
 
@@ -83,11 +83,11 @@ Se corrigió una interpretación errónea en docs previos: el docente **no** pid
 
 ### Documentos relacionados
 
-- `Decisiones_Pendientes_y_Cosas_a_Definir.md` (§3.1, §3.2)
+- Documento de decisiones pendientes (§3.1, §3.2)
 - [`adr/ADR-005-bff-supabase-auth.md`](../adr/ADR-005-bff-supabase-auth.md)
 - [`adr/ADR-006-supabase-api-sin-orm.md`](../adr/ADR-006-supabase-api-sin-orm.md)
 - [`adr/ADR-004-hosting-vercel-render-supabase.md`](../adr/ADR-004-hosting-vercel-render-supabase.md)
-- `Stack_Tecnologico_y_Herramientas.md`
+- Documento de stack
 
 ### Commits vinculados
 
@@ -105,9 +105,9 @@ _Pendiente de commit al cerrar la documentación de esta sesión._
 - Creado [ADR-005](../adr/ADR-005-bff-supabase-auth.md) — BFF en NestJS + Supabase Auth (pasarela; roles A1–A4 en Nest).
 - Creado [ADR-006](../adr/ADR-006-supabase-api-sin-orm.md) — acceso a datos vía API de Supabase; ORM descartado.
 - Corregido [ADR-003](../adr/ADR-003-stack-nestjs-react.md): auth/datos referenciados a ADR-005/006; eliminado “acceso a datos” de decisiones hijas abiertas.
-- Actualizados ADR_Indice, [ADR-002](../adr/ADR-002-postgresql.md), [ADR-004](../adr/ADR-004-hosting-vercel-render-supabase.md) y Decisiones pendientes con enlaces cruzados.
+- Actualizados el índice de ADR, [ADR-002](../adr/ADR-002-postgresql.md), [ADR-004](../adr/ADR-004-hosting-vercel-render-supabase.md) y las decisiones pendientes, con enlaces cruzados.
 - Reformateados [ADR-001](../adr/ADR-001-monolito-modular.md) a [ADR-004](../adr/ADR-004-hosting-vercel-render-supabase.md) con la plantilla de cátedra (Contexto → Decisión → Consecuencias → Alternativas).
-- Actualizado ADR_Indice: plantilla genérica de cátedra + ejemplo TiendaYa (pasarela de pago); ADR-001 a ADR-006 alineados al formato (Contexto neutral, `Estado:` / `Fecha:` sin negrita).
+- Actualizado el índice de ADR: plantilla genérica de cátedra + ejemplo TiendaYa (pasarela de pago); ADR-001 a ADR-006 alineados al formato (Contexto neutral, `Estado:` / `Fecha:` sin negrita).
 
 ---
 
@@ -151,7 +151,7 @@ Reunión grupal siguiendo la agenda de cierre de decisiones (ratificación §1 y
 ### Documentos relacionados
 
 - [`S1_Acta_Reunion_2026-09-02.md`](../planificacion/S1_Acta_Reunion_2026-09-02.md)
-- `Decisiones_Pendientes_y_Cosas_a_Definir.md`
+- Documento de decisiones pendientes
 - [`Plan S5–S7`](../planificacion/S5-S7_Plan_Trabajo_3_Semanas.md)
 
 ### Commits vinculados
@@ -179,7 +179,7 @@ A medida que el equipo desarrolla, debe **seguir actualizando el modelo**, incor
 
 ### Consecuencia para el equipo (planes futuros)
 
-- El [Plan de trabajo 2 semanas](../planificacion/Plan_Trabajo_2_Semanas.md) **no se modifica** por esta aclaración (queda como estuvo).
+- El [plan de las semanas 1 y 2](../planificacion/S1-S2_Plan_Trabajo_Semanas_1_y_2.md) **no se modifica** por esta aclaración (queda como estuvo).
 - De ahora en más, en **nuevos planes** y en el trabajo diario: **desarrollar en paralelo** a la documentación de arquitectura; no bloquear código por un PDF temprano de C4+ADR.
 - C4 y ADR se tratan como **documentación viva** hasta el cierre; ER y clases se agregan cuando el código los justifique.
 - Para revisiones parciales del docente: mostrar avance (repo + docs actualizados), no un entregable PDF cerrado de Unidad I.
@@ -187,7 +187,7 @@ A medida que el equipo desarrolla, debe **seguir actualizando el modelo**, incor
 ### Relacionado
 
 - Pregunta abierta en reunión 2026-09-02 (¿PDF Unidad I incluye ER/clases?) → queda respondida en el sentido de que **van entrando al paquete de arquitectura a lo largo del curso**, con entrega formal al final.
-- [`S1_Acta_Reunion_2026-09-02.md`](../planificacion/S1_Acta_Reunion_2026-09-02.md) · [Propuesta_Inventario_Diagramas.md](../../documentacion/diagramas%20desarrollo/Propuesta_Inventario_Diagramas.md) · [Propuesta_ER_FitZone.md](../../documentacion/diagramas%20desarrollo/Propuesta_ER_FitZone.md) (borrador ER Fase A + visión completa, 2026-09-04)
+- [`S1_Acta_Reunion_2026-09-02.md`](../planificacion/S1_Acta_Reunion_2026-09-02.md) · borrador de entidad-relación de la fase A y visión completa, 2026-09-04
 
 ---
 
@@ -322,7 +322,7 @@ No se decidió crear una tabla de tipos de cancha con tarifas estándar. Tampoco
 
 - [Plan S5–S7](../planificacion/S5-S7_Plan_Trabajo_3_Semanas.md)
 - [Propuesta S5–S7](../planificacion/S5-S7_Propuesta_Continuacion.md)
-- Decisiones_Pendientes_y_Cosas_a_Definir.md
+- Documento de decisiones pendientes
 
 ---
 
@@ -359,7 +359,7 @@ Quedó pendiente en Decisiones §4.2: separar estado servidor/cliente y evaluar 
 **Tipo:** documentación / handoff  
 **Registrado por:** Patricio Ramos
 
-Org SonarCloud creada (P1). Compañeros aún sin cuenta: pasos en Guia_SonarCloud_FitZone.md. P1 invita cuando avisen; Matias cablea el scan con el CI (S6), sin adelantar su workflow ahora.
+Org SonarCloud creada (P1). Compañeros aún sin cuenta: los pasos están en la guía de SonarCloud. P1 invita cuando avisen; Matias cablea el scan con el CI (S6), sin adelantar su workflow ahora.
 
 ---
 
@@ -436,7 +436,7 @@ Reconstruir un “antes” falso solo para generar historial no aporta evidencia
 ### Entregado
 
 - Se adoptó la propuesta de 3 semanas como plan vigente del equipo.
-- Se actualizó [Plan_Trabajo_2_Semanas.md](../planificacion/Plan_Trabajo_2_Semanas.md) con la sección de Trabajo en curso y los IDs S5-T02 a S5-T11.
+- Se actualizó [el plan de tres semanas](../planificacion/S5-S7_Plan_Trabajo_3_Semanas.md) con la sección de Trabajo en curso y los IDs S5-T02 a S5-T11.
 - Se registraron responsables y estados alineados a la propuesta: Patricio en migración/seed, Bruno en guards y validaciones, Lucas en login y front shell, Matias en coordinación y checklist de accesos.
 - La semana activa quedó sincronizada con S5, sin mezclar el backlog viejo de la reunión anterior con la nueva propuesta.
 
@@ -453,7 +453,7 @@ Reconstruir un “antes” falso solo para generar historial no aporta evidencia
 - **GitHub:** Patricio Ramos (P1) administra el repositorio y puede invitar al resto del equipo.
 - **Supabase:** Lucas Coquet (P3) administra el proyecto y puede invitar a quienes necesiten acceso.
 - **Vercel:** Patricio Ramos (P1) administra el proyecto y puede dar permisos de despliegue al equipo.
-- Se dejó asentado el checklist en [Plan_Trabajo_2_Semanas.md](../planificacion/Plan_Trabajo_2_Semanas.md) para que quede visible y accesible durante S5.
+- Se dejó asentado el checklist en [el plan de tres semanas](../planificacion/S5-S7_Plan_Trabajo_3_Semanas.md) para que quede visible y accesible durante S5.
 
 ---
 
@@ -583,7 +583,7 @@ Reconstruir un “antes” falso solo para generar historial no aporta evidencia
 
 Quedó un plan personal/módulo para desarrollar **check-in en recepción** y **QR regenerativo (TOTP)**, track paralelo al Demo Day de canchas (que en S5–S7 había dejado M2 cortado).
 
-Documento: Plan_M2_Acceso_QR_Patricio.md.  
+Documento: plan de acceso con QR.  
 Decisiones §8 actualizadas con el alcance offline del MVP.
 
 ### Alcance offline (decisión de implementación)
@@ -596,7 +596,7 @@ Sin red, la sede **solo acumula** check-ins en cola local. Al recuperar conexió
 
 ### Fase 0 cerrada (2026-11-01)
 
-- Borrador [ADR-007](../adr/ADR-007-acceso-totp-cola-offline.md) (Propuesto) + fila en ADR_Indice.
+- Borrador [ADR-007](../adr/ADR-007-acceso-totp-cola-offline.md) (Propuesto) + fila en el índice de ADR.
 - Alineados Stack (RNF-01 sede vs móvil), C4 §5 (MVP cola + sync) y [Propuesta RN-01](../rnf/Propuesta_RN01_Presencia_Una_Sede.md) (unique en BD + Nest mapea error, como RN-02).
 - Siguiente: Fase 1 (migración + seed TOTP).
 
@@ -654,7 +654,7 @@ Sin red, la sede **solo acumula** check-ins en cola local. Al recuperar conexió
 ### Entregado
 
 - Migración [`supabase/migrations/20261101210000_acceso_m2.sql`](../../supabase/migrations/20261101210000_acceso_m2.sql): enums, RLS, `registrar_check_in` / `registrar_check_out` (RN-01 por PK en `presencias`; códigos `YA_DENTRO` / `YA_EN_OTRA_SEDE`).
-- Seed: upsert TOTP del socio (`JBSWY3DPEHPK3PXP`, 60 s) en [`seed-demo.ts`](../../backend/scripts/seed-demo.ts); Seed_Demo_S5 actualizado.
+- Seed: upsert TOTP del socio (`JBSWY3DPEHPK3PXP`, 60 s) en [`seed-demo.ts`](../../backend/scripts/seed-demo.ts); la nota del seed de demo quedó actualizada.
 - Plan M2: SQL + seed en repo. ADR-007 sigue Propuesto (API Nest = Fase 2). Seed en claro hasta cifrado Nest.
 - Migración aplicada en Supabase; `npm run seed` OK (`totp_seeds` del socio).
 
@@ -675,7 +675,7 @@ Los ADR-002, ADR-003 y ADR-004 se habían **reescrito in-place** (28–31/08) me
 | [ADR-003](../adr/ADR-003-stack-nestjs-react.md) | [ADR-009](../adr/ADR-009-stack-nestjs-react.md) |
 | [ADR-004](../adr/ADR-004-hosting-vercel-render-supabase.md) | [ADR-010](../adr/ADR-010-hosting-vercel-render-supabase.md) + [ADR-005](../adr/ADR-005-bff-supabase-auth.md) (Auth) |
 
-Convención en ADR_Indice: un ADR aceptado no se reescribe; si cambia la decisión → `Reemplazado por ADR-YYY` + ADR nuevo. Un ADR = una decisión.
+Convención en el índice de ADR: un ADR aceptado no se reescribe; si cambia la decisión → `Reemplazado por ADR-YYY` + ADR nuevo. Un ADR = una decisión.
 
 ---
 
@@ -745,7 +745,7 @@ Convención en ADR_Indice: un ADR aceptado no se reescribe; si cambia la decisi�
 **Tipo:** documentación / M2 acceso  
 **Registrado por:** Patricio Ramos (P1)
 
-Quedó Plan_M2_Acceso_UX_V2.md: sede(s) asignadas + `sedeId` en cada check-in, cámara QR, form DNI+código. Estimación ~5–7 h. Rama sugerida `s8t1-acceso-ux-v2`. No implementado en esta sesión.
+Quedó la propuesta de UX de acceso: sede(s) asignadas + `sedeId` en cada check-in, cámara QR, form DNI+código. Estimación ~5–7 h. Rama sugerida `s8t1-acceso-ux-v2`. No implementado en esta sesión.
 
 ---
 
@@ -871,7 +871,7 @@ Rama de trabajo: `S5-T08`, creada desde `desarrollo` (`0002fe3`).
 ### Resultado
 
 - Login socio, perfil, membresía por `GET /membresias/mia`, reserva y checkout simulado, Mi QR y check-in en recepción (segundo ingreso `YA_DENTRO`).
-- Guion y hoja: `Guion_Ensayo_C-06.md`.
+- Guion y hoja del ensayo sin reloj.
 
 ### Fuera de este cierre
 
@@ -909,7 +909,7 @@ ADR-001 a ADR-010 ya estaban usados con otros temas, tres de ellos reemplazados.
 
 **Tipo:** reunión de equipo  
 **Participantes:** Patricio Ramos (P1), Bruno Conti (P2), Lucas Coquet (P3), Matias Goncevat (P4)  
-**Fuente:** tablero Trello, export `documentacion/eBn68vRC - programacion5 (2).json`  
+**Fuente:** tablero Trello, export en [exportaciones/](../planificacion/exportaciones/)  
 **Unidad / semana:** cierre TIF (6–19/11) · tramo T2
 
 ### Qué está trabajando cada uno
@@ -967,7 +967,7 @@ Patricio Ramos (P1) toma la tarea que estaba a cargo de Lucas Coquet (P3).
 
 ### Nota sobre el ensayo 2026-11-08
 
-En C-06, Clases figuraba como hueco / placeholder. Eso queda cerrado en código; el guion de 5 min **no** incorpora Clases (sigue login → membresía → cancha → QR → check-in). Ver actualización en `Guion_Ensayo_C-06.md`.
+En C-06, Clases figuraba como hueco / placeholder. Eso queda cerrado en código; el guion de 5 min **no** incorpora Clases (sigue login → membresía → cancha → QR → check-in).
 
 ### Fuera de este cierre
 
@@ -1012,7 +1012,7 @@ Patricio Ramos (P1) cierra el refactor de precios de Strategy a **Decorator GoF*
 
 - Cadena `MemberDiscount(PeakHour(Standard))` en `backend/src/canchas/precios/`.
 - `uml-clases-dominio`, `sec-reserva-pago`, `c4-3-canchas` sin etiqueta Strategy de precios.
-- Manual técnico §4.1/7.2 y `Justificacion_Patrones_Unidad_III.md` con Decorator implementado.
+- Manual técnico §4.1/7.2 y la nota de patrones de Unidad III con Decorator implementado.
 
 ### Fuera de este cierre
 
@@ -1038,7 +1038,7 @@ El gerente crea y edita sedes desde `/sedes` (`POST /sedes`, `PATCH /sedes/:id`)
 **Tarea:** S7-T09 — asignada originalmente a Lucas Coquet (P3); la toma y cierra Patricio.
 
 Patricio Ramos (P1) toma la tarea que estaba a cargo de Lucas Coquet (P3).  
-**Cierre:** seis componentes propios y un catálogo Atomic Design. S7-T09 queda finalizada en Relacion_Trello, Plan_Trabajo_2_Semanas y Propuesta_Continuacion. Sin Storybook.
+**Cierre:** seis componentes propios y un catálogo Atomic Design. S7-T09 queda finalizada en la relación de tarjetas, el plan de trabajo y la propuesta de continuación. Sin Storybook.
 
 ### Entregado
 
@@ -1083,7 +1083,7 @@ Recorrido en `/clases` con el socio del seed, sede FitZone Central. El cierre si
 - Endpoints protegidos con `JwtAuthGuard` y titularidad: `GET /pagos/mios`, `GET /pagos/:id/comprobante` y `GET /canchas/reservas/:id/comprobante`.
 - Descarga directa en la pantalla de pago aprobado de la pasarela simulada (`/pasarela-simulada/comprobante/:pagoId?sig=...` con firma HMAC) y enlace de retorno a `/canchas`.
 - Botones de descarga en [`frontend/src/portal/Canchas/Canchas.tsx`](../../frontend/src/portal/Canchas/Canchas.tsx) (reserva confirmada y Mis reservas) y [`frontend/src/portal/Perfil/Perfil.tsx`](../../frontend/src/portal/Perfil/Perfil.tsx) (Mi membresía) vía [`frontend/src/services/pagos.ts`](../../frontend/src/services/pagos.ts).
-- Tests unitarios (`comprobantes.service.spec.ts`), e2e (`test/comprobantes.e2e-spec.ts`), `backend/swagger.json` actualizado y nota de Template Method al día en `Justificacion_Patrones_Unidad_III.md`.
+- Tests unitarios (`comprobantes.service.spec.ts`), e2e (`test/comprobantes.e2e-spec.ts`), `backend/swagger.json` actualizado y nota de Template Method al día en la justificación de patrones.
 
 ---
 

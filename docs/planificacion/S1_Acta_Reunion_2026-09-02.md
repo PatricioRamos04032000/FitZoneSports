@@ -55,8 +55,8 @@
 |--------|-----|--------|--------------------------------|
 | **P1** | Arquitecto / Backend Lead | Patricio Ramos | Registrar acuerdos; actualizar C4; PDF C4+ADR; completar tablas de integrantes |
 | **P2** | Backend Developer | Bruno Conti | Revisar ADR-001… y anotar hallazgos (formato cátedra) |
-| **P3** | Frontend Developer | Lucas Coquet | Revisar `Funcionalidades_por_Actor.md`; crear cuenta Supabase |
-| **P4** | QA / DevOps / Mobile | Matias Goncevat | Revisar `Decisiones_Pendientes…`; (más adelante) prueba manual login |
+| **P3** | Frontend Developer | Lucas Coquet | Revisar el documento de funcionalidades por actor; crear cuenta Supabase |
+| **P4** | QA / DevOps / Mobile | Matias Goncevat | Revisar el documento de decisiones pendientes; (más adelante) prueba manual login |
 
 ### 2.4 Entregable Unidad I
 
@@ -134,7 +134,7 @@
 
 - [x] Acta de la reunión (este documento)
 - [x] Actualizar [LOG.md](../bitacoras/LOG.md)
-- [x] Marcar ítems cerrados en Decisiones_Pendientes
+- [x] Marcar ítems cerrados en el documento de decisiones pendientes
 - [x] Completar nombres P1–P4 en [Plan S1–S2](./S1-S2_Plan_Trabajo_Semanas_1_y_2.md)
 - [x] Estados de tareas: Por hacer / En desarrollo / Finalizado + sección *Trabajo en curso*
 - [ ] Lista de preguntas al docente (sección 3.1) para la próxima exposición

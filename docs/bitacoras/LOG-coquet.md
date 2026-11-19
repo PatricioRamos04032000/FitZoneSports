@@ -34,7 +34,7 @@ El proyecto de Supabase no lo puede levantar el resto si no lo invito yo. Hasta 
 
 **Actividad**
 
-Cerré el pase de S1-T03 sobre el documento de actores y dejé el frontend creado. En `documentacion/Funcionalidades_por_Actor.md` saqué del socio la fila de validar el ingreso al gimnasio (eso es de recepción), dejé la mora bloqueando también la lista de espera, y reescribí la restricción del recepcionista: no puede saltear RN-01 ni RN-03. En el stack cambié el rótulo «Patrones GoF» por «Patrones de diseño», sin tocar la lista (Strategy, Observer, Repository). El mismo día agregué el proyecto React + Vite en `frontend/` (`f7c0fa3`): plantilla, TypeScript, ESLint y el script de Vite. Todavía no había pantallas del portal.
+Cerré el pase de S1-T03 sobre el documento de actores y dejé el frontend creado. Saqué del socio la fila de validar el ingreso al gimnasio (eso es de recepción), dejé la mora bloqueando también la lista de espera, y reescribí la restricción del recepcionista: no puede saltear RN-01 ni RN-03. En el stack cambié el rótulo «Patrones GoF» por «Patrones de diseño», sin tocar la lista (Strategy, Observer, Repository). El mismo día agregué el proyecto React + Vite en `frontend/` (`f7c0fa3`): plantilla, TypeScript, ESLint y el script de Vite. Todavía no había pantallas del portal.
 
 **Decisión**
 
@@ -82,7 +82,7 @@ El login de ese día escribía el usuario y la contraseña en la consola. Mi Per
 
 **Actividad**
 
-Actualicé el log de equipo con el snapshot del 08/10. En esa fecha el archivo era `documentacion/LOG.md`. Anoté el estado de los cuatro: el frontend ya tenía pantallas y rutas, y el paso siguiente era conectarlas a Nest, en particular el login. El objetivo que dejé escrito era React → Nest → Supabase, y después canchas, estado global y Strategy/Observer.
+Actualicé el log de equipo con el snapshot del 08/10. En esa fecha el archivo todavía no estaba en `docs/bitacoras/`. Anoté el estado de los cuatro: el frontend ya tenía pantallas y rutas, y el paso siguiente era conectarlas a Nest, en particular el login. El objetivo que dejé escrito era React → Nest → Supabase, y después canchas, estado global y Strategy/Observer.
 
 **Decisión**
 
@@ -90,7 +90,7 @@ Dejar el estado visible aunque el login siguiera con datos fijos. Esperar a la A
 
 **Problema o bloqueo**
 
-El log de equipo vivía en `documentacion/LOG.md`. Más adelante pasó a [LOG.md](./LOG.md), en `docs/bitacoras/`. El snapshot de esta sesión es el bloque «Trabajo en curso — snapshot 2026-10-08» de ese archivo.
+El log de equipo pasó a [LOG.md](./LOG.md), en `docs/bitacoras/`. El snapshot de esta sesión es el bloque «Trabajo en curso — snapshot 2026-10-08» de ese archivo.
 
 **Commits**
 

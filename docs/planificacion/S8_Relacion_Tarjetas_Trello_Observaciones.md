@@ -2,7 +2,7 @@
 
 **Fecha:** 2026-11-11  
 **Equipo:** 03  
-**Fuente Trello:** export `documentacion/eBn68vRC - programacion5 (2).json` (reunión de equipo)  
+**Fuente Trello:** export en [exportaciones/](./exportaciones/) (reunión de equipo)  
 **Regla:** no eliminar tarjetas; en cada una agregar (descripción o comentario) el campo **Observación** con la tarjeta relacionada, para contrastar si piden lo mismo.
 
 Estados Trello al exportar: `por hacer` · `tambien en desarrollo` · `en desarrollo` · `Blocked` · `finalizado`.
@@ -44,7 +44,7 @@ Excel hermano (mismas filas + columna Observación):
 | **S6-T06** | Cliente API completo | finalizado | Relacionada con **S5-T07** (finalizada). Base api/sesión ya está; revisar si falta tipado/401 sedes y cerrar. | Casi cubierta por S5-T07 |
 | **S7-T03** | Ensayo demo + checklist del guion | finalizado | Relacionada con **C-06** / **C-24** y bloqueada por **C-01**. Smoke API **S7-T11** ya finalizado ≠ ensayo UI. | Parcial → C-06/C-24 |
 | **C-06** | Ensayo corto guion API+UI | finalizado | Relacionada con **S7-T03** y con **C-01**. Ensayo del 2026-11-08 sin errores de flujo; el pulido visual queda fuera de esta tarjeta. | Sí (versión T1 de S7-T03) |
-| **C-24** | Ensayo demo 5 min + plan B | finalizado | Relacionada con **S7-T03** / **C-06**. Cerrada 2026-11-18: guion en `documentacion/Guion_Ensayo_C-24.md`. | Sí (cierre de S7-T03) |
+| **C-24** | Ensayo demo 5 min + plan B | finalizado | Relacionada con **S7-T03** / **C-06**. Cerrada 2026-11-18: ensayo con pasos, reloj y plan B. | Sí (cierre de S7-T03) |
 
 ---
 

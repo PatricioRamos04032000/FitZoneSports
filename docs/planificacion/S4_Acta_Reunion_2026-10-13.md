@@ -3,7 +3,7 @@
 **Fecha:** 2026-10-13 · 22:27 GMT-03  
 **Participantes:** Patricio Ramos (P1), Bruno Conti (P2), Matias Goncevat (P4)  
 **Ausente:** Lucas Coquet (P3); se le pasa la grabación y este resumen  
-**Fuente:** transcripción automática `2026-10-13 22-27-53.txt` (tiene tramos ilegibles; se resumió lo que se entiende con claridad)  
+**Fuente:** transcripción automática de la reunión (tiene tramos ilegibles; se resumió lo que se entiende con claridad)  
 **Referencias:** Panorama del desarrollo · Correcciones S3-T03 / S3-T04 · Estructura del backend · Justificación de patrones
 
 ---

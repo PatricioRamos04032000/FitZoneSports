@@ -88,7 +88,7 @@ Hubo dos problemas concretos: primero, al mergear `JwtAuthGuard` y `HealthModule
 
 **Actividad**
 
-Actualicé `documentacion/Plan_Trabajo_2_Semanas.md` para ordenar las semanas 3 y 4 (`b09a27c`, `5a03f67`, `47bc6bb`). Corregí fechas, marqué lo terminado de Semana 2 y dejé anotadas las dependencias de `S3-T10`, `S3-T03` (Membresías) y `S3-T04` (Clases) respecto al diseño SQL de Patricio (`S3-T06`) y la plantilla de Repository (`S3-T11`).
+Actualicé el plan de trabajo para ordenar las semanas 3 y 4 (`b09a27c`, `5a03f67`, `47bc6bb`). Corregí fechas, marqué lo terminado de Semana 2 y dejé anotadas las dependencias de `S3-T10`, `S3-T03` (Membresías) y `S3-T04` (Clases) respecto al diseño SQL de Patricio (`S3-T06`) y la plantilla de Repository (`S3-T11`).
 
 **Decisión**
 
@@ -101,8 +101,8 @@ Las fechas del plan habían quedado desactualizadas y el reparto original asigna
 **Commits**
 
 - `b09a27c` Nuevo plan de Trabajo
-- `5a03f67` Update dates in Plan_Trabajo_2_Semanas.md
-- `47bc6bb` Update Plan_Trabajo_2_Semanas.md
+- `5a03f67` actualiza fechas del plan de trabajo.
+- `47bc6bb` actualiza el plan de trabajo.
 
 ---
 
@@ -112,7 +112,7 @@ Las fechas del plan habían quedado desactualizadas y el reparto original asigna
 
 **Actividad**
 
-Implementé la primera versión de Membresías (`S3-T03`) y Clases (`S3-T04`) en `backend/src/membresias/` y `backend/src/clases/` siguiendo [Guia_Patron_Repository.md](../../documentacion/Guia_Patron_Repository.md) (`9ba65f4`, PR #22 `6043fcd`). Quedaron operativos los endpoints iniciales para planes, altas/consultas de membresías, listado de clases, inscripción y cancelación.
+Implementé la primera versión de Membresías (`S3-T03`) y Clases (`S3-T04`) en `backend/src/membresias/` y `backend/src/clases/` siguiendo la guía del patrón Repository (`9ba65f4`, PR #22 `6043fcd`). Quedaron operativos los endpoints iniciales para planes, altas/consultas de membresías, listado de clases, inscripción y cancelación.
 
 **Decisión**
 
@@ -120,7 +120,7 @@ Separar ambos módulos en `controller → service → repository → model`, dej
 
 **Problema o bloqueo**
 
-Esa primera versión dejó pendientes de seguridad y validación: endpoints sin `JwtAuthGuard` ni roles, `perfilId` e `inicioClase` leídos del body, `(this.repository as any).client` en `MembresiasService.crear` y reglas D1–D6/RN-03 sin cubrir. Patricio registró esos puntos en [Correcciones_S3-T03_S3-T04_Membresias_Clases.md](../../documentacion/Correcciones_S3-T03_S3-T04_Membresias_Clases.md) y quedaron para resolver en `S4-T10`.
+Esa primera versión dejó pendientes de seguridad y validación: endpoints sin `JwtAuthGuard` ni roles, `perfilId` e `inicioClase` leídos del body, `(this.repository as any).client` en `MembresiasService.crear` y reglas D1–D6/RN-03 sin cubrir. Patricio registró esos puntos en la nota de correcciones de membresías y clases y quedaron para resolver en `S4-T10`.
 
 **Commits**
 
@@ -135,7 +135,7 @@ Esa primera versión dejó pendientes de seguridad y validación: endpoints sin 
 
 **Actividad**
 
-Participé de las reuniones del 13/10 ([Acta S4](../planificacion/S4_Acta_Reunion_2026-10-13.md)) y del 21/10 ([Acta S5](../planificacion/S5_Acta_Reunion_2026-10-21.md)), donde revisamos los pendientes de Membresías/Clases y cerramos las reglas de Canchas (`S4-T09`). El 21/10 implementé `S4-T01`: el patrón **Strategy** para precios de canchas en `backend/src/canchas/precios/` (`PricingStrategy`, `StandardPricing`, `PeakHourPricing`, `MemberDiscountPricing`, `PreciosService`, `PreciosModule`, más `precios.service.spec.ts`) y actualicé [Justificacion_Patrones_Unidad_III.md](../../documentacion/Justificacion_Patrones_Unidad_III.md) y [Plan_Trabajo_2_Semanas.md](../planificacion/Plan_Trabajo_2_Semanas.md) (`71c993d`, merge `d4065a0`).
+Participé de las reuniones del 13/10 ([Acta S4](../planificacion/S4_Acta_Reunion_2026-10-13.md)) y del 21/10 ([Acta S5](../planificacion/S5_Acta_Reunion_2026-10-21.md)), donde revisamos los pendientes de Membresías/Clases y cerramos las reglas de Canchas (`S4-T09`). El 21/10 implementé `S4-T01`: el patrón **Strategy** para precios de canchas en `backend/src/canchas/precios/` (`PricingStrategy`, `StandardPricing`, `PeakHourPricing`, `MemberDiscountPricing`, `PreciosService`, `PreciosModule`, más `precios.service.spec.ts`) y actualicé la nota de patrones de Unidad III y el plan de trabajo de esas semanas (`71c993d`, merge `d4065a0`).
 
 **Decisión**
 
@@ -147,7 +147,7 @@ La API de Canchas (`S4-T06`) siguió bloqueada hasta la reunión del 21/10 porqu
 
 **Commits**
 
-- `71c993d` S4-T01: implementa patron Strategy para calculo de precios de canchas y actualiza documentacion
+- `71c993d` S4-T01: implementa patron Strategy para calculo de precios de canchas y actualiza la nota de patrones
 - `d4065a0` Merge branch 'S3-T03yT04-membresias-clases' into desarrollo
 
 ---
@@ -187,7 +187,7 @@ Al modificar `MembresiasService.crear` hubo que preservar la llamada a `ensureTo
 
 **Actividad**
 
-Cerré `S4-T15` (`1e5ce18`, PR #49 `461a096` del 07/11) para alinear el redondeo de precios de canchas (punto P7 de la reunión del 21/10 y olor #6 de la planilla). Cambié `Math.round` por redondeo hacia arriba en `PreciosService`, actualicé `precios.service.spec.ts` y actualicé [Propuesta_Reglas_Negocio_S4-T09.md](../rnf/Propuesta_Reglas_Negocio_S4-T09.md) y [Justificacion_Patrones_Unidad_III.md](../../documentacion/Justificacion_Patrones_Unidad_III.md).
+Cerré `S4-T15` (`1e5ce18`, PR #49 `461a096` del 07/11) para alinear el redondeo de precios de canchas (punto P7 de la reunión del 21/10 y olor #6 de la planilla). Cambié `Math.round` por redondeo hacia arriba en `PreciosService`, actualicé `precios.service.spec.ts` y actualicé [Propuesta_Reglas_Negocio_S4-T09.md](../rnf/Propuesta_Reglas_Negocio_S4-T09.md) y la nota de patrones de Unidad III.
 
 **Decisión**
 
@@ -257,7 +257,7 @@ Al cruzar mis commits contra los planes del 11/11 noté que `C-09` seguía figur
 
 Implementé y subí la tarea `C-04` (`64e84b1`, rama `c-04`) para cubrir RF-14 (comprobante PDF no fiscal post-pago). Agregué `pdfkit` en el backend, armé las consultas de lectura en `PagosRepository`, generé los PDF con Template Method en `backend/src/pagos/comprobantes/` (`ComprobantePdfTemplate` para `ComprobanteReservaPdf` y `ComprobanteMembresiaPdf`), expuse `GET /pagos/mios`, `GET /pagos/:id/comprobante` y `GET /canchas/reservas/:id/comprobante` con `JwtAuthGuard`, y sumé descarga firmada por HMAC en la pantalla de pago aprobado de la pasarela simulada (`/pasarela-simulada/comprobante/:pagoId`).
 
-En el frontend agregué `frontend/src/services/pagos.ts` y conecté los botones de descarga en `Canchas.tsx` (reserva confirmada y Mis reservas) y en `Perfil.tsx` (Mi membresía). También sumé tests unitarios (`comprobantes.service.spec.ts`), e2e (`test/comprobantes.e2e-spec.ts`), regeneré `backend/swagger.json` y actualicé la nota de Template Method en [Justificacion_Patrones_Unidad_III.md](../../documentacion/Justificacion_Patrones_Unidad_III.md) y [LOG.md](./LOG.md).
+En el frontend agregué `frontend/src/services/pagos.ts` y conecté los botones de descarga en `Canchas.tsx` (reserva confirmada y Mis reservas) y en `Perfil.tsx` (Mi membresía). También sumé tests unitarios (`comprobantes.service.spec.ts`), e2e (`test/comprobantes.e2e-spec.ts`), regeneré `backend/swagger.json` y actualicé la nota de Template Method en la justificación de patrones y [LOG.md](./LOG.md).
 
 **Decisión**
 

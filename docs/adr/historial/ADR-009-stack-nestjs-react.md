@@ -22,7 +22,7 @@ Vamos a usar NestJS (Node.js) con TypeScript como backend: monolito modular, API
 
 La app móvil queda diferida a la Unidad VI, con prioridad baja; React Native vs Flutter se cerrará recién entonces. No forma parte del MVP de M1–M5 ni del Demo Day del núcleo web.
 
-Estilos, estado global en React y framework móvil definitivo siguen abiertos en `Decisiones_Pendientes_y_Cosas_a_Definir.md`.
+Estilos, estado global en React y framework móvil definitivo siguen abiertos en el documento de decisiones pendientes.
 
 ## Consecuencias
 
