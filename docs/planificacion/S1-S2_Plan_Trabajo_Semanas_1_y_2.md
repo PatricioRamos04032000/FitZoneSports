@@ -113,10 +113,10 @@ React → Nest (BFF) → Supabase Auth
 
 | ID | Tarea | Asignado | Rol | Duración | Estado |
 |----|-------|----------|-----|----------|--------|
-| S1-T01 | Revisar el diagrama C4 de trabajo y anotar hallazgos / correcciones | Patricio Ramos | P1 | 1 h | Finalizado |
+| S1-T01 | Revisar `C4_Arquitectura_FitZone.md` y anotar hallazgos / correcciones | Patricio Ramos | P1 | 1 h | Finalizado |
 | S1-T02 | Revisar ADR-001 a ADR-006 y anotar hallazgos | Bruno Conti | P2 | 1 h | Finalizado |
-| S1-T03 | Revisar el documento de funcionalidades por actor y el de stack | Lucas Coquet | P3 | 1 h | Finalizado |
-| S1-T04 | Revisar el documento de decisiones pendientes (§1–§3) | Matias Goncevat | P4 | 1 h | Finalizado |
+| S1-T03 | Revisar `Funcionalidades_por_Actor.md` y `Stack_Tecnologico_y_Herramientas.md` | Lucas Coquet | P3 | 1 h | Finalizado |
+| S1-T04 | Revisar `Decisiones_Pendientes_y_Cosas_a_Definir.md` (§1–§3) | Matias Goncevat | P4 | 1 h | Finalizado |
 | S1-T05 | Reunión grupal: cerrar decisiones (BFF, Supabase Auth, API Supabase, offline/TOTP propuesta) | Equipo | Todos | 0,5 h c/u | Finalizado |
 | S1-T06 | Registrar acuerdos de la reunión en `LOG.md` (+ acta) | Patricio Ramos | P1 | 0,5 h | Finalizado |
 | S1-T07 | Completar tabla de integrantes (nombres + roles P1–P4) en este plan y en README | Matias Goncevat | P4 | 0,5 h | Finalizado |

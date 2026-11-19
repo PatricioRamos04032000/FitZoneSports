@@ -184,7 +184,7 @@ Cada tarea tiene entregable, dependencia y criterio de cierre. Las horas son tec
 ### Patricio (8 h)
 
 1. **Patrones en la reserva (4 h) — Finalizado (S7-T01, tablero 2026-11-11)**  
-   - Entregar: Facade `reservar`; State pendiente/confirmada/cancelada; actualizar la nota de patrones de Unidad III.  
+   - Entregar: Facade `reservar`; State pendiente/confirmada/cancelada; actualizar Justificacion_Patrones_Unidad_III.md.  
    - Cierra cuando: la justificación marca Strategy (en uso), Facade y State con rutas de código.
 
 2. **Pago mock mínimo (2 h) — Finalizado (S7-T02, tablero 2026-11-11)**  

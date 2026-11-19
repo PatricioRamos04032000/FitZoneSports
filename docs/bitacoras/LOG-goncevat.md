@@ -23,7 +23,7 @@ El equipo aún estaba definiendo alcance y estructura. La prioridad fue dejar un
 **Commits**
 
 - `815179a` Initial commit: add FitZone Sports integrator work document.
-- `e96a34d` agrega los permisos por actor.
+- `e96a34d` Add actor permissions docs and move docs into documentacion/.
 
 ---
 

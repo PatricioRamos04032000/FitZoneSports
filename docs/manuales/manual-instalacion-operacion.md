@@ -235,7 +235,7 @@ Desde la carpeta `backend`:
 npm run seed
 ```
 
-El seed crea usuarios de demo, sedes y datos mínimos del sistema, con los usuarios de ejemplo como `socio@fitzone.com`, `gerente@fitzone.com` y `admin@fitzone.com`, que también figuran en el README raíz.
+El seed crea usuarios de demo, sedes y datos mínimos del sistema, con los usuarios de ejemplo como `socio@fitzone.com`, `gerente@fitzone.com`, `admin@fitzone.com` o equivalentes documentados en `documentacion/Seed_Demo_S5.md` y el README raíz.
 
 ### 7.3 Verificación del seed
 

@@ -12,7 +12,7 @@ Las horas anteriores al 6/11 son una estimación reconstruida por el tamaño de 
 
 **Actividad**
 
-Entre el 22 y el 27/08 dejé el repositorio en marcha y la base de arquitectura de Unidad I. El 22 subí el enunciado del trabajo integrador (`815179a`) y dejé los permisos por actor junto con las notas de trabajo (`e96a34d`). El 25 cerré el stack, el C4, los primeros ADR y el documento de decisiones pendientes (`c8836ba`). El 26 registré la reunión de equipo en la bitácora grupal (`466901e`). El 27 escribí la propuesta de acceso con TOTP y cola offline (`9ba5276`).
+Entre el 22 y el 27/08 dejé el repositorio en marcha y la base de arquitectura de Unidad I. El 22 subí el enunciado del trabajo integrador (`815179a`) y moví la documentación a `documentacion/`, con los permisos por actor (`e96a34d`). El 25 cerré el stack, el C4, los primeros ADR y el documento de decisiones pendientes (`c8836ba`). El 26 registré la reunión de equipo en la bitácora grupal (`466901e`). El 27 escribí la propuesta de acceso con TOTP y cola offline (`9ba5276`).
 
 **Decisión**
 
@@ -25,7 +25,7 @@ En el C4 de esa semana el offline del socio (mostrar el QR en el teléfono) y el
 **Commits**
 
 - `815179a` Initial commit: add FitZone Sports integrator work document.
-- `e96a34d` agrega los permisos por actor.
+- `e96a34d` Add actor permissions docs and move docs into documentacion/.
 - `c8836ba` Add stack, C4, ADRs and pending decisions docs.
 - `466901e` Add team log entry for Aug 26 sync meeting.
 - `9ba5276` Document offline access and TOTP check-in proposal.
@@ -75,7 +75,7 @@ El diagrama de contexto todavía describía el offline del teléfono del socio c
 **Commits**
 
 - `eb8150d` Record Semana 1 meeting outcomes and teacher guidance on C4/ADR delivery.
-- `da9e335` actualiza el diagrama C4 de trabajo.
+- `da9e335` Update C4_Arquitectura_FitZone.md
 - `92c3705` Align C4 offline scope with sede check-in (RNF-01) vs mobile QR.
 
 ---
@@ -86,7 +86,7 @@ El diagrama de contexto todavía describía el offline del teléfono del socio c
 
 **Actividad**
 
-Escribí la propuesta de modelo entidad-relación (341 líneas en el diff) y ajusté el inventario de diagramas. El relacional queda como documento vivo, en la misma línea que la aclaración del 4/09: entra al paquete de arquitectura a medida que el código lo sostiene, y la entrega formal es al final del curso.
+Escribí la propuesta de modelo entidad-relación (`documentacion/Propuesta_ER_FitZone.md`, 341 líneas en el diff) y ajusté el inventario de diagramas. El relacional queda como documento vivo, en la misma línea que la aclaración del 4/09: entra al paquete de arquitectura a medida que el código lo sostiene, y la entrega formal es al final del curso.
 
 **Decisión**
 
@@ -453,7 +453,7 @@ El 11/11 agregué los diagramas de la entrega, con fuente editable y exportació
 
 **Decisión**
 
-Los ADR pasan a la lista obligatoria del §5.2.1. Un número viejo no se recicla encima del texto anterior: el histórico queda congelado y la decisión vigente es la del índice nuevo. El puente para las citas de las bitácoras y las notas de unidad es [el índice de ADR](../adr/README.md).
+Los ADR pasan a la lista obligatoria del §5.2.1. Un número viejo no se recicla encima del texto anterior: el histórico queda congelado y la decisión vigente es la del índice nuevo. El puente para las citas de las bitácoras y las notas de unidad es [documentacion/ADR_Indice.md](../../documentacion/ADR_Indice.md).
 
 **Problema o bloqueo**
 
@@ -909,7 +909,7 @@ Ninguno.
 
 **Actividad**
 
-Recorrí el Anexo G. Medí RNF-03 en el navegador, en `/canchas`, como el tiempo hasta la respuesta visual. Con el socio del seed, la sede FitZone Central y la fecha 2026-11-19, `GET /canchas/disponibilidad` respondió 200 y «Consultando disponibilidad...» dejó lugar a «Cancha 1» y 15 horarios en 786 ms. Lo anoté en el manual técnico. El residual del Anexo G quedó anotado el 18/11.
+Recorrí el Anexo G. Medí RNF-03 en el navegador, en `/canchas`, como el tiempo hasta la respuesta visual. Con el socio del seed, la sede FitZone Central y la fecha 2026-11-19, `GET /canchas/disponibilidad` respondió 200 y «Consultando disponibilidad...» dejó lugar a «Cancha 1» y 15 horarios en 786 ms. Lo anoté en el manual técnico. El residual quedó en `documentacion/C-22_Anexo_G_Pendiente.md`.
 
 **Decisión**
 
@@ -929,7 +929,7 @@ La sede que el portal elige sola no tenía canchas para esa fecha. La medición 
 
 **Actividad**
 
-Escribí la hoja del ensayo de cinco minutos: croquis de copiar y pegar, pasos con reloj y plan B de la cola sin red al lado del check-in. Después la completé con la base de Supabase de esta máquina: sede Av. Demo 100, Cancha 1, id del socio, membresía trimestral activa hasta el 14/02/2027 y los turnos libres del 19/11. Una reserva pendiente conserva **Pagar reserva** en **Mis reservas** después de recargar; eso quedó en el manual de usuario, que sigue escrito para el portal local. El checkout público y el `APP_PUBLIC_URL` de Render quedaron en el manual de instalación.
+Escribí la hoja del ensayo de cinco minutos en `documentacion/Guion_Ensayo_C-24.md`: croquis de copiar y pegar, pasos con reloj y plan B de la cola sin red al lado del check-in. Después la completé con la base de Supabase de esta máquina: sede Av. Demo 100, Cancha 1, id del socio, membresía trimestral activa hasta el 14/02/2027 y los turnos libres del 19/11. El README, el guion C-06, el plan de cierre y el residual de C-22 apuntan a esa hoja. Una reserva pendiente conserva **Pagar reserva** en **Mis reservas** después de recargar; eso quedó en el manual de usuario, que sigue escrito para el portal local. El checkout público y el `APP_PUBLIC_URL` de Render quedaron en el manual de instalación.
 
 **Decisión**
 
@@ -949,7 +949,7 @@ Ninguno.
 
 **Actividad**
 
-Acepté el residual del Anexo G. La fila de C-22 en el plan de cierre pasa a finalizado.
+Acepté el residual de `documentacion/C-22_Anexo_G_Pendiente.md`. La fila de C-22 en el plan de cierre pasa a finalizado.
 
 **Decisión**
 
@@ -965,15 +965,15 @@ Ninguno.
 
 ---
 
-### 2026-11-19  ·  Citas de docs
+### 2026-11-19  ·  Carpeta de notas
 
 **Actividad**
 
-Reescribí las citas de `docs/` y del README. Dejan de apuntar a la carpeta de notas de trabajo y, cuando hace falta un enlace, quedan en un archivo que ya está en `docs/`.
+Dejé asentado que `documentacion/` no forma parte de la entrega. Los documentos de la entrega están en `docs/`.
 
 **Decisión**
 
-El texto vigente queda en esta rama. El dossier y el Excel del tablero no entran en este pase. C-26 sigue en por hacer.
+Los registros anteriores no se modifican.
 
 **Problema o bloqueo**
 

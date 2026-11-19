@@ -138,5 +138,5 @@ C-20 queda cerrado porque:
 - [Plan de proyecto y seguimiento, Anexo H](./PROGV-2026-TIF-Equipo03-Planificacion.md)
 - [Índice por sprints](./README.md)
 - [ADR-008](../adr/ADR-008-pruebas-cobertura.md)
-- Residual del Anexo G, aceptado el 18/11
+- [Anexo G residual](../../documentacion/C-22_Anexo_G_Pendiente.md)
 - [Exportaciones](./exportaciones/)
