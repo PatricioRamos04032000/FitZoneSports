@@ -325,7 +325,7 @@ Ninguno bloqueante. `npm ci` informó 30 vulnerabilidades en el árbol de depend
 
 **Commits**
 
-- Pendiente de commit en esta sesión. No se modificó código de backend ni la configuración de Jest.
+- `147f1d5` C-35: mide `npm ci`, build y `test:cov`, registra 32 suites, 184 tests y 65.77 % de sentencias.
 
 ---
 
@@ -345,7 +345,7 @@ No hubo bloqueo técnico. Algunos documentos históricos todavía citan nombres 
 
 **Commits**
 
-- Pendiente de commit en esta sesión. Esta tarea modificó nombres de archivos, estructura de carpetas y enlaces Markdown.
+- `a4d9b31` C-38 / C-37: reorganiza `docs/planificacion/`, agrega el índice por sprints y mueve las exportaciones a `exportaciones/`. C-37 no tuvo un commit separado y quedó incluido en este commit de C-38.
 
 ---
 
@@ -365,4 +365,4 @@ No hubo bloqueo técnico. El borrador anterior agrupaba RF-09–RF-12, omitía v
 
 **Commits**
 
-- Pendiente de commit en esta sesión. Esta tarea modifica la planificación C-20 y los estados C-20/C-38.
+- `a4d9b31` C-38: reescribe la planificación C-20, marca C-20/C-38 como finalizados y actualiza los enlaces, el residual de Anexo G y las bitácoras.

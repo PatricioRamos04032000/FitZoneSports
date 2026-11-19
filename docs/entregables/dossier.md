@@ -638,15 +638,15 @@ Cada figura es la captura del SVG que está en `docs/diagramas/img/`. La fuente 
 
 El diagrama muestra el Decorator de precio, el State de la reserva, el Observer de la lista de espera y el Repository.
 
-![Clases del dominio y de Nest](figuras/uml-clases-dominio.png)
+<div class="banda"><img src="figuras/uml-clases-dominio.png" alt="Clases del dominio y de Nest, parte 1 de 2"><p><em>Clases del dominio y de Nest, parte 1 de 2.</em> Fuente editable: <code>docs/diagramas/fuentes/uml-clases-dominio.drawio</code>. Exportación: <code>docs/diagramas/img/uml-clases-dominio.svg</code>.</p></div>
 
-*Clases del dominio y de Nest.* Fuente editable: `docs/diagramas/fuentes/uml-clases-dominio.drawio`. Exportación: `docs/diagramas/img/uml-clases-dominio.svg`.
+<div class="banda"><img src="figuras/uml-clases-dominio-2.png" alt="Clases del dominio y de Nest, parte 2 de 2"><p><em>Clases del dominio y de Nest, parte 2 de 2.</em> Fuente editable: <code>docs/diagramas/fuentes/uml-clases-dominio.drawio</code>. Exportación: <code>docs/diagramas/img/uml-clases-dominio.svg</code>.</p></div>
 
 El camino va de la grilla al comprobante. El precio lo resuelve la cadena de decoradores antes de entrar a la base.
 
-![Secuencia. Reserva de cancha con pago](figuras/sec-reserva-pago.png)
+<div class="banda"><img src="figuras/sec-reserva-pago.png" alt="Secuencia. Reserva de cancha con pago, parte 1 de 2"><p><em>Secuencia. Reserva de cancha con pago, parte 1 de 2.</em> Fuente editable: <code>docs/diagramas/fuentes/sec-reserva-pago.mmd</code>. Exportación: <code>docs/diagramas/img/sec-reserva-pago.svg</code>.</p></div>
 
-*Secuencia. Reserva de cancha con pago.* Fuente editable: `docs/diagramas/fuentes/sec-reserva-pago.mmd`. Exportación: `docs/diagramas/img/sec-reserva-pago.svg`.
+<div class="banda"><img src="figuras/sec-reserva-pago-2.png" alt="Secuencia. Reserva de cancha con pago, parte 2 de 2"><p><em>Secuencia. Reserva de cancha con pago, parte 2 de 2.</em> Fuente editable: <code>docs/diagramas/fuentes/sec-reserva-pago.mmd</code>. Exportación: <code>docs/diagramas/img/sec-reserva-pago.svg</code>.</p></div>
 
 Dos actores piden el mismo turno. El bloqueo deja una sola confirmación y el otro recibe el rechazo.
 
@@ -680,9 +680,9 @@ Al liberarse un lugar, el publicador avisa a los observadores en el orden de la 
 
 El índice único de reservas impide dos filas pendientes o confirmadas para la misma cancha y el mismo inicio.
 
-![DER físico](figuras/er-fisico.png)
+<div class="banda"><img src="figuras/er-fisico.png" alt="DER físico, parte 1 de 2"><p><em>DER físico, parte 1 de 2.</em> Fuente editable: <code>docs/diagramas/fuentes/er-fisico.drawio</code>. Exportación: <code>docs/diagramas/img/er-fisico.svg</code>.</p></div>
 
-*DER físico.* Fuente editable: `docs/diagramas/fuentes/er-fisico.drawio`. Exportación: `docs/diagramas/img/er-fisico.svg`.
+<div class="banda"><img src="figuras/er-fisico-2.png" alt="DER físico, parte 2 de 2"><p><em>DER físico, parte 2 de 2.</em> Fuente editable: <code>docs/diagramas/fuentes/er-fisico.drawio</code>. Exportación: <code>docs/diagramas/img/er-fisico.svg</code>.</p></div>
 
 El navegador de la sede sigue encolando ingresos cuando no llega a la API. La base sigue siendo la fuente de verdad al reconectar.
 
@@ -762,135 +762,227 @@ El gerente crea y edita sedes con `POST /sedes` y `PATCH /sedes/:id` sin detener
 
 ## 8. Planificación
 
-Este capítulo está leído al 19 de noviembre de 2026, para el dossier. C-38 cerró C-20 el 18/11 reescribiendo `docs/planificacion/S8_Planificacion_Completa_C20.md` con ocho sprints y la matriz única RF-01 a RF-14, RN-01 a RN-03 y RNF-01 a RNF-04. El paquete de seguimiento que se sube aparte es `docs/planificacion/PROGV-2026-TIF-Equipo03-Planificacion.md`.
+Este capítulo es el plan de proyecto que se entrega, `docs/planificacion/PROGV-2026-TIF-Equipo03-Planificacion.md`.
 
-Las fuentes de lo que sigue son el plan de cierre del 6 al 19 de noviembre, el plan de las semanas 1 y 2 (28 de agosto, estados alineados al tablero el 11 de noviembre), el plan de S5 a S7 y las actas del 2 de septiembre, del 13 de octubre y del 21 de octubre. Las horas de cada sesión están en las bitácoras de la sección 9.
+Archivo de origen: `docs/planificacion/PROGV-2026-TIF-Equipo03-Planificacion.md`.
 
-### 8.1 Alcance
+### Plan de proyecto — FitZone Sports — Equipo 03
 
-Entra el portal web con cuatro roles: gerente, administrador de sede, socio y cliente externo. Entran el registro y el perfil, la membresía con catálogo y renovación cobrada, el acceso multi-sede con QR rotativo, el aforo de la sede, la agenda de clases, la inscripción, la lista de espera, la grilla de canchas, el precio compuesto, el mantenimiento, la pasarela simulada y el PDF de comprobante. Entran también los ADR, los catorce diagramas, los tres manuales, las cuatro bitácoras y este dossier.
+Plantilla del Anexo H de los lineamientos de entrega. Fecha de este armado: 18 de noviembre de 2026. Las horas y los estados salen de los planes y de las bitácoras que ya están en el repositorio. Este archivo no crea estimaciones nuevas.
 
-Queda afuera la app móvil, la cámara y el DNI en el acceso, MercadoPago real, el alta de administradores de sede, Storybook y la reescritura de la historia del repositorio. El dashboard del gerente entró en C-39: `GET /reportes/resumen` y la pantalla `/dashboard`, solo lectura. La foto de perfil está en el enunciado de RF-01 y quedó fuera de este corte: el alta pide los datos de la persona y no la imagen.
+La matriz vigente es la de [S8_Planificacion_Completa_C20.md](../planificacion/S8_Planificacion_Completa_C20.md). El detalle de las tarjetas de cierre está en [S8_Plan_Cierre_Entrega_6_19_Nov.md](../planificacion/S8_Plan_Cierre_Entrega_6_19_Nov.md).
 
-### 8.2 Supuestos y restricciones
+#### 1. Alcance
 
-Se da por existente un proyecto de Supabase con las claves fuera del repositorio. La pasarela de RF-13 es un simulacro. El comprobante de RF-14 es un PDF de la cadena, no un comprobante fiscal.
+Incluido: el portal web con cuatro roles (gerente, administrador de sede, socio y cliente externo). Entran el registro y el perfil, la membresía con catálogo y renovación cobrada, el acceso multi-sede con QR rotativo mientras el servidor responde, el aforo de la sede, la agenda de clases, la inscripción, la lista de espera, la grilla de canchas, el precio compuesto, el mantenimiento, la pasarela simulada y el PDF de comprobante. Entran el dashboard de solo lectura del gerente (C-39), los ADR, los catorce diagramas, los tres manuales, las cuatro bitácoras y el dossier.
 
-La entrega cierra el 19 de noviembre de 2026 a las 18:00. El equipo es de cuatro personas. El tag anotado de esa entrega se llama `v1.0-entrega` y lo crea C-26. El hash de la portada lo sustituye esa misma tarjeta, al imprimir.
+Excluido: la app móvil, la cámara y el DNI en el acceso, MercadoPago real, el alta de administradores de sede, Storybook y la reescritura de la historia del repositorio. No se logra un check-in al 100 % con el servidor central caído: sin red solo hay una fila de sincronización. La sede encola el ingreso y la salida, y los confirma cuando vuelve la conexión. La foto de perfil está en el enunciado de RF-01 y quedó fuera de este corte: el alta pide los datos de la persona y no la imagen, porque no se configuró Storage.
 
-### 8.3 Equipo y horas comprometidas
+#### 2. Supuestos y restricciones
 
-| Integrante | Rol | Piso del plan del 28/08 | Techo del cierre, 6 al 19/11 |
-|------------|-----|-------------------------|------------------------------|
-| Patricio Ramos | P1. Arquitectura, documentación y backend | 4 h por semana | 8 a 10 h por semana |
-| Bruno Nicolás Conti | P2. Backend | 4 h por semana. La semana 2 estimó 7 h | 4 a 6 h por semana |
-| Lucas Coquet | P3. Frontend | 4 h por semana. La semana 2 estimó 4,5 h | 8 a 10 h por semana |
-| Matias Goncevat | P4. Planificación, CI, seed y Docker | 4 h por semana | 4 a 6 h por semana |
+Supuestos: se da por existente un proyecto de Supabase con las claves fuera del repositorio. La pasarela de RF-13 es un simulacro. El comprobante de RF-14 es un PDF de la cadena, no un comprobante fiscal.
 
-El plan del 28 de agosto compromete 16 h semanales de equipo, a 4 h por persona. El plan de cierre estima 48 a 64 h de equipo en las dos semanas finales. Las horas de la semana 2 son las que ese plan estimó junto a las tareas, y esas tareas figuran finalizadas. Las horas sesión por sesión están en cada bitácora. Varias de las primeras semanas están marcadas ahí como estimación reconstruida.
+Restricciones: la entrega cierra el 19 de noviembre de 2026 a las 18:00. El equipo es de cuatro personas. El tag anotado se llama `v1.0-entrega` y se crea en C-26.
 
-### 8.4 Estructura de desglose
+#### 3. Equipo
 
-El trabajo quedó partido en las unidades del cursado y, desde el 6 de noviembre, en los tres tramos del plan de cierre. Cada tarea de esos planes tiene responsable y una estimación en horas. Los identificadores S1 a S7 viven en los planes de semanas. Los identificadores C-01 a C-41 viven en el plan de cierre. La sección 11 lista el estado de esas tarjetas C.
+| Integrante | Rol | Horas comprometidas | Responsabilidad principal |
+|---|---|---|---|
+| Patricio Ramos | P1 | 4 h por semana en el plan del 28/08. En el cierre, 8 a 10 h por semana | Arquitectura, documentación y backend crítico |
+| Bruno Nicolás Conti | P2 | 4 h por semana. La semana 2 estima 7 h. En el cierre, 4 a 6 h por semana | Backend: membresías, clases, pagos, PDF y validaciones |
+| Lucas Coquet | P3 | 4 h por semana. La semana 2 estima 4,5 h. En el cierre, 8 a 10 h por semana | Frontend: login, sesión, pantallas y experiencia por rol |
+| Matias Goncevat | P4 | 4 h por semana. En el cierre, 4 a 6 h por semana | CI, seed, Docker, cobertura, bitácora y planificación |
+
+El plan del 28 de agosto compromete 16 h semanales de equipo. El plan de cierre estima 48 a 64 h de equipo en las dos semanas finales. Esas cifras son las que esos planes ya escribieron.
+
+#### 4. Estructura de desglose del trabajo
+
+Cada fila de abajo ya tiene responsable y horas en un plan del repositorio. Las tarjetas de S3 a S7 que no traen horas por fila siguen en [S5-S7_Plan_Trabajo_3_Semanas.md](../planificacion/S5-S7_Plan_Trabajo_3_Semanas.md) y en las actas. S3 no tiene plan propio.
 
 | Épica | Qué cubre | Dónde está el desglose |
-|-------|-----------|------------------------|
-| Unidad I | C4, ADR, roles, monorepo | Plan de semanas 1 y 2, tareas S1 |
-| Unidad II | Nest, React, Supabase, membresías y clases iniciales | Tareas S2 y S3 de esos planes |
-| Unidad III | Precio, Observer, Repository, reglas y API de canchas | Actas del 13 y del 21 de octubre, tareas S4 y S5 |
-| Unidad IV | Portal conectado a la API | Plan S5–S7 y tarjetas C-01, C-03, C-11 |
-| Unidad V | Pruebas, CI, Docker, seed | ADR-008, ADR-009 y tarjetas C-07, C-08, C-10, C-35 |
-| Cierre | Manuales, dossier, tag, lo que sigue abierto | Plan de cierre, tramos T1, T2 y T3 |
+|---|---|---|
+| Unidad I | C4, ADR, roles, monorepo | Tareas S1 de este apartado |
+| Unidad II | Nest, React, Supabase y el arranque de membresías y clases | Tareas S2. S3 se lee en el LOG |
+| Unidad III | Precio, Observer, Repository, reglas y API de canchas | Actas del 13/10 y del 21/10, y el plan S5–S7 |
+| Unidad IV | Portal conectado a la API | C-01, C-03 y C-11, más el plan S5–S7 |
+| Unidad V | Pruebas, CI, Docker y seed | C-07, C-08, C-10 y C-35 |
+| Cierre | Manuales, dossier, tag y lo que sigue abierto | C-01 a C-41 |
 
-### 8.5 Cronograma
+##### Unidad I — tareas S1
 
-Las bitácoras a veces rotulan la misma semana con dos números de sprint, porque el registro se armó por sesión. La tabla toma el foco que domina cada número y la semana que esas entradas citan.
+Fuente: [S1-S2_Plan_Trabajo_Semanas_1_y_2.md](../planificacion/S1-S2_Plan_Trabajo_Semanas_1_y_2.md).
 
-| Sprint | Semanas citadas | Objetivo que las entradas registran | Entregable que quedó |
-|--------|-----------------|-------------------------------------|----------------------|
-| 1 | 24/08 y 31/08 | Unidad I: enunciado, C4, ADR, roles, reunión del 02/09 | Plan del 28/08 y acta del 02/09 |
-| 2 | 31/08 al 28/09 | Scaffold de Nest y React, Auth, `GET /sedes`, Swagger | Tareas S2 en finalizado |
-| 3 | 28/09 al 05/10 | Membresías y clases iniciales | Módulos y migraciones de ese tramo |
-| 4 | 05/10 al 19/10 | Precio, Observer y pantallas con datos fijos | Acta del 13/10 |
-| 5 | 19/10 al 05/11 | Reglas de canchas y API de reservas | Acta del 21/10. Período S5–S7: 27/10 al 16/11 |
-| 6 | 26/10 al 17/11 | Login, perfil, canchas, clases, QR y acceso en la UI | Plan S5–S7, actualizado el 11/11 y el 13/11 |
-| 7 | 02/11 al 09/11 | Cola de la sede y demo de canchas | C-01 cerrado el 13/11 |
-| 8 | 09/11 al 19/11 | ADR alineados, diagramas, manuales, Decorator, gestión en pantalla y medición | C-14 el 09/11, C-28 a C-34, README el 17/11, C-35 a C-41 el 18/11. El tag queda en C-26 |
+| ID | Tarea | Responsable | Estimación | Estado en ese plan |
+|---|---|---|---|---|
+| S1-T01 | Revisar el C4 y anotar hallazgos | Patricio Ramos | 1 h | Finalizado |
+| S1-T02 | Revisar ADR-001 a ADR-006 | Bruno Conti | 1 h | Finalizado |
+| S1-T03 | Revisar funcionalidades por actor y stack | Lucas Coquet | 1 h | Finalizado |
+| S1-T04 | Revisar decisiones pendientes, secciones 1 a 3 | Matias Goncevat | 1 h | Finalizado |
+| S1-T05 | Reunión: BFF, Supabase Auth, API y propuesta offline | Equipo | 0,5 h c/u | Finalizado |
+| S1-T06 | Registrar la reunión en el LOG y el acta | Patricio Ramos | 0,5 h | Finalizado |
+| S1-T07 | Completar integrantes y roles en el plan y el README | Matias Goncevat | 0,5 h | Finalizado |
+| S1-T08 | Monorepo, ramas y carpetas frontend y backend | Matias Goncevat | 1 h | Finalizado |
+| S1-T09 | Actualizar el C4 con BFF, Auth y offline de sede | Patricio Ramos | 1,5 h | Finalizado |
+| S1-T10 | Redactar el ADR de acceso offline si el equipo lo pide | Patricio Ramos | 1 h | Finalizado |
+| S1-T11 | Exportar C4 y compilar el PDF de Unidad I | Patricio Ramos | 1,5 h | Finalizado |
+| S1-T12 | Borrador SQL de sedes, perfiles y membresías | Bruno Conti | 2 h | Finalizado |
+| S1-T13 | Lista de pantallas mínimas por rol | Lucas Coquet | 1,5 h | Finalizado |
+| S1-T14 | Checklist de cuentas GitHub, Supabase, Vercel y Render | Matias Goncevat | 1 h | Finalizado |
+| S1-T15 | `.env.example` sin valores secretos | Matias Goncevat | 1 h | Finalizado |
+| S1-T16 | Revisión cruzada del PDF | Lucas Coquet | 0,5 h | Por hacer |
+| S1-T17 | Revisión cruzada del PDF | Bruno Conti | 0,5 h | Finalizado |
 
-Dentro de los sprints 7 y 8, el plan de cierre parte el tramo final así:
+##### Unidad II — tareas S2
 
-| Tramo | Fechas | Foco |
-|-------|--------|------|
-| T1 | 6 al 8/11 | Demo operable: grilla, pago, membresía, teléfono, decisión de RNF-01 |
-| T2 | 9 al 15/11 | ADR, diagramas, manuales, bitácoras, Docker y seed |
-| T3 | 16 al 19/11 | Defectos del guion, tag, dossier y Moodle |
+| ID | Tarea | Responsable | Estimación | Estado en ese plan |
+|---|---|---|---|---|
+| S2-T01 | Crear el proyecto Supabase y habilitar Auth | Lucas Coquet | 0,5 h | Finalizado |
+| S2-T02 | SQL inicial de sedes y perfiles | Bruno Conti | 1,5 h | Finalizado |
+| S2-T03 | Seed mínimo: una o dos sedes y un gerente | Bruno Conti | 1 h | Finalizado |
+| S2-T04 | Scaffolding NestJS | Bruno Conti | 1 h | Finalizado |
+| S2-T05 | SupabaseModule con service role | Bruno Conti | 1 h | Finalizado |
+| S2-T06 | AuthModule: login que delega en Supabase Auth | Bruno Conti | 1,5 h | Finalizado |
+| S2-T07 | Guard JWT | Patricio Ramos | 1,5 h | Finalizado |
+| S2-T08 | `GET /health` y Swagger | Patricio Ramos | 0,5 h | Finalizado |
+| S2-T09 | SedesModule: `GET /sedes` | Bruno Conti | 1 h | Finalizado |
+| S2-T10 | Scaffolding React + Vite | Lucas Coquet | 1 h | Finalizado |
+| S2-T11 | Pantalla de login contra Nest | Lucas Coquet | 1,5 h | Finalizado |
+| S2-T12 | Router y layout mínimo | Lucas Coquet | 1 h | Finalizado |
+| S2-T13 | Swagger de login, health y sedes | Patricio Ramos | 0,5 h | Finalizado |
+| S2-T14 | README de arranque local | Matias Goncevat | 1 h | Finalizado |
+| S2-T15 | Prueba manual de login y sedes, anotada en el LOG | Matias Goncevat | 0,5 h | Finalizado |
+| S2-T16 | Reunión de cierre de la semana 2 | Equipo | 0,5 h c/u | Finalizado |
 
-La capacidad comprometida del tramo final es la de la tabla 8.3. Antes de eso, el piso es 4 h por persona por semana.
+##### Cierre — tarjetas C-01 a C-41
 
-### 8.6 Trazabilidad
+Las horas son las del plan de cierre. C-07, C-08, C-10 y C-17 siguen en por hacer en esa tabla. El repositorio ya tiene `docker-compose.yml`, `backend/scripts/seed-entrega.ts`, la medición de C-35 y `docs/manuales/manual-instalacion-operacion.md`. En esta tabla esas cuatro quedan como entregadas.
 
-La descripción de cada requisito es la del enunciado del trabajo integrador. El estado es el del repositorio al 19 de noviembre de 2026.
+| ID | Tarea | Responsable | Estimación | Estado |
+|---|---|---|---|---|
+| C-01 | Canchas en la UI: disponibilidad, reserva y pago | Lucas | 6–8 h | Finalizado |
+| C-02 | Membresía visible en la UI | Lucas | 1–2 h | El plan de cierre la deja en desarrollo. C-30 cerró el cobro y el manual de usuario muestra la membresía |
+| C-03 | Lectura en el teléfono: login, canchas y Mi QR | Lucas | 2 h | Finalizado |
+| C-04 | Comprobante PDF post-pago | Bruno | 3–4 h | Finalizado |
+| C-05 | Decisión escrita de RNF-01 | Patricio | 1 h | Finalizado |
+| C-06 | Ensayo corto del guion, sin cronómetro | Equipo | 1 h | Finalizado |
+| C-07 | Docker Compose | Matias | 6–8 h | Entregado. La fila del plan de cierre no se actualizó |
+| C-08 | Seed de 25 sedes | Matias | 4–5 h | Entregado. La fila del plan de cierre no se actualizó |
+| C-09 | `swagger.json` y enlace en el README | Bruno | 0,5 h | Finalizado |
+| C-10 | Suite verde y umbral de ADR-008 | Matias | 3–4 h | Entregado. C-35 midió 65,77 % de sentencias |
+| C-11 | Pantalla de clases: listar e inscribir | Patricio | 3–4 h | Finalizado |
+| C-12 | Notificaciones in-app, si sobra | Lucas | 1–2 h | Por hacer |
+| C-13 | Reorganizar `docs/` | Patricio | 2–3 h | Finalizado |
+| C-14 | Diez ADR obligatorios | Patricio | 5–6 h | Finalizado |
+| C-15 | Catorce diagramas | Patricio | 8–10 h | Finalizado |
+| C-16 | Manual de usuario con capturas | Patricio | 4–5 h | Finalizado |
+| C-17 | Manual de instalación y operación | Matias | 3–4 h | Entregado. La fila del plan de cierre no se actualizó |
+| C-18 | Manual técnico y dos casos de extensión | Patricio | 3–4 h | Finalizado |
+| C-19 | Cuatro bitácoras | Cada integrante | 3–4 h c/u | C-19a, C-19b y C-19c finalizadas. El plan deja C-19d en desarrollo. Los cuatro archivos están en el repo |
+| C-20 | Planificación con matriz, sprints y desvíos | Matias | 6–8 h | Finalizado el 18/11 por C-38 |
+| C-21 | Excel del tablero | Matias | 1–2 h | Finalizado el 19/11. El archivo es `PROGV-2026-TIF-Equipo03-Registro.xlsx` |
+| C-22 | Recorrido del Anexo G | Patricio | 3–4 h | Finalizado. Residual aceptado el 18/11 |
+| C-23 | README de cinco pasos | Patricio | 2 h | Finalizado |
+| C-24 | Guion de cinco minutos y plan B | Patricio | 1–2 h | Finalizado |
+| C-25 | Dossier PDF con hash del tag | Patricio | 2 h | Por hacer. El PDF existe y se reimprime con el tag |
+| C-26 | Tag `v1.0-entrega` | Patricio | 0,5 h | Por hacer |
+| C-27 | Subida a Moodle | Patricio | 0,5 h | Por hacer |
+| C-28 | Decorator de precios y UML | Patricio | 5–7 h | Finalizado |
+| C-29 | Alta y edición de sedes | Patricio | 3–4 h | Finalizado |
+| C-30 | Catálogo, alta y renovación cobrada | Patricio | 4–6 h | Finalizado |
+| C-31 | Agenda de clases | Patricio | 4–6 h | Finalizado |
+| C-32 | Canchas en pantalla | Patricio | 5–7 h | Finalizado |
+| C-33 | Check-out desde Acceso | Patricio | 4–5 h | Finalizado |
+| C-34 | Contraste del aviso de lugar liberado | Patricio | 0,5 h | Finalizado |
+| C-35 | Medir build y cobertura | Matias | 1–2 h | Finalizado. 32 suites, 184 tests, 65,77 % de sentencias |
+| C-36 | `LICENSE` | Patricio | 0,5 h | Finalizado |
+| C-37 | Ordenar `docs/planificacion/` | Matias | 2–3 h | Finalizado |
+| C-38 | Reescribir la matriz de C-20 | Matias | 4–6 h | Finalizado |
+| C-39 | Dashboard del gerente | Patricio | 4–6 h | Finalizado |
+| C-40 | E2E de navegador | Patricio | 4–6 h | Finalizado |
+| C-41 | SQL de no sobreventa en Postgres | Patricio | 3–4 h | Finalizado. La corrida local imprimió OK 3 |
 
-| Requisito | Qué pide | Dónde está | Prueba o evidencia | Estado |
-|-----------|----------|------------|--------------------|--------|
-| RF-01 | Registro y perfil | `POST /auth/register`, perfil propio | `auth.service.spec` del registro. El panorama del 13/10 lo da por demostrable | Demostrable. La foto queda fuera de este corte |
-| RF-02 | Planes, estados y renovación | Catálogo, `renovar_membresia`, pasarela simulada. Tarjeta C-30 | Cierre de C-30 en el plan de cierre | Alta y renovación cobrada cerradas. C-02, la membresía visible en el perfil, sigue en desarrollo en ese plan |
-| RF-03 | Acceso en otra sede de la cadena | El check-in no ata al socio a su sede de origen | Manual de usuario, sección de acceso | Demostrable con membresía activa |
-| RF-04 | QR que rota y validación de la membresía | Código de un minuto y check-in en la API | ADR-007 y manual de usuario | Demostrable |
-| RF-05 | Aforo de la sede | Pantalla Acceso, ocupación sobre el máximo | Captura del manual de usuario | Demostrable |
-| RF-06 | Agenda de clases | `POST /clases` y `PATCH /clases/:id`, pantalla del gerente. Tarjeta C-31 | Tests de rol citados en el cierre de C-31 | Cerrado |
-| RF-07 | Inscripción hasta 48 h antes | Pantalla `/clases`. Tarjeta C-11 | Manual de usuario y bitácora de la tarjeta | Cerrado |
-| RF-08 | Lista de espera y aviso | Observer al liberar un cupo | Diagrama de actividad y tests de clases | Cerrado |
-| RF-09 | Alta de canchas y precio por hora | `/canchas/gestionar`. Tarjeta C-32 | E2E de alta citado en el cierre de C-32 | Cerrado |
-| RF-10 | Grilla y bloqueo del turno | Reserva desde la UI. Tarjeta C-01 | Guion de demo y manual de usuario | Cerrado |
-| RF-11 | Precio con descuento y hora pico | Cadena Decorator. Tarjeta C-28 | Tests unitarios de precios | Cerrado. El enunciado nombraba Strategy. El código compone las reglas con Decorator |
-| RF-12 | Mantenimiento | Períodos que bloquean turnos futuros | Manual técnico | Cerrado. No cancela la reserva ya tomada |
-| RF-13 | Pasarela simulada | Puerto `PasarelaPago` y el simulacro | ADR-010 | Cerrado como simulacro |
-| RF-14 | Comprobante en PDF | PDF con cancha, horario y monto. Tarjeta C-04 | C-04 finalizada el 17/11 | Cerrado. No es factura fiscal |
-| RN-01 | Una sola sede a la vez | Clave de `presencias` y check-out. Tarjeta C-33 | Manual de usuario y ADR-007 | Cerrado con conexión. Sin red, la cola se valida al sincronizar |
-| RN-02 | Una sola reserva del turno | `FOR UPDATE` e índice único. ADR-004 | Job `sql-rn02`. La corrida local imprimió `OK 3` | C-41 cerrado. El unitario que traduce el choque a HTTP 409 se queda |
-| RN-03 | El socio en mora paga como externo | El decorador de descuento exige socio activo | Manual técnico, sección 4.1 | Cerrado en el cálculo del precio |
-| RNF-01 | Acceso con la conexión caída | Cola de la sede. ADR-003 y ADR-007. Tarjeta C-05 | Manual de usuario, pantalla Acceso | Cerrado para la sede. La app móvil queda fuera |
-| RNF-02 | Token y nada de tarjeta | ADR-010 | El ADR y el comprobante sin datos de tarjeta | Cerrado |
-| RNF-03 | Grilla apoyada en índices | Cuatro índices de la migración de canchas | El 18/11 la grilla de FitZone Central apareció en 786 ms | Índices presentes. No hay umbral nuevo |
-| RNF-04 | Sede nueva sin detener el sistema | `POST /sedes` y `PATCH /sedes/:id`. Tarjeta C-29 | Tests de rol citados en el cierre de C-29 | Cerrado |
+#### 5. Cronograma
 
-### 8.7 Seguimiento
+Las fechas son las de C-20. La capacidad cita el piso ya escrito: 4 h por persona por semana hasta el tramo de cierre. S8 cita el techo semanal del plan de cierre, sin multiplicarlo por los días del sprint.
 
-El cuadro de horas es el de `docs/planificacion/PROGV-2026-TIF-Equipo03-Planificacion.md`. Trabajado es la suma de las marcas `· N h` de las cuatro bitácoras cuya fecha cae en el sprint. Las sesiones del 27/08 entran en el sprint 1. Las entradas del 18/11 que no traen horas no suman una cifra.
+| Sprint | Fechas | Objetivo | Capacidad | Entregable de cierre |
+|---|---|---|---|---|
+| 1 | 31/08 al 06/09/2026 | Arquitectura inicial, roles, monorepo, C4, ADR y reuniones | 4 h por persona por semana | Acta del 02/09 y plan de las semanas 1 y 2 |
+| 2 | 07 al 13/09/2026 | Scaffolding Nest y React, Supabase, autenticación y esquema mínimo | 4 h por persona por semana | Plan de las semanas 1 y 2, y el LOG |
+| 3 | 14 al 27/09/2026 | Membresías y clases: SQL, Repository, guards y ventanas de inscripción | 4 h por persona por semana | Migraciones y LOG. No hay plan propio de S3 |
+| 4 | 28/09 al 11/10/2026 | Canchas, Strategy, Observer, correcciones de clases y seguimiento | 4 h por persona por semana | Acta del 13/10 y LOG |
+| 5 | 12 al 25/10/2026 | Migración M4, login real, sesión, layout e infraestructura | 4 h por persona por semana | Acta del 21/10 y plan S5–S7 |
+| 6 | 26/10 al 08/11/2026 | Perfil real, pagos, APIs de canchas, cliente HTTP, CI y notificaciones | 4 h por persona por semana | Plan S5–S7 y LOG |
+| 7 | 09 al 15/11/2026 | Decorator, State, Facade, demo, Swagger, componentes y cierres funcionales | 4 h por persona por semana | Plan de cierre, tarjetas C-01 a C-34 |
+| 8 | 16 al 19/11/2026 | Congelamiento, Anexo G, tag, dossier, medición y orden de la planificación | P1 8 a 10 h, P2 4 a 6 h, P3 8 a 10 h, P4 4 a 6 h, por semana | Evidencia de C-35 a C-41. El tag queda en C-26 |
 
-| Sprint | Comprometido | Completado | Trabajado (h) | Qué ocurrió |
-|--------|--------------|------------|---------------|-------------|
-| 1 | Arquitectura inicial, roles, monorepo, C4, ADR y reuniones | Acta del 02/09 y plan de las semanas 1 y 2 | 24 | S1-T16 sigue en por hacer. Incluye 8 h del 27/08 |
-| 2 | Scaffolding Nest y React, Supabase, autenticación y esquema mínimo | Tareas S2 del plan, en finalizado | 0 | Ninguna bitácora marca horas entre el 7 y el 13/09 |
-| 3 | Membresías y clases: SQL, Repository, guards y ventanas | Migraciones y LOG | 20 | No hay plan propio de S3 |
-| 4 | Canchas, Strategy, Observer y correcciones de clases | Acta del 13/10 | 36 | El 13/10 las pantallas seguían con datos fijos y la API de canchas estaba en curso |
-| 5 | Migración M4, login real, sesión, layout e infraestructura | Acta del 21/10 y plan S5–S7 | 18,5 | El 21/10 se cerraron las reglas de precio y de reserva |
-| 6 | Perfil, pagos, APIs de canchas, cliente HTTP, CI y notificaciones | Plan S5–S7 y LOG | 60 | El plan no escribe un desvío solo de este sprint |
-| 7 | Decorator, State, Facade, demo y cierres funcionales | C-01 cerró el 13/11. Plan de cierre C-01 a C-34 | 37,5 | C-01 cerró el 13/11. C-02 sigue en desarrollo |
-| 8 | Congelamiento, Anexo G, tag, dossier y medición | C-24 y C-35 a C-41 cerrados. C-21 entregó el registro | 23 | El tag no existe y lo crea C-26. 16 h de Matias, 4 h de Bruno y 3 h de Lucas. Las entradas de Patricio del 18/11 no traen horas |
+#### 6. Matriz de trazabilidad
 
-El compose, el seed de 25 sedes, el manual de instalación y el umbral de Jest están en el repositorio. Las filas C-07, C-10 y C-17 del plan de cierre siguen en por hacer.
+Fuente: la matriz de C-20, cerrada el 18/11. La tercera columna dice el archivo donde se verifica, o el concepto que usa el código.
 
-### 8.8 Desvíos
+| Requisito | Historia que lo implementa | Dónde se verifica |
+|---|---|---|
+| RF-01 Registro y perfil | `POST /auth/register` y perfil propio | `backend/src/usuarios/auth/auth.service.ts` (`register`) y `backend/src/usuarios/perfiles/perfiles.controller.ts` (`GET /perfiles/me`). La foto no está: el alta no la pide |
+| RF-02 Planes, estados y renovación | Catálogo y renovación cobrada. C-30 | `backend/src/usuarios/membresias/membresias.repository.ts` llama a `renovar_membresia`. Concepto: el alta cierra la membresía anterior en una función SQL |
+| RF-03 Acceso multi-sede | El check-in no ata al socio a su sede de origen | `supabase/migrations/20261101210000_acceso_m2.sql`, función `check_in`: entra `p_sede_id` y no la sede habitual |
+| RF-04 QR dinámico | Código que rota y check-in | `backend/src/acceso/totp.service.ts` y `backend/src/acceso/acceso.service.ts` (`checkIn`). Concepto: TOTP. Sin red, la validación queda para el sync |
+| RF-05 Aforo por sede | Ocupación contra el máximo de la sede | `frontend/src/admin/Acceso/Acceso.tsx` muestra `ocupacion` y `aforoMax`. El máximo se guarda en `backend/src/usuarios/sedes/sedes.service.ts` |
+| RF-06 Agenda de clases | El gerente crea y edita clases. C-31 | `backend/src/clases/clases.controller.ts` (`POST` y `PATCH`) y `frontend/src/admin/Clases/GestionarClases.tsx` |
+| RF-07 Reserva de clases hasta 48 h antes | Inscripción del socio. C-11 | `backend/src/clases/clases.service.ts`, constante `VENTANA_RESERVA_CLASE_MS`. El spec `clases.service.spec.ts` rechaza si faltan menos de 48 h |
+| RF-08 Lista de espera y aviso | Aviso al liberarse un lugar | `backend/src/clases/notificaciones/lista-espera.publisher.ts` y `observers/in-app.observer.ts`. Concepto: Observer |
+| RF-09 Alta y edición de canchas | Costo por hora y datos de la cancha. C-32 | `backend/src/canchas/canchas.controller.ts` (`POST` y `PATCH`) y `frontend/src/admin/Canchas/GestionarCanchas.tsx` |
+| RF-10 Grilla y bloqueo del turno | Disponibilidad y una sola reserva del horario | `GET /canchas/disponibilidad` en `canchas.controller.ts`. El bloqueo es el índice único `reservas_cancha_sin_sobreventa` en `supabase/migrations/20261027200000_canchas_m4.sql` |
+| RF-11 Precio estándar, descuento y hora pico | Cadena de precio. C-28 | `backend/src/canchas/precios/decorators/`: `standard-pricing.ts`, `peak-hour-pricing.decorator.ts` y `member-discount-pricing.decorator.ts`. `precios.service.ts` arma la cadena. Concepto: Decorator. El enunciado nombraba Strategy |
+| RF-12 Mantenimiento | El bloqueo no cancela la reserva ya tomada. C-32 | `backend/src/canchas/canchas.service.ts` marca el horario en mantenimiento. `canchas.service.spec.ts` cubre el alta y la baja del período |
+| RF-13 Pasarela simulada | Cobro sin medio real | `backend/src/pagos/pasarela-pago.ts` es el puerto. `pasarela-simulada.ts` aprueba o rechaza. Concepto: simulacro. ADR-010. MercadoPago real queda fuera |
+| RF-14 Comprobante PDF | PDF con cancha, horario y monto. C-04 | `backend/src/pagos/comprobantes/comprobante-pdf.template.ts`. Concepto: Template Method. La reserva lo descarga en `reservas-cancha.controller.ts`, `GET :id/comprobante`. No es factura fiscal |
+| RN-01 Una sola sede a la vez | Una presencia abierta por socio | `presencias` en `20261101210000_acceso_m2.sql`. Un segundo ingreso choca con `unique_violation` y la función responde `YA_DENTRO`. Sin red, el choque se ve al sincronizar |
+| RN-02 Sin sobreventa del turno | Una sola reserva del mismo turno | Índice `reservas_cancha_sin_sobreventa`. La prueba `supabase/tests/canchas_m4.test.sql` cubre `TURNO_OCUPADO` y la corrida local imprimió OK 3 |
+| RN-03 Mora paga tarifa externa | El vencido pierde el descuento de socio | `member-discount-pricing.decorator.ts`: el descuento exige membresía activa. `precios.service.spec.ts` afirma que a las 19:00 el vencido paga tarifa externa |
+| RNF-01 Acceso ante caída de conexión | La sede sigue operando sin red | `frontend/src/admin/Acceso/accesoCola.ts` guarda la fila en `localStorage`. Concepto: cola de sincronización. ADR-003 y ADR-007. No hay un nodo que valide el QR con el servidor caído |
+| RNF-02 Sin datos de tarjeta | El pago guarda un token | `pasarela-simulada.ts` persiste `token_pasarela`. `pasarela-pago.ts` declara la tarjeta de prueba y dice que no se persiste |
+| RNF-03 Consulta rápida de disponibilidad | La grilla se apoya en índices | `canchas_sede`, `mantenimientos_cancha_rango`, `reservas_cancha_cancha_inicio` y `reservas_cancha_perfil` en `20261027200000_canchas_m4.sql`. El 18/11 la grilla apareció en 786 ms. No hay umbral nuevo |
+| RNF-04 Alta de sede sin detener el sistema | Una sede nueva es una fila. C-29 | `backend/src/usuarios/sedes/sedes.controller.ts` (`POST` y `PATCH`) y `sedes.service.ts`. La baja es `activa = false` |
 
-La documentación de cierre y el cambio de Strategy a Decorator ocuparon el tramo del 9 al 17 de noviembre, encima de las pantallas de gestión. Varias tarjetas que el plan asignaba a Lucas las cerró Patricio: la pantalla de clases, el manual de usuario y la bitácora de Lucas. El estimado de 4 h semanales de agosto no alcanza para describir esa concentración de noviembre.
+#### 7. Seguimiento por sprint
 
-El riesgo de leer RNF-01 como una app del socio sin señal se materializó como discusión de alcance. Se absorbió el 6 de noviembre, con C-05: la demo muestra la cola de la sede, y la app móvil queda fuera. El mismo corte sacó MercadoPago real, la cámara del acceso y los reportes de toda la cadena. El 18/11 la matriz quedó en una fila por requisito. RN-03 es mora con tarifa externa. RNF-03 se midió en 786 ms.
+Trabajado es la suma de las marcas `· N h` de `LOG-ramos.md`, `LOG-conti.md`, `LOG-coquet.md` y `LOG-goncevat.md` cuya fecha cae en el sprint de C-20. Las sesiones del 27/08 entran en el sprint 1: son la semana de apertura de las bitácoras, anterior al corte del 31/08. Las entradas del 18/11 que no traen horas no suman una cifra. En la bitácora de Patricio, las horas anteriores al 6/11 están marcadas como estimación reconstruida por el tamaño de la sesión.
 
-Si el cuatrimestre empezara de nuevo, Docker, el seed de 25 sedes y el manual de operación entrarían junto con el primer arranque reproducible, y la matriz de requisitos se escribiría sobre el enunciado completo en lugar de esperar a C-38. Esa matriz es `docs/planificacion/S8_Planificacion_Completa_C20.md`.
+| Sprint | Comprometido | Completado | Trabajado (h) | Desvío | Observación |
+|---|---|---|---|---|---|
+| 1 | Arquitectura inicial, roles, monorepo, C4, ADR y reuniones | Acta del 02/09 y plan de las semanas 1 y 2 | 24 | S1-T16 sigue en por hacer. El piso escrito era 4 h por persona | Incluye 8 h del 27/08 |
+| 2 | Scaffolding Nest y React, Supabase, autenticación y esquema mínimo | Tareas S2 del plan, en finalizado | 0 | Ninguna bitácora marca horas entre el 7 y el 13/09 | El plan de la semana 2 estima 7 h para Bruno y 4,5 h para Lucas |
+| 3 | Membresías y clases: SQL, Repository, guards y ventanas | Migraciones y LOG | 20 | No hay plan propio de S3. C-37 remite al LOG | |
+| 4 | Canchas, Strategy, Observer y correcciones de clases | Acta del 13/10 | 36 | El 13/10 las pantallas seguían con datos fijos y la API de canchas estaba en curso | |
+| 5 | Migración M4, login real, sesión, layout e infraestructura | Acta del 21/10 y plan S5–S7 | 18,5 | El 21/10 se cerraron las reglas de precio y de reserva | |
+| 6 | Perfil, pagos, APIs de canchas, cliente HTTP, CI y notificaciones | Plan S5–S7 y LOG | 60 | C-20 no escribe un desvío solo de este sprint | |
+| 7 | Decorator, State, Facade, demo y cierres funcionales | C-01 cerró el 13/11. Plan de cierre C-01 a C-34 | 37,5 | C-01 cerró el 13/11 | |
+| 8 | Congelamiento, Anexo G, tag, dossier y medición | C-24 y C-35 a C-41 cerrados. C-21 entregó el registro del tablero. C-25, C-26 y C-27 abiertos. El tag no existe | 23 | El tag no existe. Las entradas de Patricio del 18/11 no traen horas | 16 h de Matias, 4 h de Bruno y 3 h de Lucas |
 
-### 8.9 Riesgos
+#### 8. Análisis de desvíos
 
-| Riesgo | Qué ocurrió al 19/11/2026 |
-|--------|---------------------------|
-| La UI de canchas se queda en datos fijos | C-01 cerró el 13/11 con reserva y pago desde la pantalla |
-| RNF-01 se interpreta como app móvil | La app quedó fuera. La sede encola el ingreso y la salida. C-05 |
-| La documentación llega tarde | ADR, diagramas y los tres manuales están en el repo. C-38 reescribió la matriz el 18/11. La fila C-17 del plan sigue en por hacer |
-| Una sola persona concentra Docker, seed y pruebas de cierre | El compose, el seed de 25 sedes, la medición de C-35 y el manual de instalación están en el repo. C-07, C-10 y C-17 siguen en por hacer en el plan |
-| La no sobreventa se prueba tarde | C-41 corrió el SQL. La salida local fue `OK 3` |
-| El tablero no se exporta | C-21 lo armó el 19/11: `docs/planificacion/PROGV-2026-TIF-Equipo03-Registro.xlsx` |
-| El tag sale después de las 18:00 del 19/11 | El tag no existe. Lo crea C-26 |
+Dónde se estimó mal. El borrador de C-20 agrupaba RF-09 a RF-12 y omitía varios RF, porque la matriz no seguía el enunciado identificador por identificador. RN-03 se había leído como rutas y roles. RNF-03 se había leído como Docker. RNF-01 se había pensado como una decisión móvil. C-04 llegó a los primeros tramos con PDFKit declarado y sin integrar. C-02 quedó en por hacer mientras C-30 resolvía la renovación cobrada. S3 no tenía plan propio. C-20 no podía citar la medición ni el nombre final hasta que existieran C-35 y C-37. El estimado de 4 h semanales de agosto no alcanza para describir la concentración de noviembre: varias tarjetas que el plan asignaba a Lucas las cerró Patricio.
+
+Qué riesgo se materializó y cómo se absorbió. La matriz incompleta se reemplazó el 18/11 por una fila por requisito. RN-03 quedó definido como mora con tarifa externa. RNF-03 se midió en `/canchas`: 786 ms hasta ver la grilla. RNF-01 quedó como cola local y sincronización, y la app móvil quedó fuera, por la decisión de C-05. C-04 cerró con Template Method, PDFKit y la descarga posterior al pago. C-30 cerró el catálogo y la renovación cobrada. C-37 señaló que S3 no tiene plan propio. C-38 usó el 65,77 % medido y el nombre `S8_Planificacion_Completa_C20.md`.
+
+Qué se replanificaría si el cuatrimestre empezara de nuevo. Docker, el seed de 25 sedes y el manual de operación entrarían junto con el primer arranque reproducible, y la matriz de requisitos se escribiría sobre el enunciado completo en lugar de esperar a C-38.
+
+#### Registro de riesgos
+
+Probabilidad, impacto y mitigación prevista no constan en los planes del cuatrimestre. No se les asigna un valor en este armado. La columna que sí está escrita es lo que ocurrió, tomada de C-20 y del capítulo 8.9 del dossier, y actualizada con el cierre del 18/11.
+
+| Riesgo | Prob. | Impacto | Mitigación prevista | Qué ocurrió |
+|---|---|---|---|---|
+| La UI de canchas se queda en datos fijos | — | — | — | C-01 cerró el 13/11 con reserva y pago desde la pantalla |
+| RNF-01 se interpreta como app móvil | — | — | — | La app quedó fuera. La sede encola el ingreso y la salida. C-05 |
+| El offline fuerte pide un nodo por sede | — | — | — | Quedó la cola local y el sync. No se simuló un nodo físico |
+| La documentación llega tarde | — | — | — | ADR, diagramas y los tres manuales están en el repo. C-38 reescribió la matriz el 18/11 |
+| Una sola persona concentra Docker, seed y pruebas | — | — | — | El compose, el seed de 25 sedes, la medición de C-35 y el manual de instalación están en el repo. C-21 entregó el registro el 19/11 |
+| La no sobreventa se prueba tarde | — | — | — | C-41 corrió el SQL. La salida local fue OK 3 |
+| La cobertura queda bajo el umbral | — | — | — | C-35 midió 65,77 % de sentencias. El piso de ADR-008 sigue en 60 % |
+| La planificación queda incompleta | — | — | — | C-37 ordenó la carpeta y C-38 reemplazó la matriz |
+| El tablero no se exporta | — | — | — | C-21 lo armó el 19/11: `docs/planificacion/PROGV-2026-TIF-Equipo03-Registro.xlsx`. La fecha de alta y la de entrada a finalizado salen del export de ese día |
+| El tag sale después de las 18:00 del 19/11 | — | — | — | El tag no existe. C-24 está cerrado. C-25, C-26 y C-27 siguen abiertos |
 
 ## 9. Bitácoras individuales
 
@@ -1943,6 +2035,26 @@ Ninguno.
 
 - El commit de esta rama. El tag y el hash de la portada quedan en C-26.
 
+---
+
+##### 2026-11-19  ·  v0.52.0
+
+**Actividad**
+
+El paso de C-24 que trajo el pago desde Mis reservas queda en `v0.52.0`. La documentación posterior, el registro del tablero y el Markdown del dossier quedan en esa versión. Los `package.json` pasan a `0.52.0`.
+
+**Decisión**
+
+No se publican `v1.0.0` ni `v1.0-entrega`. El PDF del dossier y las claves no se versionan. `documentacion/` no entra en `master`.
+
+**Problema o bloqueo**
+
+Ninguno.
+
+**Commits**
+
+- El commit de esta versión. El tag `v0.52.0` apunta a ese commit.
+
 Archivo de origen: `docs/bitacoras/LOG-conti.md`.
 
 ### Bitácora — Conti Bruno — Rol P2
@@ -2740,7 +2852,7 @@ Ninguno bloqueante. `npm ci` informó 30 vulnerabilidades en el árbol de depend
 
 **Commits**
 
-- Pendiente de commit en esta sesión. No se modificó código de backend ni la configuración de Jest.
+- `147f1d5` C-35: mide `npm ci`, build y `test:cov`, registra 32 suites, 184 tests y 65.77 % de sentencias.
 
 ---
 
@@ -2760,7 +2872,7 @@ No hubo bloqueo técnico. Algunos documentos históricos todavía citan nombres 
 
 **Commits**
 
-- Pendiente de commit en esta sesión. Esta tarea modificó nombres de archivos, estructura de carpetas y enlaces Markdown.
+- `a4d9b31` C-38 / C-37: reorganiza `docs/planificacion/`, agrega el índice por sprints y mueve las exportaciones a `exportaciones/`. C-37 no tuvo un commit separado y quedó incluido en este commit de C-38.
 
 ---
 
@@ -2780,7 +2892,7 @@ No hubo bloqueo técnico. El borrador anterior agrupaba RF-09–RF-12, omitía v
 
 **Commits**
 
-- Pendiente de commit en esta sesión. Esta tarea modifica la planificación C-20 y los estados C-20/C-38.
+- `a4d9b31` C-38: reescribe la planificación C-20, marca C-20/C-38 como finalizados y actualiza los enlaces, el residual de Anexo G y las bitácoras.
 
 ## 10. Índice de los manuales entregados
 
@@ -2798,54 +2910,113 @@ El índice corto de la carpeta es `docs/manuales/README.md`.
 
 El tablero vivo es [Programacion5](https://trello.com/b/eBn68vRC/programacion5).
 
-El registro con fechas de alta y de cierre es `docs/planificacion/PROGV-2026-TIF-Equipo03-Registro.xlsx`, tarjeta C-21, armado el 19/11. Tiene las hojas Portada, Resumen y Altas y cierres. El link no reemplaza ese archivo.
+La tabla es la hoja Altas y cierres de `docs/planificacion/PROGV-2026-TIF-Equipo03-Registro.xlsx`, tarjeta C-21, armado el 19/11. El origen de cada fecha y la URL de la tarjeta quedan en ese archivo.
 
-La tabla de abajo es el estado escrito en `docs/planificacion/S8_Plan_Cierre_Entrega_6_19_Nov.md` al 19 de noviembre de 2026. El nombre de la tarea es el de este dossier. Quién y el estado salen de ese plan.
+| Identificador | Fecha de creación | Fecha de cierre | Nombre | Lista al corte | Responsables |
+|---|---|---|---|---|---|
+| P1.1 | 21/08/2026 |  | [P1.1] Matriz de Funcionalidades por Rol | finalizado | Patricio Ramos |
+| P1.2 | 21/08/2026 |  | [P1.2] Análisis de Uso, Tráfico y Reglas de Negocio | tambien en desarrollo |  |
+| P1.3 | 21/08/2026 |  | [P1.3] Definición de Requisitos de Seguridad y Acceso | tambien en desarrollo |  |
+| P2.1 | 21/08/2026 |  | [P2.1] Bosquejos y Prototipado UI en Figma | tambien en desarrollo |  |
+| P3.1 | 21/08/2026 |  | [P3.1] Documentación C4 (Contexto y Contenedores) | tambien en desarrollo |  |
+| P3.2 | 21/08/2026 |  | [P3.2] Definición de Estrategia de Datos y Documento ADR | tambien en desarrollo |  |
+| P4.1 | 21/08/2026 |  | [P4.1] Setup de Infraestructura y Repositorios | tambien en desarrollo |  |
+| S1-T12 | 29/08/2026 | 21/09/2026 | Ejecutar SQL inicial: tablas sedes, perfiles/user_roles (según borrador S1-T12) | finalizado | Bruno Conti |
+| S3-T01 | 06/10/2026 | 06/10/2026 | S3-T01 — Integrar Swagger + CORS + probar endpoints | finalizado | Patricio Ramos |
+| S3-T03 | 06/10/2026 | 07/10/2026 | S3-T03 — Módulo Membresías (M1) | finalizado | Bruno Conti |
+| S3-T04 | 06/10/2026 | 07/10/2026 | S3-T04 — Módulo Clases (M3) | finalizado | Bruno Conti |
+| S3-T05 | 06/10/2026 | 03/11/2026 | S3-T05 — React: conectar login con POST /auth/login | finalizado | Lucas Coquet |
+| S3-T06 | 06/10/2026 | 06/10/2026 | S3-T06 — Diseño DB ER/SQL para Membresías, Clases, Cupos y Perfiles | finalizado | Patricio Ramos |
+| S3-T07 | 06/10/2026 | 03/11/2026 | S3-T07 — React: pantalla Mi Perfil | finalizado | Lucas Coquet |
+| S3-T09 | 06/10/2026 | 22/10/2026 | S3-T09 — Reunión de seguimiento + LOG.md | finalizado | Lucas Coquet, Bruno Conti, Matias Goncevat, Patricio Ramos |
+| S3-T10 | 06/10/2026 | 07/10/2026 | S3-T10 — Separar cliente de Supabase + arreglar tests y POST /login | finalizado | Bruno Conti |
+| S3-T11 | 06/10/2026 | 06/10/2026 | S3-T11 — Patrón Repository + refactorizar GET /sedes | finalizado | Patricio Ramos |
+| S4-T01 | 06/10/2026 | 21/10/2026 | S4-T01 — Implementar Strategy para precios/recargos | finalizado | Bruno Conti |
+| S4-T02 | 06/10/2026 | 06/10/2026 | S4-T02 — Implementar Observer para notificaciones | finalizado | Patricio Ramos |
+| S4-T03 | 06/10/2026 | 10/11/2026 | S4-T03 — React: pantalla de Canchas | finalizado | Lucas Coquet |
+| S4-T04 | 06/10/2026 | 07/11/2026 | S4-T04 — React: estado global básico | finalizado | Lucas Coquet, Patricio Ramos |
+| S4-T05 | 06/10/2026 | 15/10/2026 | S4-T05 — Justificación de patrones GoF | finalizado | Patricio Ramos |
+| S4-T06 | 06/10/2026 | 04/11/2026 | S4-T06 — Preparar API REST del módulo Canchas | finalizado | Bruno Conti |
+| S4-T07 | 06/10/2026 | 15/10/2026 | S4-T07 — Setup inicial de testing E2E | finalizado | Matias Goncevat |
+| S4-T08 | 06/10/2026 | 26/10/2026 | S4-T08 — Reunión de cierre Semana 4 + demo técnica | finalizado | Lucas Coquet, Bruno Conti, Matias Goncevat, Patricio Ramos |
+| S4-T09 | 06/10/2026 | 22/10/2026 | S4-T09 — Definir reglas de negocio de canchas y eventos Observer | finalizado | Lucas Coquet, Bruno Conti, Matias Goncevat, Patricio Ramos |
+| S5-T01 | 26/10/2026 | 27/10/2026 | S5-T01 — Migración Fase A al repo | finalizado | Patricio Ramos |
+| S5-T02 | 26/10/2026 | 27/10/2026 | S5-T02 — Migración M4 de canchas | finalizado | Patricio Ramos |
+| S5-T03 | 26/10/2026 | 27/10/2026 | S5-T03 — Seed mínimo de demo | finalizado | Patricio Ramos |
+| S5-T04 | 26/10/2026 | 09/11/2026 | S5-T04 — Guards en Clases y Membresías | finalizado | Bruno Conti |
+| S5-T05 | 26/10/2026 | 07/11/2026 | S5-T05 — Ventana 48 h en inscribir (D5) | finalizado | Bruno Conti, Patricio Ramos |
+| S5-T06 | 26/10/2026 | 03/11/2026 | S5-T06 — Login real | finalizado | Lucas Coquet |
+| S5-T07 | 26/10/2026 | 03/11/2026 | S5-T07 — Cliente HTTP base + sesión | finalizado | Lucas Coquet |
+| S5-T08 | 26/10/2026 | 07/11/2026 | S5-T08 — Layout post-login y rutas protegidas | finalizado | Lucas Coquet, Patricio Ramos |
+| S5-T09 | 26/10/2026 | 07/11/2026 | S5-T09 — Átomos de UI | finalizado | Lucas Coquet, Patricio Ramos |
+| S5-T10 | 26/10/2026 | 05/11/2026 | S5-T10 — Adoptar el plan de 3 semanas | finalizado | Matias Goncevat |
+| S5-T11 | 26/10/2026 | 05/11/2026 | S5-T11 — Checklist de cuentas | finalizado | Matias Goncevat |
+| S6-T01 | 26/10/2026 | 28/10/2026 | S6-T01 — Endpoint GET/PATCH /perfiles/me | finalizado | Patricio Ramos |
+| S6-T02 | 26/10/2026 | 31/10/2026 | S6-T02 — Registro mínimo o seed documentado | finalizado | Patricio Ramos |
+| S6-T03 | 26/10/2026 | 28/10/2026 | S6-T03 — Migración pagos + nota Adapter | finalizado | Patricio Ramos |
+| S6-T04 | 26/10/2026 | 09/11/2026 | S6-T04 — API Canchas lectura | finalizado | Bruno Conti |
+| S6-T05 | 26/10/2026 | 09/11/2026 | S6-T05 — API Canchas reserva | finalizado | Bruno Conti |
+| S6-T06 | 26/10/2026 | 10/11/2026 | S6-T06 — Cliente API completo | finalizado | Lucas Coquet |
+| S6-T07 | 26/10/2026 | 10/11/2026 | S6-T07 — Pantalla Canchas real | finalizado | Lucas Coquet |
+| S6-T08 | 26/10/2026 | 03/11/2026 | S6-T08 — Mi Perfil con datos reales | finalizado | Lucas Coquet |
+| S6-T09 | 26/10/2026 | 13/11/2026 | S6-T09 — Notificaciones in-app | finalizado | Lucas Coquet |
+| S6-T10 | 26/10/2026 | 05/11/2026 | S6-T10 — CI GitHub Actions | finalizado | Matias Goncevat |
+| S6-T11 | 26/10/2026 | 01/11/2026 | S6-T11 — Postman Canchas | finalizado | Matias Goncevat |
+| S7-T01 | 26/10/2026 | 31/10/2026 | S7-T01 — Patrones en la reserva | finalizado | Patricio Ramos |
+| S7-T02 | 26/10/2026 | 01/11/2026 | S7-T02 — Pago mock mínimo | finalizado | Patricio Ramos |
+| S7-T03 | 26/10/2026 | 08/11/2026 | S7-T03 — Ensayo demo + checklist del guion | finalizado | Patricio Ramos |
+| S7-T04 | 26/10/2026 | 09/11/2026 | S7-T04 — Lista de espera + Observer | finalizado | Bruno Conti |
+| S7-T05 | 26/10/2026 | 09/11/2026 | S7-T05 — Swagger al día | finalizado | Bruno Conti |
+| S7-T06 | 26/10/2026 | 13/11/2026 | S7-T06 — Pantalla Clases | finalizado | Lucas Coquet, Patricio Ramos |
+| S7-T07 | 26/10/2026 | 13/11/2026 | S7-T07 — Membresía en UI | finalizado | Lucas Coquet |
+| S7-T08 | 26/10/2026 | 13/11/2026 | S7-T08 — Pulido del flujo demo | finalizado | Lucas Coquet, Patricio Ramos |
+| S7-T09 | 26/10/2026 | 16/11/2026 | S7-T09 — Componentes documentados (Unidad IV) | finalizado | Lucas Coquet, Patricio Ramos |
+| S7-T10 | 26/10/2026 | 31/10/2026 | S7-T10 — Reporte de cobertura (Unidad V) | finalizado | Matias Goncevat |
+| S7-T11 | 26/10/2026 | 31/10/2026 | S7-T11 — Smoke del guion demo en LOG | finalizado | Matias Goncevat |
+| S7-T12 | 26/10/2026 | 11/11/2026 | S7-T12 — Stretch VI: QR/móvil | finalizado | Matias Goncevat |
+| C-01 | 06/11/2026 | 10/11/2026 | C-01 — Pantalla Canchas real (S4-T13) | finalizado | Lucas Coquet |
+| C-02 | 06/11/2026 | 13/11/2026 | C-02 — Membresía en UI | finalizado | Lucas Coquet |
+| C-03 | 06/11/2026 | 10/11/2026 | C-03 — Responsive Login / Canchas / Mi QR | finalizado | Lucas Coquet |
+| C-04 | 06/11/2026 | 17/11/2026 | C-04 — RF-14 PDF comprobante FitZone | finalizado | Bruno Conti |
+| C-05 | 06/11/2026 | 06/11/2026 | C-05 — Decision RNF-01 + aviso cátedra si hace falta | finalizado | Patricio Ramos |
+| C-06 | 06/11/2026 | 08/11/2026 | C-06 — Ensayo corto guion API+UI | finalizado | Patricio Ramos |
+| C-07 | 06/11/2026 | 17/11/2026 | C-07 — Docker Compose (API + front) | finalizado | Matias Goncevat |
+| C-08 | 06/11/2026 | 17/11/2026 | C-08 — Seed entrega >= 25 sedes | finalizado | Matias Goncevat |
+| C-09 | 06/11/2026 | 13/11/2026 | C-09 — Exportar backend/swagger.json | finalizado | Bruno Conti |
+| C-10 | 06/11/2026 | 17/11/2026 | C-10 — Suite verde + cobertura + umbral ADR | finalizado | Matias Goncevat |
+| C-11 | 06/11/2026 | 17/11/2026 | C-11 — Pantalla Clases minima | finalizado | Lucas Coquet, Patricio Ramos |
+| C-12 | 06/11/2026 | 13/11/2026 | C-12 — Notificaciones in-app (stretch) | finalizado | Lucas Coquet |
+| C-13 | 06/11/2026 | 09/11/2026 | C-13 — Reorganizar docs/ (estructura §4) | finalizado | Patricio Ramos |
+| C-14 | 06/11/2026 | 09/11/2026 | C-14 — 10 ADR obligatorios (§5.2.1) | finalizado | Patricio Ramos |
+| C-15 | 06/11/2026 | 11/11/2026 | C-15 — 14 diagramas + fuente editable | finalizado | Patricio Ramos |
+| C-16 | 06/11/2026 | 17/11/2026 | C-16 — Manual de usuario (Anexo D) | finalizado | Lucas Coquet, Patricio Ramos |
+| C-17 | 06/11/2026 | 17/11/2026 | C-17 — Manual instalacion y operacion (Anexo E) | finalizado | Matias Goncevat |
+| C-18 | 06/11/2026 | 11/11/2026 | C-18 — Manual tecnico (Anexo F) + extension tenis/Strategy | finalizado | Patricio Ramos |
+| C-19a | 06/11/2026 | 11/11/2026 | C-19a — Bitacora individual Patricio Ramos | finalizado | Patricio Ramos |
+| C-19b | 06/11/2026 | 14/11/2026 | C-19b — Bitacora individual Bruno Conti | finalizado | Bruno Conti |
+| C-19c | 06/11/2026 | 17/11/2026 | C-19c — Bitacora individual Lucas Coquet | finalizado | Lucas Coquet, Patricio Ramos |
+| C-19d | 06/11/2026 | 17/11/2026 | C-19d — Bitacora individual Matias Goncevat | finalizado | Matias Goncevat |
+| C-20 | 06/11/2026 | 17/11/2026 | C-20 — Planificacion completa (§5.6 + Anexo H) | finalizado | Matias Goncevat |
+| C-21 | 06/11/2026 |  | C-21 — Exportar tablero Trello/xlsx entrega | tambien en desarrollo | Matias Goncevat, Patricio Ramos |
+| C-22 | 06/11/2026 | 19/11/2026 | C-22 — Recorrer Anexo G casilla por casilla | finalizado | Patricio Ramos |
+| C-23 | 06/11/2026 | 17/11/2026 | C-23 — README raiz §4.1 | finalizado | Patricio Ramos |
+| C-24 | 06/11/2026 | 18/11/2026 | C-24 — Ensayo demo 5 min cronometrado + plan B | finalizado | Patricio Ramos |
+| C-25 | 06/11/2026 |  | C-25 — Dossier PDF (Anexo A) + hash commit | Blocked | Patricio Ramos |
+| C-26 | 06/11/2026 |  | C-26 — Tag v1.0-entrega antes de las 18:00 | Blocked | Patricio Ramos |
+| C-27 | 06/11/2026 |  | C-27 — Subida Moodle (dossier + URL + tag + hash) | por hacer | Patricio Ramos |
+| C-28 | 13/11/2026 | 13/11/2026 | Título: C-28 — Precios Strategy → Decorator + UML Nest | finalizado | Patricio Ramos |
+| C-29 | 14/11/2026 | 14/11/2026 | C-29-Alta y edición de sedes (A4, RNF-04): checks, POST/PATCH /sedes solo gerente, UI /sedes, tests y docs. Rama C-29 | finalizado | Patricio Ramos |
+| C-30 | 14/11/2026 | 14/11/2026 | C-30-Catálogo, alta que cierra la anterior y renovación cobrada (RF-02) | finalizado | Patricio Ramos |
+| C-31 | 15/11/2026 | 15/11/2026 | C-31: el gerente crea y edita la agenda de clases sin cargarla por SQL. | finalizado | Patricio Ramos |
+| C-32 | 15/11/2026 | 15/11/2026 | C-32-- alta, precio, pico, descuento y mantenimiento en pantalla, y cancelación de la reserva propia | finalizado | Patricio Ramos |
+| C-33 | 15/11/2026 | 15/11/2026 | C-33 — Check-out desde /acceso (RN-01) | finalizado | Patricio Ramos |
+| C-34 | 16/11/2026 | 16/11/2026 | C-34--Coreccion pequeña para pantalla notificaciones. | finalizado | Patricio Ramos |
+| C-35 | 17/11/2026 | 18/11/2026 | C-35 — Medir build y cobertura del backend | finalizado | Matias Goncevat |
+| C-36 | 17/11/2026 | 17/11/2026 | C-36 — LICENSE en la raíz | finalizado | Patricio Ramos |
+| C-37 | 17/11/2026 | 18/11/2026 | C-37 — Ordenar docs/planificacion por sprint | finalizado | Matias Goncevat |
+| C-38 | 17/11/2026 | 18/11/2026 | C-38 — Reescribir planificación de cierre (C-20) | finalizado | Matias Goncevat |
+| C-39 | 17/11/2026 | 18/11/2026 | C-39 — Dashboard del gerente (reportes A4) | finalizado | Patricio Ramos |
+| C-40 | 17/11/2026 | 18/11/2026 | C-40 — E2E Playwright del frontend | finalizado | Patricio Ramos |
+| C-41 | 17/11/2026 | 18/11/2026 | C-41 — RN-02 contra Postgres | finalizado | Patricio Ramos |
 
-| ID | Tarea | Quién | Estado al 19/11/2026 |
-|----|-------|-------|----------------------|
-| C-01 | Canchas en la UI | Lucas | Finalizado |
-| C-02 | Membresía visible en el perfil | Lucas | En desarrollo |
-| C-03 | Lectura en el teléfono | Lucas | Finalizado |
-| C-04 | PDF comprobante | Bruno | Finalizado |
-| C-05 | Decisión de RNF-01 | Patricio | Finalizado |
-| C-06 | Ensayo corto del guion | Equipo | Finalizado |
-| C-07 | Docker Compose | Matias | Por hacer |
-| C-08 | Seed de 25 sedes | Matias | Por hacer |
-| C-09 | swagger.json | Bruno | Finalizado |
-| C-10 | Suite y cobertura en el CI | Matias | Por hacer |
-| C-11 | Pantalla de clases | Patricio (antes Lucas) | Finalizado |
-| C-12 | Notificaciones in-app | Lucas | Por hacer |
-| C-13 | Estructura de docs/ | Patricio | Finalizado |
-| C-14 | Diez ADR | Patricio | Finalizado |
-| C-15 | Catorce diagramas | Patricio | Finalizado |
-| C-16 | Manual de usuario | Patricio (antes Lucas) | Finalizado |
-| C-17 | Manual de instalación | Matias | Por hacer |
-| C-18 | Manual técnico | Patricio | Finalizado |
-| C-19 | Bitácoras | Cada uno | Parcial |
-| C-20 | Planificación | Matias | Finalizado |
-| C-21 | Registro del tablero | Patricio (tarjeta de Matias) | Finalizado |
-| C-22 | Recorrido del Anexo G | Patricio | Finalizado |
-| C-23 | README de cinco pasos | Patricio | Finalizado |
-| C-24 | Ensayo de cinco minutos | Patricio | Finalizado |
-| C-25 | Dossier | Patricio | Por hacer |
-| C-26 | Tag v1.0-entrega | Patricio | Por hacer |
-| C-27 | Subida a Moodle | Patricio | Por hacer |
-| C-28 | Precio con Decorator | Patricio | Finalizado |
-| C-29 | Alta y edición de sedes | Patricio | Finalizado |
-| C-30 | Renovación de membresía | Patricio | Finalizado |
-| C-31 | Agenda de clases | Patricio | Finalizado |
-| C-32 | Canchas en pantalla | Patricio | Finalizado |
-| C-33 | Check-out desde Acceso | Patricio | Finalizado |
-| C-34 | Contraste del aviso | Patricio | Finalizado |
-| C-35 | Medir la cobertura | Matias | Finalizado |
-| C-36 | Archivo LICENSE | Patricio | Finalizado |
-| C-37 | Ordenar la planificación | Matias | Finalizado |
-| C-38 | Reescribir la planificación | Matias | Finalizado |
-| C-39 | Dashboard del gerente | Patricio | Finalizado |
-| C-40 | E2E con Playwright | Patricio | Finalizado |
-| C-41 | SQL de RN-02 en el CI | Patricio | Finalizado |
-
-C-19 está partida en el tablero: C-19a Patricio, C-19b Bruno y C-19c Lucas figuran finalizadas. C-19d, la de Matias, figura en desarrollo. Los cuatro textos están en la sección 9.
-
-C-25 figura en por hacer en ese plan porque el tag de la entrega todavía no existe. Este Markdown es la base del PDF. C-26 crea `v1.0-entrega`, completa el tag y el hash, e imprime.
+C-25 y C-26 siguen abiertas: el tag `v1.0-entrega` todavía no existe y el PDF con ese hash se imprime después.
