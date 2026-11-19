@@ -963,3 +963,43 @@ Ninguno.
 
 - Este registro es el de la aceptación. No hay commit de código.
 
+---
+
+### 2026-11-19  ·  Carpeta de notas
+
+**Actividad**
+
+Dejé asentado que `documentacion/` no forma parte de la entrega. Los documentos de la entrega están en `docs/`.
+
+**Decisión**
+
+Los registros anteriores no se modifican.
+
+**Problema o bloqueo**
+
+Ninguno.
+
+**Commits**
+
+- El commit de esta rama.
+
+---
+
+### 2026-11-19  ·  Enlaces que no hacen falta
+
+**Actividad**
+
+El guion de cinco minutos no entra en la entrega. Saqué la referencia del seed en el manual de instalación: los usuarios quedan en ese párrafo y en el README.
+
+**Decisión**
+
+Los registros históricos no se modifican. Los enlaces que quedan hacia la carpeta de notas no hacen falta para entender la entrega.
+
+**Problema o bloqueo**
+
+Ninguno.
+
+**Commits**
+
+- El commit de esta rama.
+
