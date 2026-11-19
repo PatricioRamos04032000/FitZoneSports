@@ -10,7 +10,7 @@
 | S4 | Canchas, patrones y seguimiento del 13/10 | [Acta de seguimiento del 13/10](./S4_Acta_Reunion_2026-10-13.md) |
 | S5 | Consolidación de esquema, seguridad y front base | [Acta de seguimiento del 21/10](./S5_Acta_Reunion_2026-10-21.md) |
 | S5–S7 | Plan de continuidad y tres semanas de cierre | [Plan S5–S7](./S5-S7_Plan_Trabajo_3_Semanas.md) · [Propuesta de continuación](./S5-S7_Propuesta_Continuacion.md) |
-| S8 | Entrega final y cierre del 6 al 19/11 | [Plan de cierre](./S8_Plan_Cierre_Entrega_6_19_Nov.md) · [Planificación C-20 cerrada por C-38](./S8_Planificacion_Completa_C20.md) · [Relación de tarjetas y observaciones](./S8_Relacion_Tarjetas_Trello_Observaciones.md) |
+| S8 | Entrega final y cierre del 6 al 19/11 | [Plan de cierre](./S8_Plan_Cierre_Entrega_6_19_Nov.md) · [Planificación C-20 cerrada por C-38](./S8_Planificacion_Completa_C20.md) · [Plan de proyecto y seguimiento, Anexo H](./PROGV-2026-TIF-Equipo03-Planificacion.md) · [PDF para Moodle](./PROGV-2026-TIF-Equipo03-Planificacion.pdf) · [Relación de tarjetas y observaciones](./S8_Relacion_Tarjetas_Trello_Observaciones.md) |
 
 ## Exportaciones
 
